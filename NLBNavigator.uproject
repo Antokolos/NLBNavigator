@@ -1,13 +1,16 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{F22B5725-44AF-8915-4D92-59ADC88C0713}",
+	"EngineAssociation": "{04AB93CF-4696-0D5B-9B40-38AEF58E2031}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "NLBNavigator",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [
