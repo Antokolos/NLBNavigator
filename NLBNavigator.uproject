@@ -1,24 +1,26 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{04AB93CF-4696-0D5B-9B40-38AEF58E2031}",
+	"EngineAssociation": "{6CC42597-4757-6DA0-F1A4-4D93B03F0021}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "NLBNavigator",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
+			"Enabled": true
+		},
+		{
+			"Name": "VisualStudioTools",
 			"Enabled": true,
-			"TargetAllowList": [
-				"Editor"
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/362651520df94e4fa65492dbcba44ae2",
+			"SupportedTargetPlatforms": [
+				"Win64"
 			]
 		}
 	]
