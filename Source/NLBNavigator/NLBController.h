@@ -15,7 +15,6 @@ public:
 	// Sets default values for this actor's properties
 	ANLBController();
 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -23,7 +22,26 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	
+	/** Loads the current set of text and image files */
+	void LoadCurrentSet();
+
+	/** Loads the next set of text and image files */
+	void LoadNextSet();
+
+private:
+	/** Utility function to load a texture from a file */
+	UTexture2D* LoadTextureFromFile(const FString& FilePath);
+
+private:
+	UPROPERTY()
+	class UNLBWidget* NLBWidget;
+
+	UPROPERTY()
+	class UTexture2D* CurrentTexture;
+
+	int32 CurrentIndex;
+	TArray<FString> TextFiles;
+	TArray<FString> ImageFiles;
 	
 };
