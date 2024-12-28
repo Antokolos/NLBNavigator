@@ -12,6 +12,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class ANLBController;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -61,11 +62,26 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+private:
+	// Declare the InputAction as private, but accessible via a getter function
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SwitchToVisualNovelAction; // Use a raw pointer here
+
+	ANLBController* VisualNovelController; // Pointer to NLBController
+
+	void LoadSwitchToVisualNovelAction();
+	void SwitchToVisualNovel(); // Function to switch to visual novel mode
+	void ReturnToShooter();     // Function to return to shooter mode
+
+	bool bIsInVisualNovelMode; // Flag to track the current mode
+
 public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
+	// Getter for SwitchToVisualNovelAction to make it accessible in Blueprints
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	UInputAction* GetSwitchToVisualNovelAction() const { return SwitchToVisualNovelAction; }
 };
 

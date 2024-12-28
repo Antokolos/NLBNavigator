@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "NLBController.generated.h"
 
+class UCameraComponent;
+
 UCLASS()
 class NLBNAVIGATOR_API ANLBController : public AActor
 {
@@ -29,16 +31,22 @@ public:
 	/** Loads the next set of text and image files */
 	void LoadNextSet();
 
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	UCameraComponent* GetCameraComponent() const { return CameraComponent; }
+
 private:
 	/** Utility function to load a texture from a file */
 	UTexture2D* LoadTextureFromFile(const FString& FilePath);
 
-private:
 	UPROPERTY()
 	class UNLBWidget* NLBWidget;
 
 	UPROPERTY()
 	class UTexture2D* CurrentTexture;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* CameraComponent;
 
 	int32 CurrentIndex;
 	TArray<FString> TextFiles;

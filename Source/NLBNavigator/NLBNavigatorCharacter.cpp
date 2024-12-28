@@ -11,6 +11,13 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 
+#include "NLBController.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "InputMappingContext.h"
+#include "GameFramework/PlayerController.h"
+#include "Camera/CameraActor.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -35,6 +42,18 @@ ANLBNavigatorCharacter::ANLBNavigatorCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	VisualNovelController = nullptr;
+	bIsInVisualNovelMode = false;
+
+	// Load InputAction
+	/*static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFinder(TEXT("/Game/Inputs/SwitchToVisualNovelAction"));
+	if (InputActionFinder.Succeeded())
+	{
+		SwitchToVisualNovelAction = InputActionFinder.Object;
+		void* p = nullptr;
+		*p = 0;
+	}*/
+	LoadSwitchToVisualNovelAction();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -67,10 +86,44 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::Look);
+
+		// Bind the action to the SwitchToVisualNovel function
+		EnhancedInputComponent->BindAction(SwitchToVisualNovelAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::SwitchToVisualNovel);
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	}
+
+	// Attach the Input Mapping Context
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			/*int* p = nullptr;
+			*p = 0;*/
+			// Load the Input Mapping Context from the asset created in the editor
+			// Ensure the path is correct and matches your asset's path in the editor
+			FString AssetPath = TEXT("/Game/Inputs/SwitchToVisualNovelMapping.SwitchToVisualNovelMapping");
+
+			// Load the UInputMappingContext object at runtime
+			UInputMappingContext* LoadedContext = Cast<UInputMappingContext>(StaticLoadObject(UInputMappingContext::StaticClass(), nullptr, *AssetPath));
+			if (LoadedContext)
+			{
+				Subsystem->AddMappingContext(LoadedContext, 1);
+				UE_LOG(LogTemp, Log, TEXT("UInputMappingContext loaded successfully."));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Failed to load UInputMappingContext."));
+			}
+			/*static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextFinder(TEXT("/Game/Inputs/SwitchToVisualNovelMapping"));
+			if (InputMappingContextFinder.Succeeded())
+			{
+				UInputMappingContext* InputMappingContext = InputMappingContextFinder.Object;
+				Subsystem->AddMappingContext(InputMappingContext, 1);
+			}*/
+		}
 	}
 }
 
@@ -98,5 +151,67 @@ void ANLBNavigatorCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ANLBNavigatorCharacter::SwitchToVisualNovel()
+{
+	if (bIsInVisualNovelMode)
+	{
+		// Return to shooter mode if already in visual novel mode
+		ReturnToShooter();
+		return;
+	}
+
+	if (!VisualNovelController)
+	{
+		// Spawn the NLBController actor if it does not exist
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+
+		VisualNovelController = GetWorld()->SpawnActor<ANLBController>(ANLBController::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+		if (!VisualNovelController)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to spawn NLBController."));
+			return;
+		}
+	}
+
+	// Switch the camera view to the NLBController
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (PlayerController && VisualNovelController)
+	{
+		PlayerController->SetViewTargetWithBlend(VisualNovelController, 1.0f);
+		bIsInVisualNovelMode = true;
+	}
+}
+
+void ANLBNavigatorCharacter::ReturnToShooter()
+{
+	// Switch the camera view back to the first-person character
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (PlayerController)
+	{
+		PlayerController->SetViewTargetWithBlend(this, 1.0f);
+		bIsInVisualNovelMode = false;
+	}
+}
+
+void ANLBNavigatorCharacter::LoadSwitchToVisualNovelAction()
+{
+	// Ensure the path is correct and matches your asset's path in the editor
+	FString AssetPath = TEXT("/Game/Inputs/SwitchToVisualNovelAction.SwitchToVisualNovelAction");
+
+	// Load the UInputAction object at runtime
+	UInputAction* LoadedAction = Cast<UInputAction>(StaticLoadObject(UInputAction::StaticClass(), nullptr, *AssetPath));
+	if (LoadedAction)
+	{
+		SwitchToVisualNovelAction = LoadedAction;
+		UE_LOG(LogTemp, Log, TEXT("SwitchToVisualNovelAction loaded successfully."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to load SwitchToVisualNovelAction."));
 	}
 }

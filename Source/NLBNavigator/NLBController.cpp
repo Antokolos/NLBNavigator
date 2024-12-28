@@ -8,6 +8,7 @@
 #include "IImageWrapperModule.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include <Camera/CameraComponent.h>
 
 // Sets default values
 ANLBController::ANLBController()
@@ -15,6 +16,13 @@ ANLBController::ANLBController()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
     CurrentIndex = 0;
+
+    // Create a default scene component
+    USceneComponent* DefaultSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
+    // Set it as the root component
+    RootComponent = DefaultSceneComponent;
+    CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+    CameraComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -33,7 +41,7 @@ void ANLBController::BeginPlay()
     }
 
     // Поиск файлов на диске
-    FString DirectoryPath = FPaths::ProjectContentDir() + TEXT("NLBFiles/");
+    FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
     IFileManager& FileManager = IFileManager::Get();
 
     FileManager.FindFiles(TextFiles, *(DirectoryPath + TEXT("*.txt")), true, false);
@@ -62,6 +70,7 @@ void ANLBController::LoadCurrentSet()
     if (CurrentIndex < TextFiles.Num() && CurrentIndex < ImageFiles.Num())
     {
         FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
+        UE_LOG(LogTemp, Error, TEXT("Loading files from DirectoryPath = %s"), *DirectoryPath);
 
         // Загрузка текста
         FString TextContent;
@@ -69,6 +78,8 @@ void ANLBController::LoadCurrentSet()
         if (FFileHelper::LoadFileToString(TextContent, *TextFilePath))
         {
             NLBWidget->UpdateText(TextContent);
+        } else {
+            UE_LOG(LogTemp, Error, TEXT("Error loading text file, path = %s"), *TextFilePath);
         }
 
         // Загрузка изображения
@@ -76,6 +87,8 @@ void ANLBController::LoadCurrentSet()
         if (UTexture2D* Texture = LoadTextureFromFile(ImageFilePath))
         {
             NLBWidget->UpdateImage(Texture);
+        } else {
+            UE_LOG(LogTemp, Error, TEXT("Error loading texture file, path = %s"), *ImageFilePath);
         }
     }
 }
