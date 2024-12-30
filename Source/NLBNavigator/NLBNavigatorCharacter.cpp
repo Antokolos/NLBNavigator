@@ -208,7 +208,7 @@ void ANLBNavigatorCharacter::ReturnToShooter()
 
 void ANLBNavigatorCharacter::NextPage()
 {
-	if (NextPageAction)
+	if (VisualNovelController && NextPageAction)
 	{
 		VisualNovelController->LoadNextSet();
 	}
