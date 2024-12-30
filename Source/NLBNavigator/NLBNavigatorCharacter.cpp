@@ -45,21 +45,12 @@ ANLBNavigatorCharacter::ANLBNavigatorCharacter()
 	VisualNovelController = nullptr;
 	bIsInVisualNovelMode = false;
 
-	// Load InputAction
-	/*static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFinder(TEXT("/Game/Inputs/SwitchToVisualNovelAction"));
-	if (InputActionFinder.Succeeded())
-	{
-		SwitchToVisualNovelAction = InputActionFinder.Object;
-		void* p = nullptr;
-		*p = 0;
-	}*/
-
-	LoadSwitchToVisualNovelAction();
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFinder(TEXT("/Game/NLB/Input/Actions/IA_NextPage"));
+	// Load InputAction -- better do it from character BP
+	/*static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFinder(TEXT("/Game/NLB/Input/Actions/IA_NextPage"));
 	if (InputActionFinder.Succeeded())
 	{
 		NextPageAction = InputActionFinder.Object;
-	}
+	}*/
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -115,10 +106,10 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 			FString AssetPath = TEXT("/Game/NLB/Input/IMC_Default.IMC_Default");
 
 			// Load the UInputMappingContext object at runtime
-			UInputMappingContext* LoadedContext = Cast<UInputMappingContext>(StaticLoadObject(UInputMappingContext::StaticClass(), nullptr, *AssetPath));
-			if (LoadedContext)
+			NLBMappingContext = Cast<UInputMappingContext>(StaticLoadObject(UInputMappingContext::StaticClass(), nullptr, *AssetPath));
+			if (NLBMappingContext)
 			{
-				Subsystem->AddMappingContext(LoadedContext, 1);
+				Subsystem->AddMappingContext(NLBMappingContext, 1);
 				UE_LOG(LogTemp, Log, TEXT("UInputMappingContext loaded successfully."));
 			}
 			else
@@ -191,6 +182,8 @@ void ANLBNavigatorCharacter::SwitchToVisualNovel()
 	if (PlayerController && VisualNovelController)
 	{
 		PlayerController->SetViewTargetWithBlend(VisualNovelController, 1.0f);
+		DisableCharacterInput();
+		ActivateVisualNovelInput();
 		bIsInVisualNovelMode = true;
 	}
 }
@@ -204,6 +197,12 @@ void ANLBNavigatorCharacter::ReturnToShooter()
 		PlayerController->SetViewTargetWithBlend(this, 1.0f);
 		bIsInVisualNovelMode = false;
 	}
+	if (VisualNovelController)
+	{
+		VisualNovelController->Remove();
+	}
+	EnableCharacterInput();
+	DeactivateVisualNovelInput();
 }
 
 void ANLBNavigatorCharacter::NextPage()
@@ -214,20 +213,76 @@ void ANLBNavigatorCharacter::NextPage()
 	}
 }
 
-void ANLBNavigatorCharacter::LoadSwitchToVisualNovelAction()
-{
-	// Ensure the path is correct and matches your asset's path in the editor
-	FString AssetPath = TEXT("/Game/NLB/Input/Actions/IA_SwitchToVN.IA_SwitchToVN");
+//void ANLBNavigatorCharacter::LoadSwitchToVisualNovelAction()
+//{
+//	// Ensure the path is correct and matches your asset's path in the editor
+//	FString AssetPath = TEXT("/Game/NLB/Input/Actions/IA_SwitchToVN.IA_SwitchToVN");
+//
+//	// Load the UInputAction object at runtime
+//	UInputAction* LoadedAction = Cast<UInputAction>(StaticLoadObject(UInputAction::StaticClass(), nullptr, *AssetPath));
+//	if (LoadedAction)
+//	{
+//		SwitchToVisualNovelAction = LoadedAction;
+//		UE_LOG(LogTemp, Log, TEXT("SwitchToVisualNovelAction loaded successfully."));
+//	}
+//	else
+//	{
+//		UE_LOG(LogTemp, Error, TEXT("Failed to load SwitchToVisualNovelAction."));
+//	}
+//}
 
-	// Load the UInputAction object at runtime
-	UInputAction* LoadedAction = Cast<UInputAction>(StaticLoadObject(UInputAction::StaticClass(), nullptr, *AssetPath));
-	if (LoadedAction)
+void ANLBNavigatorCharacter::ActivateVisualNovelInput()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputSubsystem())
 	{
-		SwitchToVisualNovelAction = LoadedAction;
-		UE_LOG(LogTemp, Log, TEXT("SwitchToVisualNovelAction loaded successfully."));
+		if (NLBMappingContext)
+		{
+			Subsystem->AddMappingContext(NLBMappingContext, 1); // Priority = 1
+		}
 	}
-	else
+}
+
+void ANLBNavigatorCharacter::DeactivateVisualNovelInput()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputSubsystem())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to load SwitchToVisualNovelAction."));
+		if (NLBMappingContext)
+		{
+			Subsystem->RemoveMappingContext(NLBMappingContext);
+		}
 	}
+}
+
+void ANLBNavigatorCharacter::DisableCharacterInput()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputSubsystem())
+	{
+		if (DefaultMappingContext)
+		{
+			Subsystem->RemoveMappingContext(DefaultMappingContext);
+		}
+	}
+}
+
+void ANLBNavigatorCharacter::EnableCharacterInput()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputSubsystem())
+	{
+		if (DefaultMappingContext)
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0); // Priority = 0
+		}
+	}
+}
+
+UEnhancedInputLocalPlayerSubsystem* ANLBNavigatorCharacter::GetEnhancedInputSubsystem() const
+{
+	if (APlayerController* PC = Cast<APlayerController>(Controller))
+	{
+		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
+		{
+			return LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+		}
+	}
+	return nullptr;
 }

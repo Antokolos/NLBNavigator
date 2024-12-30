@@ -34,6 +34,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 
+	void Remove();
+
 private:
 	/** Utility function to load a texture from a file */
 	UTexture2D* LoadTextureFromFile(const FString& FilePath);

@@ -12,6 +12,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class UEnhancedInputLocalPlayerSubsystem;
 class ANLBController;
 struct FInputActionValue;
 
@@ -33,6 +34,8 @@ class ANLBNavigatorCharacter : public ACharacter
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
+
+	UInputMappingContext* NLBMappingContext;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -73,7 +76,12 @@ private:
 
 	ANLBController* VisualNovelController; // Pointer to NLBController
 
-	void LoadSwitchToVisualNovelAction();
+	//void LoadSwitchToVisualNovelAction();
+	void ActivateVisualNovelInput();
+	void DeactivateVisualNovelInput();
+	void DisableCharacterInput();
+	void EnableCharacterInput();
+	UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputSubsystem() const;
 	void SwitchToVisualNovel(); // Function to switch to visual novel mode
 	void ReturnToShooter();     // Function to return to shooter mode
 	void NextPage(); // Turn the page

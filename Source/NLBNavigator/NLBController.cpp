@@ -103,6 +103,14 @@ void ANLBController::LoadNextSet()
     LoadCurrentSet();
 }
 
+void ANLBController::Remove()
+{
+    if (NLBWidget)
+    {
+        NLBWidget->RemoveFromViewport();
+    }
+}
+
 UTexture2D* ANLBController::LoadTextureFromFile(const FString& FilePath)
 {
     // Проверяем, существует ли файл
