@@ -67,11 +67,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* SwitchToVisualNovelAction; // Use a raw pointer here
 
+	// Declare the InputAction as private, but accessible via a getter function
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* NextPageAction; // Use a raw pointer here
+
 	ANLBController* VisualNovelController; // Pointer to NLBController
 
 	void LoadSwitchToVisualNovelAction();
 	void SwitchToVisualNovel(); // Function to switch to visual novel mode
 	void ReturnToShooter();     // Function to return to shooter mode
+	void NextPage(); // Turn the page
 
 	bool bIsInVisualNovelMode; // Flag to track the current mode
 

@@ -31,7 +31,7 @@ void ANLBController::BeginPlay()
 	Super::BeginPlay();
 	
     // Инициализация виджета
-    if (UClass* WidgetClass = LoadClass<UNLBWidget>(nullptr, TEXT("/Game/UI/NLBWidget.NLBWidget_C")))
+    if (UClass* WidgetClass = LoadClass<UNLBWidget>(nullptr, TEXT("/Game/NLB/UI/NLBWidget.NLBWidget_C")))
     {
         NLBWidget = CreateWidget<UNLBWidget>(GetWorld(), WidgetClass);
         if (NLBWidget)
@@ -54,8 +54,8 @@ void ANLBController::BeginPlay()
     LoadCurrentSet();
 
     // Привязка обработки ввода
-    EnableInput(GetWorld()->GetFirstPlayerController());
-    InputComponent->BindAction("Next", IE_Pressed, this, &ANLBController::LoadNextSet);
+    /*EnableInput(GetWorld()->GetFirstPlayerController());
+    InputComponent->BindAction("Next", IE_Pressed, this, &ANLBController::LoadNextSet);*/
 }
 
 // Called every frame

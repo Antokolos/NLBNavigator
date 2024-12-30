@@ -53,7 +53,13 @@ ANLBNavigatorCharacter::ANLBNavigatorCharacter()
 		void* p = nullptr;
 		*p = 0;
 	}*/
+
 	LoadSwitchToVisualNovelAction();
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFinder(TEXT("/Game/NLB/Input/Actions/IA_NextPage"));
+	if (InputActionFinder.Succeeded())
+	{
+		NextPageAction = InputActionFinder.Object;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -89,6 +95,8 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Bind the action to the SwitchToVisualNovel function
 		EnhancedInputComponent->BindAction(SwitchToVisualNovelAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::SwitchToVisualNovel);
+
+		EnhancedInputComponent->BindAction(NextPageAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::NextPage);
 	}
 	else
 	{
@@ -104,7 +112,7 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 			*p = 0;*/
 			// Load the Input Mapping Context from the asset created in the editor
 			// Ensure the path is correct and matches your asset's path in the editor
-			FString AssetPath = TEXT("/Game/Inputs/SwitchToVisualNovelMapping.SwitchToVisualNovelMapping");
+			FString AssetPath = TEXT("/Game/NLB/Input/IMC_Default.IMC_Default");
 
 			// Load the UInputMappingContext object at runtime
 			UInputMappingContext* LoadedContext = Cast<UInputMappingContext>(StaticLoadObject(UInputMappingContext::StaticClass(), nullptr, *AssetPath));
@@ -117,7 +125,7 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 			{
 				UE_LOG(LogTemp, Error, TEXT("Failed to load UInputMappingContext."));
 			}
-			/*static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextFinder(TEXT("/Game/Inputs/SwitchToVisualNovelMapping"));
+			/*static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextFinder(TEXT("/Game/NLB/Input/IMC_Default"));
 			if (InputMappingContextFinder.Succeeded())
 			{
 				UInputMappingContext* InputMappingContext = InputMappingContextFinder.Object;
@@ -198,10 +206,18 @@ void ANLBNavigatorCharacter::ReturnToShooter()
 	}
 }
 
+void ANLBNavigatorCharacter::NextPage()
+{
+	if (NextPageAction)
+	{
+		VisualNovelController->LoadNextSet();
+	}
+}
+
 void ANLBNavigatorCharacter::LoadSwitchToVisualNovelAction()
 {
 	// Ensure the path is correct and matches your asset's path in the editor
-	FString AssetPath = TEXT("/Game/Inputs/SwitchToVisualNovelAction.SwitchToVisualNovelAction");
+	FString AssetPath = TEXT("/Game/NLB/Input/Actions/IA_SwitchToVN.IA_SwitchToVN");
 
 	// Load the UInputAction object at runtime
 	UInputAction* LoadedAction = Cast<UInputAction>(StaticLoadObject(UInputAction::StaticClass(), nullptr, *AssetPath));
