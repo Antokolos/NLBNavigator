@@ -96,5 +96,8 @@ public:
 	// Getter for SwitchToVisualNovelAction to make it accessible in Blueprints
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	UInputAction* GetSwitchToVisualNovelAction() const { return SwitchToVisualNovelAction; }
+	// Getter for NextPageAction to make it accessible in Blueprints
+    UFUNCTION(BlueprintCallable, Category = "VisualNovel")
+    bool GetIsInVisualNovelMode() const { return bIsInVisualNovelMode; }
 };
 

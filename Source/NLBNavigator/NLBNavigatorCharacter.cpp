@@ -99,29 +99,21 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 		{
-			/*int* p = nullptr;
-			*p = 0;*/
 			// Load the Input Mapping Context from the asset created in the editor
 			// Ensure the path is correct and matches your asset's path in the editor
 			FString AssetPath = TEXT("/Game/NLB/Input/IMC_Default.IMC_Default");
 
 			// Load the UInputMappingContext object at runtime
 			NLBMappingContext = Cast<UInputMappingContext>(StaticLoadObject(UInputMappingContext::StaticClass(), nullptr, *AssetPath));
-			if (NLBMappingContext)
-			{
-				Subsystem->AddMappingContext(NLBMappingContext, 1);
-				UE_LOG(LogTemp, Log, TEXT("UInputMappingContext loaded successfully."));
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("Failed to load UInputMappingContext."));
-			}
-			/*static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextFinder(TEXT("/Game/NLB/Input/IMC_Default"));
-			if (InputMappingContextFinder.Succeeded())
-			{
-				UInputMappingContext* InputMappingContext = InputMappingContextFinder.Object;
-				Subsystem->AddMappingContext(InputMappingContext, 1);
-			}*/
+			// if (NLBMappingContext)
+			// {
+			// 	Subsystem->AddMappingContext(NLBMappingContext, 1);
+			// 	UE_LOG(LogTemp, Log, TEXT("UInputMappingContext loaded successfully."));
+			// }
+			// else
+			// {
+			// 	UE_LOG(LogTemp, Error, TEXT("Failed to load UInputMappingContext."));
+			// }
 		}
 	}
 }
@@ -182,6 +174,8 @@ void ANLBNavigatorCharacter::SwitchToVisualNovel()
 	if (PlayerController && VisualNovelController)
 	{
 		PlayerController->SetViewTargetWithBlend(VisualNovelController, 1.0f);
+		VisualNovelController->AddToViewport();
+		VisualNovelController->LoadCurrentSet();
 		DisableCharacterInput();
 		ActivateVisualNovelInput();
 		bIsInVisualNovelMode = true;
@@ -194,12 +188,12 @@ void ANLBNavigatorCharacter::ReturnToShooter()
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	if (PlayerController)
 	{
-		PlayerController->SetViewTargetWithBlend(this, 1.0f);
+		PlayerController->SetViewTargetWithBlend(this, 0.0f);
 		bIsInVisualNovelMode = false;
 	}
 	if (VisualNovelController)
 	{
-		VisualNovelController->Remove();
+		VisualNovelController->RemoveFromViewport();
 	}
 	EnableCharacterInput();
 	DeactivateVisualNovelInput();

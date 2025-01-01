@@ -23,7 +23,7 @@ UNLBNavigatorWeaponComponent::UNLBNavigatorWeaponComponent()
 
 void UNLBNavigatorWeaponComponent::Fire()
 {
-	if (Character == nullptr || Character->GetController() == nullptr)
+	if (Character == nullptr || Character->GetController() == nullptr || Character->GetIsInVisualNovelMode())
 	{
 		return;
 	}

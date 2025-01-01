@@ -23,24 +23,13 @@ ANLBController::ANLBController()
     RootComponent = DefaultSceneComponent;
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
     CameraComponent->SetupAttachment(RootComponent);
-}
 
-// Called when the game starts or when spawned
-void ANLBController::BeginPlay()
-{
-	Super::BeginPlay();
-	
-    // Инициализация виджета
     if (UClass* WidgetClass = LoadClass<UNLBWidget>(nullptr, TEXT("/Game/NLB/UI/NLBWidget.NLBWidget_C")))
     {
         NLBWidget = CreateWidget<UNLBWidget>(GetWorld(), WidgetClass);
-        if (NLBWidget)
-        {
-            NLBWidget->AddToViewport();
-        }
     }
 
-    // Поиск файлов на диске
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
     IFileManager& FileManager = IFileManager::Get();
 
@@ -49,13 +38,12 @@ void ANLBController::BeginPlay()
 
     TextFiles.Sort();
     ImageFiles.Sort();
+}
 
-    // Загрузка первого набора файлов
-    LoadCurrentSet();
-
-    // Привязка обработки ввода
-    /*EnableInput(GetWorld()->GetFirstPlayerController());
-    InputComponent->BindAction("Next", IE_Pressed, this, &ANLBController::LoadNextSet);*/
+// Called when the game starts or when spawned
+void ANLBController::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 // Called every frame
@@ -72,7 +60,7 @@ void ANLBController::LoadCurrentSet()
         FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
         UE_LOG(LogTemp, Error, TEXT("Loading files from DirectoryPath = %s"), *DirectoryPath);
 
-        // Загрузка текста
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         FString TextContent;
         FString TextFilePath = DirectoryPath + TextFiles[CurrentIndex];
         if (FFileHelper::LoadFileToString(TextContent, *TextFilePath))
@@ -82,7 +70,7 @@ void ANLBController::LoadCurrentSet()
             UE_LOG(LogTemp, Error, TEXT("Error loading text file, path = %s"), *TextFilePath);
         }
 
-        // Загрузка изображения
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         FString ImageFilePath = DirectoryPath + ImageFiles[CurrentIndex];
         if (UTexture2D* Texture = LoadTextureFromFile(ImageFilePath))
         {
@@ -98,12 +86,21 @@ void ANLBController::LoadNextSet()
     CurrentIndex++;
     if (CurrentIndex >= FMath::Min(TextFiles.Num(), ImageFiles.Num()))
     {
-        CurrentIndex = 0; // Перезапуск с начала
+        CurrentIndex = 0; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     }
     LoadCurrentSet();
 }
 
-void ANLBController::Remove()
+void ANLBController::AddToViewport()
+{
+    if (NLBWidget)
+    {
+        NLBWidget->AddToViewport();
+    }
+}
+
+
+void ANLBController::RemoveFromViewport()
 {
     if (NLBWidget)
     {
@@ -111,16 +108,16 @@ void ANLBController::Remove()
     }
 }
 
-UTexture2D* ANLBController::LoadTextureFromFile(const FString& FilePath)
+UTexture2D *ANLBController::LoadTextureFromFile(const FString &FilePath)
 {
-    // Проверяем, существует ли файл
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
     if (!FPaths::FileExists(FilePath))
     {
         UE_LOG(LogTemp, Error, TEXT("File not found: %s"), *FilePath);
         return nullptr;
     }
 
-    // Загружаем данные файла в массив байт
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     TArray<uint8> FileData;
     if (!FFileHelper::LoadFileToArray(FileData, *FilePath))
     {
@@ -128,7 +125,7 @@ UTexture2D* ANLBController::LoadTextureFromFile(const FString& FilePath)
         return nullptr;
     }
 
-    // Создаём ImageWrapper для обработки изображения
+    // пїЅпїЅпїЅпїЅпїЅпїЅ ImageWrapper пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(TEXT("ImageWrapper"));
     EImageFormat Format = ImageWrapperModule.DetectImageFormat(FileData.GetData(), FileData.Num());
 
@@ -141,11 +138,11 @@ UTexture2D* ANLBController::LoadTextureFromFile(const FString& FilePath)
     TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(Format);
     if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(FileData.GetData(), FileData.Num()))
     {
-        // Извлекаем данные изображения
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         TArray<uint8> UncompressedRGBA;
         if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedRGBA))
         {
-            // Создаём новую текстуру
+            // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             UTexture2D* NewTexture = UTexture2D::CreateTransient(
                 ImageWrapper->GetWidth(),
                 ImageWrapper->GetHeight(),
@@ -158,12 +155,12 @@ UTexture2D* ANLBController::LoadTextureFromFile(const FString& FilePath)
                 return nullptr;
             }
 
-            // Наполняем данные текстуры
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             void* TextureData = NewTexture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
             FMemory::Memcpy(TextureData, UncompressedRGBA.GetData(), UncompressedRGBA.Num());
             NewTexture->GetPlatformData()->Mips[0].BulkData.Unlock();
 
-            // Обновляем ресурс текстуры
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             NewTexture->UpdateResource();
 
             return NewTexture;

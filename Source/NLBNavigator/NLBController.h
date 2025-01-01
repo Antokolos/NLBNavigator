@@ -33,8 +33,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	UCameraComponent* GetCameraComponent() const { return CameraComponent; }
-
-	void Remove();
+	
+	void AddToViewport();
+	void RemoveFromViewport();
 
 private:
 	/** Utility function to load a texture from a file */
