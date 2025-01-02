@@ -175,7 +175,7 @@ void ANLBNavigatorCharacter::SwitchToVisualNovel()
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	if (PlayerController && VisualNovelController)
 	{
-		PlayerController->SetViewTargetWithBlend(VisualNovelController, 1.0f);
+		PlayerController->SetViewTargetWithBlend(VisualNovelController, 0.0f);
 		VisualNovelController->AddToViewport();
 		VisualNovelController->LoadCurrentSet();
 		DisableCharacterInput();
