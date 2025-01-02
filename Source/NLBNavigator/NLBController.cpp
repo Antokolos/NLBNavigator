@@ -8,6 +8,7 @@
 #include "IImageWrapperModule.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 #include <Camera/CameraComponent.h>
 
 // Sets default values
@@ -16,6 +17,7 @@ ANLBController::ANLBController()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
     CurrentIndex = 0;
+    bIsImageVisible = true; // Initial state -- display the image
 
     // Create a default scene component
     USceneComponent* DefaultSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
@@ -29,7 +31,7 @@ ANLBController::ANLBController()
         NLBWidget = CreateWidget<UNLBWidget>(GetWorld(), WidgetClass);
     }
 
-    // ����� ������ �� �����
+    // Load files from the directory
     FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
     IFileManager& FileManager = IFileManager::Get();
 
@@ -60,7 +62,7 @@ void ANLBController::LoadCurrentSet()
         FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
         UE_LOG(LogTemp, Error, TEXT("Loading files from DirectoryPath = %s"), *DirectoryPath);
 
-        // �������� ������
+        // Load text and image files
         FString TextContent;
         FString TextFilePath = DirectoryPath + TextFiles[CurrentIndex];
         if (FFileHelper::LoadFileToString(TextContent, *TextFilePath))
@@ -70,7 +72,7 @@ void ANLBController::LoadCurrentSet()
             UE_LOG(LogTemp, Error, TEXT("Error loading text file, path = %s"), *TextFilePath);
         }
 
-        // �������� �����������
+        // Load the image
         FString ImageFilePath = DirectoryPath + ImageFiles[CurrentIndex];
         if (UTexture2D* Texture = LoadTextureFromFile(ImageFilePath))
         {
@@ -86,7 +88,7 @@ void ANLBController::LoadNextSet()
     CurrentIndex++;
     if (CurrentIndex >= FMath::Min(TextFiles.Num(), ImageFiles.Num()))
     {
-        CurrentIndex = 0; // ���������� � ������
+        CurrentIndex = 0; // Reset to the beginning
     }
     LoadCurrentSet();
 }
@@ -100,24 +102,61 @@ void ANLBController::AddToViewport()
 }
 
 
-void ANLBController::RemoveFromViewport()
+void ANLBController::RemoveFromParent()
 {
     if (NLBWidget)
     {
-        NLBWidget->RemoveFromViewport();
+        NLBWidget->RemoveFromParent();
     }
+}
+
+void ANLBController::ToggleView()
+{
+    if (bIsImageVisible)
+    {
+        // Hide the widget and switch to the camera
+        if (NLBWidget)
+        {
+            NLBWidget->SetVisibility(ESlateVisibility::Hidden);
+        }
+
+        if (CameraComponent)
+        {
+            APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+            if (PlayerController)
+            {
+                PlayerController->SetViewTarget(CameraComponent->GetOwner()); // Switch view to the camera
+            }
+        }
+    }
+    else
+    {
+        // Show the widget and switch to the default view
+        if (NLBWidget)
+        {
+            NLBWidget->SetVisibility(ESlateVisibility::Visible);
+        }
+
+        APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+        if (PlayerController)
+        {
+            PlayerController->SetViewTarget(this); // Switch view back to the controller or another object
+        }
+    }
+
+    bIsImageVisible = !bIsImageVisible;
 }
 
 UTexture2D *ANLBController::LoadTextureFromFile(const FString &FilePath)
 {
-    // ���������, ���������� �� ����
+    // Check if the file exists
     if (!FPaths::FileExists(FilePath))
     {
         UE_LOG(LogTemp, Error, TEXT("File not found: %s"), *FilePath);
         return nullptr;
     }
 
-    // ��������� ������ ����� � ������ ����
+    // Read the file data into an array
     TArray<uint8> FileData;
     if (!FFileHelper::LoadFileToArray(FileData, *FilePath))
     {
@@ -125,7 +164,7 @@ UTexture2D *ANLBController::LoadTextureFromFile(const FString &FilePath)
         return nullptr;
     }
 
-    // ������ ImageWrapper ��� ��������� �����������
+    // Use ImageWrapper to handle compressed data
     IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(TEXT("ImageWrapper"));
     EImageFormat Format = ImageWrapperModule.DetectImageFormat(FileData.GetData(), FileData.Num());
 
@@ -138,11 +177,11 @@ UTexture2D *ANLBController::LoadTextureFromFile(const FString &FilePath)
     TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(Format);
     if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(FileData.GetData(), FileData.Num()))
     {
-        // ��������� ������ �����������
+        // Retrieve the uncompressed image data
         TArray<uint8> UncompressedRGBA;
         if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedRGBA))
         {
-            // ������ ����� ��������
+            // Allocate memory for the texture
             UTexture2D* NewTexture = UTexture2D::CreateTransient(
                 ImageWrapper->GetWidth(),
                 ImageWrapper->GetHeight(),
@@ -155,12 +194,12 @@ UTexture2D *ANLBController::LoadTextureFromFile(const FString &FilePath)
                 return nullptr;
             }
 
-            // ��������� ������ ��������
+            // Allocate memory for the texture
             void* TextureData = NewTexture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
             FMemory::Memcpy(TextureData, UncompressedRGBA.GetData(), UncompressedRGBA.Num());
             NewTexture->GetPlatformData()->Mips[0].BulkData.Unlock();
 
-            // ��������� ������ ��������
+            // Update the texture with new data
             NewTexture->UpdateResource();
 
             return NewTexture;

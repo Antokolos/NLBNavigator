@@ -88,6 +88,8 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		EnhancedInputComponent->BindAction(SwitchToVisualNovelAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::SwitchToVisualNovel);
 
 		EnhancedInputComponent->BindAction(NextPageAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::NextPage);
+		
+		EnhancedInputComponent->BindAction(ToggleViewAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::ToggleView);
 	}
 	else
 	{
@@ -193,7 +195,7 @@ void ANLBNavigatorCharacter::ReturnToShooter()
 	}
 	if (VisualNovelController)
 	{
-		VisualNovelController->RemoveFromViewport();
+		VisualNovelController->RemoveFromParent();
 	}
 	EnableCharacterInput();
 	DeactivateVisualNovelInput();
@@ -204,6 +206,14 @@ void ANLBNavigatorCharacter::NextPage()
 	if (VisualNovelController && NextPageAction)
 	{
 		VisualNovelController->LoadNextSet();
+	}
+}
+
+void ANLBNavigatorCharacter::ToggleView()
+{
+	if (VisualNovelController && ToggleViewAction)
+	{
+		VisualNovelController->ToggleView();
 	}
 }
 

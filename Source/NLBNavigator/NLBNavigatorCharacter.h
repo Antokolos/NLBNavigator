@@ -74,6 +74,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* NextPageAction; // Use a raw pointer here
 
+	// Declare the InputAction as private, but accessible via a getter function
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ToggleViewAction; // Use a raw pointer here
+
 	ANLBController* VisualNovelController; // Pointer to NLBController
 
 	//void LoadSwitchToVisualNovelAction();
@@ -85,6 +89,7 @@ private:
 	void SwitchToVisualNovel(); // Function to switch to visual novel mode
 	void ReturnToShooter();     // Function to return to shooter mode
 	void NextPage(); // Turn the page
+	void ToggleView(); // Toggle the view of NLBWidget
 
 	bool bIsInVisualNovelMode; // Flag to track the current mode
 
@@ -99,5 +104,8 @@ public:
 	// Getter for NextPageAction to make it accessible in Blueprints
     UFUNCTION(BlueprintCallable, Category = "VisualNovel")
     bool GetIsInVisualNovelMode() const { return bIsInVisualNovelMode; }
+	// Getter for ToggleViewAction to make it accessible in Blueprints
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	UInputAction* GetToggleViewAction() const { return ToggleViewAction; }
 };
 

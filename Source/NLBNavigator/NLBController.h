@@ -34,8 +34,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 	
+	UFUNCTION()
 	void AddToViewport();
-	void RemoveFromViewport();
+
+	UFUNCTION()
+	void RemoveFromParent();
+	
+	UFUNCTION()
+    void ToggleView();
 
 private:
 	/** Utility function to load a texture from a file */
@@ -47,12 +53,13 @@ private:
 	UPROPERTY()
 	class UTexture2D* CurrentTexture;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
 
 	int32 CurrentIndex;
 	TArray<FString> TextFiles;
 	TArray<FString> ImageFiles;
+	
+    bool bIsImageVisible;
 	
 };
