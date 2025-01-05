@@ -51,6 +51,8 @@ class ANLBNavigatorCharacter : public ACharacter
 	
 public:
 	ANLBNavigatorCharacter();
+	void SwitchToVisualNovel(); // Function to switch to visual novel mode
+	void ReturnToShooter();     // Function to return to shooter mode
 
 protected:
 	/** Called for movement input */
@@ -78,6 +80,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* ToggleViewAction; // Use a raw pointer here
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* InteractAction;
+
 	ANLBController* VisualNovelController; // Pointer to NLBController
 
 	//void LoadSwitchToVisualNovelAction();
@@ -86,10 +91,9 @@ private:
 	void DisableCharacterInput();
 	void EnableCharacterInput();
 	UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputSubsystem() const;
-	void SwitchToVisualNovel(); // Function to switch to visual novel mode
-	void ReturnToShooter();     // Function to return to shooter mode
 	void NextPage(); // Turn the page
 	void ToggleView(); // Toggle the view of NLBWidget
+	void Interact();
 
 	bool bIsInVisualNovelMode; // Flag to track the current mode
 

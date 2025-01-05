@@ -18,6 +18,10 @@
 #include "GameFramework/PlayerController.h"
 #include "Camera/CameraActor.h"
 
+#include "InteractableInterface.h"
+#include "Engine/World.h"
+#include "DrawDebugHelpers.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -90,6 +94,8 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		EnhancedInputComponent->BindAction(NextPageAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::NextPage);
 		
 		EnhancedInputComponent->BindAction(ToggleViewAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::ToggleView);
+
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::Interact);
 	}
 	else
 	{
@@ -289,4 +295,31 @@ UEnhancedInputLocalPlayerSubsystem* ANLBNavigatorCharacter::GetEnhancedInputSubs
 		}
 	}
 	return nullptr;
+}
+
+void ANLBNavigatorCharacter::Interact()
+{
+    FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+    FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * 1000.0f);
+
+    FHitResult Hit;
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(this);
+
+    if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+    {
+        if (AActor* HitActor = Hit.GetActor())
+        {
+            if (HitActor->GetClass()->ImplementsInterface(UInteractableInterface::StaticClass()))
+            {
+				if (IInteractableInterface* II = Cast<IInteractableInterface>(HitActor))
+				{
+					II->Interact(this);
+				}
+            }
+        }
+    }
+
+    // Опционально: визуализация трассировки
+    DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
 }
