@@ -19,6 +19,7 @@
 #include "Camera/CameraActor.h"
 
 #include "InteractableInterface.h"
+#include "PLDInteractableActor.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 
@@ -299,8 +300,19 @@ UEnhancedInputLocalPlayerSubsystem* ANLBNavigatorCharacter::GetEnhancedInputSubs
 
 void ANLBNavigatorCharacter::Interact()
 {
+    if (CurrentInteractable)
+    {
+        Cast<APLDInteractableActor>(CurrentInteractable)->Interact(this);
+    }
+}
+
+void ANLBNavigatorCharacter::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    // Line Trace logic to find PLDInteractableActor
     FVector Start = FirstPersonCameraComponent->GetComponentLocation();
-    FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * 1000.0f);
+    FVector End = Start + (FirstPersonCameraComponent->GetForwardVector() * InteractionRange);
 
     FHitResult Hit;
     FCollisionQueryParams Params;
@@ -308,18 +320,26 @@ void ANLBNavigatorCharacter::Interact()
 
     if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
     {
-        if (AActor* HitActor = Hit.GetActor())
+        AActor* HitActor = Hit.GetActor();
+        if (HitActor && HitActor->IsA<APLDInteractableActor>())
         {
-            if (HitActor->GetClass()->ImplementsInterface(UInteractableInterface::StaticClass()))
+            if (HitActor != CurrentInteractable)
             {
-				if (IInteractableInterface* II = Cast<IInteractableInterface>(HitActor))
-				{
-					II->Interact(this);
-				}
+                if (CurrentInteractable)
+                {
+                    Cast<APLDInteractableActor>(CurrentInteractable)->ShowInteractionWidget(false);
+                }
+                CurrentInteractable = HitActor;
+                Cast<APLDInteractableActor>(HitActor)->ShowInteractionWidget(true);
             }
         }
     }
-
+    else if (CurrentInteractable)
+    {
+        Cast<APLDInteractableActor>(CurrentInteractable)->ShowInteractionWidget(false);
+        CurrentInteractable = nullptr;
+    }
+	
     // Опционально: визуализация трассировки
-    DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
+    //DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
 }

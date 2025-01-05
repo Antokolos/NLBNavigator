@@ -15,5 +15,9 @@ class NLBNAVIGATOR_API IInteractableInterface
     GENERATED_BODY()
 
 public:
+    // Метод для взаимодействия
     virtual void Interact(AActor* Interactor) = 0;
+
+    // Метод для отображения подсказки
+    virtual void ShowInteractionWidget(bool bShow) = 0;
 };

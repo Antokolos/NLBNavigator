@@ -1,4 +1,5 @@
 #include "PLDInteractableActor.h"
+#include "PLDInteractionWidget.h"
 #include "NLBNavigatorCharacter.h"
 #include "Engine/Engine.h"
 
@@ -14,6 +15,17 @@ APLDInteractableActor::APLDInteractableActor()
     // {
     //     MeshComponent->SetStaticMesh(MeshAsset.Object);
     // }
+    InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
+    InteractionWidget->SetupAttachment(RootComponent);
+
+    static ConstructorHelpers::FClassFinder<UPLDInteractionWidget> WidgetClass(TEXT("/Game/PLD/UI/PLDInteractionWidget.PLDInteractionWidget_C"));
+    if (WidgetClass.Succeeded())
+    {
+        InteractionWidget->SetWidgetClass(WidgetClass.Class);
+    }
+
+    InteractionWidget->SetVisibility(false);
+    InteractionWidget->SetDrawAtDesiredSize(true);
 }
 
 void APLDInteractableActor::BeginPlay()
@@ -23,10 +35,17 @@ void APLDInteractableActor::BeginPlay()
 
 void APLDInteractableActor::Interact(AActor* Interactor)
 {
-    // Реализуйте ваше действие
     UE_LOG(LogTemp, Warning, TEXT("Interacted with %s"), *GetName());
     if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(Interactor))
     {
         Character->SwitchToVisualNovel();
+    }
+}
+
+void APLDInteractableActor::ShowInteractionWidget(bool bShow)
+{
+    if (InteractionWidget)
+    {
+        InteractionWidget->SetVisibility(bShow);
     }
 }

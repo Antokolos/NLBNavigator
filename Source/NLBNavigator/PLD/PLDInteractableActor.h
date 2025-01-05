@@ -2,6 +2,7 @@
 
 #include "InteractableInterface.h"
 #include "GameFramework/Actor.h"
+#include "Components/WidgetComponent.h"
 #include "PLDInteractableActor.generated.h"
 
 UCLASS()
@@ -17,7 +18,11 @@ protected:
 
 public:
     virtual void Interact(AActor* Interactor) override;
+    virtual void ShowInteractionWidget(bool bShow) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* MeshComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UWidgetComponent* InteractionWidget;
 };

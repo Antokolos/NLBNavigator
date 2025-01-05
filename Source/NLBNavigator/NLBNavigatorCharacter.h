@@ -83,6 +83,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere, Category = "Interaction")
+	float InteractionRange = 500.0f; // Дистанция взаимодействия
+
+	AActor* CurrentInteractable; // Текущий объект для взаимодействия
+
+
 	ANLBController* VisualNovelController; // Pointer to NLBController
 
 	//void LoadSwitchToVisualNovelAction();
@@ -97,7 +103,9 @@ private:
 
 	bool bIsInVisualNovelMode; // Flag to track the current mode
 
-public:
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
