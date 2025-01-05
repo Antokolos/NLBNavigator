@@ -84,7 +84,7 @@ private:
 	UInputAction* InteractAction;
 
 	UPROPERTY(EditAnywhere, Category = "Interaction")
-	float InteractionRange = 500.0f; // Дистанция взаимодействия
+	float InteractionRange = 2000.0f; // Дистанция взаимодействия
 
 	AActor* CurrentInteractable; // Текущий объект для взаимодействия
 

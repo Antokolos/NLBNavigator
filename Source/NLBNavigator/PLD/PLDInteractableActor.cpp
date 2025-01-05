@@ -26,6 +26,17 @@ APLDInteractableActor::APLDInteractableActor()
 
     InteractionWidget->SetVisibility(false);
     InteractionWidget->SetDrawAtDesiredSize(true);
+
+    // Ignore all trace/raycast channels
+    InteractionWidget->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+    InteractionWidget->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+    // Set to world space to prevent affecting parent bounds
+    InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
+    
+    // Minimize collision impact
+    InteractionWidget->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    InteractionWidget->SetGenerateOverlapEvents(false);
 }
 
 void APLDInteractableActor::BeginPlay()

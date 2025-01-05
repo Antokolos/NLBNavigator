@@ -331,15 +331,25 @@ void ANLBNavigatorCharacter::Tick(float DeltaTime)
                 }
                 CurrentInteractable = HitActor;
                 Cast<APLDInteractableActor>(HitActor)->ShowInteractionWidget(true);
+				
+    			//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
             }
+			else
+			{
+				//DrawDebugLine(GetWorld(), Start, End, FColor::Yellow, false, 1.0f, 0, 1.0f);
+			}
+			return;
         }
+		else
+		{
+			//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 1.0f);
+		}
     }
-    else if (CurrentInteractable)
+
+    if (CurrentInteractable)
     {
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
         Cast<APLDInteractableActor>(CurrentInteractable)->ShowInteractionWidget(false);
         CurrentInteractable = nullptr;
-    }
-	
-    // Опционально: визуализация трассировки
-    //DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
+	}
 }
