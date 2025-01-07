@@ -15,6 +15,7 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
 
 public:
     virtual void Interact(AActor* Interactor) override;

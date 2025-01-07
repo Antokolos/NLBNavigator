@@ -5,6 +5,8 @@
 
 APLDInteractableActor::APLDInteractableActor()
 {
+    PrimaryActorTick.bCanEverTick = true; // Enable ticking for this actor
+
     // Создаём и настраиваем статическую меш-компоненту
     MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
     RootComponent = MeshComponent;
@@ -30,10 +32,9 @@ APLDInteractableActor::APLDInteractableActor()
     // Ignore all trace/raycast channels
     InteractionWidget->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
     InteractionWidget->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-
-    // Set to world space to prevent affecting parent bounds
-    InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
     
+    InteractionWidget->SetWidgetSpace(EWidgetSpace::Screen);
+
     // Minimize collision impact
     InteractionWidget->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     InteractionWidget->SetGenerateOverlapEvents(false);
@@ -42,6 +43,34 @@ APLDInteractableActor::APLDInteractableActor()
 void APLDInteractableActor::BeginPlay()
 {
     Super::BeginPlay();
+    if (InteractionWidget)
+    {
+        // The half-size of the bounding box of the mesh, for example,
+        // if BoxExtent is (50, 50, 50), the full bounding box size is (100, 100, 100).
+        FVector MeshCenter = MeshComponent->Bounds.BoxExtent;
+        InteractionWidget->SetRelativeLocation(MeshCenter);
+        if (UPLDInteractionWidget* Widget = Cast<UPLDInteractionWidget>(InteractionWidget->GetUserWidgetObject()))
+        {
+            Widget->UpdateText(TEXT("E: Interact"));
+        }
+    }
+}
+
+void APLDInteractableActor::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    // if (InteractionWidget)
+    // {
+    //     APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+    //     if (PlayerController)
+    //     {
+    //         FRotator NewRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+    //         NewRotation.Yaw += 180.0f; // Add half-turn to Yaw
+    //         NewRotation.Pitch = 0.0f;  // Set Pitch to zero
+    //         NewRotation.Roll = 0.0f;   // Set Roll to zero
+    //         InteractionWidget->SetRelativeRotation(NewRotation);
+    //     }
+    // }
 }
 
 void APLDInteractableActor::Interact(AActor* Interactor)
