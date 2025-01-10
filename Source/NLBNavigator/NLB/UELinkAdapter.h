@@ -30,5 +30,5 @@ public:
     FString GetTargetPageId() const;
 
     void SetCoreLink(const Link& link);
-    Link GetCoreLink() const;
+    const Link& GetCoreLink() const;
 };

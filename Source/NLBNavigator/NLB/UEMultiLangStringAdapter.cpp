@@ -25,7 +25,7 @@ void UUEMultiLangStringAdapter::SetCoreMultiLangString(const MultiLangString& mu
     CoreMultiLangString = multiLangString;
 }
 
-MultiLangString UUEMultiLangStringAdapter::GetCoreMultiLangString() const
+const MultiLangString& UUEMultiLangStringAdapter::GetCoreMultiLangString() const
 {
     return CoreMultiLangString;
 }

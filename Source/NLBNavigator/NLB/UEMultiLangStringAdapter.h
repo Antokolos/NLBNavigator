@@ -34,5 +34,5 @@ public:
     void Clear();
 
     void SetCoreMultiLangString(const MultiLangString& multiLangString);
-    MultiLangString GetCoreMultiLangString() const;
+    const MultiLangString& GetCoreMultiLangString() const;
 };

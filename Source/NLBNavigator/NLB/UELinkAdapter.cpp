@@ -24,6 +24,6 @@ void UUELinkAdapter::SetCoreLink(const Link& link) {
     CoreLink = link;
 }
 
-Link UUELinkAdapter::GetCoreLink() const {
+const Link& UUELinkAdapter::GetCoreLink() const {
     return CoreLink;
 }
