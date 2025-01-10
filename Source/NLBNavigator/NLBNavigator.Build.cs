@@ -15,6 +15,7 @@ public class NLBNavigator : ModuleRules
 		PublicIncludePaths.AddRange(new string[] {
 			ModuleDirectory,
 			Path.Combine(ModuleDirectory, "NLB"),
+			Path.Combine(ModuleDirectory, "NLB", "api"),
 			Path.Combine(ModuleDirectory, "PLD")
 		});
     }
