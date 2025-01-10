@@ -19,3 +19,13 @@ void UUEMultiLangStringAdapter::RemoveTranslation(const FString& Language) {
 void UUEMultiLangStringAdapter::Clear() {
     CoreMultiLangString.clear();
 }
+
+void UUEMultiLangStringAdapter::SetCoreMultiLangString(const MultiLangString& multiLangString)
+{
+    CoreMultiLangString = multiLangString;
+}
+
+MultiLangString UUEMultiLangStringAdapter::GetCoreMultiLangString() const
+{
+    return CoreMultiLangString;
+}

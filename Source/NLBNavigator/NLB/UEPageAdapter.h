@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Page.h"
 #include "UELinkAdapter.h"
+#include "UEMultiLangStringAdapter.h"
 #include "UEPageAdapter.generated.h"
 
 UCLASS(BlueprintType)
@@ -18,7 +19,7 @@ public:
     FString GetId() const;
 
     UFUNCTION(BlueprintCallable, Category = "Page")
-    FString GetContent() const;
+    UUEMultiLangStringAdapter* GetContent() const;
 
     UFUNCTION(BlueprintCallable, Category = "Page")
     TArray<UUELinkAdapter*> GetLinks() const;
@@ -28,7 +29,7 @@ public:
     void SetId(const FString& NewId);
 
     UFUNCTION(BlueprintCallable, Category = "Page")
-    void SetContent(const FString& NewContent);
+    void SetContent(const UUEMultiLangStringAdapter* NewContent);
 
     UFUNCTION(BlueprintCallable, Category = "Page")
     void SetLinks(const TArray<UUELinkAdapter*>& NewLinks);

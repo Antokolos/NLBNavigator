@@ -1,12 +1,17 @@
 #include "UEPageAdapter.h"
+#include "UEMultiLangStringAdapter.h"
 #include "UELinkAdapter.h"
 
 FString UUEPageAdapter::GetId() const {
     return FString(CorePage.getId().c_str());
 }
 
-FString UUEPageAdapter::GetContent() const {
-    return FString(CorePage.getContent().c_str());
+UUEMultiLangStringAdapter* UUEPageAdapter::GetContent() const {
+    UUEMultiLangStringAdapter* MultiLangStringAdapter = NewObject<UUEMultiLangStringAdapter>();
+    if (MultiLangStringAdapter) {
+        MultiLangStringAdapter->SetCoreMultiLangString(CorePage.getContent());
+    }
+    return MultiLangStringAdapter;
 }
 
 TArray<UUELinkAdapter*> UUEPageAdapter::GetLinks() const {
@@ -27,11 +32,11 @@ TArray<UUELinkAdapter*> UUEPageAdapter::GetLinks() const {
 }
 
 void UUEPageAdapter::SetId(const FString& NewId) {
-    CorePage.SetId(TCHAR_TO_UTF8(*NewId));
+    CorePage.setId(TCHAR_TO_UTF8(*NewId));
 }
 
-void UUEPageAdapter::SetContent(const FString& NewContent) {
-    CorePage.SetContent(TCHAR_TO_UTF8(*NewContent));
+void UUEPageAdapter::SetContent(const UUEMultiLangStringAdapter* NewContent) {
+    CorePage.setContent(NewContent->GetCoreMultiLangString());
 }
 
 void UUEPageAdapter::SetLinks(const TArray<UUELinkAdapter*>& NewLinks) {
@@ -44,5 +49,5 @@ void UUEPageAdapter::SetLinks(const TArray<UUELinkAdapter*>& NewLinks) {
         }
     }
 
-    CorePage.SetLinks(CoreLinks);
+    CorePage.setLinks(CoreLinks);
 }

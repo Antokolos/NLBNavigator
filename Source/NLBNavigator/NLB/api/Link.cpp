@@ -11,7 +11,7 @@ const std::string& Link::getDescription() const {
     return description;
 }
 
-const std::string& Link::getTargetPageId) const {
+const std::string& Link::getTargetPageId() const {
     return targetPageId;
 }
 

@@ -32,4 +32,7 @@ public:
     // Clear all translations
     UFUNCTION(BlueprintCallable, Category = "MultiLangString")
     void Clear();
+
+    void SetCoreMultiLangString(const MultiLangString& multiLangString);
+    MultiLangString GetCoreMultiLangString() const;
 };
