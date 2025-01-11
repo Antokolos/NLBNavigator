@@ -18,15 +18,15 @@ TArray<UUELinkAdapter*> UUEPageAdapter::GetLinks() const {
     TArray<UUELinkAdapter*> LinkAdapters;
 
     // Получаем ссылки из CorePage и конвертируем их в адаптеры
-    const std::vector<Link>& Links = CorePage.getLinks();
-    for (const Link& CoreLink : Links) {
-        UUELinkAdapter* LinkAdapter = NewObject<UUELinkAdapter>();
-        if (LinkAdapter) {
-            // Передаем CoreLink в адаптер
-            LinkAdapter->SetCoreLink(CoreLink);
-            LinkAdapters.Add(LinkAdapter);
-        }
-    }
+    // const std::vector<Link>& Links = CorePage.getLinks();
+    // for (const Link& CoreLink : Links) {
+    //     UUELinkAdapter* LinkAdapter = NewObject<UUELinkAdapter>();
+    //     if (LinkAdapter) {
+    //         // Передаем CoreLink в адаптер
+    //         LinkAdapter->SetCoreLink(CoreLink);
+    //         LinkAdapters.Add(LinkAdapter);
+    //     }
+    // }
 
     return LinkAdapters;
 }
@@ -40,7 +40,7 @@ void UUEPageAdapter::SetContent(const UUEMultiLangStringAdapter* NewContent) {
 }
 
 void UUEPageAdapter::SetLinks(const TArray<UUELinkAdapter*>& NewLinks) {
-    std::vector<Link> CoreLinks;
+    std::vector<const Link*> CoreLinks;
 
     // Конвертируем адаптеры обратно в CoreLink
     for (UUELinkAdapter* LinkAdapter : NewLinks) {
@@ -49,5 +49,5 @@ void UUEPageAdapter::SetLinks(const TArray<UUELinkAdapter*>& NewLinks) {
         }
     }
 
-    CorePage.setLinks(CoreLinks);
+    ///CorePage.setLinks(CoreLinks);
 }

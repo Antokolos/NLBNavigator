@@ -27,6 +27,14 @@ public:
     
     // Clear all translations
     void clear();
+
+    inline static MultiLangString createDefaultLinkText() {
+        return MultiLangString();
+    };
+    
+    inline static MultiLangString createEmptyText() {
+        return MultiLangString();
+    };
 };
 
 #endif // MULTILANGSTRING_H

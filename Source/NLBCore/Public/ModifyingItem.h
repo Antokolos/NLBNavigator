@@ -6,7 +6,7 @@
 #include "IdentifiableItem.h"
 #include "Modification.h"
 
-class NLBCORE_API ModifyingItem : public IdentifiableItem {
+class ModifyingItem : public IdentifiableItem {
 public:
     virtual ~ModifyingItem() = default;
 
