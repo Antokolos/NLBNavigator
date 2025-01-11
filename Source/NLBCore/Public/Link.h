@@ -3,7 +3,7 @@
 #include <string>
 #include "ModifyingItem.h"
 #include "MultiLangString.h"
-//#include "Coords.h"
+#include "Coords.h"
 #include "Constants.h"
 
 class Link : public ModifyingItem {
@@ -29,7 +29,7 @@ public:
     virtual const MultiLangString& getAltTexts() const = 0;
     virtual std::string getConstrId() const = 0;
     virtual std::string getStroke() const = 0;
-    //virtual const Coords& getCoords() const = 0;
+    virtual const Coords& getCoords() const = 0;
     virtual bool isAuto() const = 0;
     virtual bool isNeedsAction() const = 0;
     virtual bool isOnce() const = 0;
