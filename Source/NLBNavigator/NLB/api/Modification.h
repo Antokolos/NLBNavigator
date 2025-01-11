@@ -1,13 +1,12 @@
-#ifndef MODIFICATION_H
-#define MODIFICATION_H
+#pragma once
 
-#include "IdentifiableItem.h"
 #include <string>
+#include "IdentifiableItem.h"
 
 class Modification : public IdentifiableItem {
 public:
-    virtual ~Modification() = default;
-
+    static const bool DEFAULT_EXTERNAL = false;
+    
     enum class Type {
         ASSIGN,
         TAG,
@@ -68,12 +67,26 @@ public:
         INVCOLOR
     };
 
-    virtual bool IsExternal() const = 0;
-    virtual std::string GetVarId() const = 0;
-    virtual std::string GetExprId() const = 0;
-    virtual Type GetType() const = 0;
-    virtual bool ReturnsValue() const = 0;
-    virtual bool IsParametrized() const = 0;
-};
+    // Pure virtual functions
+    virtual bool isExternal() = 0;
+    virtual std::string getVarId() = 0;
+    virtual std::string getExprId() = 0;
+    virtual Type getType() = 0;
 
-#endif // MODIFICATION_H
+    /*!
+     * @brief Determines whether this modification has void return type or not.
+     * @return true if this modification returns some result,
+     *         false otherwise
+     */
+    virtual bool returnsValue() = 0;
+
+    /*!
+     * @brief Determines whether this modification has parameters or not.
+     * @return true if this modification has parameters,
+     *         false otherwise
+     */
+    virtual bool isParametrized() = 0;
+
+    // Virtual destructor for proper cleanup in derived classes
+    virtual ~Modification() = default;
+};

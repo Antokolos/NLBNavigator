@@ -7,14 +7,12 @@
 UCLASS(BlueprintType)
 class NLBNAVIGATOR_API UIdentifiableItemAdapter : public UObject {
     GENERATED_BODY()
-
 private:
-    IdentifiableItem* CoreItem; // Чистый C++ интерфейс
+    IdentifiableItem* CoreItem;
 
 public:
     void SetCoreItem(IdentifiableItem* Item);
 
-    // Геттеры
     UFUNCTION(BlueprintCallable, Category = "IdentifiableItem")
     FString GetId() const;
 
@@ -22,11 +20,5 @@ public:
     FString GetFullId() const;
 
     UFUNCTION(BlueprintCallable, Category = "IdentifiableItem")
-    bool IsDeleted() const;
-
-    UFUNCTION(BlueprintCallable, Category = "IdentifiableItem")
     UIdentifiableItemAdapter* GetParent() const;
-
-    UFUNCTION(BlueprintCallable, Category = "IdentifiableItem")
-    bool HasDeletedParent() const;
 };

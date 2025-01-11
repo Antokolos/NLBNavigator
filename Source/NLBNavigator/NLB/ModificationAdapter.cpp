@@ -1,40 +1,48 @@
 #include "ModificationAdapter.h"
-#include "Modification.h"
 
-void UModificationAdapter::SetCoreModification(Modification* Mod) {
-    CoreModification = Mod;
-    SetCoreItem(Mod); // Устанавливаем базовый объект
+void UModificationAdapter::SetCoreModification(Modification* Modification) {
+    CoreModification = Modification;
+    SetCoreItem(Modification);
 }
 
 bool UModificationAdapter::IsExternal() const {
-    return CoreModification ? CoreModification->IsExternal() : false;
+    if (CoreModification) {
+        return CoreModification->isExternal();
+    }
+    return false;
 }
 
 FString UModificationAdapter::GetVarId() const {
-    return CoreModification ? FString(CoreModification->GetVarId().c_str()) : FString();
+    if (CoreModification) {
+        return FString(UTF8_TO_TCHAR(CoreModification->getVarId().c_str()));
+    }
+    return FString();
 }
 
 FString UModificationAdapter::GetExprId() const {
-    return CoreModification ? FString(CoreModification->GetExprId().c_str()) : FString();
+    if (CoreModification) {
+        return FString(UTF8_TO_TCHAR(CoreModification->getExprId().c_str()));
+    }
+    return FString();
 }
 
-FString UModificationAdapter::GetType() const {
-    if (!CoreModification) {
-        return FString();
+EModificationType UModificationAdapter::GetType() const {
+    if (CoreModification) {
+        return static_cast<EModificationType>(CoreModification->getType());
     }
-    switch (CoreModification->GetType()) {
-        case Modification::Type::ASSIGN: return TEXT("ASSIGN");
-        case Modification::Type::TAG: return TEXT("TAG");
-        case Modification::Type::GETTAG: return TEXT("GETTAG");
-        // Добавить все остальные типы...
-        default: return TEXT("UNKNOWN");
-    }
+    return EModificationType::ASSIGN; // Default value
 }
 
 bool UModificationAdapter::ReturnsValue() const {
-    return CoreModification ? CoreModification->ReturnsValue() : false;
+    if (CoreModification) {
+        return CoreModification->returnsValue();
+    }
+    return false;
 }
 
 bool UModificationAdapter::IsParametrized() const {
-    return CoreModification ? CoreModification->IsParametrized() : false;
+    if (CoreModification) {
+        return CoreModification->isParametrized();
+    }
+    return false;
 }

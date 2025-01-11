@@ -3,21 +3,18 @@
 #include "CoreMinimal.h"
 #include "ModifyingItem.h"
 #include "IdentifiableItemAdapter.h"
+#include "ModificationAdapter.h"
 #include "ModifyingItemAdapter.generated.h"
-
-class UModification;
 
 UCLASS(BlueprintType)
 class NLBNAVIGATOR_API UModifyingItemAdapter : public UIdentifiableItemAdapter {
     GENERATED_BODY()
-
 private:
-    ModifyingItem* CoreModifyingItem; // Чистый C++ интерфейс
+    ModifyingItem* CoreModifyingItem;
 
 public:
-    void SetCoreModifyingItem(ModifyingItem* Item);
+    void SetCoreModifyingItem(ModifyingItem* ModifyingItem);
 
-    // Геттеры
     UFUNCTION(BlueprintCallable, Category = "ModifyingItem")
     TArray<UModificationAdapter*> GetModifications() const;
 

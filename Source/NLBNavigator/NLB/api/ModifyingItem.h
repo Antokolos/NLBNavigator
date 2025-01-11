@@ -10,7 +10,7 @@ class ModifyingItem : public IdentifiableItem {
 public:
     virtual ~ModifyingItem() = default;
 
-    virtual std::vector<std::shared_ptr<Modification>> GetModifications() const = 0;
-    virtual bool HasNoModifications() const = 0;
-    virtual std::shared_ptr<Modification> GetModificationById(const std::string& ModId) const = 0;
+    virtual std::vector<std::shared_ptr<Modification>> getModifications() const = 0;
+    virtual bool hasNoModifications() const = 0;
+    virtual std::shared_ptr<Modification> getModificationById(const std::string& ModId) const = 0;
 };

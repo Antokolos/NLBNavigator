@@ -5,27 +5,24 @@ void UIdentifiableItemAdapter::SetCoreItem(IdentifiableItem* Item) {
 }
 
 FString UIdentifiableItemAdapter::GetId() const {
-    return CoreItem ? FString(CoreItem->GetId().c_str()) : FString();
+    if (CoreItem) {
+        return FString(UTF8_TO_TCHAR(CoreItem->getId().c_str()));
+    }
+    return FString();
 }
 
 FString UIdentifiableItemAdapter::GetFullId() const {
-    return CoreItem ? FString(CoreItem->GetFullId().c_str()) : FString();
-}
-
-bool UIdentifiableItemAdapter::IsDeleted() const {
-    return CoreItem ? CoreItem->IsDeleted() : false;
+    if (CoreItem) {
+        return FString(UTF8_TO_TCHAR(CoreItem->getFullId().c_str()));
+    }
+    return FString();
 }
 
 UIdentifiableItemAdapter* UIdentifiableItemAdapter::GetParent() const {
-    if (!CoreItem || !CoreItem->GetParent()) {
-        return nullptr;
+    if (CoreItem && CoreItem->getParent()) {
+        UIdentifiableItemAdapter* ParentAdapter = NewObject<UIdentifiableItemAdapter>();
+        ParentAdapter->SetCoreItem(CoreItem->getParent());
+        return ParentAdapter;
     }
-
-    UIdentifiableItemAdapter* ParentAdapter = NewObject<UIdentifiableItemAdapter>();
-    ParentAdapter->SetCoreItem(CoreItem->GetParent());
-    return ParentAdapter;
-}
-
-bool UIdentifiableItemAdapter::HasDeletedParent() const {
-    return CoreItem ? CoreItem->HasDeletedParent() : false;
+    return nullptr;
 }

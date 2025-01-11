@@ -1,41 +1,39 @@
 #include "ModifyingItemAdapter.h"
-#include "ModificationAdapter.h"
-#include "Modification.h"
 
-void UModifyingItemAdapter::SetCoreModifyingItem(ModifyingItem* Item) {
-    CoreModifyingItem = Item;
-    SetCoreItem(Item); // Установка базового объекта
+void UModifyingItemAdapter::SetCoreModifyingItem(ModifyingItem* ModifyingItem) {
+    CoreModifyingItem = ModifyingItem;
+    SetCoreItem(ModifyingItem);
 }
 
 TArray<UModificationAdapter*> UModifyingItemAdapter::GetModifications() const {
     TArray<UModificationAdapter*> Result;
     if (CoreModifyingItem) {
-        const auto& CoreModifications = CoreModifyingItem->GetModifications();
-        for (const auto& CoreModification : CoreModifications) {
-            if (CoreModification) {
-                UModificationAdapter* Adapter = NewObject<UModificationAdapter>();
-                Adapter->SetCoreModification(CoreModification.get());
-                Result.Add(Adapter);
-            }
+        const auto& CoreMods = CoreModifyingItem->getModifications();
+        for (const auto& Mod : CoreMods) {
+            UModificationAdapter* Adapter = NewObject<UModificationAdapter>();
+            Adapter->SetCoreModification(Mod.get());
+            Result.Add(Adapter);
         }
     }
     return Result;
 }
 
 bool UModifyingItemAdapter::HasNoModifications() const {
-    return CoreModifyingItem ? CoreModifyingItem->HasNoModifications() : true;
+    if (CoreModifyingItem) {
+        return CoreModifyingItem->hasNoModifications();
+    }
+    return true;
 }
 
 UModificationAdapter* UModifyingItemAdapter::GetModificationById(const FString& ModId) const {
-    if (!CoreModifyingItem) {
-        return nullptr;
-    }
-
-    auto CoreModification = CoreModifyingItem->GetModificationById(TCHAR_TO_UTF8(*ModId));
-    if (CoreModification) {
-        UModificationAdapter* Adapter = NewObject<UModificationAdapter>();
-        Adapter->SetCoreModification(CoreModification.get());
-        return Adapter;
+    if (CoreModifyingItem) {
+        std::string StdModId = TCHAR_TO_UTF8(*ModId);
+        auto Mod = CoreModifyingItem->getModificationById(StdModId);
+        if (Mod) {
+            UModificationAdapter* Adapter = NewObject<UModificationAdapter>();
+            Adapter->SetCoreModification(Mod.get());
+            return Adapter;
+        }
     }
     return nullptr;
 }
