@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "IdentifiableItem.h"
+#include "NLBCore/Public/IdentifiableItem.h"
 #include "IdentifiableItemAdapter.generated.h"
 
 UCLASS(BlueprintType)

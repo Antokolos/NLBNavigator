@@ -7,7 +7,7 @@
 #include "Theme.h"
 #include "MultiLangString.h"
 
-class Page {
+class NLBCORE_API Page {
 private:
     std::string id;                  // ID страницы
     MultiLangString content;         // Содержимое страницы

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Page.h"
+#include "NLBCore/Public/Page.h"
 #include "UELinkAdapter.h"
 #include "UEMultiLangStringAdapter.h"
 #include "UEPageAdapter.generated.h"

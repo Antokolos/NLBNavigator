@@ -1,21 +1,23 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 using UnrealBuildTool;
-using System.IO; // Необходим для работы с Path.Combine
+using System.IO;
 
 public class NLBNavigator : ModuleRules
 {
-	public NLBNavigator(ReadOnlyTargetRules Target) : base(Target)
-	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+    public NLBNavigator(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
+        PublicDependencyModuleNames.AddRange(new string[] { 
+            "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG",
+            "NLBCore", "PLDCore" 
+        });
+
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
-		PublicIncludePaths.AddRange(new string[] {
+        PublicIncludePaths.AddRange(new string[] {
 			ModuleDirectory,
 			Path.Combine(ModuleDirectory, "NLB"),
-			Path.Combine(ModuleDirectory, "NLB", "api"),
+			Path.Combine(ModuleDirectory, "NLB", "Adapters"),
 			Path.Combine(ModuleDirectory, "PLD")
 		});
     }

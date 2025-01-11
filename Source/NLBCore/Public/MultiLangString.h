@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-class MultiLangString {
+class NLBCORE_API MultiLangString {
 private:
     // Map of languages and translations
     std::unordered_map<std::string, std::string> translations;

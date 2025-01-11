@@ -12,7 +12,7 @@
 #include "NLBExceptions.h"
 #include "History.h"
 
-class NonLinearBook {
+class NLBCORE_API NonLinearBook {
 public:
     static constexpr const char* TRUE_VARID = "TRUE";
     static constexpr const char* FALSE_VARID = "FALSE";

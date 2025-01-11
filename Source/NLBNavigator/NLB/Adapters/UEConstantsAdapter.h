@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Constants.h"
+#include "NLBCore/Public/Constants.h"
 #include "UEConstantsAdapter.generated.h"
 
 /**

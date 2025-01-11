@@ -5,6 +5,16 @@
 	"Description": "",
 	"Modules": [
 		{
+			"Name": "NLBCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "PLDCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
 			"Name": "NLBNavigator",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",

@@ -11,7 +11,7 @@ namespace nlb {
  * @author Anton P. Kolosov
  * @version 1.0
  */
-class Constants {
+class NLBCORE_API Constants {
 public:
     static constexpr float FL_ZERO_TOLERANCE = 1e-6f;
     static const char* const UNICODE_ENCODING;

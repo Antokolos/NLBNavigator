@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ModifyingItem.h"
+#include "NLBCore/Public/ModifyingItem.h"
 #include "IdentifiableItemAdapter.h"
 #include "ModificationAdapter.h"
 #include "ModifyingItemAdapter.generated.h"

@@ -9,7 +9,7 @@ enum class Theme {
     VN
 };
 
-class ThemeUtils {
+class NLBCORE_API ThemeUtils {
 public:
     // Convert string to enum
     static Theme fromString(const std::string& name);

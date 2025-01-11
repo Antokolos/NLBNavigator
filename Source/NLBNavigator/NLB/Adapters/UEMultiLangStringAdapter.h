@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MultiLangString.h"
+#include "NLBCore/Public/MultiLangString.h"
 #include "UEMultiLangStringAdapter.generated.h"
 
 UCLASS(BlueprintType)

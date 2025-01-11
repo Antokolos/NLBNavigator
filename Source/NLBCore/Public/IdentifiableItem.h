@@ -2,7 +2,7 @@
 
 #include <string>
 
-class IdentifiableItem {
+class NLBCORE_API IdentifiableItem {
 public:
     virtual ~IdentifiableItem() = default;
 

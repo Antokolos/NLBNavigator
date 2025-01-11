@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Link.h"
+#include "NLBCore/Public/Link.h"
 #include "UELinkAdapter.generated.h"
 
 UCLASS(BlueprintType)

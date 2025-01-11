@@ -3,7 +3,7 @@
 #include <string>
 #include "IdentifiableItem.h"
 
-class Modification : public IdentifiableItem {
+class NLBCORE_API Modification : public IdentifiableItem {
 public:
     static const bool DEFAULT_EXTERNAL = false;
     

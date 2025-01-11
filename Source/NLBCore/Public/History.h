@@ -1,7 +1,7 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
-class History {
+class NLBCORE_API History {
     // Заглушка для класса History
 };
 

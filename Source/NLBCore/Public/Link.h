@@ -3,7 +3,7 @@
 
 #include <string>
 
-class Link {
+class NLBCORE_API Link {
 private:
     std::string id;           // Идентификатор ссылки
     std::string description;  // Описание ссылки
