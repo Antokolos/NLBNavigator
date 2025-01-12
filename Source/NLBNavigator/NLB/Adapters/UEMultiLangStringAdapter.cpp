@@ -1,23 +1,42 @@
 #include "UEMultiLangStringAdapter.h"
+#include "MultiLangString.h"
 
-FString UUEMultiLangStringAdapter::GetTranslation(const FString& Language) const {
-    return FString(CoreMultiLangString.getTranslation(TCHAR_TO_UTF8(*Language)).c_str());
+bool UUEMultiLangStringAdapter::IsEmpty() const {
+    return CoreMultiLangString.isEmpty();
 }
 
-void UUEMultiLangStringAdapter::SetTranslation(const FString& Language, const FString& Text) {
-    CoreMultiLangString.setTranslation(TCHAR_TO_UTF8(*Language), TCHAR_TO_UTF8(*Text));
+FString UUEMultiLangStringAdapter::Get(const FString& LangKey) const {
+    std::string Value = CoreMultiLangString.get(TCHAR_TO_UTF8(*LangKey));
+    return FString(Value.c_str());
 }
 
-bool UUEMultiLangStringAdapter::HasTranslation(const FString& Language) const {
-    return CoreMultiLangString.hasTranslation(TCHAR_TO_UTF8(*Language));
+void UUEMultiLangStringAdapter::Put(const FString& LangKey, const FString& Value) {
+    CoreMultiLangString.put(TCHAR_TO_UTF8(*LangKey), TCHAR_TO_UTF8(*Value));
 }
 
-void UUEMultiLangStringAdapter::RemoveTranslation(const FString& Language) {
-    CoreMultiLangString.removeTranslation(TCHAR_TO_UTF8(*Language));
+TArray<FString> UUEMultiLangStringAdapter::KeySet() const {
+    TArray<FString> Result;
+
+    std::set<std::string> Keys = CoreMultiLangString.keySet();
+    for (const auto& Key : Keys) {
+        Result.Add(FString(Key.c_str()));
+    }
+    return Result;
 }
 
-void UUEMultiLangStringAdapter::Clear() {
-    CoreMultiLangString.clear();
+TArray<FString> UUEMultiLangStringAdapter::Values() const {
+    TArray<FString> Result;
+
+    std::vector<std::string> Values = CoreMultiLangString.values();
+    for (const auto& Value : Values) {
+        Result.Add(FString(Value.c_str()));
+    }
+    return Result;
+}
+
+bool UUEMultiLangStringAdapter::IsSubsetOf(const UUEMultiLangStringAdapter* Other) const {
+    if (!Other) return false;
+    return CoreMultiLangString.isSubsetOf(Other->CoreMultiLangString);
 }
 
 void UUEMultiLangStringAdapter::SetCoreMultiLangString(const MultiLangString& multiLangString)

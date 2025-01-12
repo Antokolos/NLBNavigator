@@ -1,40 +1,50 @@
-#ifndef MULTILANGSTRING_H
-#define MULTILANGSTRING_H
+#pragma once
 
+#include <map>
+#include <set>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
+/*!
+ * @class MultiLangString
+ * @brief Class for handling multi-language string content
+ */
 class NLBCORE_API MultiLangString {
 private:
-    // Map of languages and translations
-    std::unordered_map<std::string, std::string> translations;
+    std::map<std::string, std::string> m_content;
 
 public:
-    // Default constructor
+    /*!
+     * @brief Default constructor
+     */
     MultiLangString() = default;
-    
-    // Get translation for specified language
-    std::string getTranslation(const std::string& language) const;
-    
-    // Set translation for specified language
-    void setTranslation(const std::string& language, const std::string& text);
-    
-    // Check if translation exists
-    bool hasTranslation(const std::string& language) const;
-    
-    // Remove translation for specified language
-    void removeTranslation(const std::string& language);
-    
-    // Clear all translations
-    void clear();
 
-    inline static MultiLangString createDefaultLinkText() {
-        return MultiLangString();
-    };
-    
-    inline static MultiLangString createEmptyText() {
-        return MultiLangString();
-    };
+    /*!
+     * @brief Copy constructor
+     * @param source Source object to copy from
+     */
+    MultiLangString(const MultiLangString& source);
+
+    static MultiLangString createEmptyText();
+    static MultiLangString createDefaultLinkText();
+    static MultiLangString createDefaultTraverseText();
+    static MultiLangString createCopy(const MultiLangString& source);
+
+    std::set<std::string> keySet() const;
+    std::vector<std::string> values() const;
+    void put(const std::string& langKey, const std::string& value);
+    std::string get(const std::string& langKey) const;
+    bool equalsAs(const std::string& langKey, const MultiLangString& mlsToCompare) const;
+    bool isSubsetOf(const MultiLangString& mlsToCompare) const;
+    bool isEmpty() const;
+
+    bool operator==(const MultiLangString& other) const;
+    bool operator!=(const MultiLangString& other) const;
 };
 
-#endif // MULTILANGSTRING_H
+namespace std {
+    template<>
+    struct hash<MultiLangString> {
+        size_t operator()(const MultiLangString& mls) const;
+    };
+}

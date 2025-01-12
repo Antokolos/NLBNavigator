@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+
 #include "IdentifiableItem.h"
 
 class Modification : public IdentifiableItem {

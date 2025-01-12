@@ -1,10 +1,13 @@
 #pragma once
 
 #include <string>
+
 #include "ModifyingItem.h"
 #include "MultiLangString.h"
-#include "Coords.h"
 #include "Constants.h"
+
+// Forward declarations
+class Coords;
 
 class Link : public ModifyingItem {
 public:
@@ -52,15 +55,3 @@ public:
     virtual bool isReturnLink() const = 0;
     virtual bool isTechnical() const = 0;
 };
-
-// Определение статических констант
-inline const std::string Link::DEFAULT_VAR_ID = nlb::Constants::EMPTY_STRING;
-inline const std::string Link::DEFAULT_TARGET = nlb::Constants::EMPTY_STRING;
-inline const MultiLangString Link::DEFAULT_TEXT = MultiLangString::createDefaultLinkText();
-inline const MultiLangString Link::DEFAULT_ALT_TEXT = MultiLangString::createEmptyText();
-inline const std::string Link::DEFAULT_CONSTR_ID = nlb::Constants::EMPTY_STRING;
-inline const std::string Link::DEFAULT_STROKE = "0000FF";
-inline const bool Link::DEFAULT_AUTO = false;
-inline const bool Link::DEFAULT_NEEDS_ACTION = false;
-inline const bool Link::DEFAULT_ONCE = false;
-inline const bool Link::DEFAULT_TECHNICAL = false;
