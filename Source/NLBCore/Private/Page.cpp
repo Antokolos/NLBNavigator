@@ -1,36 +1,19 @@
 #include "Page.h"
+#include "Constants.h"
 
-Page::Page(const std::string& id, const MultiLangString& content/*, const std::vector<Link>& links*/, const Theme& theme)
-    : id(id), content(content)/*, links(links)*/, theme(theme) {}
-
-const std::string& Page::getId() const {
-    return id;
-}
-
-const MultiLangString& Page::getContent() const {
-    return content;
-}
-
-// const std::vector<Link>& Page::getLinks() const {
-//     return links;
-// }
-
-const Theme& Page::getTheme() const {
-    return theme;
-}
-
-void Page::setId(const std::string& newId) {
-    id = newId;
-}
-
-void Page::setContent(const MultiLangString& newContent) {
-    content = newContent;
-}
-
-// void Page::setLinks(const std::vector<Link>& newLinks) {
-//     links = newLinks;
-// }
-
-void Page::setTheme(const Theme& newTheme) {
-    theme = newTheme;
-}
+// Initialize static string and object constants
+const std::string Page::DEFAULT_IMAGE_FILE_NAME = nlb::Constants::EMPTY_STRING;
+const std::string Page::DEFAULT_SOUND_FILE_NAME = nlb::Constants::EMPTY_STRING;
+const MultiLangString Page::DEFAULT_TEXT = MultiLangString::createEmptyText();
+const Theme Page::DEFAULT_THEME = Theme::DEFAULT;
+const std::string Page::DEFAULT_VARID = nlb::Constants::EMPTY_STRING;
+const std::string Page::DEFAULT_TVARID = nlb::Constants::EMPTY_STRING;
+const MultiLangString Page::DEFAULT_CAPTION = MultiLangString::createEmptyText();
+const MultiLangString Page::DEFAULT_TRAVERSE_TEXT = MultiLangString::createDefaultTraverseText();
+const MultiLangString Page::DEFAULT_AUTOWIRE_IN_TEXT = MultiLangString::createDefaultLinkText();
+const MultiLangString Page::DEFAULT_AUTOWIRE_OUT_TEXT = MultiLangString::createDefaultLinkText();
+const std::string Page::DEFAULT_AUTOWIRE_IN_CONSTR_ID = nlb::Constants::EMPTY_STRING;
+const std::string Page::DEFAULT_AUTOWIRE_OUT_CONSTR_ID = nlb::Constants::EMPTY_STRING;
+const MultiLangString Page::DEFAULT_RETURN_TEXT = MultiLangString::createEmptyText();
+const std::string Page::DEFAULT_RETURN_PAGE_ID = nlb::Constants::EMPTY_STRING;
+const std::string Page::DEFAULT_MODULE_CONSTR_ID = nlb::Constants::EMPTY_STRING;

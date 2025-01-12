@@ -36,4 +36,7 @@ public:
     // Get string representation of theme
     UFUNCTION(BlueprintCallable, Category = "Theme")
     FString GetThemeAsString() const;
+
+    void SetCoreTheme(const Theme& theme);
+    const Theme& GetCoreTheme() const;
 };

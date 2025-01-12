@@ -32,3 +32,13 @@ void UUEThemeAdapter::SetThemeFromString(const FString& ThemeName) {
 FString UUEThemeAdapter::GetThemeAsString() const {
     return FString(ThemeUtils::toString(CoreTheme).c_str());
 }
+
+void UUEThemeAdapter::SetCoreTheme(const Theme& theme)
+{
+    CoreTheme = theme;
+}
+
+const Theme& UUEThemeAdapter::GetCoreTheme() const
+{
+    return CoreTheme;
+}
