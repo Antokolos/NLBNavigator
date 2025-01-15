@@ -43,4 +43,12 @@ public:
         : std::runtime_error(message1) {}
 };
 
+class DecisionException : public std::runtime_error {
+public:
+    explicit DecisionException(const std::string& message)
+        : std::runtime_error(message) {}
+    explicit DecisionException(const std::string& message1, const std::string& message2)
+        : std::runtime_error(message1) {}
+};
+
 #endif // NLB_EXCEPTIONS_H
