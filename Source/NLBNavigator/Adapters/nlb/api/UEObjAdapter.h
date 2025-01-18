@@ -2,8 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "UEMultiLangStringAdapter.h"
-#include "UEThemeAdapter.h"
+#include "nlb/util/UEMultiLangStringAdapter.h"
+#include "nlb/api/UEThemeAdapter.h"
 #include "UEObjAdapter.generated.h"
 
 class Obj;
