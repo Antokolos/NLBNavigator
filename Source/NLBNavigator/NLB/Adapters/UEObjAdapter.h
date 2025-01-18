@@ -2,10 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "NLBCore/Public/Obj.h"
 #include "UEMultiLangStringAdapter.h"
 #include "UEThemeAdapter.h"
 #include "UEObjAdapter.generated.h"
+
+class Obj;
 
 UENUM(BlueprintType)
 enum class EContainerType : uint8

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NLBCore/Public/ModifyingItem.h"
 #include "IdentifiableItemAdapter.h"
 #include "ModificationAdapter.h"
 #include "ModifyingItemAdapter.generated.h"
+
+class ModifyingItem;
 
 UCLASS(BlueprintType)
 class NLBNAVIGATOR_API UModifyingItemAdapter : public UIdentifiableItemAdapter {

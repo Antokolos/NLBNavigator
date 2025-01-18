@@ -1,0 +1,57 @@
+#pragma once
+
+#include <string>
+
+#include "nlb/api/ModifyingItem.h"
+#include "nlb/api/Constants.h"
+
+// Forward declarations
+class MultiLangString;
+class Coords;
+
+class Link : public ModifyingItem {
+public:
+    static const std::string DEFAULT_VAR_ID;
+    static const std::string DEFAULT_TARGET;
+    static const MultiLangString DEFAULT_TEXT;
+    static const MultiLangString DEFAULT_ALT_TEXT;
+    static const std::string DEFAULT_CONSTR_ID;
+    static const std::string DEFAULT_STROKE;
+    static const bool DEFAULT_AUTO;
+    static const bool DEFAULT_NEEDS_ACTION;
+    static const bool DEFAULT_ONCE;
+    static const bool DEFAULT_TECHNICAL;
+
+    virtual ~Link() = default;
+
+    virtual std::string getVarId() const = 0;
+    virtual std::string getTarget() const = 0;
+    virtual std::string getText() const = 0;
+    virtual const MultiLangString& getTexts() const = 0;
+    virtual std::string getAltText() const = 0;
+    virtual const MultiLangString& getAltTexts() const = 0;
+    virtual std::string getConstrId() const = 0;
+    virtual std::string getStroke() const = 0;
+    virtual const Coords& getCoords() const = 0;
+    virtual bool isAuto() const = 0;
+    virtual bool isNeedsAction() const = 0;
+    virtual bool isOnce() const = 0;
+
+    /*!
+     * @brief If true, constraint is fulfilled if its expression is true.
+     *        If false, constraint is fulfilled if its expression is false
+     *        (equivalent of boolean NOT operator)
+     */
+    virtual bool isPositiveConstraint() const = 0;
+
+    /*!
+     * @brief If true, module constraint also constrains this link, in addition to link's own constraint.
+     *        If false, module constraint should not be applied.
+     * @return true if module constraint should be applied, false otherwise
+     */
+    virtual bool isObeyToModuleConstraint() const = 0;
+
+    virtual bool isTraversalLink() const = 0;
+    virtual bool isReturnLink() const = 0;
+    virtual bool isTechnical() const = 0;
+};

@@ -1,4 +1,5 @@
 #include "UELinkAdapter.h"
+#include "NLBCore/Public/nlb/api/Link.h"
 
 FString UUELinkAdapter::GetId() const {
     return FString(CoreLink->getId().c_str());

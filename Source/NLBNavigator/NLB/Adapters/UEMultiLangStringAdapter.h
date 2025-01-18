@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NLBCore/Public/MultiLangString.h"
+#include "NLBCore/Public/nlb/util/MultiLangString.h"
 #include "UEMultiLangStringAdapter.generated.h"
 
 /*!

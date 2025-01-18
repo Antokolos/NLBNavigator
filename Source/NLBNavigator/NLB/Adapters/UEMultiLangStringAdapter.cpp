@@ -1,5 +1,4 @@
 #include "UEMultiLangStringAdapter.h"
-#include "MultiLangString.h"
 
 bool UUEMultiLangStringAdapter::IsEmpty() const {
     return CoreMultiLangString.isEmpty();

@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Variable.h"
+#include "NLBCore/Public/nlb/api/Variable.h"
 #include "UEVariableAdapter.generated.h"
 
 UENUM(BlueprintType)

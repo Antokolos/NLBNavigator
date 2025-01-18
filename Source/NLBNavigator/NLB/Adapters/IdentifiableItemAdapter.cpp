@@ -1,5 +1,7 @@
 #include "IdentifiableItemAdapter.h"
 
+#include "NLBCore/Public/nlb/api/IdentifiableItem.h"
+
 void UIdentifiableItemAdapter::SetCoreItem(IdentifiableItem* Item) {
     CoreItem = Item;
 }

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NLBCore/Public/IdentifiableItem.h"
 #include "IdentifiableItemAdapter.generated.h"
+
+class IdentifiableItem;
 
 UCLASS(BlueprintType)
 class NLBNAVIGATOR_API UIdentifiableItemAdapter : public UObject {

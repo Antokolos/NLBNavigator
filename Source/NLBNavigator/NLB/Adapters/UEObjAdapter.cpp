@@ -1,4 +1,5 @@
 #include "UEObjAdapter.h"
+#include "NLBCore/Public/nlb/api/Obj.h"
 
 void UUEObjAdapter::SetCoreObj(Obj* InCoreObj)
 {

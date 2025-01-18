@@ -2,10 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "NLBCore/Public/Page.h"
 #include "UEMultiLangStringAdapter.h"
 #include "UEThemeAdapter.h"
 #include "UEPageAdapter.generated.h"
+
+class Page;
 
 /**
  * @class UUEPageAdapter

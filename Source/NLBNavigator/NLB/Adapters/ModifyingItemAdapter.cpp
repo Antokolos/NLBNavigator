@@ -1,4 +1,5 @@
 #include "ModifyingItemAdapter.h"
+#include "NLBCore/Public/nlb/api/ModifyingItem.h"
 
 void UModifyingItemAdapter::SetCoreModifyingItem(ModifyingItem* ModifyingItem) {
     CoreModifyingItem = ModifyingItem;

@@ -1,5 +1,6 @@
 #include "UEPageAdapter.h"
 #include "UEMultiLangStringAdapter.h"
+#include "NLBCore/Public/nlb/api/Page.h"
 
 void UUEPageAdapter::SetCorePage(Page* InCorePage)
 {

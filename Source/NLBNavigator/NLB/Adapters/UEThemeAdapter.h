@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NLBCore/Public/Theme.h"
+#include "NLBCore/Public/nlb/api/Theme.h"
 #include "UEThemeAdapter.generated.h"
 
 UENUM(BlueprintType)

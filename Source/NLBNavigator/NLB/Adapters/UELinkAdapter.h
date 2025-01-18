@@ -1,8 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NLBCore/Public/Link.h"
 #include "UELinkAdapter.generated.h"
+
+class Link;
 
 UCLASS(BlueprintType)
 class NLBNAVIGATOR_API UUELinkAdapter : public UObject {

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NLBCore/Public/Modification.h"
 #include "IdentifiableItemAdapter.h"
 #include "ModificationAdapter.generated.h"
+
+class Modification;
 
 UENUM(BlueprintType)
 enum class EModificationType : uint8 {

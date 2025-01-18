@@ -1,4 +1,5 @@
 #include "ModificationAdapter.h"
+#include "NLBCore/Public/nlb/api/Modification.h"
 
 void UModificationAdapter::SetCoreModification(Modification* Modification) {
     CoreModification = Modification;
