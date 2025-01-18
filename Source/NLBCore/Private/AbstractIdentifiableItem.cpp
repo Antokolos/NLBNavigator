@@ -104,12 +104,12 @@ bool AbstractIdentifiableItem::hasDeletedParent() const {
 }
 
 std::string AbstractIdentifiableItem::getFullId() const {
-    std::list<std::string> ids;
-    std::shared_ptr<IdentifiableItem> item = std::dynamic_pointer_cast<IdentifiableItem>(getParent());
-    ids.push_front(getId());
+    std::vector<std::string> ids;
+    std::shared_ptr<IdentifiableItem> item = getParent();
+    ids.push_back(getId());
     
     while (item) {
-        ids.push_front(item->getId());
+        ids.push_back(item->getId());
         item = item->getParent();
     }
     
@@ -132,4 +132,37 @@ std::shared_ptr<SearchResult> AbstractIdentifiableItem::searchText(const SearchC
         return result;
     }
     return nullptr;
+}
+
+bool AbstractIdentifiableItem::textMatches(const std::string& stringToTest, const SearchContract& contract) const {
+    std::string patternText;
+    if (contract.isWholeWords()) {
+        patternText += "\\b";
+    }
+    patternText += contract.getSearchText();
+    if (contract.isWholeWords()) {
+        patternText += "\\b";
+    }
+
+    std::regex::flag_type flags = std::regex::ECMAScript;
+    if (contract.isIgnoreCase()) {
+        flags |= std::regex::icase;
+    }
+
+    std::regex pattern(patternText, flags);
+    bool result = std::regex_search(stringToTest, pattern);
+    
+    if (contract.isFindUnusualQuotes()) {
+        return result || QuotationHelper::find(stringToTest);
+    }
+    return result;
+}
+
+bool AbstractIdentifiableItem::textMatches(const MultiLangString& mlsToTest, const SearchContract& contract) const {
+    for (const auto& text : mlsToTest.values()) {
+        if (textMatches(text, contract)) {
+            return true;
+        }
+    }
+    return false;
 }

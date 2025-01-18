@@ -21,7 +21,7 @@ FString UIdentifiableItemAdapter::GetFullId() const {
 UIdentifiableItemAdapter* UIdentifiableItemAdapter::GetParent() const {
     if (CoreItem && CoreItem->getParent()) {
         UIdentifiableItemAdapter* ParentAdapter = NewObject<UIdentifiableItemAdapter>();
-        ParentAdapter->SetCoreItem(CoreItem->getParent());
+        ParentAdapter->SetCoreItem(CoreItem->getParentRaw());
         return ParentAdapter;
     }
     return nullptr;

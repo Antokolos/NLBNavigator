@@ -17,4 +17,5 @@ public:
     virtual bool hasDeletedParent() const = 0;
     virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const = 0;
     virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const = 0;
+    IdentifiableItem* getParentRaw() const { return getParent().get(); }
 };

@@ -1,10 +1,10 @@
 #pragma once
+
 #include <string>
 #include <set>
 #include <map>
 #include <vector>
 #include <memory>
-#include <filesystem>
 #include "NonLinearBook.h"
 #include "Theme.h"
 #include "Page.h"
@@ -36,45 +36,45 @@ public:
         return instance;
     }
 
-    std::set<std::string> getAllAchievementNames(bool recursive) const override;
-    std::string getPerfectGameAchievementName() const override;
-    bool isEmpty() const override;
-    std::string getStartPoint() const override;
-    std::string getLanguage() const override;
-    std::string getLicense() const override;
-    Theme getTheme() const override;
-    bool isFullAutowire() const override;
-    bool isSuppressMedia() const override;
-    bool isSuppressSound() const override;
-    std::string getTitle() const override;
-    std::string getAuthor() const override;
-    std::string getVersion() const override;
+    std::set<std::string> getAllAchievementNames(bool recursive) override;
+    std::string getPerfectGameAchievementName() override;
+    bool isEmpty() override;
+    std::string getStartPoint() override;
+    std::string getLanguage() override;
+    std::string getLicense() override;
+    Theme getTheme() override;
+    bool isFullAutowire() override;
+    bool isSuppressMedia() override;
+    bool isSuppressSound() override;
+    std::string getTitle() override;
+    std::string getAuthor() override;
+    std::string getVersion() override;
     
-    std::filesystem::path getRootDir() const override;
-    std::filesystem::path getImagesDir() const override;
-    std::set<std::string> getUsedImages() const override;
-    std::set<std::string> getUsedSounds() const override;
-    std::vector<std::shared_ptr<MediaFile>> getImageFiles() const override;
-    std::vector<std::shared_ptr<MediaFile>> getSoundFiles() const override;
+    std::string getRootDir() override;
+    std::string getImagesDir() override;
+    std::set<std::string> getUsedImages() override;
+    std::set<std::string> getUsedSounds() override;
+    std::vector<MediaFile> getImageFiles() override;
+    std::vector<MediaFile> getSoundFiles() override;
     
     void exportMedia(
         bool isRoot,
-        const std::filesystem::path& mainExportDir,
+        const std::string& mainExportDir,
         const std::string& mediaDirName,
-        const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
+        const std::vector<MediaFile>& mediaFiles,
         MediaFile::Type mediaType
     ) override;
 
-    std::map<std::string, std::shared_ptr<Page>> getPages() const override;
-    std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() const override;
-    std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() const override;
-    std::vector<std::string> getAutowiredPagesIds() const override;
-    std::vector<std::string> getParentGlobalAutowiredPagesIds() const override;
-    bool isAutowired(const std::string& pageId) const override;
-    std::shared_ptr<Page> getPageById(const std::string& id) const override;
+    std::map<std::string, std::shared_ptr<Page>> getPages() override;
+    std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() override;
+    std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() override;
+    std::vector<std::string> getAutowiredPagesIds() override;
+    std::vector<std::string> getParentGlobalAutowiredPagesIds() override;
+    bool isAutowired(const std::string& pageId) override;
+    std::shared_ptr<Page> getPageById(const std::string& id) override;
 
-    std::map<std::string, std::shared_ptr<Obj>> getObjs() const override;
-    std::shared_ptr<Obj> getObjById(const std::string& objId) const override;
+    std::map<std::string, std::shared_ptr<Obj>> getObjs() override;
+    std::shared_ptr<Obj> getObjById(const std::string& objId) override;
     
     std::shared_ptr<Page> createFilteredPage(
         const std::string& sourceId,
@@ -83,33 +83,33 @@ public:
 
     bool load(
         const std::string& path,
-        ProgressData& progressData
+        const ProgressData& progressData
     ) override;
 
-    std::shared_ptr<Variable> getVariableById(const std::string& varId) const override;
-    std::vector<std::shared_ptr<Variable>> getVariables() const override;
+    std::shared_ptr<Variable> getVariableById(const std::string& varId) override;
+    std::vector<std::shared_ptr<Variable>> getVariables() override;
     
-    SearchResultTableModel getLeafs(const std::string& modulePageId) const override;
+    SearchResultTableModel getLeafs(const std::string& modulePageId) override;
     SearchResultTableModel searchText(
         const SearchContract& searchContract,
         const std::string& modulePageId
-    ) const override;
-    SearchResultTableModel getVariables(const std::string& modulePageId) const override;
-    bool findVariable(const std::string& variableNameToFind) const override;
-    SearchResultTableModel checkBook(const std::string& modulePageId) const override;
+    ) override;
+    SearchResultTableModel getVariables(const std::string& modulePageId) override;
+    bool findVariable(const std::string& variableNameToFind) override;
+    SearchResultTableModel checkBook(const std::string& modulePageId) override;
     
-    BookStatistics getBookStatistics() const override;
-    VariableStatistics getVariableStatistics() const override;
-    std::shared_ptr<NonLinearBook> getParentNLB() const override;
-    bool isDummy() const override;
-    std::shared_ptr<Page> getParentPage() const override;
+    BookStatistics getBookStatistics() override;
+    VariableStatistics getVariableStatistics() override;
+    std::shared_ptr<NonLinearBook> getParentNLB() override;
+    bool isDummy() override;
+    std::shared_ptr<Page> getParentPage() override;
     
-    std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() const override;
-    std::shared_ptr<NonLinearBook> findExternalModule(const std::string& name) const override;
-    std::map<std::string, Variable::DataType> getVariableDataTypes() const override;
+    std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() override;
+    std::shared_ptr<NonLinearBook> findExternalModule(const std::string& name) override;
+    std::map<std::string, Variable::DataType> getVariableDataTypes() override;
     
-    std::map<std::string, std::string> getMediaToConstraintMap() const override;
-    std::map<std::string, std::string> getMediaRedirectsMap() const override;
-    std::map<std::string, MediaExportParameters> getMediaExportParametersMap() const override;
-    std::map<std::string, bool> getMediaFlagsMap() const override;
+    std::map<std::string, std::string> getMediaToConstraintMap() override;
+    std::map<std::string, std::string> getMediaRedirectsMap() override;
+    std::map<std::string, MediaExportParameters> getMediaExportParametersMap() override;
+    std::map<std::string, bool> getMediaFlagsMap() override;
 };
