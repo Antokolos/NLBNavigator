@@ -73,7 +73,6 @@ public:
      */
     static char getPathSeparator();
     
-private:
     // Split path into components
     static std::vector<std::string> splitPath(const std::string& path);
     

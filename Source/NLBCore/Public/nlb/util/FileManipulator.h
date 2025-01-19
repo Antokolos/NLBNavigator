@@ -1,119 +1,172 @@
 #pragma once
-
 #include <string>
-#include <fstream>
 #include <memory>
-#include <vector>
+#include <fstream>
+#include <sstream>
 #include "nlb/api/Constants.h"
 #include "nlb/exception/NLBExceptions.h"
+#include "nlb/util/FileUtils.h"
 
+// Forward declarations
 class VCSAdapter;
 class MultiLangString;
 class NonLinearBook;
 
 /*!
- * The FileManipulator class contains useful file operations.
+ * \class FileManipulator
+ * \brief Handles file operations with version control system integration
+ *
+ * This class provides functionality for file manipulation operations including
+ * reading, writing, copying, and deleting files while maintaining VCS integration.
  */
 class FileManipulator {
 public:
     /*!
-     * Constructor for FileManipulator
-     * @param vcsAdapter VCS adapter instance
-     * @param mainRoot Main root directory
+     * \brief Constructs FileManipulator with VCS adapter and root directory
+     * \param vcsAdapter Version control system adapter
+     * \param mainRoot Main root directory path
      */
     FileManipulator(std::shared_ptr<VCSAdapter> vcsAdapter, const std::string& mainRoot);
 
     /*!
-     * Deletes recursively file and directories.
-     * @param filePath File or directory path for delete
-     * @return true if all files and subdirectories successfully deleted.
+     * \brief Deletes file or directory with VCS handling
+     * \param filePath Path to file or directory to delete
+     * \return true if deletion was successful
      */
     bool deleteFileOrDir(const std::string& filePath);
 
     /*!
-     * Writes content to file with required existence check
-     * @param rootDir Root directory
-     * @param fileName File name
-     * @param content Content to write
+     * \brief Writes required string content to file
+     * \param rootDir Root directory path
+     * \param fileName Name of file to write
+     * \param content Content to write
+     * \throws NLBIOException if write operation fails
      */
-    void writeRequiredString(const std::string& rootDir, const std::string& fileName, const std::string& content);
+    void writeRequiredString(const std::string& rootDir,
+                           const std::string& fileName,
+                           const std::string& content);
 
     /*!
-     * Writes content to file with optional existence check
-     * @param rootDir Root directory
-     * @param fileName File name
-     * @param content Content to write
-     * @param defaultContent Default content if file doesn't exist
+     * \brief Writes optional string content to file
+     * \param rootDir Root directory path
+     * \param fileName Name of file to write
+     * \param content Content to write
+     * \param defaultContent Default content to compare against
+     * \throws NLBIOException if write operation fails
      */
-    void writeOptionalString(const std::string& rootDir, const std::string& fileName, 
-                           const std::string& content, const std::string& defaultContent);
+    void writeOptionalString(const std::string& rootDir,
+                           const std::string& fileName,
+                           const std::string& content,
+                           const std::string& defaultContent);
 
     /*!
-     * Creates directory with error checking
-     * @param dirPath Directory path
-     * @param errorMessage Error message in case of failure
-     */
-    void createDir(const std::string& dirPath, const std::string& errorMessage);
-
-    /*!
-     * Copies file with error checking
-     * @param target Target file path
-     * @param source Source file path
-     * @param errorMessage Error message in case of failure
-     */
-    void copyFile(const std::string& target, const std::string& source, const std::string& errorMessage);
-
-    /*!
-     * Writes multilanguage string content to files
-     * @param mlsRootDir Root directory for language files
-     * @param content Content to write
-     * @param defaultContent Default content
+     * \brief Writes multilanguage string content
+     * \param mlsRootDir Root directory for multilanguage content
+     * \param content Content to write
+     * \param defaultContent Default content to compare against
+     * \throws NLBIOException if write operation fails
      */
     void writeOptionalMultiLangString(const std::string& mlsRootDir,
                                     const MultiLangString& content,
                                     const MultiLangString& defaultContent);
 
-    // Static methods
     /*!
-     * Reads file content as string with required existence
-     * @param rootDir Root directory
-     * @param fileName File name
-     * @param errorMessage Error message if file not found
-     * @return File content as string
+     * \brief Creates directory with error handling
+     * \param dirPath Directory path to create
+     * \param errorMessage Error message if creation fails
+     * \throws NLBIOException if directory creation fails
+     */
+    void createDir(const std::string& dirPath,
+                  const std::string& errorMessage);
+
+    /*!
+     * \brief Copies file with error handling
+     * \param target Target file path
+     * \param source Source file path
+     * \param errorMessage Error message if copy fails
+     * \throws NLBIOException if file copy fails
+     */
+    void copyFile(const std::string& target,
+                 const std::string& source,
+                 const std::string& errorMessage);
+
+    /*!
+     * \brief Reads required file as string
+     * \param rootDir Root directory path
+     * \param fileName Name of file to read
+     * \param errorMessage Error message if read fails
+     * \return File content as string
+     * \throws NLBIOException if file cannot be read
      */
     static std::string getRequiredFileAsString(const std::string& rootDir,
                                              const std::string& fileName,
                                              const std::string& errorMessage);
 
     /*!
-     * Reads file content as string with optional existence
-     * @param rootDir Root directory
-     * @param fileName File name
-     * @param defaultValue Default value if file not found
-     * @return File content as string
+     * \brief Reads optional file as string
+     * \param rootDir Root directory path
+     * \param fileName Name of file to read
+     * \param defaultValue Default value if file doesn't exist
+     * \return File content as string or default value
      */
     static std::string getOptionalFileAsString(const std::string& rootDir,
                                              const std::string& fileName,
                                              const std::string& defaultValue);
 
     /*!
-     * Reads multilanguage string from files
-     * @param mlsRootDir Root directory for language files
-     * @param defaultValue Default value if no files found
-     * @return MultiLangString instance
+     * \brief Reads optional multilanguage string
+     * \param mlsRootDir Root directory for multilanguage content
+     * \param defaultValue Default value if content doesn't exist
+     * \return MultiLangString object with content
      */
     static MultiLangString readOptionalMultiLangString(const std::string& mlsRootDir,
                                                       const MultiLangString& defaultValue);
 
 private:
-    static const int BLOCK_SIZE = 1024;
-    std::shared_ptr<VCSAdapter> m_vcsAdapter;
-    std::string m_mainRoot;
+    static const int BLOCK_SIZE = 1024; ///< Buffer size for file operations
 
+    std::shared_ptr<VCSAdapter> m_vcsAdapter; ///< Version control system adapter
+    std::string m_mainRoot; ///< Main root directory path
+
+    /*!
+     * \brief Gets path relative to main root
+     * \param filePath Absolute file path
+     * \return Path relative to main root
+     */
     std::string getPathRelativeToMainRoot(const std::string& filePath);
+
+    /*!
+     * \brief Adds file to version control
+     * \param filePath Path of file to add
+     * \param isNewFile true if file is newly created
+     */
     void addToVCS(const std::string& filePath, bool isNewFile);
+
+    /*!
+     * \brief Creates empty file
+     * \param filePath Path of file to create
+     * \param errorMessage Error message if creation fails
+     */
     void createFile(const std::string& filePath, const std::string& errorMessage);
+
+    /*!
+     * \brief Reads entire file stream to string
+     * \param stream Input file stream
+     * \return File content as string
+     */
     static std::string getFileAsString(std::ifstream& stream);
+
+    /*!
+     * \brief Transfers data between streams
+     * \param input Input stream
+     * \param output Output stream
+     */
     static void transfer(std::istream& input, std::ostream& output);
+
+    /*!
+     * \brief Writes input stream to file
+     * \param filePath Path of file to write
+     * \param input Input stream containing data
+     */
     static void writeFile(const std::string& filePath, std::istream& input);
 };

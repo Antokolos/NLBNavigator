@@ -6,6 +6,10 @@
 #include "nlb/domain/SearchResult.h"
 #include "nlb/util/StringHelper.h"
 #include "nlb/util/QuotationHelper.h"
+#include "nlb/exception/NLBExceptions.h"
+
+#include <algorithm>
+#include <iterator>
 #include <random>
 #include <sstream>
 #include <iomanip>
@@ -166,4 +170,36 @@ bool AbstractIdentifiableItem::textMatches(const MultiLangString& mlsToTest, con
         }
     }
     return false;
+}
+
+std::vector<std::string> AbstractIdentifiableItem::createSortedDirList(
+    const std::vector<std::string>& dirs,
+    const std::vector<std::string>& orderList) const {
+
+    // Скопировать dirs, так как список будет модифицироваться
+    std::vector<std::string> dirsList = dirs;
+
+    std::vector<std::string> result;
+
+    for (const auto& dirName : orderList) {
+        auto it = std::find(dirsList.begin(), dirsList.end(), dirName);
+        if (it != dirsList.end()) {
+            result.push_back(*it);
+            dirsList.erase(it); // Удаляем найденный элемент
+        } else {
+            throw NLBConsistencyException(
+                "Inconsistent NLB structure: cannot locate directory with name = " + dirName +
+                " for item with id = " + this->getId());
+        }
+    }
+
+    if (!dirsList.empty()) {
+        std::ostringstream oss;
+        std::copy(dirsList.begin(), dirsList.end(), std::ostream_iterator<std::string>(oss, ", "));
+        throw NLBConsistencyException(
+            "Inconsistent NLB structure: directories with names = [" + oss.str() +
+            "] for item with id = " + this->getId() + " cannot be located in the order file");
+    }
+
+    return result;
 }
