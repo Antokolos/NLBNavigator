@@ -130,8 +130,10 @@ void FileManipulator::writeOptionalMultiLangString(
                 createDir(mlsRootDir, "Cannot create MultiLangString root: " + mlsRootDir);
             }
 
-/* TODO: implement if needed, for (const auto& [langKey, langValue] : content) causes error
-            for (const auto& [langKey, langValue] : content) {
+            for (const auto& pair : content.content()) {
+                const std::string& langKey = pair.first;
+                const std::string& langValue = pair.second;
+                
                 std::string filePath = FileUtils::combinePath(mlsRootDir, langKey);
                 bool newFile = !FileUtils::exists(filePath);
 
@@ -146,7 +148,6 @@ void FileManipulator::writeOptionalMultiLangString(
                     addToVCS(filePath, newFile);
                 }
             }
-            */
         }
     } catch (const std::exception& e) {
         throw NLBIOException("IOException occurred: " + std::string(e.what()));

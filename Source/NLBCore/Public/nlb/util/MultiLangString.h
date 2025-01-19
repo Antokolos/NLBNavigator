@@ -40,6 +40,9 @@ public:
 
     bool operator==(const MultiLangString& other) const;
     bool operator!=(const MultiLangString& other) const;
+
+    std::map<std::string, std::string>& content() { return m_content; }
+    const std::map<std::string, std::string>& content() const { return m_content; }
 };
 
 namespace std {
