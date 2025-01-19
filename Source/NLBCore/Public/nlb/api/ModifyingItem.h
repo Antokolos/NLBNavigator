@@ -8,7 +8,7 @@
 
 class ModifyingItem : public IdentifiableItem {
 public:
-    virtual ~ModifyingItem() = default;
+    virtual ~ModifyingItem() override = default;
 
     virtual std::vector<std::shared_ptr<Modification>> getModifications() const = 0;
     virtual bool hasNoModifications() const = 0;

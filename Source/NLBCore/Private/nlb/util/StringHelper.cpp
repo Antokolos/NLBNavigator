@@ -192,3 +192,41 @@ std::string StringHelper::createRepeatedString(size_t length, const std::string 
     }
     return result.substr(0, length);
 }
+
+std::vector<std::string> StringHelper::tokenize(const std::string& str, const std::string& delimiter)
+{
+    std::vector<std::string> tokens;
+    
+    // Handle empty string or delimiter cases
+    if (str.empty() || delimiter.empty()) {
+        return tokens;
+    }
+
+    size_t start = 0;
+    size_t end = str.find(delimiter);
+    
+    // Keep finding delimiters until we reach the end of the string
+    while (end != std::string::npos) {
+        // Extract the token between start and end positions
+        std::string token = str.substr(start, end - start);
+        
+        // Only add non-empty tokens
+        if (!token.empty()) {
+            tokens.push_back(token);
+        }
+        
+        // Move start to after the delimiter
+        start = end + delimiter.length();
+        
+        // Find the next delimiter
+        end = str.find(delimiter, start);
+    }
+    
+    // Add the last token after the final delimiter (if any)
+    std::string lastToken = str.substr(start);
+    if (!lastToken.empty()) {
+        tokens.push_back(lastToken);
+    }
+    
+    return tokens;
+}

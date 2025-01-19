@@ -22,7 +22,7 @@ public:
     AbstractIdentifiableItem(const std::shared_ptr<IdentifiableItem>& identifiableItem,
                            const std::shared_ptr<ModifyingItem>& parent,
                            std::shared_ptr<NonLinearBook> currentNLB);
-    virtual ~AbstractIdentifiableItem() = default;
+    virtual ~AbstractIdentifiableItem() override = default;
 
     void copy(const std::shared_ptr<IdentifiableItem>& identifiableItem);
     void setId(const std::string& id);

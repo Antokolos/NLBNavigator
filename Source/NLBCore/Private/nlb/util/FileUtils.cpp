@@ -56,7 +56,7 @@ std::string FileUtils::combinePath(const std::string& path1, const std::string& 
     return normalized1 + getPathSeparator() + normalized2;
 }
 
-bool FileUtils::fileExists(const std::string& path) {
+bool FileUtils::exists(const std::string& path) {
 #ifdef _WIN32
     DWORD attrs = GetFileAttributesA(path.c_str());
     return (attrs != INVALID_FILE_ATTRIBUTES);
@@ -118,7 +118,7 @@ bool FileUtils::createDirectory(const std::string& path) {
 }
 
 bool FileUtils::remove(const std::string& path, bool recursive) {
-    if (!fileExists(path)) return true;
+    if (!exists(path)) return true;
 
     if (isDirectory(path)) {
         if (recursive) {

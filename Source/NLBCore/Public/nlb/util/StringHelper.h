@@ -77,4 +77,12 @@ public:
      * @return Resulting string
      */
     static std::string createRepeatedString(size_t length, const std::string& fill);
+
+    /*!
+     * @brief Tokenize string by delimiter
+     * @param str String to tokenize
+     * @param delimiter Delimiter
+     * @return Vector of tokens
+     */
+    static std::vector<std::string> tokenize(const std::string& str, const std::string& delimiter);
 };

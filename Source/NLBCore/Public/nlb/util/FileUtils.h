@@ -32,11 +32,11 @@ public:
     static std::string combinePath(const std::string& path1, const std::string& path2);
 
     /*!
-     * \brief Check if file exists
+     * \brief Check if file or directory exists
      * \param path File path to check
      * \return true if file exists
      */
-    static bool fileExists(const std::string& path);
+    static bool exists(const std::string& path);
 
     /*!
      * \brief Check if path is a directory
@@ -72,7 +72,7 @@ public:
      * \return Path separator character
      */
     static char getPathSeparator();
-
+    
 private:
     // Split path into components
     static std::vector<std::string> splitPath(const std::string& path);

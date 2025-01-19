@@ -69,24 +69,24 @@ public:
     };
 
     // Pure virtual functions
-    virtual bool isExternal() = 0;
-    virtual std::string getVarId() = 0;
-    virtual std::string getExprId() = 0;
-    virtual Type getType() = 0;
+    virtual bool isExternal() const = 0;
+    virtual std::string getVarId() const = 0;
+    virtual std::string getExprId() const = 0;
+    virtual Type getType() const = 0;
 
     /*!
      * @brief Determines whether this modification has void return type or not.
      * @return true if this modification returns some result,
      *         false otherwise
      */
-    virtual bool returnsValue() = 0;
+    virtual bool returnsValue() const = 0;
 
     /*!
      * @brief Determines whether this modification has parameters or not.
      * @return true if this modification has parameters,
      *         false otherwise
      */
-    virtual bool isParametrized() = 0;
+    virtual bool isParametrized() const = 0;
 
     // Virtual destructor for proper cleanup in derived classes
     virtual ~Modification() = default;
