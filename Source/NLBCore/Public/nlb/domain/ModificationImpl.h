@@ -58,6 +58,8 @@ public:
                          const std::string& modificationsDir);
     void readModification(const std::string& modificationDir);
     
+    bool isModificationImpl() const override { return true; }
+    
 private:
     static const std::string EXTERNAL_FILE_NAME;
     static const std::string VARID_FILE_NAME;

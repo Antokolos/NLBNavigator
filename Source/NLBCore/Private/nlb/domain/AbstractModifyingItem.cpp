@@ -23,6 +23,9 @@ AbstractModifyingItem::AbstractModifyingItem(const std::shared_ptr<ModifyingItem
                                            std::shared_ptr<NonLinearBook> currentNLB)
     : AbstractIdentifiableItem(modifyingItem, currentNLB) {
     for (const auto& modification : modifyingItem->getModifications()) {
+        if (!modification->isModificationImpl()) {
+            continue;
+        }
         auto modificationImpl = std::static_pointer_cast<ModificationImpl>(modification);
         if (modificationImpl) {
             auto newMod = std::make_shared<ModificationImpl>(modificationImpl, 
