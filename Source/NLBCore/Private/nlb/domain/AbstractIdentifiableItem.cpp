@@ -89,6 +89,10 @@ std::string AbstractIdentifiableItem::getFullId() const {
     return StringHelper::formatSequence(ids);
 }
 
+void AbstractIdentifiableItem::setDeleted(bool deleted) {
+    m_isDeleted = deleted;
+}
+
 bool AbstractIdentifiableItem::isDeleted() const {
     return m_isDeleted;
 }

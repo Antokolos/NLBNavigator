@@ -144,7 +144,8 @@ AbstractNodeItem::AbstractNodeItem(
     m_coords->setTop(coords->getTop());
     
     for (const auto& link : nodeItem->getLinks()) {
-        m_links.push_back(std::make_shared<LinkImpl>(std::enable_shared_from_this<NodeItem>::shared_from_this(), link));
+        auto linkImpl = std::static_pointer_cast<LinkImpl>(link);
+        m_links.push_back(linkImpl);
     }
     
     m_containedObjIds = nodeItem->getContainedObjIds();
@@ -166,4 +167,82 @@ void AbstractNodeItem::applyLinkSortingOrder(const std::vector<std::string>& sor
     // m_links can be not empty. Add remaining elements to the tail
     sortedLinks.insert(sortedLinks.end(), m_links.begin(), m_links.end());
     m_links = std::move(sortedLinks);
+}
+
+// Getter implementations
+std::string AbstractNodeItem::getDefaultTagId() const {
+    return m_defaultTagId;
+}
+
+std::string AbstractNodeItem::getStroke() const {
+    return m_stroke;
+}
+
+std::string AbstractNodeItem::getFill() const {
+    return m_fill;
+}
+
+std::string AbstractNodeItem::getTextColor() const {
+    return m_textColor;
+}
+
+std::vector<std::string> AbstractNodeItem::getContainedObjIds() const {
+    return m_containedObjIds;
+}
+
+std::shared_ptr<Coords> AbstractNodeItem::getCoords() const {
+    return m_coords;
+}
+
+std::vector<std::shared_ptr<Link>> AbstractNodeItem::getLinks() const {
+    std::vector<std::shared_ptr<Link>> result;
+    result.reserve(m_links.size());
+    for (const auto& link : m_links) {
+        result.push_back(link);
+    }
+    return result;
+}
+
+std::shared_ptr<Link> AbstractNodeItem::getLinkById(const std::string& linkId) const {
+    auto it = std::find_if(m_links.begin(), m_links.end(),
+                          [&linkId](const auto& link) {
+                              return link->getId() == linkId;
+                          });
+    return (it != m_links.end()) ? *it : nullptr;
+}
+
+void AbstractNodeItem::notifyObservers() {
+    if (m_observerHandler) {
+        m_observerHandler->notifyObservers();
+    }
+}
+
+std::string AbstractNodeItem::getExternalHierarchy() const {
+    std::vector<std::string> hierarchy;
+    auto currentNLB = AbstractIdentifiableItem::getCurrentNLB();
+    
+    // Build hierarchy by traversing up through parent pages
+    while (true) {
+        auto parentPage = currentNLB->getParentPage();
+        if (!parentPage) {
+            break;
+        }
+        
+        if (parentPage->isModuleExternal()) {
+            hierarchy.push_back(parentPage->getModuleName());
+        }
+        
+        currentNLB = parentPage->getCurrentNLB();
+    }
+    
+    // Build the result string
+    std::string result;
+    for (auto it = hierarchy.rbegin(); it != hierarchy.rend(); ++it) {
+        result += *it;
+        if (std::next(it) != hierarchy.rend()) {
+            result += "/";
+        }
+    }
+    
+    return result;
 }
