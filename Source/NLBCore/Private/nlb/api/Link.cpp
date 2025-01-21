@@ -1,5 +1,6 @@
 #include "nlb/api/Link.h"
 #include "nlb/util/MultiLangString.h"
+#include "nlb/api/Constants.h"
 
 // Define static constants
 inline const std::string Link::DEFAULT_VAR_ID = nlb::Constants::EMPTY_STRING;

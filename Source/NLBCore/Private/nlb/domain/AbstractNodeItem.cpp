@@ -53,8 +53,9 @@ void AbstractNodeItem::AddLinkCommand::revert() {
 
 // DeleteLinkCommand implementation
 AbstractNodeItem::DeleteLinkCommand::DeleteLinkCommand(std::shared_ptr<Link> link)
-    : m_link(std::dynamic_pointer_cast<LinkImpl>(link))
-    , m_previousDeletedState(m_link->isDeleted()) {
+    //: m_link(std::dynamic_pointer_cast<LinkImpl>(link))
+    : m_link(std::static_pointer_cast<LinkImpl>(link))
+    , m_previousDeletedState(m_link->AbstractIdentifiableItem::isDeleted()) {
 }
 
 void AbstractNodeItem::DeleteLinkCommand::execute() {

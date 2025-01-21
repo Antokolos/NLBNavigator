@@ -52,14 +52,14 @@ public:
     void setNeedsAction(bool needsAction) { m_needsAction = needsAction; }
     void setOnce(bool once) { m_once = once; }
 
-    std::shared_ptr<SearchResult> searchText(const std::shared_ptr<SearchContract>& contract);
+    std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const;
     
     void writeLink(const std::shared_ptr<FileManipulator>& fileManipulator,
                   const std::string& linksDir);
     void readLink(const std::string& linkDir);
 
     // Observer pattern methods
-    std::string addObserver(const std::shared_ptr<NLBObserver>& observer);
+    std::string addObserver(NLBObserver* observer);
     void removeObserver(const std::string& observerId);
     void notifyObservers();
 

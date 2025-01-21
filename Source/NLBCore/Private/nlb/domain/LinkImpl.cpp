@@ -1,5 +1,6 @@
 #include "nlb/domain/LinkImpl.h"
 #include "nlb/api/NodeItem.h"
+#include "nlb/api/NonLinearBook.h"
 #include "nlb/util/FileUtils.h"
 #include "nlb/exception/NLBExceptions.h"
 
@@ -28,7 +29,7 @@ LinkImpl::LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::shared_pt
     setParent(parent);
 
     for (const auto& modification : sourceLink->getModifications()) {
-        addModification(std::make_shared<ModificationImpl>(modification, shared_from_this(), parent->getCurrentNLB()));
+        addModification(std::make_shared<ModificationImpl>(modification, std::enable_shared_from_this<AbstractModifyingItem>::shared_from_this(), parent->getCurrentNLB()));
     }
 
     m_varId = sourceLink->getVarId();
@@ -56,7 +57,7 @@ LinkImpl::LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::string& t
 }
 
 std::string LinkImpl::getText() const {
-    return m_text.get(getCurrentNLB()->getLanguage());
+    return m_text.get(AbstractIdentifiableItem::getCurrentNLB()->getLanguage());
 }
 
 const MultiLangString& LinkImpl::getTexts() const {
@@ -64,7 +65,7 @@ const MultiLangString& LinkImpl::getTexts() const {
 }
 
 std::string LinkImpl::getAltText() const {
-    return m_altText.get(getCurrentNLB()->getLanguage());
+    return m_altText.get(AbstractIdentifiableItem::getCurrentNLB()->getLanguage());
 }
 
 const MultiLangString& LinkImpl::getAltTexts() const {
@@ -72,29 +73,29 @@ const MultiLangString& LinkImpl::getAltTexts() const {
 }
 
 void LinkImpl::setText(const std::string& text) {
-    m_text.put(getCurrentNLB()->getLanguage(), text);
+    m_text.put(AbstractIdentifiableItem::getCurrentNLB()->getLanguage(), text);
 }
 
 void LinkImpl::setAltText(const std::string& altText) {
-    m_altText.put(getCurrentNLB()->getLanguage(), altText);
+    m_altText.put(AbstractIdentifiableItem::getCurrentNLB()->getLanguage(), altText);
 }
 
-std::shared_ptr<SearchResult> LinkImpl::searchText(const std::shared_ptr<SearchContract>& contract) {
-    auto result = AbstractModifyingItem::searchText(contract);
+std::shared_ptr<SearchResult> LinkImpl::searchText(const SearchContract& contract) const {
+    auto result = AbstractIdentifiableItem::searchText(contract);
     if (result) {
         return result;
     }
     
     if (textMatches(m_text, contract)) {
         result = std::make_shared<SearchResult>();
-        result->setId(getId());
+        result->setId(AbstractModifyingItem::getId());
         result->setInformation(getText());
         return result;
     }
     
     if (textMatches(m_altText, contract)) {
         result = std::make_shared<SearchResult>();
-        result->setId(getId());
+        result->setId(AbstractModifyingItem::getId());
         result->setInformation(getAltText());
         return result;
     }
@@ -106,15 +107,15 @@ void LinkImpl::writeCoords(const std::shared_ptr<FileManipulator>& fileManipulat
                           const std::string& linkDir) {
     const std::string coordsDir = linkDir + "/" + COORDS_DIR_NAME;
     fileManipulator->createDir(coordsDir,
-        "Cannot create link text block coords directory for link with Id = " + getId());
-    m_coords.writeCoords(fileManipulator, coordsDir);
+        "Cannot create link text block coords directory for link with Id = " + AbstractModifyingItem::getId());
+    m_coords.writeCoords(*fileManipulator, coordsDir);
 }
 
 void LinkImpl::readCoords(const std::string& linkDir) {
     const std::string coordsDir = linkDir + "/" + COORDS_DIR_NAME;
     if (!FileUtils::exists(coordsDir)) {
         throw NLBIOException(
-            "Invalid NLB structure: coords directory does not exist for link with Id = " + getId()
+            "Invalid NLB structure: coords directory does not exist for link with Id = " + AbstractModifyingItem::getId()
         );
     }
     m_coords.read(coordsDir);
@@ -122,13 +123,13 @@ void LinkImpl::readCoords(const std::string& linkDir) {
 
 void LinkImpl::writeLink(const std::shared_ptr<FileManipulator>& fileManipulator,
                         const std::string& linksDir) {
-    const std::string linkDir = linksDir + "/" + getId();
+    const std::string linkDir = linksDir + "/" + AbstractModifyingItem::getId();
     
-    if (isDeleted()) {
+    if (AbstractIdentifiableItem::isDeleted()) {
         fileManipulator->deleteFileOrDir(linkDir);
     } else {
         fileManipulator->createDir(linkDir,
-            "Cannot create NLB link directory for link with Id = " + getId());
+            "Cannot create NLB link directory for link with Id = " + AbstractModifyingItem::getId());
 
         fileManipulator->writeOptionalString(linkDir, VARID_FILE_NAME, m_varId, DEFAULT_VAR_ID);
         fileManipulator->writeOptionalString(linkDir, TARGET_FILE_NAME, m_target, DEFAULT_TARGET);
@@ -181,7 +182,7 @@ void LinkImpl::readLink(const std::string& linkDir) {
     m_target = FileManipulator::getRequiredFileAsString(
         linkDir,
         TARGET_FILE_NAME,
-        "Error while reading link target for link with Id = " + getId()
+        "Error while reading link target for link with Id = " + AbstractModifyingItem::getId()
     );
 
     m_text = FileManipulator::readOptionalMultiLangString(
@@ -228,7 +229,7 @@ void LinkImpl::readLink(const std::string& linkDir) {
     readModifications(linkDir);
 }
 
-std::string LinkImpl::addObserver(const std::shared_ptr<NLBObserver>& observer) {
+std::string LinkImpl::addObserver(NLBObserver* observer) {
     return m_observerHandler.addObserver(observer);
 }
 

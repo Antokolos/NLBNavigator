@@ -1,7 +1,8 @@
-#include <stdexcept>
 #include "nlb/api/DummyNLB.h"
 #include "nlb/api/SearchResultTableModel.h"
 #include "nlb/domain/MediaExportParameters.h"
+
+#include <stdexcept>
 
 std::set<std::string> DummyNLB::getAllAchievementNames(bool recursive) {
     return std::set<std::string>();
