@@ -43,8 +43,6 @@ protected:
                                                 const std::vector<std::string>& orderList) const;
 
 private:
-    static std::string generateUUID();
-    
     std::string m_id;
     bool m_isDeleted;
     std::shared_ptr<NonLinearBook> m_currentNLB;
