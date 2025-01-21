@@ -20,6 +20,16 @@ public:
     LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::shared_ptr<Link>& sourceLink);
     LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::string& target);
 
+    std::string getId() const override { return AbstractModifyingItem::getId(); }
+    std::string getFullId() const override { return AbstractIdentifiableItem::getFullId(); }
+    bool isDeleted() const override { return AbstractIdentifiableItem::isDeleted(); }
+    std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractIdentifiableItem::getParent(); }
+    bool hasDeletedParent() const override { return AbstractIdentifiableItem::hasDeletedParent(); }
+    std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractIdentifiableItem::getCurrentNLB(); }
+    std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractModifyingItem::getModifications(); }
+    bool hasNoModifications() const override { return AbstractModifyingItem::hasNoModifications(); }
+    std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractModifyingItem::getModificationById(modId); }
+    
     // From Link interface
     std::string getVarId() const override { return m_varId; }
     std::string getTarget() const override { return m_target; }

@@ -19,7 +19,7 @@ class LinkImpl;
 class Link;
 class Page;
 
-class AbstractNodeItem : public AbstractModifyingItem {
+class AbstractNodeItem : public AbstractModifyingItem, public NodeItem {
 public:
     static const std::string COORDS_DIR_NAME;
     static const std::string LINKS_DIR_NAME;
@@ -106,12 +106,12 @@ public:
     void addContainedObjId(const std::string& containedObjId);
     void removeContainedObjId(const std::string& containedObjId);
     
-    std::shared_ptr<CoordsImpl> getCoords() const;
+    std::shared_ptr<Coords> getCoords() const;
     std::vector<std::shared_ptr<Link>> getLinks() const;
     std::vector<std::shared_ptr<LinkImpl>> getLinkImpls() const;
     size_t getLinkCount() const;
     void addLink(std::shared_ptr<LinkImpl> link);
-    std::shared_ptr<LinkImpl> getLinkById(const std::string& linkId);
+    std::shared_ptr<Link> getLinkById(const std::string& linkId) const;
 
     // Observer methods
     std::string addObserver(std::shared_ptr<NLBObserver> observer);

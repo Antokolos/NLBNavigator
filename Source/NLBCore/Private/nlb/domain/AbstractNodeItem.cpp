@@ -144,7 +144,7 @@ AbstractNodeItem::AbstractNodeItem(
     m_coords->setTop(coords->getTop());
     
     for (const auto& link : nodeItem->getLinks()) {
-        m_links.push_back(std::make_shared<LinkImpl>(shared_from_this(), link));
+        m_links.push_back(std::make_shared<LinkImpl>(std::enable_shared_from_this<NodeItem>::shared_from_this(), link));
     }
     
     m_containedObjIds = nodeItem->getContainedObjIds();

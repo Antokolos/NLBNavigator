@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iomanip>
 
-class UUID {
+class NLBUUID {
 public:
     static std::string randomUUID() {
         static std::random_device rd;

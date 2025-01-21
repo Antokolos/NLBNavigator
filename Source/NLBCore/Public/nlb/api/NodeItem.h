@@ -46,50 +46,50 @@ public:
      * @brief Gets the default tag ID
      * @return std::string The default tag ID
      */
-    virtual std::string getDefaultTagId() = 0;
+    virtual std::string getDefaultTagId() const = 0;
 
     /*!
      * @brief Gets the stroke color
      * @return std::string The stroke color
      */
-    virtual std::string getStroke() = 0;
+    virtual std::string getStroke() const = 0;
 
     /*!
      * @brief Gets the fill color
      * @return std::string The fill color
      */
-    virtual std::string getFill() = 0;
+    virtual std::string getFill() const = 0;
 
     /*!
      * @brief Gets the text color
      * @return std::string The text color
      */
-    virtual std::string getTextColor() = 0;
+    virtual std::string getTextColor() const = 0;
 
     /*!
-     * @brief Gets the list of contained object IDs
-     * @return std::list<std::string> List of contained object IDs
+     * @brief Gets the vector of contained object IDs
+     * @return std::vector<std::string> vector of contained object IDs
      */
-    virtual std::list<std::string> getContainedObjIds() = 0;
+    virtual std::vector<std::string> getContainedObjIds() const = 0;
 
     /*!
      * @brief Gets the coordinates
      * @return Coords The coordinates object
      */
-    virtual Coords getCoords() = 0;
+    virtual std::shared_ptr<Coords> getCoords() const = 0;
 
     /*!
      * @brief Gets all links
-     * @return std::list<std::shared_ptr<Link>> List of links
+     * @return std::vector<std::shared_ptr<Link>> Vector of links
      */
-    virtual std::list<std::shared_ptr<Link>> getLinks() = 0;
+    virtual std::vector<std::shared_ptr<Link>> getLinks() const = 0;
 
     /*!
      * @brief Gets a link by its ID
      * @param linkId The ID of the link to find
      * @return std::shared_ptr<Link> The found link or nullptr if not found
      */
-    virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) = 0;
+    virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const = 0;
     
     /*!
      * @brief Gets the external hierarchy path
@@ -98,7 +98,7 @@ public:
      *          and shows the position of the current node in the external modules hierarchy.
      * @return std::string Path-like hierarchy expression, e.g. 'module1/module2' or empty string
      */
-    virtual std::string getExternalHierarchy() = 0;
+    virtual std::string getExternalHierarchy() const = 0;
 
     /*!
      * @brief Virtual destructor

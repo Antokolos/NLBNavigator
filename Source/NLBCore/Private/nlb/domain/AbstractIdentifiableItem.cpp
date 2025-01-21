@@ -10,7 +10,7 @@
 #include "nlb/exception/NLBExceptions.h"
 
 AbstractIdentifiableItem::AbstractIdentifiableItem()
-    : m_id(UUID::randomUUID())
+    : m_id(NLBUUID::randomUUID())
     , m_isDeleted(false)
     , m_currentNLB(DummyNLB::singleton())
     , m_parent(nullptr) {

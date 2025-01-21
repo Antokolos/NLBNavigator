@@ -3,7 +3,7 @@
 #include "nlb/util/UUID.h"
 
 std::string ObserverHandler::addObserver(NLBObserver* observer) {
-    const std::string observerId = UUID::randomUUID();
+    const std::string observerId = NLBUUID::randomUUID();
     m_observers[observerId] = observer;
     return observerId;
 }
