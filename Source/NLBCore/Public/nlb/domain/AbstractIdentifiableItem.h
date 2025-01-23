@@ -25,16 +25,16 @@ public:
     virtual ~AbstractIdentifiableItem() override = default;
 
     void copy(const std::shared_ptr<IdentifiableItem>& identifiableItem);
-    void setId(const std::string& id);
+    virtual void setId(const std::string& id);
     std::string getId() const override;
     std::shared_ptr<IdentifiableItem> getParent() const override;
     void setParent(const std::shared_ptr<IdentifiableItem>& parent);
-    bool hasDeletedParent() const override;
+    virtual bool hasDeletedParent() const override;
     std::string getFullId() const override;
     void setDeleted(bool deleted);
     bool isDeleted() const override;
-    std::shared_ptr<NonLinearBook> getCurrentNLB() const override;
-    std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
+    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override;
+    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
 
 protected:
     bool textMatches(const MultiLangString& mlsToTest, const SearchContract& contract) const;

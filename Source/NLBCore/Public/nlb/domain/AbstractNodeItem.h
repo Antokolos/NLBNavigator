@@ -93,25 +93,25 @@ public:
     virtual ~AbstractNodeItem() = default;
 
     // Getters and setters
-    std::string getDefaultTagId() const;
+    virtual std::string getDefaultTagId() const override;
     void setDefaultTagId(const std::string& defaultTagId);
-    std::string getStroke() const;
+    virtual std::string getStroke() const override;
     void setStroke(const std::string& stroke);
-    std::string getFill() const;
+    virtual std::string getFill() const override;
     void setFill(const std::string& fill);
-    std::string getTextColor() const;
+    virtual std::string getTextColor() const override;
     void setTextColor(const std::string& textColor);
     
-    std::vector<std::string> getContainedObjIds() const;
+    virtual std::vector<std::string> getContainedObjIds() const override;
     void addContainedObjId(const std::string& containedObjId);
     void removeContainedObjId(const std::string& containedObjId);
     
-    std::shared_ptr<Coords> getCoords() const;
-    std::vector<std::shared_ptr<Link>> getLinks() const;
+    virtual std::shared_ptr<Coords> getCoords() const override;
+    virtual std::vector<std::shared_ptr<Link>> getLinks() const override;
     std::vector<std::shared_ptr<LinkImpl>> getLinkImpls() const;
     size_t getLinkCount() const;
     void addLink(std::shared_ptr<LinkImpl> link);
-    std::shared_ptr<Link> getLinkById(const std::string& linkId) const;
+    virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const override;
 
     // Observer methods
     std::string addObserver(std::shared_ptr<NLBObserver> observer);
@@ -124,7 +124,18 @@ public:
                                std::shared_ptr<NonLinearBookImpl> nonLinearBook);
     void readNodeItemProperties(const std::string& nodeDir);
 
-    std::string getExternalHierarchy() const;
+    virtual std::string getExternalHierarchy() const override;
+
+    virtual std::string getFullId() const override { return AbstractModifyingItem::getFullId(); }
+    virtual bool isDeleted() const override { return AbstractModifyingItem::isDeleted(); }
+    virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractModifyingItem::getParent(); }
+    virtual bool hasDeletedParent() const override { return AbstractModifyingItem::hasDeletedParent(); }
+    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractModifyingItem::getCurrentNLB(); }
+    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override { return AbstractModifyingItem::searchText(contract); }
+
+    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractModifyingItem::getModifications(); }
+    virtual bool hasNoModifications() const override { return AbstractModifyingItem::hasNoModifications(); }
+    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractModifyingItem::getModificationById(modId); }
 
 protected:
     std::shared_ptr<ResizeNodeCommand> createResizeNodeCommand(

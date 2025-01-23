@@ -21,13 +21,21 @@ public:
     virtual ~AbstractModifyingItem() override = default;
 
     // ModifyingItem interface implementation
-    std::vector<std::shared_ptr<Modification>> getModifications() const override;
-    bool hasNoModifications() const override;
-    std::shared_ptr<Modification> getModificationById(const std::string& modId) const override;
+    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override;
+    virtual bool hasNoModifications() const override;
+    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override;
     
     // Additional methods
     void addModification(std::shared_ptr<ModificationImpl> modification);
-    using AbstractIdentifiableItem::getId; // Resolve ambiguity
+ 
+    virtual void setId(const std::string& id) override { AbstractIdentifiableItem::setId(id); }
+    virtual std::string getId() const override { return AbstractIdentifiableItem::getId(); }
+    virtual std::string getFullId() const override { return AbstractIdentifiableItem::getFullId(); }
+    virtual bool isDeleted() const override { return AbstractIdentifiableItem::isDeleted(); }
+    virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractIdentifiableItem::getParent(); }
+    virtual bool hasDeletedParent() const override { return AbstractIdentifiableItem::hasDeletedParent(); }
+    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractIdentifiableItem::getCurrentNLB(); }
+    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override { return AbstractIdentifiableItem::searchText(contract); }
 
 protected:
     void writeModifications(const std::shared_ptr<FileManipulator>& fileManipulator,

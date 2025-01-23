@@ -111,7 +111,7 @@ public:
     virtual std::string getMorphOutId() = 0;
     virtual Obj* getMorphOutObj() = 0;
     virtual std::string getOffset() = 0;
-    virtual Coords getRelativeCoords(bool lookInMorphs) = 0;
+    virtual Coords& getRelativeCoords(bool lookInMorphs) = 0;
     virtual bool isTakable() = 0;
     virtual bool isCallback() = 0;
     virtual bool isImageInScene() = 0;
