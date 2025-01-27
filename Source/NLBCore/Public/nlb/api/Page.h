@@ -95,7 +95,7 @@ public:
     virtual std::string getModuleConstrId() const = 0;
     virtual std::string getModuleName() const = 0;
     virtual bool isModuleExternal() const = 0;
-    virtual NonLinearBook* getModule() const = 0;
+    virtual std::shared_ptr<NonLinearBook> getModule() const = 0;
 
     // Autowire related methods
     virtual bool isAutowire() const = 0;

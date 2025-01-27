@@ -54,7 +54,7 @@ public:
     std::string getModuleConstrId() const override;
     std::string getModuleName() const override;
     bool isModuleExternal() const override;
-    NonLinearBook* getModule() const override;
+    std::shared_ptr<NonLinearBook> getModule() const override;
 
     // Autowire related methods
     bool isAutowire() const override;

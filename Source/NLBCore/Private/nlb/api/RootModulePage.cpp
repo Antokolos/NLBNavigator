@@ -125,8 +125,8 @@ bool RootModulePage::isModuleExternal() const {
     return false;
 }
 
-NonLinearBook* RootModulePage::getModule() const {
-    return m_nlb.get();
+std::shared_ptr<NonLinearBook> RootModulePage::getModule() const {
+    return m_nlb;
 }
 
 bool RootModulePage::isAutowire() const {

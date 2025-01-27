@@ -170,8 +170,8 @@ public:
      */
     virtual std::set<std::string> getUsedSounds() = 0;
 
-    virtual std::vector<MediaFile> getImageFiles() = 0;
-    virtual std::vector<MediaFile> getSoundFiles() = 0;
+    virtual const std::vector<MediaFile>& getImageFiles() = 0;
+    virtual const std::vector<MediaFile>& getSoundFiles() = 0;
 
     virtual void exportMedia(
         bool isRoot,

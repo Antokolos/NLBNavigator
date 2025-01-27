@@ -17,6 +17,8 @@ class DummyNLB : public NonLinearBook {
 protected:
     // Protected constructor for singleton, to allow object creation via new
     DummyNLB() = default;
+    std::vector<MediaFile> m_imageFiles;
+    std::vector<MediaFile> m_soundFiles;
     
 public:
     // Prevent copying and assignment
@@ -46,8 +48,8 @@ public:
     std::string getImagesDir() override;
     std::set<std::string> getUsedImages() override;
     std::set<std::string> getUsedSounds() override;
-    std::vector<MediaFile> getImageFiles() override;
-    std::vector<MediaFile> getSoundFiles() override;
+    const std::vector<MediaFile>& getImageFiles() override;
+    const std::vector<MediaFile>& getSoundFiles() override;
     
     void exportMedia(
         bool isRoot,

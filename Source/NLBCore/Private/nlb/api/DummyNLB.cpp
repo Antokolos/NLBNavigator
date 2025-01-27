@@ -72,12 +72,12 @@ std::set<std::string> DummyNLB::getUsedSounds() {
     return std::set<std::string>();
 }
 
-std::vector<MediaFile> DummyNLB::getImageFiles() {
-    return std::vector<MediaFile>();
+const std::vector<MediaFile>& DummyNLB::getImageFiles() {
+    return m_imageFiles; //std::vector<MediaFile>();
 }
 
-std::vector<MediaFile> DummyNLB::getSoundFiles() {
-    return std::vector<MediaFile>();
+const std::vector<MediaFile>& DummyNLB::getSoundFiles() {
+    return m_soundFiles; //std::vector<MediaFile>();
 }
 
 void DummyNLB::exportMedia(
