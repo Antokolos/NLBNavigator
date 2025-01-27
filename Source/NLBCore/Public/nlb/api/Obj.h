@@ -75,7 +75,7 @@ public:
     virtual std::string getVarId() const = 0;
     virtual std::string getConstrId() const = 0;
     virtual std::string getCommonToId() const = 0;
-    virtual Obj* getCommonToObj(NonLinearBook* nonLinearBook) const = 0;
+    virtual std::shared_ptr<Obj> getCommonToObj(std::shared_ptr<NonLinearBook> nonLinearBook) const = 0;
     virtual std::string getName() const = 0;
     virtual std::string getImageFileName() const = 0;
     virtual std::string getSoundFileName() const = 0;
@@ -107,9 +107,9 @@ public:
     virtual bool isLooped() const = 0;
     virtual bool isNoRedrawOnAct() const = 0;
     virtual std::string getMorphOverId() const = 0;
-    virtual Obj* getMorphOverObj() const = 0;
+    virtual std::shared_ptr<Obj> getMorphOverObj() const = 0;
     virtual std::string getMorphOutId() const = 0;
-    virtual Obj* getMorphOutObj() const = 0;
+    virtual std::shared_ptr<Obj> getMorphOutObj() const = 0;
     virtual std::string getOffset() const = 0;
     virtual Coords& getRelativeCoords(bool lookInMorphs) const = 0;
     virtual bool isTakable() const = 0;

@@ -34,7 +34,7 @@ public:
     std::string getVarId() const override;
     std::string getConstrId() const override;
     std::string getCommonToId() const override;
-    Obj* getCommonToObj(NonLinearBook* nonLinearBook) const override;
+    std::shared_ptr<Obj> getCommonToObj(std::shared_ptr<NonLinearBook> nonLinearBook) const override;
     std::string getName() const override;
     std::string getImageFileName() const override;
     std::string getSoundFileName() const override;
@@ -63,9 +63,9 @@ public:
     bool isNoRedrawOnAct() const override;
 
     std::string getMorphOverId() const override;
-    Obj* getMorphOverObj() const override;
+    std::shared_ptr<Obj> getMorphOverObj() const override;
     std::string getMorphOutId() const override;
-    Obj* getMorphOutObj() const override;
+    std::shared_ptr<Obj> getMorphOutObj() const override;
     std::string getOffset() const override;
     Coords& getRelativeCoords(bool lookInMorphs) const override;
     bool isTakable() const override;

@@ -48,7 +48,7 @@ std::string NullObj::getCommonToId() const {
     return Obj::DEFAULT_COMMON_TO_ID;
 }
 
-Obj* NullObj::getCommonToObj(NonLinearBook* nonLinearBook) const {
+std::shared_ptr<Obj> NullObj::getCommonToObj(std::shared_ptr<NonLinearBook> nonLinearBook) const {
     return nullptr;
 }
 
@@ -156,7 +156,7 @@ std::string NullObj::getMorphOverId() const {
     return Obj::DEFAULT_MORPH_OVER_ID;
 }
 
-Obj* NullObj::getMorphOverObj() const {
+std::shared_ptr<Obj> NullObj::getMorphOverObj() const {
     return nullptr;
 }
 
@@ -164,7 +164,7 @@ std::string NullObj::getMorphOutId() const {
     return Obj::DEFAULT_MORPH_OUT_ID;
 }
 
-Obj* NullObj::getMorphOutObj() const {
+std::shared_ptr<Obj> NullObj::getMorphOutObj() const {
     return nullptr;
 }
 
