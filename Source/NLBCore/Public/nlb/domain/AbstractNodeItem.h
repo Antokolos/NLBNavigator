@@ -88,7 +88,7 @@ public:
 
     AbstractNodeItem();
     explicit AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB);
-    AbstractNodeItem(float left, float top, std::shared_ptr<NonLinearBook> currentNLB);
+    AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB, float left, float top);
     AbstractNodeItem(const std::shared_ptr<NodeItem>& nodeItem, std::shared_ptr<NonLinearBook> currentNLB);
     virtual ~AbstractNodeItem() = default;
 
@@ -126,6 +126,7 @@ public:
 
     virtual std::string getExternalHierarchy() const override;
 
+    virtual std::string getId() const override { return AbstractModifyingItem::getId(); }
     virtual std::string getFullId() const override { return AbstractModifyingItem::getFullId(); }
     virtual bool isDeleted() const override { return AbstractModifyingItem::isDeleted(); }
     virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractModifyingItem::getParent(); }

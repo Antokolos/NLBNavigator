@@ -197,6 +197,27 @@ public:
         const std::vector<std::string>& objIdsToBeExcluded,
         std::map<std::string, std::string>& visitedVars) const override;
 
+    virtual std::string getFullId() const override { return AbstractNodeItem::getFullId(); }
+    virtual bool isDeleted() const override { return AbstractNodeItem::isDeleted(); }
+    virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractNodeItem::getParent(); }
+    virtual bool hasDeletedParent() const override { return AbstractNodeItem::hasDeletedParent(); }
+    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractNodeItem::getCurrentNLB(); }
+    
+    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractNodeItem::getModifications(); }
+    virtual bool hasNoModifications() const override { return AbstractNodeItem::hasNoModifications(); }
+    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractNodeItem::getModificationById(modId); }
+
+    virtual std::string getDefaultTagId() const override { return AbstractNodeItem::getDefaultTagId(); }
+    virtual std::string getStroke() const override { return AbstractNodeItem::getStroke(); }
+    virtual std::string getFill() const override { return AbstractNodeItem::getFill(); }
+    virtual std::string getTextColor() const override { return AbstractNodeItem::getTextColor(); }
+    virtual std::vector<std::string> getContainedObjIds() const override { return AbstractNodeItem::getContainedObjIds(); }
+    virtual std::shared_ptr<Coords> getCoords() const override { return AbstractNodeItem::getCoords(); }
+    virtual std::vector<std::shared_ptr<Link>> getLinks() const override { return AbstractNodeItem::getLinks(); }
+
+    virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const override { return AbstractNodeItem::getLinkById(linkId); }
+    virtual std::string getExternalHierarchy() const override { return AbstractNodeItem::getExternalHierarchy(); }
+
 private:
     Coords& getRelativeCoordsByMorph(bool lookInMorphs) const;
     std::string getObjIdByMorphId(const std::string& morphId) const;

@@ -111,7 +111,7 @@ AbstractNodeItem::AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB)
     , m_observerHandler(std::make_shared<ObserverHandler>()) {
 }
 
-AbstractNodeItem::AbstractNodeItem(float left, float top, std::shared_ptr<NonLinearBook> currentNLB)
+AbstractNodeItem::AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB, float left, float top)
     : AbstractModifyingItem(currentNLB)
     , m_defaultTagId(DEFAULT_TAG_ID)
     , m_stroke(DEFAULT_STROKE)
