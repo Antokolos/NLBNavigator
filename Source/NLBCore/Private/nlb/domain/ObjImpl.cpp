@@ -417,10 +417,10 @@ Obj::ContainerType ObjImpl::getContainerType() const {
     if (!m_containerId.empty()) {
         std::shared_ptr<NonLinearBook> nlb = getCurrentNLB();
         if (nlb->getPageById(m_containerId)) {
-            return Obj::ContainerType::PAGE;
+            return Obj::ContainerType::Page;
         } else if (nlb->getObjById(m_containerId)) {
-            return Obj::ContainerType::OBJ;
+            return Obj::ContainerType::Obj;
         }
     }
-    return Obj::ContainerType::NONE;
+    return Obj::ContainerType::None;
 }
