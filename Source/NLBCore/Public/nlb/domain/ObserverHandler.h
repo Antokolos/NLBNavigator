@@ -2,15 +2,16 @@
 
 #include <string>
 #include <map>
+#include <memory>
 
 class NLBObserver;
 
 class ObserverHandler {
 private:
-    std::map<std::string, NLBObserver*> m_observers;
+    std::map<std::string, std::shared_ptr<NLBObserver>> m_observers;
 
 public:
-    std::string addObserver(NLBObserver* observer);
+    std::string addObserver(std::shared_ptr<NLBObserver> observer);
 
     void removeObserver(const std::string& observerId);
 

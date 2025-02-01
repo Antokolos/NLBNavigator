@@ -116,6 +116,7 @@ public:
     void setReturnText(const std::string& returnText);
 
     std::shared_ptr<NonLinearBook> getModule() const override;
+    std::shared_ptr<NonLinearBookImpl> getModuleImpl() const {return m_module; };
 
     void setAutoIn(bool autoIn);
     void setNeedsAction(bool needsAction);
@@ -195,6 +196,10 @@ public:
     virtual std::vector<std::shared_ptr<Link>> getLinks() const override { return AbstractNodeItem::getLinks(); }
     virtual std::shared_ptr<Link> getLinkById(const std::string& id) const override { return AbstractNodeItem::getLinkById(id); }
     virtual std::string getExternalHierarchy() const override { return AbstractNodeItem::getExternalHierarchy(); }
+
+    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override { return AbstractNodeItem::addObserver(observer); }
+    virtual void removeObserver(const std::string& observerId) override { AbstractNodeItem::removeObserver(observerId); }
+    virtual void notifyObservers() override { AbstractNodeItem::notifyObservers(); }
 
 private:
     // Private helper methods

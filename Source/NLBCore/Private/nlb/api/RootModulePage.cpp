@@ -208,3 +208,8 @@ std::shared_ptr<NonLinearBook> RootModulePage::getCurrentNLB() const {
 std::shared_ptr<SearchResult> RootModulePage::searchText(const SearchContract& contract) const {
     return std::make_shared<SearchResult>();
 }
+
+std::vector<std::shared_ptr<Modification>> RootModulePage::getModifications() const 
+{
+    return std::vector<std::shared_ptr<Modification>>();
+}

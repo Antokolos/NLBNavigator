@@ -229,7 +229,7 @@ void LinkImpl::readLink(const std::string& linkDir) {
     readModifications(linkDir);
 }
 
-std::string LinkImpl::addObserver(NLBObserver* observer) {
+std::string LinkImpl::addObserver(std::shared_ptr<NLBObserver> observer) {
     return m_observerHandler.addObserver(observer);
 }
 

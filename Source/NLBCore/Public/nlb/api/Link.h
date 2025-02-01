@@ -20,10 +20,10 @@ public:
     static const MultiLangString DEFAULT_ALT_TEXT;
     static const std::string DEFAULT_CONSTR_ID;
     static const std::string DEFAULT_STROKE;
-    static const bool DEFAULT_AUTO;
-    static const bool DEFAULT_NEEDS_ACTION;
-    static const bool DEFAULT_ONCE;
-    static const bool DEFAULT_TECHNICAL;
+    static const bool DEFAULT_AUTO = false;
+    static const bool DEFAULT_NEEDS_ACTION = false;
+    static const bool DEFAULT_ONCE = false;
+    static const bool DEFAULT_TECHNICAL = false;
 
     virtual ~Link() = default;
 

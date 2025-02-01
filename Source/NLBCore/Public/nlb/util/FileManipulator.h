@@ -122,6 +122,13 @@ public:
     static MultiLangString readOptionalMultiLangString(const std::string& mlsRootDir,
                                                       const MultiLangString& defaultValue);
 
+    /*!
+     * \brief Writes input stream to file
+     * \param filePath Path of file to write
+     * \param input Input stream containing data
+     */
+    static void writeFile(const std::string& filePath, std::istream& input);
+    
 private:
     static const int BLOCK_SIZE = 1024; ///< Buffer size for file operations
 
@@ -163,10 +170,4 @@ private:
      */
     static void transfer(std::istream& input, std::ostream& output);
 
-    /*!
-     * \brief Writes input stream to file
-     * \param filePath Path of file to write
-     * \param input Input stream containing data
-     */
-    static void writeFile(const std::string& filePath, std::istream& input);
 };

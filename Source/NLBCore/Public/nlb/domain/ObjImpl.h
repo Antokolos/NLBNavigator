@@ -218,6 +218,12 @@ public:
     virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const override { return AbstractNodeItem::getLinkById(linkId); }
     virtual std::string getExternalHierarchy() const override { return AbstractNodeItem::getExternalHierarchy(); }
 
+
+    virtual std::string getId() const override { return AbstractIdentifiableItem::getId(); }
+    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override { return AbstractNodeItem::addObserver(observer); }
+    virtual void removeObserver(const std::string& observerId) override { AbstractNodeItem::removeObserver(observerId); }
+    virtual void notifyObservers() override { AbstractNodeItem::notifyObservers(); }
+
 private:
     Coords& getRelativeCoordsByMorph(bool lookInMorphs) const;
     std::string getObjIdByMorphId(const std::string& morphId) const;

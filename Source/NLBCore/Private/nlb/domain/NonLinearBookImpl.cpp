@@ -1,5 +1,7 @@
 #include "nlb/domain/NonLinearBookImpl.h"
 #include "nlb/domain/MediaExportParameters.h"
+#include "nlb/domain/PageImpl.h"
+#include "nlb/domain/ObjImpl.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/api/Constants.h"
 #include "nlb/api/SearchResultTableModel.h"
@@ -241,3 +243,9 @@ std::map<std::string, MediaExportParameters> NonLinearBookImpl::getMediaExportPa
 std::map<std::string, bool> NonLinearBookImpl::getMediaFlagsMap() {
     return std::map<std::string, bool>();
 }
+
+std::shared_ptr<PageImpl> NonLinearBookImpl::getPageImplById(const std::string& id) const
+{ return std::static_pointer_cast<PageImpl>(m_pages.at(id)); }
+
+std::shared_ptr<ObjImpl> NonLinearBookImpl::getObjImplById(const std::string& id) const
+{ return std::static_pointer_cast<ObjImpl>(m_objs.at(id)); }

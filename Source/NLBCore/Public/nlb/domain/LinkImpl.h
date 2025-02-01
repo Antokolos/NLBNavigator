@@ -69,7 +69,7 @@ public:
     void readLink(const std::string& linkDir);
 
     // Observer pattern methods
-    std::string addObserver(NLBObserver* observer);
+    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override;
     void removeObserver(const std::string& observerId);
     void notifyObservers();
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "nlb/api/Page.h"
+#include "nlb/api/Constants.h"
+#include "nlb/api/CoordsLw.h"
 #include <memory>
 
 class NonLinearBook;
@@ -79,7 +81,25 @@ public:
     bool hasDeletedParent() const override;
     std::shared_ptr<NonLinearBook> getCurrentNLB() const override;
     std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
-    
+    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override;
+    virtual bool hasNoModifications() const override { return true; }
+    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return nullptr; }
+
+    // Методы из NodeItem
+    virtual std::string getDefaultTagId() const override { return DEFAULT_TAG_ID; }
+    virtual std::string getStroke() const override { return nlb::Constants::EMPTY_STRING; }
+    virtual std::string getFill() const override { return nlb::Constants::EMPTY_STRING; }
+    virtual std::string getTextColor() const override { return nlb::Constants::EMPTY_STRING; }
+    virtual std::vector<std::string> getContainedObjIds() const override { return std::vector<std::string>(); }
+    virtual std::shared_ptr<Coords> getCoords() const override { return std::make_shared<CoordsLw>(); }
+    virtual std::vector<std::shared_ptr<Link>> getLinks() const override { return std::vector<std::shared_ptr<Link>>(); }
+    virtual std::shared_ptr<Link> getLinkById(const std::string& id) const override { return nullptr; }
+    virtual std::string getExternalHierarchy() const override { return nlb::Constants::EMPTY_STRING; }
+
+    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override { return nlb::Constants::EMPTY_STRING; }
+    virtual void removeObserver(const std::string& observerId) override {}
+    virtual void notifyObservers() override {}
+
 private:
     std::shared_ptr<NonLinearBook> m_nlb;
     std::string m_pageId;

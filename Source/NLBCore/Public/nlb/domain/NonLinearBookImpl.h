@@ -6,12 +6,18 @@
 #include "nlb/api/Page.h"
 #include "nlb/api/Obj.h"
 #include "nlb/api/Variable.h"
+#include "nlb/api/SearchResultTableModel.h"
+#include "nlb/domain/MediaExportParameters.h"
 #include <map>
 #include <vector>
 #include <set>
 #include <memory>
 #include <string>
 #include <regex>
+
+class PageImpl;
+class ObjImpl;
+class FileManipulator;
 
 class NonLinearBookImpl : public NonLinearBook {
     public:
@@ -83,6 +89,79 @@ void append(const std::shared_ptr<NonLinearBook>& source, bool generateNewIds, b
     std::map<std::string, std::string> getMediaRedirectsMap() override;
     std::map<std::string, MediaExportParameters> getMediaExportParametersMap() override;
     std::map<std::string, bool> getMediaFlagsMap() override;
+    std::shared_ptr<Obj> getObjById(const std::string& id) override { return nullptr; }
+    std::shared_ptr<PageImpl> getPageImplById(const std::string& id) const;
+std::shared_ptr<ObjImpl> getObjImplById(const std::string& id) const;
+
+    void exportImages(bool isRoot, const std::string& exportDir) {}
+    void exportSound(bool isRoot, const std::string& exportDir) {}
+    void exportToChoiceScript(const std::string& exportDir) {}
+    void exportToQSPTextFile(const std::string& exportDir) {}
+    void exportToURQTextFile(const std::string& exportDir) {}
+    void exportToPDFFile(const std::string& exportFile) {}
+    void exportToTXTFile(const std::string& exportDir) {}
+    void exportToHTMLFile(const std::string& exportDir) {}
+    void exportToJSIQFile(const std::string& exportDir) {}
+    void exportToSTEADFile(const std::string& exportDir) {}
+    void exportToVNSTEADFile(const std::string& exportDir) {}
+    void exportToASMFile(const std::string& exportDir) {}
+    void setMediaFileConstrId(
+    MediaFile::Type mediaType,
+    const std::string& fileName,
+    const std::string& constrId
+) {
+    
+}
+
+void setMediaFileRedirect(
+    MediaFile::Type mediaType,
+    const std::string& fileName,
+    const std::string& redirect
+) {
+    
+}
+
+void setMediaFileFlag(
+    MediaFile::Type mediaType,
+    const std::string& fileName,
+    bool flag
+) {
+   
+}
+
+void setMediaFileExportParametersPreset(
+    MediaFile::Type mediaType,
+    const std::string& fileName,
+    MediaExportParameters::Preset preset
+) {
+   
+}
+
+std::vector<std::shared_ptr<Link>> getAssociatedLinks(std::shared_ptr<NodeItem> nodeItem) {
+    return {};
+}
+
+void copyAndAddImageFile(
+    const FileManipulator& fileManipulator,
+    const std::string& imageFile,
+    const std::string& imageFileName
+) {}
+
+void copyAndAddSoundFile(
+    const FileManipulator& fileManipulator,
+    const std::string& imageFile,
+    const std::string& imageFileName
+) {}
+
+void  removeImageFile(
+    const FileManipulator& fileManipulator,
+    const std::string& imageFileName
+) {}
+
+void removeSoundFile(
+    const FileManipulator& fileManipulator,
+    const std::string& soundFileName
+) {}
 
 private:
     // Member variables
@@ -115,8 +194,8 @@ private:
     void writeMediaFiles(const std::string& rootDir, const std::vector<MediaFile>& mediaFiles, const std::string& mediaDirName);
 
     // Override remaining virtual methods from NonLinearBook
-    std::shared_ptr<Obj> getObjById(const std::string& id) override { return nullptr; }
     std::map<std::string, std::shared_ptr<Obj>> getObjs() override { return m_objs; }
     std::vector<std::shared_ptr<Variable>> getVariables() override { return {}; }
     std::shared_ptr<Variable> getVariableById(const std::string& id) override { return nullptr; }
+    
 };

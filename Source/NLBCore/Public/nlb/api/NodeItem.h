@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "ModifyingItem.h"
+#include "NLBObservable.h"
 
 // Forward declarations
 class Coords;
@@ -16,7 +17,7 @@ class Link;
  * @extends ModifyingItem
  * @extends NLBObservable
  */
-class NodeItem : public ModifyingItem {
+class NodeItem : public ModifyingItem, public NLBObservable {
 public:
     // Constants
     static const std::string DEFAULT_STROKE;

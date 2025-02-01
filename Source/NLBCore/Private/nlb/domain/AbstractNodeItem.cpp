@@ -211,12 +211,6 @@ std::shared_ptr<Link> AbstractNodeItem::getLinkById(const std::string& linkId) c
     return (it != m_links.end()) ? *it : nullptr;
 }
 
-void AbstractNodeItem::notifyObservers() {
-    if (m_observerHandler) {
-        m_observerHandler->notifyObservers();
-    }
-}
-
 std::string AbstractNodeItem::getExternalHierarchy() const {
     std::vector<std::string> hierarchy;
     auto currentNLB = AbstractIdentifiableItem::getCurrentNLB();
@@ -245,4 +239,20 @@ std::string AbstractNodeItem::getExternalHierarchy() const {
     }
     
     return result;
+}
+
+std::string AbstractNodeItem::addObserver(std::shared_ptr<NLBObserver> observer) {
+    return m_observerHandler ? m_observerHandler->addObserver(observer) : nlb::Constants::EMPTY_STRING;
+}
+
+void AbstractNodeItem::removeObserver(const std::string& observerId) {
+    if (m_observerHandler) {
+        m_observerHandler->removeObserver(observerId);
+    }
+}
+
+void AbstractNodeItem::notifyObservers() {
+    if (m_observerHandler) {
+        m_observerHandler->notifyObservers();
+    }
 }
