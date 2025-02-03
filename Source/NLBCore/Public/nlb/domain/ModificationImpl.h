@@ -48,6 +48,7 @@ public:
     std::string getExprId() const override;
     void setExprId(const std::string& exprId);
     Type getType() const override;
+    void setType(const Type& type);
     void setType(const std::string& type);
     bool returnsValue() const override;
     bool isParametrized() const override;

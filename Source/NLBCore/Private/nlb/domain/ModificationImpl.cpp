@@ -222,6 +222,10 @@ void ModificationImpl::setType(const std::string& type) {
     else m_type = Type::ASSIGN;
 }
 
+void ModificationImpl::setType(const Type& type) {
+    m_type = type;
+}
+
 void ModificationImpl::writeModification(const std::shared_ptr<FileManipulator>& fileManipulator,
                                        const std::string& modificationsDir) {
     const std::string modificationDir = modificationsDir + "/" + AbstractIdentifiableItem::getId();
