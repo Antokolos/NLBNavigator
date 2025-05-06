@@ -4,26 +4,25 @@
 #include "nlb/api/ModifyingItem.h"
 #include "nlb/api/Constants.h"
 #include "nlb/api/NLBObservable.h"
-
-// Forward declarations
-class MultiLangString;
-class Coords;
+#include "nlb/util/MultiLangString.h"
+#include "nlb/api/Coords.h"
 
 /*!
  * @brief Interface for link functionality
  */
 class Link : public ModifyingItem, public NLBObservable {
 public:
-    static const std::string DEFAULT_VAR_ID;
-    static const std::string DEFAULT_TARGET;
-    static const MultiLangString DEFAULT_TEXT;
-    static const MultiLangString DEFAULT_ALT_TEXT;
-    static const std::string DEFAULT_CONSTR_ID;
-    static const std::string DEFAULT_STROKE;
-    static const bool DEFAULT_AUTO = false;
-    static const bool DEFAULT_NEEDS_ACTION = false;
-    static const bool DEFAULT_ONCE = false;
-    static const bool DEFAULT_TECHNICAL = false;
+    // Константы определены с модификатором inline
+    inline static const std::string DEFAULT_VAR_ID = nlb::Constants::EMPTY_STRING;
+    inline static const std::string DEFAULT_TARGET = nlb::Constants::EMPTY_STRING;
+    inline static const MultiLangString DEFAULT_TEXT = MultiLangString::createDefaultLinkText();
+    inline static const MultiLangString DEFAULT_ALT_TEXT = MultiLangString::createEmptyText();
+    inline static const std::string DEFAULT_CONSTR_ID = nlb::Constants::EMPTY_STRING;
+    inline static const std::string DEFAULT_STROKE = "0000FF";
+    inline static const bool DEFAULT_AUTO = false;
+    inline static const bool DEFAULT_NEEDS_ACTION = false;
+    inline static const bool DEFAULT_ONCE = false;
+    inline static const bool DEFAULT_TECHNICAL = false;
 
     virtual ~Link() = default;
 

@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{04AB93CF-4696-0D5B-9B40-38AEF58E2031}",
+	"EngineAssociation": "{FB301FC7-4BDE-B396-899D-2FB7D4A3E599}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -28,15 +28,6 @@
 		{
 			"Name": "ModelingToolsEditorMode",
 			"Enabled": true
-		},
-		{
-			"Name": "VisualStudioTools",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/362651520df94e4fa65492dbcba44ae2",
-			"SupportedTargetPlatforms": [
-				"Win64"
-			]
 		}
-	],
-	"bUseLiveCoding": false
+	]
 }

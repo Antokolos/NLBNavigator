@@ -7,6 +7,7 @@
  */
 class DummyProgressData : public ProgressData {
 public:
+    virtual ~DummyProgressData() = default;
     void setProgressValue(int progress) override {};
     void setNoteText(const std::string& text) override {};
 };
