@@ -24,7 +24,7 @@ NonLinearBookImpl::NonLinearBookImpl(std::shared_ptr<NonLinearBook> parentNLB, s
       m_suppressSound(parentNLB->isSuppressSound()) {}
 
 // Method implementations
-std::set<std::string> NonLinearBookImpl::getAllAchievementNames(bool recursive) {
+std::set<std::string> NonLinearBookImpl::getAllAchievementNames(bool recursive) const {
     std::set<std::string> result;
     for (const auto& [key, page] : m_pages) {
         // Collect achievements from pages
@@ -36,109 +36,109 @@ std::set<std::string> NonLinearBookImpl::getAllAchievementNames(bool recursive) 
     return result;
 }
 
-std::string NonLinearBookImpl::getPerfectGameAchievementName() {
+std::string NonLinearBookImpl::getPerfectGameAchievementName() const {
     return m_perfectGameAchievementName;
 }
 
-bool NonLinearBookImpl::isEmpty() {
+bool NonLinearBookImpl::isEmpty() const {
     return m_pages.empty() && m_objs.empty() && m_variables.empty();
 }
 
-std::string NonLinearBookImpl::getStartPoint() {
+std::string NonLinearBookImpl::getStartPoint() const {
     return m_startPoint;
 }
 
-std::string NonLinearBookImpl::getLanguage() {
+std::string NonLinearBookImpl::getLanguage() const {
     return m_language;
 }
 
-std::string NonLinearBookImpl::getLicense() {
+std::string NonLinearBookImpl::getLicense() const {
     return m_license;
 }
 
-Theme NonLinearBookImpl::getTheme() {
+Theme NonLinearBookImpl::getTheme() const {
     return m_theme;
 }
 
-bool NonLinearBookImpl::isFullAutowire() {
+bool NonLinearBookImpl::isFullAutowire() const {
     return m_fullAutowire;
 }
 
-bool NonLinearBookImpl::isSuppressMedia() {
+bool NonLinearBookImpl::isSuppressMedia() const {
     return m_suppressMedia;
 }
 
-bool NonLinearBookImpl::isSuppressSound() {
+bool NonLinearBookImpl::isSuppressSound() const {
     return m_suppressSound;
 }
 
-std::string NonLinearBookImpl::getTitle() {
+std::string NonLinearBookImpl::getTitle() const {
     return m_title;
 }
 
-std::string NonLinearBookImpl::getAuthor() {
+std::string NonLinearBookImpl::getAuthor() const {
     return m_author;
 }
 
-std::string NonLinearBookImpl::getVersion() {
+std::string NonLinearBookImpl::getVersion() const {
     return m_version;
 }
 
-std::string NonLinearBookImpl::getRootDir() {
+std::string NonLinearBookImpl::getRootDir() const {
     // Implementation based on root directory handling
     return {}; // Placeholder
 }
 
-std::string NonLinearBookImpl::getImagesDir() {
+std::string NonLinearBookImpl::getImagesDir() const {
     // Implementation for image directory retrieval
     return {}; // Placeholder
 }
 
-std::set<std::string> NonLinearBookImpl::getUsedImages() {
+std::set<std::string> NonLinearBookImpl::getUsedImages() const {
     std::set<std::string> result;
     // Logic for extracting used images
     return result;
 }
 
-std::set<std::string> NonLinearBookImpl::getUsedSounds() {
+std::set<std::string> NonLinearBookImpl::getUsedSounds() const {
     std::set<std::string> result;
     // Logic for extracting used sounds
     return result;
 }
 
-const std::vector<MediaFile>& NonLinearBookImpl::getImageFiles() {
+const std::vector<MediaFile>& NonLinearBookImpl::getImageFiles() const {
     return m_imageFiles;  //std::vector<MediaFile>(m_imageFiles.begin(), m_imageFiles.end());
 }
 
-const std::vector<MediaFile>& NonLinearBookImpl::getSoundFiles() {
+const std::vector<MediaFile>& NonLinearBookImpl::getSoundFiles() const {
     return m_soundFiles;  //std::vector<MediaFile>(m_soundFiles.begin(), m_soundFiles.end());
 }
 
-std::map<std::string, std::shared_ptr<Page>> NonLinearBookImpl::getPages() {
+std::map<std::string, std::shared_ptr<Page>> NonLinearBookImpl::getPages() const {
     return m_pages;
 }
 
-std::map<std::string, std::shared_ptr<Page>> NonLinearBookImpl::getDownwardPagesHeirarchy() {
+std::map<std::string, std::shared_ptr<Page>> NonLinearBookImpl::getDownwardPagesHeirarchy() const {
     return {}; // Recursive logic here
 }
 
-std::map<std::string, std::shared_ptr<Page>> NonLinearBookImpl::getUpwardPagesHeirarchy() {
+std::map<std::string, std::shared_ptr<Page>> NonLinearBookImpl::getUpwardPagesHeirarchy() const {
     return {}; // Recursive logic here
 }
 
-std::vector<std::string> NonLinearBookImpl::getAutowiredPagesIds() {
+std::vector<std::string> NonLinearBookImpl::getAutowiredPagesIds() const {
     return m_autowiredPages;
 }
 
-std::vector<std::string> NonLinearBookImpl::getParentGlobalAutowiredPagesIds() {
+std::vector<std::string> NonLinearBookImpl::getParentGlobalAutowiredPagesIds() const {
     return {}; // Logic here
 }
 
-bool NonLinearBookImpl::isAutowired(const std::string& pageId) {
+bool NonLinearBookImpl::isAutowired(const std::string& pageId) const {
     return std::find(m_autowiredPages.begin(), m_autowiredPages.end(), pageId) != m_autowiredPages.end();
 }
 
-std::shared_ptr<Page> NonLinearBookImpl::getPageById(const std::string& id) {
+std::shared_ptr<Page> NonLinearBookImpl::getPageById(const std::string& id) const {
     auto it = m_pages.find(id);
     return (it != m_pages.end()) ? it->second : nullptr;
 }
@@ -165,82 +165,82 @@ bool NonLinearBookImpl::loadAndSetParent(const std::string& path, std::shared_pt
 void NonLinearBookImpl::exportMedia(bool recursively, const std::string& mediaDir,
                                   const std::string& exportDir,
                                   const std::vector<MediaFile>& mediaFiles,
-                                  MediaFile::Type type) {
+                                  MediaFile::Type type) const {
     // TODO: Implement media export logic
 }
 
 std::shared_ptr<Page> NonLinearBookImpl::createFilteredPage(const std::string& pageId,
-                                                          const History& history) {
+                                                          const History& history) const {
     // TODO: Implement filtered page creation
     return nullptr;
 }
 
-SearchResultTableModel NonLinearBookImpl::getVariables(const std::string& filter) {
+SearchResultTableModel NonLinearBookImpl::getVariables(const std::string& filter) const {
     return SearchResultTableModel(); // Empty model for now
 }
 
-SearchResultTableModel NonLinearBookImpl::getLeafs(const std::string& filter) {
+SearchResultTableModel NonLinearBookImpl::getLeafs(const std::string& filter) const {
     return SearchResultTableModel(); // Empty model for now
 }
 
 SearchResultTableModel NonLinearBookImpl::searchText(const SearchContract& contract,
-                                                   const std::string& filter) {
+                                                   const std::string& filter) const {
     return SearchResultTableModel(); // Empty model for now
 }
 
-bool NonLinearBookImpl::findVariable(const std::string& variableName) {
+bool NonLinearBookImpl::findVariable(const std::string& variableName) const {
     return false;
 }
 
-SearchResultTableModel NonLinearBookImpl::checkBook(const std::string& filter) {
+SearchResultTableModel NonLinearBookImpl::checkBook(const std::string& filter) const {
     return SearchResultTableModel(); // Empty model for now
 }
 
-NonLinearBook::BookStatistics NonLinearBookImpl::getBookStatistics() {
+NonLinearBook::BookStatistics NonLinearBookImpl::getBookStatistics() const {
     return BookStatistics();
 }
 
-NonLinearBook::VariableStatistics NonLinearBookImpl::getVariableStatistics() {
+NonLinearBook::VariableStatistics NonLinearBookImpl::getVariableStatistics() const {
     return VariableStatistics();
 }
 
-std::shared_ptr<NonLinearBook> NonLinearBookImpl::getParentNLB() {
+std::shared_ptr<NonLinearBook> NonLinearBookImpl::getParentNLB() const {
     return m_parentNLB;
 }
 
-bool NonLinearBookImpl::isDummy() {
+bool NonLinearBookImpl::isDummy() const {
     return false;
 }
 
-std::shared_ptr<Page> NonLinearBookImpl::getParentPage() {
+std::shared_ptr<Page> NonLinearBookImpl::getParentPage() const {
     return m_parentPage;
 }
 
-std::map<std::string, std::shared_ptr<NonLinearBook>> NonLinearBookImpl::getExternalModules() {
+std::map<std::string, std::shared_ptr<NonLinearBook>> NonLinearBookImpl::getExternalModules() const {
     return std::map<std::string, std::shared_ptr<NonLinearBook>>();
 }
 
-std::shared_ptr<NonLinearBook> NonLinearBookImpl::findExternalModule(const std::string& moduleId) {
+std::shared_ptr<NonLinearBook> NonLinearBookImpl::findExternalModule(const std::string& moduleId) const {
     return nullptr;
 }
 
-std::map<std::string, Variable::DataType> NonLinearBookImpl::getVariableDataTypes() {
+std::map<std::string, Variable::DataType> NonLinearBookImpl::getVariableDataTypes() const {
     return std::map<std::string, Variable::DataType>();
 }
 
-std::map<std::string, std::string> NonLinearBookImpl::getMediaToConstraintMap() {
+std::map<std::string, std::string> NonLinearBookImpl::getMediaToConstraintMap() const {
     return std::map<std::string, std::string>();
 }
 
-std::map<std::string, std::string> NonLinearBookImpl::getMediaRedirectsMap() {
+std::map<std::string, std::string> NonLinearBookImpl::getMediaRedirectsMap() const {
     return std::map<std::string, std::string>();
 }
 
-std::map<std::string, MediaExportParameters> NonLinearBookImpl::getMediaExportParametersMap() {
+std::map<std::string, MediaExportParameters> NonLinearBookImpl::getMediaExportParametersMap() const {
     return std::map<std::string, MediaExportParameters>();
 }
 
-std::map<std::string, bool> NonLinearBookImpl::getMediaFlagsMap() {
+std::map<std::string, bool> NonLinearBookImpl::getMediaFlagsMap() const {
     return std::map<std::string, bool>();
 }
 

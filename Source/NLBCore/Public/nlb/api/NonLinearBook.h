@@ -24,24 +24,24 @@ class MediaExportParameters;
 class NonLinearBook {
 public:
     // Constants
-    static const std::string TRUE_VARID;
-    static const std::string FALSE_VARID;
-    static const std::string LC_VARID_PREFIX;
-    static const std::string LC_VARID_SEPARATOR_OUT;
+    inline static const std::string TRUE_VARID = "TRUE";
+    inline static const std::string FALSE_VARID = "FALSE";
+    inline static const std::string LC_VARID_PREFIX = "LC_";
+    inline static const std::string LC_VARID_SEPARATOR_OUT = "_OUT_";
 
-    static const std::string SOUND_DIR_NAME;
-    static const std::string IMAGES_DIR_NAME;
-    static const std::string DEFAULT_STARTPOINT;
-    static const Theme DEFAULT_THEME;
-    static const std::string DEFAULT_LANGUAGE;
-    static const std::string DEFAULT_LICENSE;
-    static constexpr bool DEFAULT_FULL_AUTOWIRE = false;
-    static constexpr bool DEFAULT_SUPPRESS_MEDIA = false;
-    static constexpr bool DEFAULT_SUPPRESS_SOUND = false;
-    static const std::string DEFAULT_TITLE;
-    static const std::string DEFAULT_AUTHOR;
-    static const std::string DEFAULT_VERSION;
-    static const std::string DEFAULT_PERFECT_GAME_ACHIEVEMENT_NAME;
+    inline static const std::string SOUND_DIR_NAME = "sound";
+    inline static const std::string IMAGES_DIR_NAME = "images";
+    inline static const std::string DEFAULT_STARTPOINT = "";
+    inline static const Theme DEFAULT_THEME = Theme::DEFAULT;
+    inline static const std::string DEFAULT_LANGUAGE = "ru";
+    inline static const std::string DEFAULT_LICENSE = "";
+    inline static constexpr bool DEFAULT_FULL_AUTOWIRE = false;
+    inline static constexpr bool DEFAULT_SUPPRESS_MEDIA = false;
+    inline static constexpr bool DEFAULT_SUPPRESS_SOUND = false;
+    inline static const std::string DEFAULT_TITLE = "";
+    inline static const std::string DEFAULT_AUTHOR = "";
+    inline static const std::string DEFAULT_VERSION = "";
+    inline static const std::string DEFAULT_PERFECT_GAME_ACHIEVEMENT_NAME = "";
 
     /*!
      * Module information class
@@ -144,34 +144,34 @@ public:
 
     virtual ~NonLinearBook() = default;
 
-    virtual std::set<std::string> getAllAchievementNames(bool recursive) = 0;
-    virtual std::string getPerfectGameAchievementName() = 0;
-    virtual bool isEmpty() = 0;
-    virtual std::string getStartPoint() = 0;
-    virtual std::string getLanguage() = 0;
-    virtual std::string getLicense() = 0;
-    virtual Theme getTheme() = 0;
-    virtual bool isFullAutowire() = 0;
-    virtual bool isSuppressMedia() = 0;
-    virtual bool isSuppressSound() = 0;
-    virtual std::string getTitle() = 0;
-    virtual std::string getAuthor() = 0;
-    virtual std::string getVersion() = 0;
-    virtual std::string getRootDir() = 0;
-    virtual std::string getImagesDir() = 0;
+    virtual std::set<std::string> getAllAchievementNames(bool recursive) const = 0;
+    virtual std::string getPerfectGameAchievementName() const = 0;
+    virtual bool isEmpty() const = 0;
+    virtual std::string getStartPoint() const = 0;
+    virtual std::string getLanguage() const = 0;
+    virtual std::string getLicense() const = 0;
+    virtual Theme getTheme() const = 0;
+    virtual bool isFullAutowire() const = 0;
+    virtual bool isSuppressMedia() const = 0;
+    virtual bool isSuppressSound() const = 0;
+    virtual std::string getTitle() const = 0;
+    virtual std::string getAuthor() const = 0;
+    virtual std::string getVersion() const = 0;
+    virtual std::string getRootDir() const = 0;
+    virtual std::string getImagesDir() const = 0;
 
     /*!
      * Return set of image file names that has usages in the book
      */
-    virtual std::set<std::string> getUsedImages() = 0;
+    virtual std::set<std::string> getUsedImages() const = 0;
 
     /*!
      * Return set of sound file names that has usages in the book
      */
-    virtual std::set<std::string> getUsedSounds() = 0;
+    virtual std::set<std::string> getUsedSounds() const = 0;
 
-    virtual const std::vector<MediaFile>& getImageFiles() = 0;
-    virtual const std::vector<MediaFile>& getSoundFiles() = 0;
+    virtual const std::vector<MediaFile>& getImageFiles() const = 0;
+    virtual const std::vector<MediaFile>& getSoundFiles() const = 0;
 
     virtual void exportMedia(
         bool isRoot,
@@ -179,41 +179,41 @@ public:
         const std::string& mediaDirName,
         const std::vector<MediaFile>& mediaFiles,
         MediaFile::Type mediaType
-    ) = 0;
+    ) const = 0;
 
-    virtual std::map<std::string, std::shared_ptr<Page>> getPages() = 0;
-    virtual std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() = 0;
-    virtual std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() = 0;
-    virtual std::vector<std::string> getAutowiredPagesIds() = 0;
-    virtual std::vector<std::string> getParentGlobalAutowiredPagesIds() = 0;
-    virtual bool isAutowired(const std::string& pageId) = 0;
-    virtual std::shared_ptr<Page> getPageById(const std::string& id) = 0;
-    virtual std::map<std::string, std::shared_ptr<Obj>> getObjs() = 0;
-    virtual std::shared_ptr<Obj> getObjById(const std::string& objId) = 0;
-    virtual std::shared_ptr<Page> createFilteredPage(const std::string& sourceId, const History& history) = 0;
+    virtual std::map<std::string, std::shared_ptr<Page>> getPages() const = 0;
+    virtual std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() const = 0;
+    virtual std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() const = 0;
+    virtual std::vector<std::string> getAutowiredPagesIds() const = 0;
+    virtual std::vector<std::string> getParentGlobalAutowiredPagesIds() const = 0;
+    virtual bool isAutowired(const std::string& pageId) const = 0;
+    virtual std::shared_ptr<Page> getPageById(const std::string& id) const = 0;
+    virtual std::map<std::string, std::shared_ptr<Obj>> getObjs() const = 0;
+    virtual std::shared_ptr<Obj> getObjById(const std::string& objId) const = 0;
+    virtual std::shared_ptr<Page> createFilteredPage(const std::string& sourceId, const History& history) const = 0;
     virtual bool load(const std::string& path, const ProgressData& progressData) = 0;
-    virtual std::shared_ptr<Variable> getVariableById(const std::string& varId) = 0;
-    virtual std::vector<std::shared_ptr<Variable>> getVariables() = 0;
-    virtual SearchResultTableModel getLeafs(const std::string& modulePageId) = 0;
-    virtual SearchResultTableModel searchText(const SearchContract& searchContract, const std::string& modulePageId) = 0;
-    virtual SearchResultTableModel getVariables(const std::string& modulePageId) = 0;
-    virtual bool findVariable(const std::string& variableNameToFind) = 0;
-    virtual SearchResultTableModel checkBook(const std::string& modulePageId) = 0;
-    virtual BookStatistics getBookStatistics() = 0;
-    virtual VariableStatistics getVariableStatistics() = 0;
-    virtual std::shared_ptr<NonLinearBook> getParentNLB() = 0;
-    virtual bool isDummy() = 0;
-    virtual std::shared_ptr<Page> getParentPage() = 0;
-    virtual std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() = 0;
+    virtual std::shared_ptr<Variable> getVariableById(const std::string& varId) const = 0;
+    virtual std::vector<std::shared_ptr<Variable>> getVariables() const = 0;
+    virtual SearchResultTableModel getLeafs(const std::string& modulePageId) const = 0;
+    virtual SearchResultTableModel searchText(const SearchContract& searchContract, const std::string& modulePageId) const = 0;
+    virtual SearchResultTableModel getVariables(const std::string& modulePageId) const = 0;
+    virtual bool findVariable(const std::string& variableNameToFind) const = 0;
+    virtual SearchResultTableModel checkBook(const std::string& modulePageId) const = 0;
+    virtual BookStatistics getBookStatistics() const = 0;
+    virtual VariableStatistics getVariableStatistics() const = 0;
+    virtual std::shared_ptr<NonLinearBook> getParentNLB() const = 0;
+    virtual bool isDummy() const = 0;
+    virtual std::shared_ptr<Page> getParentPage() const = 0;
+    virtual std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() const = 0;
 
     /*!
      * Find external module recursively by name (if not found in the current book, will find in the parent book and so on)
      */
-    virtual std::shared_ptr<NonLinearBook> findExternalModule(const std::string& name) = 0;
+    virtual std::shared_ptr<NonLinearBook> findExternalModule(const std::string& name) const = 0;
 
-    virtual std::map<std::string, Variable::DataType> getVariableDataTypes() = 0;
-    virtual std::map<std::string, std::string> getMediaToConstraintMap() = 0;
-    virtual std::map<std::string, std::string> getMediaRedirectsMap() = 0;
-    virtual std::map<std::string, MediaExportParameters> getMediaExportParametersMap() = 0;
-    virtual std::map<std::string, bool> getMediaFlagsMap() = 0;
+    virtual std::map<std::string, Variable::DataType> getVariableDataTypes() const = 0;
+    virtual std::map<std::string, std::string> getMediaToConstraintMap() const = 0;
+    virtual std::map<std::string, std::string> getMediaRedirectsMap() const = 0;
+    virtual std::map<std::string, MediaExportParameters> getMediaExportParametersMap() const = 0;
+    virtual std::map<std::string, bool> getMediaFlagsMap() const = 0;
 };

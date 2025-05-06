@@ -1,21 +1,5 @@
 #include "nlb/api/NonLinearBook.h"
 
-// String constants
-const std::string NonLinearBook::TRUE_VARID = "TRUE";
-const std::string NonLinearBook::FALSE_VARID = "FALSE";
-const std::string NonLinearBook::LC_VARID_PREFIX = "LC_";
-const std::string NonLinearBook::LC_VARID_SEPARATOR_OUT = "_OUT_";
-const std::string NonLinearBook::SOUND_DIR_NAME = "sound";
-const std::string NonLinearBook::IMAGES_DIR_NAME = "images";
-const std::string NonLinearBook::DEFAULT_STARTPOINT = "";
-const Theme NonLinearBook::DEFAULT_THEME = Theme::DEFAULT;
-const std::string NonLinearBook::DEFAULT_LANGUAGE = "ru";
-const std::string NonLinearBook::DEFAULT_LICENSE = "";
-const std::string NonLinearBook::DEFAULT_TITLE = "";
-const std::string NonLinearBook::DEFAULT_AUTHOR = "";
-const std::string NonLinearBook::DEFAULT_VERSION = "";
-const std::string NonLinearBook::DEFAULT_PERFECT_GAME_ACHIEVEMENT_NAME = "";
-
 // Implementation of ModuleInfo::toString()
 std::string NonLinearBook::ModuleInfo::toString() const {
     return m_moduleName + " [" + m_modulePageId + "]";

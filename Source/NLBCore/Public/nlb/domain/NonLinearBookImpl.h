@@ -28,35 +28,35 @@ void append(const std::shared_ptr<NonLinearBook>& source, bool generateNewIds, b
     NonLinearBookImpl(std::shared_ptr<NonLinearBook> parentNLB, std::shared_ptr<Page> parentPage);
 
     // Override methods from NonLinearBook
-    std::set<std::string> getAllAchievementNames(bool recursive) override;
-    std::string getPerfectGameAchievementName() override;
-    bool isEmpty() override;
-    std::string getStartPoint() override;
-    std::string getLanguage() override;
-    std::string getLicense() override;
-    Theme getTheme() override;
-    bool isFullAutowire() override;
-    bool isSuppressMedia() override;
-    bool isSuppressSound() override;
-    std::string getTitle() override;
-    std::string getAuthor() override;
-    std::string getVersion() override;
-    std::string getRootDir() override;
-    std::string getImagesDir() override;
+    std::set<std::string> getAllAchievementNames(bool recursive) const override;
+    std::string getPerfectGameAchievementName() const override;
+    bool isEmpty() const override;
+    std::string getStartPoint() const override;
+    std::string getLanguage() const override;
+    std::string getLicense() const override;
+    Theme getTheme() const override;
+    bool isFullAutowire() const override;
+    bool isSuppressMedia() const override;
+    bool isSuppressSound() const override;
+    std::string getTitle() const override;
+    std::string getAuthor() const override;
+    std::string getVersion() const override;
+    std::string getRootDir() const override;
+    std::string getImagesDir() const override;
 
-    std::set<std::string> getUsedImages() override;
-    std::set<std::string> getUsedSounds() override;
+    std::set<std::string> getUsedImages() const override;
+    std::set<std::string> getUsedSounds() const override;
 
-    const std::vector<MediaFile>& getImageFiles() override;
-    const std::vector<MediaFile>& getSoundFiles() override;
+    const std::vector<MediaFile>& getImageFiles() const override;
+    const std::vector<MediaFile>& getSoundFiles() const override;
 
-    std::map<std::string, std::shared_ptr<Page>> getPages() override;
-    std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() override;
-    std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() override;
-    std::vector<std::string> getAutowiredPagesIds() override;
-    std::vector<std::string> getParentGlobalAutowiredPagesIds() override;
-    bool isAutowired(const std::string& pageId) override;
-    std::shared_ptr<Page> getPageById(const std::string& id) override;
+    std::map<std::string, std::shared_ptr<Page>> getPages() const override;
+    std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() const override;
+    std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() const override;
+    std::vector<std::string> getAutowiredPagesIds() const override;
+    std::vector<std::string> getParentGlobalAutowiredPagesIds() const override;
+    bool isAutowired(const std::string& pageId) const override;
+    std::shared_ptr<Page> getPageById(const std::string& id) const override;
 
     // Additional methods
     void clear();
@@ -66,102 +66,102 @@ void append(const std::shared_ptr<NonLinearBook>& source, bool generateNewIds, b
     void exportMedia(bool recursively, const std::string& mediaDir, 
                     const std::string& exportDir, 
                     const std::vector<MediaFile>& mediaFiles,
-                    MediaFile::Type type) override;
+                    MediaFile::Type type) const override;
                     
     std::shared_ptr<Page> createFilteredPage(const std::string& pageId, 
-                                           const History& history) override;
+                                           const History& history) const override;
                                            
-    SearchResultTableModel getVariables(const std::string& filter) override;
-    SearchResultTableModel getLeafs(const std::string& filter) override;
+    SearchResultTableModel getVariables(const std::string& filter) const override;
+    SearchResultTableModel getLeafs(const std::string& filter) const override;
     SearchResultTableModel searchText(const SearchContract& contract, 
-                                    const std::string& filter) override;
-    bool findVariable(const std::string& variableName) override;
-    SearchResultTableModel checkBook(const std::string& filter) override;
-    BookStatistics getBookStatistics() override;
-    VariableStatistics getVariableStatistics() override;
-    std::shared_ptr<NonLinearBook> getParentNLB() override;
-    bool isDummy() override;
-    std::shared_ptr<Page> getParentPage() override;
-    std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() override;
-    std::shared_ptr<NonLinearBook> findExternalModule(const std::string& moduleId) override;
-    std::map<std::string, Variable::DataType> getVariableDataTypes() override;
-    std::map<std::string, std::string> getMediaToConstraintMap() override;
-    std::map<std::string, std::string> getMediaRedirectsMap() override;
-    std::map<std::string, MediaExportParameters> getMediaExportParametersMap() override;
-    std::map<std::string, bool> getMediaFlagsMap() override;
-    std::shared_ptr<Obj> getObjById(const std::string& id) override { return nullptr; }
+                                    const std::string& filter) const override;
+    bool findVariable(const std::string& variableName) const override;
+    SearchResultTableModel checkBook(const std::string& filter) const override;
+    BookStatistics getBookStatistics() const override;
+    VariableStatistics getVariableStatistics() const override;
+    std::shared_ptr<NonLinearBook> getParentNLB() const override;
+    bool isDummy() const override;
+    std::shared_ptr<Page> getParentPage() const override;
+    std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() const override;
+    std::shared_ptr<NonLinearBook> findExternalModule(const std::string& moduleId) const override;
+    std::map<std::string, Variable::DataType> getVariableDataTypes() const override;
+    std::map<std::string, std::string> getMediaToConstraintMap() const override;
+    std::map<std::string, std::string> getMediaRedirectsMap() const override;
+    std::map<std::string, MediaExportParameters> getMediaExportParametersMap() const override;
+    std::map<std::string, bool> getMediaFlagsMap() const override;
+    std::shared_ptr<Obj> getObjById(const std::string& id) const override { return nullptr; }
     std::shared_ptr<PageImpl> getPageImplById(const std::string& id) const;
-std::shared_ptr<ObjImpl> getObjImplById(const std::string& id) const;
+    std::shared_ptr<ObjImpl> getObjImplById(const std::string& id) const;
 
-    void exportImages(bool isRoot, const std::string& exportDir) {}
-    void exportSound(bool isRoot, const std::string& exportDir) {}
-    void exportToChoiceScript(const std::string& exportDir) {}
-    void exportToQSPTextFile(const std::string& exportDir) {}
-    void exportToURQTextFile(const std::string& exportDir) {}
-    void exportToPDFFile(const std::string& exportFile) {}
-    void exportToTXTFile(const std::string& exportDir) {}
-    void exportToHTMLFile(const std::string& exportDir) {}
-    void exportToJSIQFile(const std::string& exportDir) {}
-    void exportToSTEADFile(const std::string& exportDir) {}
-    void exportToVNSTEADFile(const std::string& exportDir) {}
-    void exportToASMFile(const std::string& exportDir) {}
+    void exportImages(bool isRoot, const std::string& exportDir) const {}
+    void exportSound(bool isRoot, const std::string& exportDir) const {}
+    void exportToChoiceScript(const std::string& exportDir) const {}
+    void exportToQSPTextFile(const std::string& exportDir) const {}
+    void exportToURQTextFile(const std::string& exportDir) const {}
+    void exportToPDFFile(const std::string& exportFile) const {}
+    void exportToTXTFile(const std::string& exportDir) const {}
+    void exportToHTMLFile(const std::string& exportDir) const {}
+    void exportToJSIQFile(const std::string& exportDir) const {}
+    void exportToSTEADFile(const std::string& exportDir) const {}
+    void exportToVNSTEADFile(const std::string& exportDir) const {}
+    void exportToASMFile(const std::string& exportDir) const {}
     void setMediaFileConstrId(
     MediaFile::Type mediaType,
     const std::string& fileName,
     const std::string& constrId
-) {
+    ) {
+        
+    }
+
+    void setMediaFileRedirect(
+        MediaFile::Type mediaType,
+        const std::string& fileName,
+        const std::string& redirect
+    ) {
+        
+    }
+
+    void setMediaFileFlag(
+        MediaFile::Type mediaType,
+        const std::string& fileName,
+        bool flag
+    ) {
     
-}
+    }
 
-void setMediaFileRedirect(
-    MediaFile::Type mediaType,
-    const std::string& fileName,
-    const std::string& redirect
-) {
+    void setMediaFileExportParametersPreset(
+        MediaFile::Type mediaType,
+        const std::string& fileName,
+        MediaExportParameters::Preset preset
+    ) {
     
-}
+    }
 
-void setMediaFileFlag(
-    MediaFile::Type mediaType,
-    const std::string& fileName,
-    bool flag
-) {
-   
-}
+    std::vector<std::shared_ptr<Link>> getAssociatedLinks(std::shared_ptr<NodeItem> nodeItem) {
+        return {};
+    }
 
-void setMediaFileExportParametersPreset(
-    MediaFile::Type mediaType,
-    const std::string& fileName,
-    MediaExportParameters::Preset preset
-) {
-   
-}
+    void copyAndAddImageFile(
+        const FileManipulator& fileManipulator,
+        const std::string& imageFile,
+        const std::string& imageFileName
+    ) {}
 
-std::vector<std::shared_ptr<Link>> getAssociatedLinks(std::shared_ptr<NodeItem> nodeItem) {
-    return {};
-}
+    void copyAndAddSoundFile(
+        const FileManipulator& fileManipulator,
+        const std::string& imageFile,
+        const std::string& imageFileName
+    ) {}
 
-void copyAndAddImageFile(
-    const FileManipulator& fileManipulator,
-    const std::string& imageFile,
-    const std::string& imageFileName
-) {}
+    void  removeImageFile(
+        const FileManipulator& fileManipulator,
+        const std::string& imageFileName
+    ) {}
 
-void copyAndAddSoundFile(
-    const FileManipulator& fileManipulator,
-    const std::string& imageFile,
-    const std::string& imageFileName
-) {}
-
-void  removeImageFile(
-    const FileManipulator& fileManipulator,
-    const std::string& imageFileName
-) {}
-
-void removeSoundFile(
-    const FileManipulator& fileManipulator,
-    const std::string& soundFileName
-) {}
+    void removeSoundFile(
+        const FileManipulator& fileManipulator,
+        const std::string& soundFileName
+    ) {}
 
 private:
     // Member variables
@@ -194,8 +194,8 @@ private:
     void writeMediaFiles(const std::string& rootDir, const std::vector<MediaFile>& mediaFiles, const std::string& mediaDirName);
 
     // Override remaining virtual methods from NonLinearBook
-    std::map<std::string, std::shared_ptr<Obj>> getObjs() override { return m_objs; }
-    std::vector<std::shared_ptr<Variable>> getVariables() override { return {}; }
-    std::shared_ptr<Variable> getVariableById(const std::string& id) override { return nullptr; }
+    std::map<std::string, std::shared_ptr<Obj>> getObjs() const override { return m_objs; }
+    std::vector<std::shared_ptr<Variable>> getVariables() const override { return {}; }
+    std::shared_ptr<Variable> getVariableById(const std::string& id) const override { return nullptr; }
     
 };

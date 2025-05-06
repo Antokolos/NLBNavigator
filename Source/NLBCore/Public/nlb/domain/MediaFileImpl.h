@@ -13,7 +13,7 @@ public:
     std::string getRedirect() const override;
     std::string getConstrId() const override;
     bool isFlagged() const override;
-    MediaExportParameters getMediaExportParameters() const override;
+    const MediaExportParameters &getMediaExportParameters() const override;
     bool operator<(const MediaFile& other) const override;
     
     // Additional methods

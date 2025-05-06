@@ -38,7 +38,7 @@ void MediaFileImpl::setFlagged(bool flagged) {
     m_flagged = flagged;
 }
 
-MediaExportParameters MediaFileImpl::getMediaExportParameters() const {
+const MediaExportParameters &MediaFileImpl::getMediaExportParameters() const {
     return MediaExportParameters::fromPreset(m_preset);
 }
 
