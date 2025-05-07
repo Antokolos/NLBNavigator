@@ -43,11 +43,39 @@ public:
         AUTOWIRECONSTRAINT
     };
 
-    virtual Type getType() = 0;
-    virtual DataType getDataType() = 0;
-    virtual std::string getName() = 0;
-    virtual std::string getTarget() = 0;
-    virtual std::string getValue() = 0;
+    virtual Type getType() const = 0;
+    virtual DataType getDataType() const = 0;
+    virtual std::string getName() const = 0;
+    virtual std::string getTarget() const = 0;
+    virtual std::string getValue() const = 0;
+
+    /*!
+     * @brief Converts DataType enum to string representation
+     * @param dataType DataType enum value
+     * @return String representation of the data type
+     */
+    static std::string dataTypeToString(DataType dataType);
+
+    /*!
+     * @brief Converts string to DataType enum
+     * @param dataTypeStr String representation of data type
+     * @return DataType enum value
+     */
+    static DataType stringToDataType(const std::string& dataTypeStr);
+
+    /*!
+     * @brief Converts Type enum to string representation
+     * @param type Type enum value
+     * @return String representation of the type
+     */
+    static std::string typeToString(Type type);
+
+    /*!
+     * @brief Converts string to Type enum
+     * @param typeStr String representation of type
+     * @return Type enum value
+     */
+    static Type stringToType(const std::string& typeStr);
 
     virtual ~Variable() = default;
 };

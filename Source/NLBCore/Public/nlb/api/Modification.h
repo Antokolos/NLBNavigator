@@ -6,7 +6,7 @@
 
 class Modification : public IdentifiableItem {
 public:
-    static const bool DEFAULT_EXTERNAL = false;
+    inline static const bool DEFAULT_EXTERNAL = false;
     
     enum class Type {
         ASSIGN,
@@ -87,6 +87,20 @@ public:
      *         false otherwise
      */
     virtual bool isParametrized() const = 0;
+
+    /*!
+     * @brief Converts Type enum to string representation
+     * @param type Type enum value
+     * @return String representation of the type
+     */
+    static std::string typeToString(Type type);
+
+    /*!
+     * @brief Converts string to Type enum
+     * @param typeStr String representation of type
+     * @return Type enum value
+     */
+    static Type stringToType(const std::string& typeStr);
 
     // Virtual destructor for proper cleanup in derived classes
     virtual ~Modification() = default;
