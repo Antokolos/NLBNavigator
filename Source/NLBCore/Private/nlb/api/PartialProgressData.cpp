@@ -2,7 +2,7 @@
 #include "nlb/api/ProgressData.h" // Actual header for ProgressData class
 
 PartialProgressData::PartialProgressData(
-    ProgressData* realProgressData,
+    std::shared_ptr<ProgressData> realProgressData,
     int startingProgress,
     int maximumAllowedProgress,
     int itemsCountPerIncrement

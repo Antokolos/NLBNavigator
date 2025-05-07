@@ -1,12 +1,13 @@
 #pragma once
 
+#include <memory>
 #include "nlb/api/DummyProgressData.h"
 
 class ProgressData; // Forward declaration
 
 class PartialProgressData : public DummyProgressData {
 private:
-    ProgressData* m_realProgressData;
+    std::shared_ptr<ProgressData> m_realProgressData;
     int m_startingProgress;
     int m_currentProgress;
     
@@ -22,7 +23,7 @@ private:
 
 public:
     PartialProgressData(
-        ProgressData* realProgressData,
+        std::shared_ptr<ProgressData> realProgressData,
         int startingProgress,
         int maximumAllowedProgress,
         int itemsCountPerIncrement
@@ -32,4 +33,7 @@ public:
     
     int getStartingProgress() const;
     int getMaximumAllowedProgress() const;
+    
+    // Virtual destructor
+    virtual ~PartialProgressData() = default;
 };

@@ -15,6 +15,7 @@ void NonLinearBook::BookStatistics::addBookStatistics(const BookStatistics& book
     for (const auto& moduleInfo : bookStatistics.m_moduleInfos) {
         m_moduleInfos.push_back(moduleInfo);
     }
+    addDeletedModulesFromBookStatistics(bookStatistics);
 }
 
 // Implementation of BookStatistics::addDeletedModulesFromBookStatistics
