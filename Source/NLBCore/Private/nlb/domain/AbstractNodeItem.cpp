@@ -6,6 +6,7 @@
 #include "nlb/exception/NLBExceptions.h"
 #include "nlb/domain/NonLinearBookImpl.h"
 #include "nlb/api/Page.h"
+#include "nlb/api/CoordsLw.h"
 
 const std::string AbstractNodeItem::COORDS_DIR_NAME = "coords";
 const std::string AbstractNodeItem::LINKS_DIR_NAME = "links";
@@ -255,4 +256,136 @@ void AbstractNodeItem::notifyObservers() {
     if (m_observerHandler) {
         m_observerHandler->notifyObservers();
     }
+}
+
+void AbstractNodeItem::writeNodeItemProperties(const std::shared_ptr<FileManipulator>& fileManipulator,
+                                           const std::string& nodeDir,
+                                           std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+    fileManipulator->writeOptionalString(nodeDir, STROKE_FILE_NAME, m_stroke, DEFAULT_STROKE);
+    fileManipulator->writeOptionalString(nodeDir, FILL_FILE_NAME, m_fill, DEFAULT_FILL);
+    fileManipulator->writeOptionalString(nodeDir, TEXTCOLOR_FILE_NAME, m_textColor, DEFAULT_TEXTCOLOR);
+    fileManipulator->writeOptionalString(nodeDir, DEFTAGID_FILE_NAME, m_defaultTagId, DEFAULT_TAG_ID);
+    
+    // Запись порядка ссылок
+    writeLinkOrderFile(fileManipulator, nodeDir);
+    
+    // Запись содержимого
+    writeContent(fileManipulator, nodeDir, nonLinearBook);
+    
+    // Запись координат
+    writeCoords(fileManipulator, nodeDir);
+    
+    // Запись ссылок
+    writeLinks(fileManipulator, nodeDir);
+}
+
+void AbstractNodeItem::readNodeItemProperties(const std::string& nodeDir) {
+    m_stroke = FileManipulator::getOptionalFileAsString(
+        nodeDir, STROKE_FILE_NAME, DEFAULT_STROKE);
+    
+    m_fill = FileManipulator::getOptionalFileAsString(
+        nodeDir, FILL_FILE_NAME, DEFAULT_FILL);
+    
+    m_textColor = FileManipulator::getOptionalFileAsString(
+        nodeDir, TEXTCOLOR_FILE_NAME, DEFAULT_TEXTCOLOR);
+    
+    m_defaultTagId = FileManipulator::getOptionalFileAsString(
+        nodeDir, DEFTAGID_FILE_NAME, DEFAULT_TAG_ID);
+    
+    // Чтение содержимого
+    readContent(nodeDir);
+    
+    // Чтение координат
+    readCoords(nodeDir);
+    
+    // Чтение ссылок
+    readLinks(nodeDir);
+}
+
+std::shared_ptr<NLBCommand> AbstractNodeItem::createPageCommand(float left, float top) {
+    // Создание команды для страницы
+    // Эта реализация зависит от других классов, поэтому дана упрощенная версия
+    return nullptr; // В реальной реализации возвращает команду
+}
+
+std::shared_ptr<NLBCommand> AbstractNodeItem::createLinkCommand(const std::string& pageId) {
+    // Создание команды для ссылки
+    // Эта реализация зависит от других классов, поэтому дана упрощенная версия
+    return nullptr; // В реальной реализации возвращает команду
+}
+
+std::shared_ptr<NLBCommand> AbstractNodeItem::createObjCommand(float left, float top) {
+    // Создание команды для объекта
+    // Эта реализация зависит от других классов, поэтому дана упрощенная версия
+    return nullptr; // В реальной реализации возвращает команду
+}
+
+void AbstractNodeItem::writeToFile(const std::shared_ptr<FileManipulator>& fileManipulator, 
+                                 const std::string& nodesDir,
+                                 const std::string& nodeDirName,
+                                 std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+    const std::string nodeDir = nodesDir + "/" + nodeDirName;
+    
+    if (AbstractIdentifiableItem::isDeleted()) {
+        fileManipulator->deleteFileOrDir(nodeDir);
+    } else {
+        fileManipulator->createDir(nodeDir, 
+            "Cannot create node directory for node with Id = " + AbstractIdentifiableItem::getId());
+        
+        writeNodeItemProperties(fileManipulator, nodeDir, nonLinearBook);
+        
+        // Запись модификаций
+        writeModOrderFile(fileManipulator, nodeDir);
+        writeModifications(fileManipulator, nodeDir);
+    }
+}
+
+void AbstractNodeItem::validateLinks() {
+    // Удаление недействительных ссылок
+    auto it = m_links.begin();
+    while (it != m_links.end()) {
+        if ((*it)->isDeleted() || (*it)->hasDeletedParent()) {
+            it = m_links.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+Coords& AbstractNodeItem::getRelativeCoords() const {
+    // В Java версии этот метод возвращает CoordsLw.getZeroCoords()
+    return CoordsLw::getZeroCoords();
+}
+
+void AbstractNodeItem::writeLinkOrderFile(const std::shared_ptr<FileManipulator>& fileManipulator,
+                                        const std::string& nodeDir) {
+    // Заглушка для метода writeLinkOrderFile - требуется реализация
+}
+
+void AbstractNodeItem::writeContent(const std::shared_ptr<FileManipulator>& fileManipulator,
+                                  const std::string& nodeDir,
+                                  std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+    // Заглушка для метода writeContent - требуется реализация
+}
+
+void AbstractNodeItem::writeCoords(const std::shared_ptr<FileManipulator>& fileManipulator,
+                                 const std::string& nodeDir) {
+    // Заглушка для метода writeCoords - требуется реализация
+}
+
+void AbstractNodeItem::writeLinks(const std::shared_ptr<FileManipulator>& fileManipulator,
+                                const std::string& nodeDir) {
+    // Заглушка для метода writeLinks - требуется реализация
+}
+
+void AbstractNodeItem::readContent(const std::string& nodeDir) {
+    // Заглушка для метода readContent - требуется реализация 
+}
+
+void AbstractNodeItem::readCoords(const std::string& nodeDir) {
+    // Заглушка для метода readCoords - требуется реализация
+}
+
+void AbstractNodeItem::readLinks(const std::string& nodeDir) {
+    // Заглушка для метода readLinks - требуется реализация
 }

@@ -126,6 +126,23 @@ public:
 
     virtual std::string getExternalHierarchy() const override;
 
+    // Команды создания объектов
+    virtual std::shared_ptr<NLBCommand> createPageCommand(float left, float top);
+    virtual std::shared_ptr<NLBCommand> createLinkCommand(const std::string& pageId);
+    virtual std::shared_ptr<NLBCommand> createObjCommand(float left, float top);
+    
+    // Методы для файловой системы
+    virtual void writeToFile(const std::shared_ptr<FileManipulator>& fileManipulator, 
+                           const std::string& nodesDir,
+                           const std::string& nodeDirName,
+                           std::shared_ptr<NonLinearBookImpl> nonLinearBook);
+                           
+    // Методы валидации
+    virtual void validateLinks();
+    
+    // Метод для относительных координат
+    virtual Coords& getRelativeCoords() const;
+
     virtual std::string getId() const override { return AbstractModifyingItem::getId(); }
     virtual std::string getFullId() const override { return AbstractModifyingItem::getFullId(); }
     virtual bool isDeleted() const override { return AbstractModifyingItem::isDeleted(); }

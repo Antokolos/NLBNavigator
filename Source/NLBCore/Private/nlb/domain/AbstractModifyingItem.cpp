@@ -70,7 +70,7 @@ void AbstractModifyingItem::addModification(std::shared_ptr<ModificationImpl> mo
 
 void AbstractModifyingItem::writeModifications(const std::shared_ptr<FileManipulator>& fileManipulator,
                                              const std::string& itemDir) {
-    const std::string modificationsDir = itemDir + "/modifications";
+    const std::string modificationsDir = FileUtils::combinePath(itemDir, "modifications");
     
     if (m_modifications.empty()) {
         if (FileUtils::exists(modificationsDir)) {
@@ -93,7 +93,7 @@ void AbstractModifyingItem::readModifications(const std::string& itemDir) {
         DEFAULT_MODORDER
     );
 
-    const std::string modsDir = itemDir + "/modifications";
+    const std::string modsDir = FileUtils::combinePath(itemDir, "modifications");
     if (!FileUtils::exists(modsDir) && !modOrderString.empty()) {
         throw NLBIOException(
             "Invalid NLB structure: modifications directory does not exist for item with Id = " 

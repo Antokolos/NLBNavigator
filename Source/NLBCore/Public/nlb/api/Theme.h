@@ -1,5 +1,4 @@
-#ifndef THEME_H
-#define THEME_H
+#pragma once
 
 #include <string>
 
@@ -16,5 +15,3 @@ public:
     // Convert enum to string
     static std::string toString(Theme theme);
 };
-
-#endif // THEME_H
