@@ -9,6 +9,15 @@
  */
 class CoordsImpl : public Coords {
 public:
+    /*! 
+     * \brief Constructor with specific coordinate values
+     * \param left Left coordinate
+     * \param top Top coordinate
+     * \param width Width
+     * \param height Height
+     */
+    CoordsImpl(float left, float top, float width, float height);
+    
     /*!
      * @brief Default constructor needed for serialization
      */

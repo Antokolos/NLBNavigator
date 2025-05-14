@@ -7,6 +7,13 @@ const std::string CoordsImpl::TOP_FILE_NAME = "top";
 const std::string CoordsImpl::WIDTH_FILE_NAME = "width";
 const std::string CoordsImpl::HEIGHT_FILE_NAME = "height";
 
+CoordsImpl::CoordsImpl(float left, float top, float width, float height)
+    : m_left(left)
+    , m_top(top)
+    , m_width(width)
+    , m_height(height) {
+}
+
 CoordsImpl::CoordsImpl() = default;
 
 float CoordsImpl::getLeft() const {
@@ -50,34 +57,29 @@ void CoordsImpl::writeCoords(FileManipulator& fileManipulator, const std::string
 
 void CoordsImpl::read(const std::string& coordsDir) {
     try {
-        std::filesystem::path coordsDirPath = std::filesystem::canonical(coordsDir);
-        
         m_left = std::stof(FileManipulator::getRequiredFileAsString(
             coordsDir, 
             LEFT_FILE_NAME,
-            "Error reading left coords file; dir = " + coordsDirPath.string()
+            "Error reading left coords file; dir = " + coordsDir
         ));
         
         m_top = std::stof(FileManipulator::getRequiredFileAsString(
             coordsDir,
             TOP_FILE_NAME,
-            "Error reading top coords file; dir = " + coordsDirPath.string()
+            "Error reading top coords file; dir = " + coordsDir
         ));
         
         m_width = std::stof(FileManipulator::getRequiredFileAsString(
             coordsDir,
             WIDTH_FILE_NAME,
-            "Error reading width coords file; dir = " + coordsDirPath.string()
+            "Error reading width coords file; dir = " + coordsDir
         ));
         
         m_height = std::stof(FileManipulator::getRequiredFileAsString(
             coordsDir,
             HEIGHT_FILE_NAME,
-            "Error reading height coords file; dir = " + coordsDirPath.string()
+            "Error reading height coords file; dir = " + coordsDir
         ));
-    }
-    catch (const std::filesystem::filesystem_error& e) {
-        throw NLBIOException("Filesystem error occurred: " + std::string(e.what()));
     }
     catch (const std::exception& e) {
         throw NLBIOException("Error occurred while reading coordinates: " + std::string(e.what()));
