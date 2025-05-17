@@ -1,5 +1,7 @@
 #include "nlb/domain/CommandChainCommand.h"
-#include <iostream>
+
+CommandChainCommand::CommandChainCommand() {
+}
 
 // Добавление команды в цепочку
 void CommandChainCommand::addCommand(std::shared_ptr<NLBCommand> command) {

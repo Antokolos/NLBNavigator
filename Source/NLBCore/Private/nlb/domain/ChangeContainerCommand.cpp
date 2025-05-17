@@ -21,7 +21,7 @@ inline void ChangeContainerCommand::execute() {
         m_newContainer->addContainedObjId(m_obj->getId());
         m_obj->setContainerId(m_newContainer->getId());
     } else {
-        m_obj->setContainerId("");
+        m_obj->setContainerId(nlb::Constants::EMPTY_STRING);
     }
     
     m_obj->notifyObservers();
@@ -36,7 +36,7 @@ inline void ChangeContainerCommand::revert() {
         m_prevContainer->addContainedObjId(m_obj->getId());
         m_obj->setContainerId(m_prevContainer->getId());
     } else {
-        m_obj->setContainerId("");
+        m_obj->setContainerId(nlb::Constants::EMPTY_STRING);
     }
     
     m_obj->notifyObservers();
