@@ -60,6 +60,12 @@ public:
     void readModification(const std::string& modificationDir);
     
     bool isModificationImpl() const override { return true; }
+
+	std::string toString() const;
+	std::string toStringWithType() const;
+	bool equals(const std::shared_ptr<Modification>& other) const;
+	bool operator==(const ModificationImpl& other) const;
+	size_t hash() const;
     
 private:
     static const std::string EXTERNAL_FILE_NAME;

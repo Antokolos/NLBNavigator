@@ -280,3 +280,39 @@ void ModificationImpl::readModification(const std::string& modificationDir) {
         "Error while reading modification expression Id for modification with Id = " + AbstractIdentifiableItem::getId()
     );
 }
+
+std::string ModificationImpl::toString() const {
+    return m_varId + (m_exprId.empty() ? "" : " = " + m_exprId);
+}
+
+std::string ModificationImpl::toStringWithType() const {
+    std::string typeStr = Modification::typeToString(m_type);
+    return typeStr + " " + toString();
+}
+
+bool ModificationImpl::equals(const std::shared_ptr<Modification>& other) const {
+    if (!other) return false;
+    if (this == other.get()) return true;
+    
+    return m_external == other->isExternal() &&
+           m_type == other->getType() &&
+           m_varId == other->getVarId() &&
+           m_exprId == other->getExprId();
+}
+
+bool ModificationImpl::operator==(const ModificationImpl& other) const {
+    if (this == &other) return true;
+    
+    return m_external == other.m_external &&
+           m_type == other.m_type &&
+           m_varId == other.m_varId &&
+           m_exprId == other.m_exprId;
+}
+
+size_t ModificationImpl::hash() const {
+    size_t result = std::hash<bool>{}(m_external);
+    result = 31 * result + std::hash<int>{}(static_cast<int>(m_type));
+    result = 31 * result + std::hash<std::string>{}(m_varId);
+    result = 31 * result + std::hash<std::string>{}(m_exprId);
+    return result;
+}

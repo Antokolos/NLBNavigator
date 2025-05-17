@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <ostream>
 #include "nlb/api/MediaFile.h"
 #include "nlb/domain/MediaExportParameters.h"
 
@@ -15,6 +16,9 @@ public:
     bool isFlagged() const override;
     const MediaExportParameters &getMediaExportParameters() const override;
     bool operator<(const MediaFile& other) const override;
+    
+    // Строковое представление объекта
+    std::string toString() const;
     
     // Additional methods
     void setFileName(const std::string& fileName);
@@ -35,6 +39,12 @@ private:
     bool m_flagged;
     MediaExportParameters::Preset m_preset;
 };
+
+// Перегрузка оператора вывода в поток
+inline std::ostream& operator<<(std::ostream& os, const MediaFileImpl& media) {
+    os << media.toString();
+    return os;
+}
 
 // Custom hash function for std::unordered_map/set support
 namespace std {

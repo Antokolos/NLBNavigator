@@ -14,6 +14,11 @@ const std::string LinkImpl::STROKE_FILE_NAME = "stroke";
 const std::string LinkImpl::AUTO_FILE_NAME = "auto";
 const std::string LinkImpl::NEEDS_ACTION_FILE_NAME = "needsact";
 const std::string LinkImpl::ONCE_FILE_NAME = "once";
+const std::string LinkImpl::TRAVERSAL_FILE_NAME = "traversal";
+const std::string LinkImpl::RETURN_FILE_NAME = "return";
+const std::string LinkImpl::TECHNICAL_FILE_NAME = "technical";
+const std::string LinkImpl::POSITIVE_CONSTRAINT_FILE_NAME = "posconstr";
+const std::string LinkImpl::OBEY_MODULE_CONSTRAINT_FILE_NAME = "obeymodconstr";
 
 LinkImpl::LinkImpl() : AbstractModifyingItem() {}
 
@@ -46,6 +51,7 @@ LinkImpl::LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::shared_pt
     m_isObeyToModuleConstraint = sourceLink->isObeyToModuleConstraint();
     m_isTraversalLink = sourceLink->isTraversalLink();
     m_isReturnLink = sourceLink->isReturnLink();
+    m_technical = sourceLink->isTechnical();
     m_auto = sourceLink->isAuto();
     m_needsAction = sourceLink->isNeedsAction();
     m_once = sourceLink->isOnce();
@@ -148,20 +154,52 @@ void LinkImpl::writeLink(const std::shared_ptr<FileManipulator>& fileManipulator
         fileManipulator->writeOptionalString(
             linkDir,
             AUTO_FILE_NAME,
-            std::to_string(m_auto),
-            std::to_string(DEFAULT_AUTO)
+            m_auto ? "true" : "false",
+            DEFAULT_AUTO ? "true" : "false"
         );
         fileManipulator->writeOptionalString(
             linkDir,
             NEEDS_ACTION_FILE_NAME,
-            std::to_string(m_needsAction),
-            std::to_string(DEFAULT_NEEDS_ACTION)
+            m_needsAction ? "true" : "false",
+            DEFAULT_NEEDS_ACTION ? "true" : "false"
         );
         fileManipulator->writeOptionalString(
             linkDir,
             ONCE_FILE_NAME,
-            std::to_string(m_once),
-            std::to_string(DEFAULT_ONCE)
+            m_once ? "true" : "false",
+            DEFAULT_ONCE ? "true" : "false"
+        );
+        
+        // Добавляем сохранение дополнительных флагов
+        fileManipulator->writeOptionalString(
+            linkDir,
+            TRAVERSAL_FILE_NAME,
+            m_isTraversalLink ? "true" : "false",
+            "false"
+        );
+        fileManipulator->writeOptionalString(
+            linkDir,
+            RETURN_FILE_NAME,
+            m_isReturnLink ? "true" : "false",
+            "false"
+        );
+        fileManipulator->writeOptionalString(
+            linkDir,
+            TECHNICAL_FILE_NAME,
+            m_technical ? "true" : "false",
+            DEFAULT_TECHNICAL ? "true" : "false"
+        );
+        fileManipulator->writeOptionalString(
+            linkDir,
+            POSITIVE_CONSTRAINT_FILE_NAME,
+            m_isPositiveConstraint ? "true" : "false",
+            "true"
+        );
+        fileManipulator->writeOptionalString(
+            linkDir,
+            OBEY_MODULE_CONSTRAINT_FILE_NAME,
+            m_isObeyToModuleConstraint ? "true" : "false",
+            "true"
         );
 
         writeCoords(fileManipulator, linkDir);
@@ -210,19 +248,50 @@ void LinkImpl::readLink(const std::string& linkDir) {
     m_auto = FileManipulator::getOptionalFileAsString(
         linkDir,
         AUTO_FILE_NAME,
-        std::to_string(DEFAULT_AUTO)
+        DEFAULT_AUTO ? "true" : "false"
     ) == "true";
 
     m_needsAction = FileManipulator::getOptionalFileAsString(
         linkDir,
         NEEDS_ACTION_FILE_NAME,
-        std::to_string(DEFAULT_NEEDS_ACTION)
+        DEFAULT_NEEDS_ACTION ? "true" : "false"
     ) == "true";
 
     m_once = FileManipulator::getOptionalFileAsString(
         linkDir,
         ONCE_FILE_NAME,
-        std::to_string(DEFAULT_ONCE)
+        DEFAULT_ONCE ? "true" : "false"
+    ) == "true";
+    
+    // Добавляем чтение дополнительных флагов
+    m_isTraversalLink = FileManipulator::getOptionalFileAsString(
+        linkDir,
+        TRAVERSAL_FILE_NAME,
+        "false"
+    ) == "true";
+    
+    m_isReturnLink = FileManipulator::getOptionalFileAsString(
+        linkDir,
+        RETURN_FILE_NAME,
+        "false"
+    ) == "true";
+    
+    m_technical = FileManipulator::getOptionalFileAsString(
+        linkDir,
+        TECHNICAL_FILE_NAME,
+        DEFAULT_TECHNICAL ? "true" : "false"
+    ) == "true";
+    
+    m_isPositiveConstraint = FileManipulator::getOptionalFileAsString(
+        linkDir,
+        POSITIVE_CONSTRAINT_FILE_NAME,
+        "true"
+    ) == "true";
+    
+    m_isObeyToModuleConstraint = FileManipulator::getOptionalFileAsString(
+        linkDir,
+        OBEY_MODULE_CONSTRAINT_FILE_NAME,
+        "true"
     ) == "true";
 
     readCoords(linkDir);

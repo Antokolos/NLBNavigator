@@ -46,6 +46,10 @@ MediaExportParameters::Preset MediaFileImpl::getPreset() const {
     return m_preset;
 }
 
+std::string MediaFileImpl::toString() const {
+    return m_fileName;
+}
+
 void MediaFileImpl::setPreset(MediaExportParameters::Preset preset) {
     m_preset = preset;
 }

@@ -47,7 +47,7 @@ public:
     bool isObeyToModuleConstraint() const override { return m_isObeyToModuleConstraint; }
     bool isTraversalLink() const override { return m_isTraversalLink; }
     bool isReturnLink() const override { return m_isReturnLink; }
-    bool isTechnical() const override { return DEFAULT_TECHNICAL; }
+    bool isTechnical() const override { return m_technical; }
 
     // Additional methods
     void setVarId(const std::string& varId) { m_varId = varId; }
@@ -61,6 +61,11 @@ public:
     void setAuto(bool auto_) { m_auto = auto_; }
     void setNeedsAction(bool needsAction) { m_needsAction = needsAction; }
     void setOnce(bool once) { m_once = once; }
+    void setPositiveConstraint(bool positiveConstraint) { m_isPositiveConstraint = positiveConstraint; }
+    void setObeyToModuleConstraint(bool obeyToModuleConstraint) { m_isObeyToModuleConstraint = obeyToModuleConstraint; }
+    void setTraversalLink(bool traversalLink) { m_isTraversalLink = traversalLink; }
+    void setReturnLink(bool returnLink) { m_isReturnLink = returnLink; }
+    void setTechnical(bool technical) { m_technical = technical; }
 
     std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const;
     
@@ -84,6 +89,11 @@ private:
     static const std::string AUTO_FILE_NAME;
     static const std::string NEEDS_ACTION_FILE_NAME;
     static const std::string ONCE_FILE_NAME;
+    static const std::string TRAVERSAL_FILE_NAME;
+    static const std::string RETURN_FILE_NAME;
+    static const std::string TECHNICAL_FILE_NAME;
+    static const std::string POSITIVE_CONSTRAINT_FILE_NAME;
+    static const std::string OBEY_MODULE_CONSTRAINT_FILE_NAME;
 
     void writeCoords(const std::shared_ptr<FileManipulator>& fileManipulator,
                     const std::string& linkDir);
@@ -104,4 +114,5 @@ private:
     bool m_isObeyToModuleConstraint{true};
     bool m_isTraversalLink{false};
     bool m_isReturnLink{false};
+    bool m_technical{DEFAULT_TECHNICAL};
 };
