@@ -389,3 +389,64 @@ void AbstractNodeItem::readCoords(const std::string& nodeDir) {
 void AbstractNodeItem::readLinks(const std::string& nodeDir) {
     // Заглушка для метода readLinks - требуется реализация
 }
+
+void AbstractNodeItem::addLink(std::shared_ptr<LinkImpl> link) {
+    m_links.push_back(link);
+    notifyObservers();
+}
+
+std::vector<std::shared_ptr<LinkImpl>> AbstractNodeItem::getLinkImpls() const {
+    return m_links;
+}
+
+size_t AbstractNodeItem::getLinkCount() const {
+    return m_links.size();
+}
+
+void AbstractNodeItem::resizeNode(Orientation orientation, double deltaX, double deltaY) {
+    std::shared_ptr<Coords> coordsPtr = getCoords();
+    CoordsImpl* coords = static_cast<CoordsImpl*>(coordsPtr.get());
+    
+    float minNodeWidth = static_cast<float>(MIN_NODE_WIDTH);
+    float minNodeHeight = static_cast<float>(MIN_NODE_HEIGHT);
+    
+    switch (orientation) {
+    case Orientation::TOP:
+        if (coords->getHeight() - deltaY >= minNodeHeight) {
+            coords->setTop(coords->getTop() + static_cast<float>(deltaY));
+            coords->setHeight(coords->getHeight() - static_cast<float>(deltaY));
+        }
+        break;
+    case Orientation::BOTTOM:
+        if (coords->getHeight() + deltaY >= minNodeHeight) {
+            coords->setHeight(coords->getHeight() + static_cast<float>(deltaY));
+        }
+        break;
+    case Orientation::LEFT:
+        if (coords->getWidth() - deltaX >= minNodeWidth) {
+            coords->setLeft(coords->getLeft() + static_cast<float>(deltaX));
+            coords->setWidth(coords->getWidth() - static_cast<float>(deltaX));
+        }
+        break;
+    case Orientation::RIGHT:
+        if (coords->getWidth() + deltaX >= minNodeWidth) {
+            coords->setWidth(coords->getWidth() + static_cast<float>(deltaX));
+        }
+        break;
+    }
+}
+
+void AbstractNodeItem::addContainedObjId(const std::string& containedObjId) {
+    if (std::find(m_containedObjIds.begin(), m_containedObjIds.end(), containedObjId) == m_containedObjIds.end()) {
+        m_containedObjIds.push_back(containedObjId);
+        notifyObservers();
+    }
+}
+
+void AbstractNodeItem::removeContainedObjId(const std::string& containedObjId) {
+    auto it = std::find(m_containedObjIds.begin(), m_containedObjIds.end(), containedObjId);
+    if (it != m_containedObjIds.end()) {
+        m_containedObjIds.erase(it);
+        notifyObservers();
+    }
+}

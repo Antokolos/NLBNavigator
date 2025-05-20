@@ -58,6 +58,26 @@ PageImpl::PageImpl(std::shared_ptr<NonLinearBook> currentNLB)
     init();
 }
 
+PageImpl::PageImpl(std::shared_ptr<NonLinearBook> currentNLB, float left, float top)
+    : AbstractNodeItem(currentNLB, left, top), 
+      m_imageFileName(DEFAULT_IMAGE_FILE_NAME),
+      m_imageBackground(DEFAULT_IMAGE_BACKGROUND),
+      m_imageAnimated(DEFAULT_IMAGE_ANIMATED),
+      m_soundFileName(DEFAULT_SOUND_FILE_NAME),
+      m_soundSFX(DEFAULT_SOUND_SFX),
+      m_varId(DEFAULT_VARID),
+      m_timerVarId(DEFAULT_TVARID),
+      m_useCaption(DEFAULT_USE_CAPTION),
+      m_useMPL(DEFAULT_USE_MPL),
+      m_theme(Theme::DEFAULT),
+      m_moduleExternal(DEFAULT_MODULE_EXTERNAL),
+      m_autoTraverse(DEFAULT_AUTO_TRAVERSE),
+      m_autoReturn(DEFAULT_AUTO_RETURN),
+      m_moduleConstrId(DEFAULT_MODULE_CONSTR_ID)
+{
+    init();
+}
+
 // Copy constructor
 PageImpl::PageImpl(const std::shared_ptr<Page>& source, 
                    std::shared_ptr<NonLinearBook> currentNLB, 

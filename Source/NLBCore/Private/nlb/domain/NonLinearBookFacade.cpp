@@ -34,6 +34,8 @@
 #include "nlb/api/RootModulePage.h"
 #include <cmath>
 
+#include "nlb/util/UUID.h"
+
 NonLinearBookFacade::NonLinearBookFacade(std::shared_ptr<Author> author, std::shared_ptr<VCSAdapter> vcsAdapter) 
     : m_rootFacade(true)
     , m_parentFacade(nullptr)
@@ -626,4 +628,197 @@ void NonLinearBookFacade::notifyObservers() {
     if (m_observerHandler) {
         m_observerHandler->notifyObservers();
     }
+}
+
+std::shared_ptr<UndoManager> NonLinearBookFacade::getUndoManagerByItemId(const std::string& id) {
+    auto it = m_undoManagersMap.find(id);
+    if (it != m_undoManagersMap.end()) {
+        return it->second;
+    }
+    
+    std::shared_ptr<UndoManager> result = std::make_shared<UndoManager>();
+    m_undoManagersMap[id] = result;
+    return result;
+}
+
+std::shared_ptr<Page> NonLinearBookFacade::createPage(float left, float top) {
+    std::string id = NLBUUID::randomUUID();
+    auto result = std::make_shared<PageImpl>(m_nlb, left, top);
+    result->setId(id);
+    m_newPagesPool[id] = result;
+    return result;
+}
+
+void NonLinearBookFacade::addPage(std::shared_ptr<Page> page) {
+    auto pageId = page->getId();
+    auto pageImpl = m_newPagesPool[pageId];
+    
+    if (pageImpl) {
+        m_newPagesPool.erase(pageId);
+        // TODO: Compilation error fix
+        // auto command = m_nlb->createAddPageCommand(pageImpl);
+        // m_undoManager->executeAndStore(command);
+        notifyObservers();
+    }
+}
+
+std::shared_ptr<Obj> NonLinearBookFacade::createObj(float left, float top) {
+    std::string id = NLBUUID::randomUUID();
+    auto result = std::make_shared<ObjImpl>(m_nlb, left, top);
+    result->setId(id);
+    m_newObjsPool[id] = result;
+    return result;
+}
+
+void NonLinearBookFacade::addObj(std::shared_ptr<Obj> obj) {
+    auto objId = obj->getId();
+    auto objImpl = m_newObjsPool[objId];
+    
+    if (objImpl) {
+        m_newObjsPool.erase(objId);
+        // TODO: Compilation error fix
+        // auto command = m_nlb->createAddObjCommand(objImpl);
+        // m_undoManager->executeAndStore(command);
+        notifyObservers();
+    }
+}
+
+std::shared_ptr<Link> NonLinearBookFacade::createLink(std::shared_ptr<NodeItem> item, std::shared_ptr<NodeItem> target) {
+    std::string id = NLBUUID::randomUUID();
+    auto result = std::make_shared<LinkImpl>(item, target->getId());
+    result->setId(id);
+    m_newLinksPool[id] = result;
+    return result;
+}
+
+void NonLinearBookFacade::addLink(std::shared_ptr<Link> link) {
+    auto linkId = link->getId();
+    auto linkImpl = m_newLinksPool[linkId];
+    
+    if (linkImpl) {
+        m_newLinksPool.erase(linkId);
+        auto parent = link->getParent();
+        std::shared_ptr<AbstractNodeItem> nodeItem = m_nlb->getPageImplById(parent->getId());
+        if (!nodeItem) {
+            nodeItem = m_nlb->getObjImplById(parent->getId());
+        }
+        
+        nodeItem->addLink(linkImpl);
+        notifyObservers();
+    }
+}
+
+bool NonLinearBookFacade::hasChanges() {
+    // TODO: Implementation needed
+    return false;
+}
+
+void NonLinearBookFacade::saveNLB(bool create, std::shared_ptr<ProgressData> progressData) {
+    // Implementation for saving NLB
+    // TODO: Implementation needed
+}
+
+void NonLinearBookFacade::save(bool create, std::shared_ptr<ProgressData> progressData) {
+    saveNLB(create, progressData);
+    notifyObservers();
+}
+
+void NonLinearBookFacade::saveAs(const std::string& nlbFolder, std::shared_ptr<ProgressData> progressData) {
+    // TODO: Implementation needed
+    notifyObservers();
+}
+
+void NonLinearBookFacade::load(const std::string& path, std::shared_ptr<ProgressData> progressData) {
+    clear();
+    // TODO: Implementation needed
+    m_nlb->load(path, *progressData);
+    notifyObservers();
+}
+
+void NonLinearBookFacade::deleteNode(std::shared_ptr<NodeItem> nodeToDelete) {
+    // TODO: Compilation error fix
+    // auto command = m_nlb->createDeleteNodeCommand(nodeToDelete);
+    // m_undoManager->executeAndStore(command);
+    notifyObservers();
+}
+
+void NonLinearBookFacade::deleteLink(std::shared_ptr<Link> link) {
+    auto parent = link->getParent();
+    std::shared_ptr<AbstractNodeItem> nodeItem = m_nlb->getPageImplById(parent->getId());
+    if (!nodeItem) {
+        nodeItem = m_nlb->getObjImplById(parent->getId());
+    }
+    
+    // auto command = nodeItem->createDeleteLinkCommand(link);
+    // m_undoManager->executeAndStore(command);
+    notifyObservers();
+}
+
+void NonLinearBookFacade::invalidateAssociatedLinks(std::shared_ptr<NodeItem> nodeItem) {
+    auto associatedLinks = m_nlb->getAssociatedLinks(nodeItem);
+    for (const auto& link : associatedLinks) {
+        link->notifyObservers();
+    }
+    notifyObservers();
+}
+
+void NonLinearBookFacade::updateAllViews() {
+    notifyObservers();
+    for (auto facade : m_moduleFacades) {
+        facade->updateAllViews();
+    }
+}
+
+bool NonLinearBookFacade::canUndo() {
+    return m_undoManager->canUndo();
+}
+
+void NonLinearBookFacade::undo() {
+    if (canUndo()) {
+        m_undoManager->undo();
+        notifyObservers();
+    }
+}
+
+bool NonLinearBookFacade::canUndo(const std::string& id) {
+    auto undoManager = getUndoManagerByItemId(id);
+    return undoManager->canUndo();
+}
+
+void NonLinearBookFacade::undo(const std::string& id) {
+    auto undoManager = getUndoManagerByItemId(id);
+    if (undoManager->canUndo()) {
+        undoManager->undo();
+        notifyObservers();
+    }
+}
+
+bool NonLinearBookFacade::canRedo() {
+    return m_undoManager->canRedo();
+}
+
+void NonLinearBookFacade::redo() {
+    if (canRedo()) {
+        m_undoManager->redo();
+        notifyObservers();
+    }
+}
+
+bool NonLinearBookFacade::canRedo(const std::string& id) {
+    auto undoManager = getUndoManagerByItemId(id);
+    return undoManager->canRedo();
+}
+
+void NonLinearBookFacade::redo(const std::string& id) {
+    auto undoManager = getUndoManagerByItemId(id);
+    if (undoManager->canRedo()) {
+        undoManager->redo();
+        notifyObservers();
+    }
+}
+
+void NonLinearBookFacade::redoAll(const std::string& id) {
+    auto undoManager = getUndoManagerByItemId(id);
+    undoManager->redoAll();
+    notifyObservers();
 }
