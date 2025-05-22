@@ -185,11 +185,11 @@ std::set<std::string> NonLinearBookImpl::getUsedSounds() const {
     return getUsedMediaFiles(MediaFile::Type::Sound);
 }
 
-const std::vector<MediaFile>& NonLinearBookImpl::getImageFiles() const {
+const std::vector<std::shared_ptr<MediaFile>>& NonLinearBookImpl::getImageFiles() const {
     return m_imageFiles;
 }
 
-const std::vector<MediaFile>& NonLinearBookImpl::getSoundFiles() const {
+const std::vector<std::shared_ptr<MediaFile>>& NonLinearBookImpl::getSoundFiles() const {
     return m_soundFiles;
 }
 
@@ -281,7 +281,7 @@ std::shared_ptr<Obj> NonLinearBookImpl::getObjById(const std::string& objId) con
 
 void NonLinearBookImpl::exportMedia(bool recursively, const std::string& mediaDir,
                                   const std::string& exportDir,
-                                  const std::vector<MediaFile>& mediaFiles,
+                                  const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
                                   MediaFile::Type type) const {
     // Создаем директорию экспорта если не существует
     if (!FileUtils::exists(exportDir)) {
@@ -290,8 +290,8 @@ void NonLinearBookImpl::exportMedia(bool recursively, const std::string& mediaDi
     
     // Экспортируем медиафайлы
     for (const auto& mediaFile : mediaFiles) {
-        std::string sourceFile = FileUtils::combinePath(mediaDir, mediaFile.getFileName());
-        std::string targetFile = FileUtils::combinePath(exportDir, mediaFile.getFileName());
+        std::string sourceFile = FileUtils::combinePath(mediaDir, mediaFile->getFileName());
+        std::string targetFile = FileUtils::combinePath(exportDir, mediaFile->getFileName());
         
         if (FileUtils::exists(sourceFile)) {
             // Копируем файл
@@ -1014,7 +1014,7 @@ void NonLinearBookImpl::loadVariables(const std::string& rootDir, std::shared_pt
     }
 }
 
-void NonLinearBookImpl::loadMediaFiles(const std::string& rootDir, const std::string& mediaDirName, std::vector<MediaFile>& mediaFiles) {
+void NonLinearBookImpl::loadMediaFiles(const std::string& rootDir, const std::string& mediaDirName, std::vector<std::shared_ptr<MediaFile>>& mediaFiles) {
     std::string mediaDir = FileUtils::combinePath(rootDir, mediaDirName);
     if (!FileUtils::exists(mediaDir)) {
         return;
@@ -1022,14 +1022,15 @@ void NonLinearBookImpl::loadMediaFiles(const std::string& rootDir, const std::st
     
     std::vector<std::string> files = FileUtils::getDirectoryFiles(mediaDir);
     for (const std::string& fileName : files) {
-        if (!FileUtils::isDirectory(FileUtils::combinePath(mediaDir, fileName))) {
-            MediaFileImpl mediaFile(fileName);
+        std::string fullPath = FileUtils::combinePath(mediaDir, fileName);
+        if (!FileUtils::isDirectory(fullPath)) {
+            auto mediaFile = std::make_shared<MediaFileImpl>(fileName);
             mediaFiles.push_back(mediaFile);
         }
     }
 }
 
-void NonLinearBookImpl::writeMediaFiles(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, const std::vector<MediaFile>& mediaFiles, const std::string& mediaDirName) {
+void NonLinearBookImpl::writeMediaFiles(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, const std::vector<std::shared_ptr<MediaFile>>& mediaFiles, const std::string& mediaDirName) {
     if (mediaFiles.empty()) {
         return;
     }

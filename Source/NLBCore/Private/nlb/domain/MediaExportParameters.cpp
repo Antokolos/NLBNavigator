@@ -29,12 +29,17 @@ const MediaExportParameters& MediaExportParameters::getDefault() {
 }
 
 MediaExportParameters MediaExportParameters::createDefault() {
-    auto& config = PropertyManager::getSettings().getDefaultConfig();
-    return MediaExportParameters(
-        Preset::DEFAULT,
-        config.getExport().isConvertpng2jpg(),
-        config.getExport().getQuality()
-    );
+    try {
+        auto& config = PropertyManager::getSettings().getDefaultConfig();
+        return MediaExportParameters(
+            Preset::DEFAULT,
+            config.getExport().isConvertpng2jpg(),
+            config.getExport().getQuality()
+        );
+    } catch (...) {
+        // Если не удалось получить настройки, используем значения по умолчанию
+        return MediaExportParameters(Preset::DEFAULT, false, 90);
+    }
 }
 
 MediaExportParameters::Preset MediaExportParameters::getPreset() const {

@@ -72,19 +72,19 @@ std::set<std::string> DummyNLB::getUsedSounds() const {
     return std::set<std::string>();
 }
 
-const std::vector<MediaFile>& DummyNLB::getImageFiles() const {
-    return m_imageFiles; //std::vector<MediaFile>();
+const std::vector<std::shared_ptr<MediaFile>>& DummyNLB::getImageFiles() const {
+    return m_imageFiles;
 }
 
-const std::vector<MediaFile>& DummyNLB::getSoundFiles() const {
-    return m_soundFiles; //std::vector<MediaFile>();
+const std::vector<std::shared_ptr<MediaFile>>& DummyNLB::getSoundFiles() const {
+    return m_soundFiles;
 }
 
 void DummyNLB::exportMedia(
     bool isRoot,
     const std::string& mainExportDir,
     const std::string& mediaDirName,
-    const std::vector<MediaFile>& mediaFiles,
+    const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
     MediaFile::Type mediaType
 ) const {
     // do nothing

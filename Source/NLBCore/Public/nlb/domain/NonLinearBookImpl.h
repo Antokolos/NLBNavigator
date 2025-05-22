@@ -96,8 +96,8 @@ public:
 
     std::set<std::string> getUsedImages() const override;
     std::set<std::string> getUsedSounds() const override;
-    const std::vector<MediaFile>& getImageFiles() const override;
-    const std::vector<MediaFile>& getSoundFiles() const override;
+	const std::vector<std::shared_ptr<MediaFile>>& getImageFiles() const override;
+	const std::vector<std::shared_ptr<MediaFile>>& getSoundFiles() const override;
 
     std::map<std::string, std::shared_ptr<Page>> getPages() const override;
     std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() const override;
@@ -110,10 +110,12 @@ public:
     std::map<std::string, std::shared_ptr<Obj>> getObjs() const override;
     std::shared_ptr<Obj> getObjById(const std::string& objId) const override;
 
-    void exportMedia(bool recursively, const std::string& mediaDir, 
-                    const std::string& exportDir, 
-                    const std::vector<MediaFile>& mediaFiles,
-                    MediaFile::Type type) const override;
+	void exportMedia(
+		bool recursively,
+		const std::string& mediaDir,
+		const std::string& exportDir,
+		const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
+		MediaFile::Type type) const override;
                     
     std::shared_ptr<Page> createFilteredPage(const std::string& pageId, 
                                            const History& history) const override;
@@ -201,8 +203,8 @@ private:
     void loadPages(const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
     void loadObjs(const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
     void loadVariables(const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
-    void loadMediaFiles(const std::string& rootDir, const std::string& mediaDirName, std::vector<MediaFile>& mediaFiles);
-    void writeMediaFiles(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, const std::vector<MediaFile>& mediaFiles, const std::string& mediaDirName);
+    void loadMediaFiles(const std::string& rootDir, const std::string& mediaDirName, std::vector<std::shared_ptr<MediaFile>>& mediaFiles);
+    void writeMediaFiles(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, const std::vector<std::shared_ptr<MediaFile>>& mediaFiles, const std::string& mediaDirName);
     void writePages(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
     void writeObjs(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
     void writeVariables(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
@@ -240,8 +242,8 @@ private:
     std::vector<std::string> m_autowiredPages;
     std::map<std::string, std::shared_ptr<ObjImpl>> m_objs;
     std::map<std::string, std::shared_ptr<VariableImpl>> m_variables;
-    std::vector<MediaFile> m_imageFiles;
-    std::vector<MediaFile> m_soundFiles;
+	std::vector<std::shared_ptr<MediaFile>> m_imageFiles;
+	std::vector<std::shared_ptr<MediaFile>> m_soundFiles;
 
     // Карты для медиафайлов
     std::map<std::string, std::string> m_mediaToConstraintMap;

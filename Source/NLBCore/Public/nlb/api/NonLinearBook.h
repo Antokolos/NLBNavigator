@@ -170,14 +170,14 @@ public:
      */
     virtual std::set<std::string> getUsedSounds() const = 0;
 
-    virtual const std::vector<MediaFile>& getImageFiles() const = 0;
-    virtual const std::vector<MediaFile>& getSoundFiles() const = 0;
+    virtual const std::vector<std::shared_ptr<MediaFile>>& getImageFiles() const = 0;
+    virtual const std::vector<std::shared_ptr<MediaFile>>& getSoundFiles() const = 0;
 
     virtual void exportMedia(
         bool isRoot,
         const std::string& mainExportDir,
         const std::string& mediaDirName,
-        const std::vector<MediaFile>& mediaFiles,
+        const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
         MediaFile::Type mediaType
     ) const = 0;
 

@@ -12,7 +12,30 @@ public:
         NOCHANGE,
         COMPRESSED
     };
-
+    
+    MediaExportParameters() 
+            : m_preset(Preset::DEFAULT)
+            , m_convertPNG2JPG(false)
+            , m_quality(90) {
+    }
+    
+    MediaExportParameters(Preset preset, bool convertPNG2JPG, int quality);
+    
+    MediaExportParameters(const MediaExportParameters& other)
+        : m_preset(other.m_preset)
+        , m_convertPNG2JPG(other.m_convertPNG2JPG)
+        , m_quality(other.m_quality) {
+    }
+    
+    MediaExportParameters& operator=(const MediaExportParameters& other) {
+        if (this != &other) {
+            m_preset = other.m_preset;
+            m_convertPNG2JPG = other.m_convertPNG2JPG;
+            m_quality = other.m_quality;
+        }
+        return *this;
+    }
+    
     static const MediaExportParameters& fromPreset(Preset preset);
     static const MediaExportParameters& getDefault();
     
@@ -21,7 +44,6 @@ public:
     int getQuality() const;
 
 private:
-    MediaExportParameters(Preset preset, bool convertPNG2JPG, int quality);
     static MediaExportParameters createDefault();
     
     Preset m_preset;

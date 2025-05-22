@@ -35,6 +35,11 @@ void writeFileContents(const std::string& filePath, const std::string& content) 
 
 // Constructors and other method implementations remain the same as in the previous version
 
+VariableImpl::VariableImpl(std::shared_ptr<NonLinearBook> currentNLB)
+{
+    // stub
+}
+
 void VariableImpl::readVariable(const std::string& varDir) {
     setId(FileUtils::getFileName(varDir));
 

@@ -424,3 +424,14 @@ Obj::ContainerType ObjImpl::getContainerType() const {
     }
     return Obj::ContainerType::None;
 }
+
+void ObjImpl::writeObj(const std::shared_ptr<FileManipulator>& fileManipulator, const std::string& objsDir,
+    std::shared_ptr<NonLinearBookImpl> nonLinearBook)
+{
+    // stub
+}
+
+void ObjImpl::readObj(const std::string& objDir)
+{
+    // stub
+}
