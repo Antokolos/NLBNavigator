@@ -4,6 +4,7 @@
 #include "nlb/util/MultiLangString.h"
 #include "nlb/api/NonLinearBook.h"
 #include <sstream>
+#include <stdexcept>
 
 FileManipulator::FileManipulator(std::shared_ptr<VCSAdapter> vcsAdapter, const std::string& mainRoot)
     : m_vcsAdapter(vcsAdapter)
@@ -38,11 +39,22 @@ bool FileManipulator::deleteFileOrDir(const std::string& filePath) {
                 break;
             case VCSAdapter::Status::Added:
                 m_vcsAdapter->reset(relativePath);
+                removed = true; // reset doesn't physically remove but marks as removed in VCS
                 break;
             case VCSAdapter::Status::Missing:
             case VCSAdapter::Status::Ignored:
                 throw NLBFileManipulationException(
                     "Incorrect file status while deleting file with path = " + 
+                    relativePath + " from VCS: " + std::to_string(static_cast<int>(status))
+                );
+            case VCSAdapter::Status::Unknown:
+            case VCSAdapter::Status::VCS_Undefined:
+                // For unknown files, just delete physically
+                removed = true;
+                break;
+            default:
+                throw NLBFileManipulationException(
+                    "Unsupported file status while deleting file with path = " + 
                     relativePath + " from VCS: " + std::to_string(static_cast<int>(status))
                 );
         }
@@ -52,6 +64,8 @@ bool FileManipulator::deleteFileOrDir(const std::string& filePath) {
         }
         return removed && ret;
 
+    } catch (const NLBFileManipulationException&) {
+        throw; // Re-throw VCS specific exceptions
     } catch (const std::exception& e) {
         throw NLBIOException("Error while deleting: " + std::string(e.what()));
     }
@@ -74,7 +88,7 @@ void FileManipulator::writeRequiredString(
             createFile(filePath, "Cannot create file with name " + fileName);
         }
     } catch (const std::exception& e) {
-        throw NLBIOException("IOException occurred: " + std::string(e.what()));
+        throw NLBIOException("IOException occurred while writing required string: " + std::string(e.what()));
     }
 }
 
@@ -87,24 +101,29 @@ void FileManipulator::writeOptionalString(
         std::string filePath = FileUtils::combinePath(rootDir, fileName);
         bool newFile = !FileUtils::exists(filePath);
 
-        if (!content.empty()) {
-            if (content == defaultContent) {
-                if (!newFile) {
-                    deleteFileOrDir(filePath);
-                }
-            } else {
+        if (content == defaultContent) {
+            if (!newFile) {
+                deleteFileOrDir(filePath);
+            }
+        } else {
+            if (!content.empty()) {
                 std::stringstream ss;
                 ss << content;
                 writeFile(filePath, ss);
                 addToVCS(filePath, newFile);
-            }
-        } else {
-            if (!defaultContent.empty()) {
-                createFile(filePath, "Cannot create file with name " + fileName);
+            } else {
+                if (!defaultContent.empty()) {
+                    createFile(filePath, "Cannot create file with name " + fileName);
+                } else {
+                    // Both content and default are empty, delete file if exists
+                    if (!newFile) {
+                        deleteFileOrDir(filePath);
+                    }
+                }
             }
         }
     } catch (const std::exception& e) {
-        throw NLBIOException("IOException occurred: " + std::string(e.what()));
+        throw NLBIOException("IOException occurred while writing optional string: " + std::string(e.what()));
     }
 }
 
@@ -130,10 +149,9 @@ void FileManipulator::writeOptionalMultiLangString(
                 createDir(mlsRootDir, "Cannot create MultiLangString root: " + mlsRootDir);
             }
 
-            for (const auto& pair : content.content()) {
-                const std::string& langKey = pair.first;
-                const std::string& langValue = pair.second;
-                
+            auto languages = content.keySet();
+            for (const auto& langKey : languages) {
+                std::string langValue = content.get(langKey);
                 std::string filePath = FileUtils::combinePath(mlsRootDir, langKey);
                 bool newFile = !FileUtils::exists(filePath);
 
@@ -150,8 +168,85 @@ void FileManipulator::writeOptionalMultiLangString(
             }
         }
     } catch (const std::exception& e) {
-        throw NLBIOException("IOException occurred: " + std::string(e.what()));
+        throw NLBIOException("IOException occurred while writing MultiLangString: " + std::string(e.what()));
     }
+}
+
+void FileManipulator::createDir(
+    const std::string& dirPath,
+    const std::string& errorMessage) {
+    try {
+        if (!FileUtils::exists(dirPath)) {
+            if (!FileUtils::createDirectory(dirPath)) {
+                throw NLBIOException(errorMessage);
+            }
+            addToVCS(dirPath, true);
+        }
+    } catch (const NLBIOException&) {
+        throw; // Re-throw NLB specific exceptions
+    } catch (const std::exception& e) {
+        throw NLBIOException(errorMessage + ": " + e.what());
+    }
+}
+
+void FileManipulator::copyFile(
+    const std::string& target,
+    const std::string& source,
+    const std::string& errorMessage) {
+    try {
+        bool newFile = !FileUtils::exists(target);
+        
+        if (!FileUtils::exists(source)) {
+            throw NLBIOException("Source file does not exist: " + source);
+        }
+
+        std::ifstream sourceFile(source, std::ios::binary);
+        if (!sourceFile.is_open()) {
+            throw NLBIOException("Cannot open source file: " + source);
+        }
+
+        writeFile(target, sourceFile);
+        sourceFile.close();
+        addToVCS(target, newFile);
+    } catch (const std::exception& e) {
+        throw NLBIOException(errorMessage + ": " + e.what());
+    }
+}
+
+void FileManipulator::createFile(
+    const std::string& filePath,
+    const std::string& errorMessage) {
+    try {
+        if (!FileUtils::exists(filePath)) {
+            std::ofstream file(filePath);
+            if (!file.is_open()) {
+                throw NLBIOException(errorMessage);
+            }
+            file.close();
+            addToVCS(filePath, true);
+        }
+    } catch (const NLBIOException&) {
+        throw; // Re-throw NLB specific exceptions
+    } catch (const std::exception& e) {
+        throw NLBIOException(errorMessage + ": " + e.what());
+    }
+}
+
+std::string FileManipulator::getPathRelativeToMainRoot(const std::string& filePath) {
+    std::string absolutePath = FileUtils::normalizePath(filePath);
+    std::string rootPath = FileUtils::normalizePath(m_mainRoot);
+    
+    // Ensure root path ends with separator for proper matching
+    if (!rootPath.empty() && rootPath.back() != FileUtils::getPathSeparator()) {
+        rootPath += FileUtils::getPathSeparator();
+    }
+    
+    if (absolutePath.find(rootPath) == 0) {
+        return absolutePath.substr(rootPath.length());
+    }
+    
+    // If path is not under root, return as-is (this might indicate an error)
+    return absolutePath;
 }
 
 std::string FileManipulator::getRequiredFileAsString(
@@ -168,7 +263,9 @@ std::string FileManipulator::getRequiredFileAsString(
         throw NLBIOException("Cannot open file: " + filePath);
     }
 
-    return getFileAsString(file);
+    std::string content = getFileAsString(file);
+    file.close();
+    return content;
 }
 
 std::string FileManipulator::getOptionalFileAsString(
@@ -180,12 +277,18 @@ std::string FileManipulator::getOptionalFileAsString(
         return defaultValue;
     }
 
-    std::ifstream file(filePath);
-    if (!file.is_open()) {
-        throw NLBIOException("Cannot open file: " + filePath);
-    }
+    try {
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            return defaultValue;
+        }
 
-    return getFileAsString(file);
+        std::string content = getFileAsString(file);
+        file.close();
+        return content;
+    } catch (const std::exception&) {
+        return defaultValue;
+    }
 }
 
 MultiLangString FileManipulator::readOptionalMultiLangString(
@@ -203,65 +306,73 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
             
             for (const auto& langKey : langKeys) {
                 std::string filePath = FileUtils::combinePath(mlsRootDir, langKey);
-                std::ifstream file(filePath);
-                if (!file.is_open()) {
-                    throw NLBIOException("Cannot open file: " + filePath);
+                if (!FileUtils::isDirectory(filePath)) {
+                    std::ifstream file(filePath);
+                    if (file.is_open()) {
+                        std::string content = getFileAsString(file);
+                        result.put(langKey, content);
+                        file.close();
+                    }
                 }
-                result.put(langKey, getFileAsString(file));
             }
         } else {
+            // Single file case - treat as default language
             std::ifstream file(mlsRootDir);
-            if (!file.is_open()) {
-                throw NLBIOException("Cannot open file: " + mlsRootDir);
+            if (file.is_open()) {
+                std::string content = getFileAsString(file);
+                result.put(NonLinearBook::DEFAULT_LANGUAGE, content);
+                file.close();
             }
-            result.put(NonLinearBook::DEFAULT_LANGUAGE, getFileAsString(file));
         }
     } catch (const std::exception& e) {
-        throw NLBIOException("IOException occurred: " + std::string(e.what()));
+        throw NLBIOException("IOException occurred while reading MultiLangString: " + std::string(e.what()));
     }
 
     return result;
 }
 
-void FileManipulator::createDir(
-    const std::string& dirPath,
-    const std::string& errorMessage) {
+void FileManipulator::writeFile(const std::string& filePath, std::istream& input) {
     try {
-        if (!FileUtils::exists(dirPath)) {
-            if (!FileUtils::createDirectory(dirPath)) {
-                throw NLBIOException(errorMessage);
-            }
-            addToVCS(dirPath, true);
+        std::ofstream output(filePath, std::ios::binary);
+        if (!output.is_open()) {
+            throw NLBIOException("Cannot open file for writing: " + filePath);
         }
+        transfer(input, output);
+        output.close();
     } catch (const std::exception& e) {
-        throw NLBIOException(errorMessage + ": " + e.what());
+        throw NLBIOException("Error writing to file " + filePath + ": " + e.what());
     }
 }
 
-void FileManipulator::copyFile(
-    const std::string& target,
-    const std::string& source,
-    const std::string& errorMessage) {
+std::string FileManipulator::getFileAsString(std::ifstream& stream) {
     try {
-        bool newFile = !FileUtils::exists(target);
-        
-        if (newFile) {
-            std::ofstream file(target, std::ios::binary);
-            if (!file.is_open()) {
-                throw NLBIOException("Cannot create file: " + target);
-            }
-            file.close();
-        }
-
-        std::ifstream sourceFile(source, std::ios::binary);
-        if (!sourceFile.is_open()) {
-            throw NLBIOException("Cannot open source file: " + source);
-        }
-
-        writeFile(target, sourceFile);
-        addToVCS(target, newFile);
+        std::stringstream buffer;
+        buffer << stream.rdbuf();
+        return buffer.str();
     } catch (const std::exception& e) {
-        throw NLBIOException(errorMessage + ": " + e.what());
+        throw NLBIOException("Error reading from stream: " + std::string(e.what()));
+    }
+}
+
+void FileManipulator::transfer(std::istream& input, std::ostream& output) {
+    try {
+        char buffer[BLOCK_SIZE];
+        while (input.good() && output.good()) {
+            input.read(buffer, BLOCK_SIZE);
+            std::streamsize bytesRead = input.gcount();
+            if (bytesRead > 0) {
+                output.write(buffer, bytesRead);
+            }
+        }
+        
+        if (input.bad()) {
+            throw std::runtime_error("Error reading from input stream");
+        }
+        if (output.bad()) {
+            throw std::runtime_error("Error writing to output stream");
+        }
+    } catch (const std::exception& e) {
+        throw NLBIOException("Error during stream transfer: " + std::string(e.what()));
     }
 }
 
@@ -272,74 +383,32 @@ void FileManipulator::addToVCS(const std::string& filePath, bool isNewFile) {
 
     std::string path = getPathRelativeToMainRoot(filePath);
     
-    if (isNewFile) {
-        VCSAdapter::Status status = m_vcsAdapter->getStatus(path);
-        switch (status) {
-            case VCSAdapter::Status::Unknown:
-            case VCSAdapter::Status::VCS_Undefined:
-                m_vcsAdapter->add(path);
-                break;
-            case VCSAdapter::Status::Added:
-                break;
-            default:
-                throw NLBFileManipulationException(
-                    "Incorrect file status while adding file with path = " +
-                    path + " to VCS: " + std::to_string(static_cast<int>(status))
-                );
-        }
-    } else if (m_vcsAdapter->getAddModifiedFilesFlag()) {
-        m_vcsAdapter->add(path);
-    }
-}
-
-void FileManipulator::createFile(
-    const std::string& filePath,
-    const std::string& errorMessage) {
     try {
-        if (!FileUtils::exists(filePath)) {
-            std::ofstream file(filePath);
-            if (!file.is_open()) {
-                throw NLBIOException(errorMessage);
+        if (isNewFile) {
+            VCSAdapter::Status status = m_vcsAdapter->getStatus(path);
+            switch (status) {
+                case VCSAdapter::Status::Unknown:
+                case VCSAdapter::Status::VCS_Undefined:
+                    m_vcsAdapter->add(path);
+                    break;
+                case VCSAdapter::Status::Added:
+                    // File is already added, nothing to do
+                    break;
+                case VCSAdapter::Status::Modified:
+                case VCSAdapter::Status::Clean:
+                    // File exists but is new in our context, add it
+                    m_vcsAdapter->add(path);
+                    break;
+                default:
+                    throw NLBFileManipulationException(
+                        "Incorrect file status while adding file with path = " +
+                        path + " to VCS: " + std::to_string(static_cast<int>(status))
+                    );
             }
-            file.close();
-            addToVCS(filePath, true);
+        } else if (m_vcsAdapter->getAddModifiedFilesFlag()) {
+            m_vcsAdapter->add(path);
         }
     } catch (const std::exception& e) {
-        throw NLBIOException(errorMessage + ": " + e.what());
+        throw NLBVCSException("VCS operation failed for path " + path + ": " + e.what());
     }
-}
-
-std::string FileManipulator::getFileAsString(std::ifstream& stream) {
-    std::stringstream buffer;
-    buffer << stream.rdbuf();
-    return buffer.str();
-}
-
-void FileManipulator::transfer(std::istream& input, std::ostream& output) {
-    char buffer[BLOCK_SIZE];
-    while (input.read(buffer, BLOCK_SIZE)) {
-        output.write(buffer, input.gcount());
-    }
-    if (input.gcount() > 0) {
-        output.write(buffer, input.gcount());
-    }
-}
-
-void FileManipulator::writeFile(const std::string& filePath, std::istream& input) {
-    std::ofstream output(filePath, std::ios::binary);
-    if (!output.is_open()) {
-        throw NLBIOException("Cannot open file for writing: " + filePath);
-    }
-    transfer(input, output);
-}
-
-std::string FileManipulator::getPathRelativeToMainRoot(const std::string& filePath) {
-    std::string absolutePath = FileUtils::normalizePath(filePath);
-    std::string rootPath = FileUtils::normalizePath(m_mainRoot);
-    
-    if (absolutePath.find(rootPath) == 0) {
-        return absolutePath.substr(rootPath.length() + 1);
-    }
-    
-    return absolutePath;
 }

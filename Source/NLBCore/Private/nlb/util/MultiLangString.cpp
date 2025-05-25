@@ -6,6 +6,13 @@ MultiLangString::MultiLangString(const MultiLangString& source)
     : m_content(source.m_content) {
 }
 
+MultiLangString& MultiLangString::operator=(const MultiLangString& other) {
+    if (this != &other) {
+        m_content = other.m_content;
+    }
+    return *this;
+}
+
 MultiLangString MultiLangString::createEmptyText() {
     return MultiLangString();
 }
@@ -46,34 +53,64 @@ std::vector<std::string> MultiLangString::values() const {
 }
 
 void MultiLangString::put(const std::string& langKey, const std::string& value) {
+    // Проверяем, что ключ не пустой (аналог проверки на null в Java)
+    if (langKey.empty()) {
+        return; // Игнорируем пустые ключи
+    }
+    
+    // В Java допускаются пустые значения, поэтому добавляем любое значение
     m_content[langKey] = value;
 }
 
 std::string MultiLangString::get(const std::string& langKey) const {
+    // Проверяем, что ключ не пустой
+    if (langKey.empty()) {
+        return nlb::Constants::EMPTY_STRING;
+    }
+    
     auto it = m_content.find(langKey);
     return it != m_content.end() ? it->second : nlb::Constants::EMPTY_STRING;
 }
 
 bool MultiLangString::equalsAs(const std::string& langKey, const MultiLangString& mlsToCompare) const {
+    // Проверяем, что ключ не пустой
+    if (langKey.empty()) {
+        return true; // Пустые ключи считаются равными
+    }
+    
     auto it1 = m_content.find(langKey);
     auto it2 = mlsToCompare.m_content.find(langKey);
     
     const std::string& contentText = (it1 != m_content.end()) ? it1->second : "";
     const std::string& contentTextToCompare = (it2 != mlsToCompare.m_content.end()) ? it2->second : "";
 
+    // Проверяем случай, когда текущий текст пустой
     if (StringHelper::isEmpty(contentText)) {
         return StringHelper::isEmpty(contentTextToCompare);
     }
+    
     return contentText == contentTextToCompare;
 }
 
 bool MultiLangString::isSubsetOf(const MultiLangString& mlsToCompare) const {
     for (const auto& entry : m_content) {
-        const std::string& valueToCompare = mlsToCompare.get(entry.first);
-        if (StringHelper::isEmpty(valueToCompare) && !StringHelper::isEmpty(entry.second)) {
+        const std::string& key = entry.first;
+        const std::string& value = entry.second;
+        
+        // Пропускаем пустые ключи
+        if (key.empty()) {
+            continue;
+        }
+        
+        const std::string& valueToCompare = mlsToCompare.get(key);
+        
+        // Если сравниваемое значение пустое, а наше не пустое - не подмножество
+        if (StringHelper::isEmpty(valueToCompare) && !StringHelper::isEmpty(value)) {
             return false;
         }
-        if (valueToCompare != entry.second) {
+        
+        // Если значения не равны - не подмножество
+        if (valueToCompare != value) {
             return false;
         }
     }
@@ -82,6 +119,11 @@ bool MultiLangString::isSubsetOf(const MultiLangString& mlsToCompare) const {
 
 bool MultiLangString::isEmpty() const {
     for (const auto& entry : m_content) {
+        // Пропускаем пустые ключи
+        if (entry.first.empty()) {
+            continue;
+        }
+        
         if (StringHelper::notEmpty(entry.second)) {
             return false;
         }
@@ -97,10 +139,25 @@ bool MultiLangString::operator!=(const MultiLangString& other) const {
     return !(*this == other);
 }
 
-size_t std::hash<MultiLangString>::operator()(const MultiLangString& mls) const {
-    size_t h = 0;
-    for (const auto& key : mls.keySet()) {
-        h ^= std::hash<std::string>{}(key) << 1;
+std::size_t MultiLangString::hashCode() const {
+    std::size_t result = 0;
+    
+    // Используем алгоритм хеширования, аналогичный Java HashMap
+    for (const auto& entry : m_content) {
+        // Пропускаем пустые ключи
+        if (entry.first.empty()) {
+            continue;
+        }
+        
+        std::size_t keyHash = std::hash<std::string>{}(entry.first);
+        std::size_t valueHash = std::hash<std::string>{}(entry.second);
+        
+        // Комбинируем хеши ключа и значения (аналог Java Map.Entry.hashCode())
+        std::size_t entryHash = keyHash ^ valueHash;
+        
+        // Добавляем к общему хешу (аналог Java HashMap.hashCode())
+        result += entryHash;
     }
-    return h;
+    
+    return result;
 }

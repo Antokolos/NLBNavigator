@@ -91,6 +91,21 @@ public:
                  const std::string& errorMessage);
 
     /*!
+     * \brief Creates empty file
+     * \param filePath Path of file to create
+     * \param errorMessage Error message if creation fails
+     * \throws NLBIOException if file creation fails
+     */
+    void createFile(const std::string& filePath, const std::string& errorMessage);
+
+    /*!
+     * \brief Gets path relative to main root directory
+     * \param filePath Absolute file path
+     * \return Path relative to main root
+     */
+    std::string getPathRelativeToMainRoot(const std::string& filePath);
+
+    /*!
      * \brief Reads required file as string
      * \param rootDir Root directory path
      * \param fileName Name of file to read
@@ -126,8 +141,25 @@ public:
      * \brief Writes input stream to file
      * \param filePath Path of file to write
      * \param input Input stream containing data
+     * \throws NLBIOException if write operation fails
      */
     static void writeFile(const std::string& filePath, std::istream& input);
+
+    /*!
+     * \brief Reads entire file stream to string
+     * \param stream Input file stream
+     * \return File content as string
+     * \throws NLBIOException if read operation fails
+     */
+    static std::string getFileAsString(std::ifstream& stream);
+
+    /*!
+     * \brief Transfers data between streams
+     * \param input Input stream
+     * \param output Output stream
+     * \throws NLBIOException if transfer operation fails
+     */
+    static void transfer(std::istream& input, std::ostream& output);
     
 private:
     static const int BLOCK_SIZE = 1024; ///< Buffer size for file operations
@@ -136,38 +168,9 @@ private:
     std::string m_mainRoot; ///< Main root directory path
 
     /*!
-     * \brief Gets path relative to main root
-     * \param filePath Absolute file path
-     * \return Path relative to main root
-     */
-    std::string getPathRelativeToMainRoot(const std::string& filePath);
-
-    /*!
      * \brief Adds file to version control
      * \param filePath Path of file to add
      * \param isNewFile true if file is newly created
      */
     void addToVCS(const std::string& filePath, bool isNewFile);
-
-    /*!
-     * \brief Creates empty file
-     * \param filePath Path of file to create
-     * \param errorMessage Error message if creation fails
-     */
-    void createFile(const std::string& filePath, const std::string& errorMessage);
-
-    /*!
-     * \brief Reads entire file stream to string
-     * \param stream Input file stream
-     * \return File content as string
-     */
-    static std::string getFileAsString(std::ifstream& stream);
-
-    /*!
-     * \brief Transfers data between streams
-     * \param input Input stream
-     * \param output Output stream
-     */
-    static void transfer(std::istream& input, std::ostream& output);
-
 };
