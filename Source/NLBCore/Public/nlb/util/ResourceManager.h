@@ -20,18 +20,18 @@ public:
      * @param targetDir Directory where files should be exported
      * @throws NLBIOException if there's an error during export
      */
-    static void exportBundledFiles(const std::string& targetDir) throw(NLBIOException);
+    static void exportBundledFiles(const std::string& targetDir);
 
 private:
     static const std::string VNSTEAD;
 
     /*!
      * Gets map of resource folder files
-     * @param loader Class loader to use for resource loading
+     * @param loader Class loader to use for resource loading (can be nullptr for default)
      * @return Map of folder paths to lists of files
      * @throws NLBIOException if resources directory doesn't exist
      */
-    static std::map<std::string, std::vector<std::string>> getResourceFolderFiles(void* loader) throw(NLBIOException);
+    static std::map<std::string, std::vector<std::string>> getResourceFolderFiles(void* loader);
 
     /*!
      * Recursively gets all child files from a directory
@@ -49,7 +49,7 @@ private:
      */
     static void exportBundledFiles(
         const std::pair<std::string, std::vector<std::string>>& resourceFileEntry,
-        const std::string& targetDir) throw(NLBIOException);
+        const std::string& targetDir);
 
     /*!
      * Exports a single bundled file
@@ -59,5 +59,27 @@ private:
      */
     static void exportBundledFile(
         const std::string& resourceFileParent,
-        const std::string& resourceFile) throw(NLBIOException);
+        const std::string& resourceFile);
+
+    /*!
+     * Gets list of resource files in a directory using resource loading mechanism
+     * @param resourcePath Path to resource directory
+     * @return Vector of resource file paths
+     */
+    static std::vector<std::string> getResourceDirectoryListing(const std::string& resourcePath);
+
+    /*!
+     * Checks if a resource exists
+     * @param resourcePath Path to check
+     * @return true if resource exists
+     */
+    static bool resourceExists(const std::string& resourcePath);
+
+    /*!
+     * Gets resource as input stream
+     * @param resourcePath Path to resource
+     * @return Input stream for the resource
+     * @throws NLBIOException if resource cannot be opened
+     */
+    static std::ifstream getResourceAsStream(const std::string& resourcePath);
 };
