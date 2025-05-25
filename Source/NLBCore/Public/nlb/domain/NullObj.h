@@ -19,9 +19,16 @@ class NullObj : public AbstractNodeItem, public Obj {
 public:
     /*!
      * \brief Get the singleton instance of NullObj
+     * \note This method follows the Singleton pattern from the Java implementation
+     * where getInstance() method was used to get the singleton instance
      * \return Reference to the singleton NullObj instance
      */
     static NullObj& create();
+    
+    /*!
+     * \brief Virtual destructor for proper cleanup
+     */
+    virtual ~NullObj() = default;
 
     // Obj interface method overrides
     std::string getText() const override;
@@ -79,7 +86,10 @@ public:
         std::map<std::string, std::string>& visitedVars
     ) const;
 
-    void setId(const std::string& id) override;
+    /*!
+     * \brief Override setId to do nothing (Null Object pattern)
+     */
+    void setId(const std::string& id) override {}
     std::string getId() const override;
 
     virtual std::string getFullId() const override { return AbstractNodeItem::getFullId(); }

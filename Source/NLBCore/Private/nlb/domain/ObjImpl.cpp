@@ -89,11 +89,87 @@ ObjImpl::ObjImpl(std::shared_ptr<Obj> source, std::shared_ptr<NonLinearBook> cur
 }
 
 ObjImpl::ObjImpl(std::shared_ptr<NonLinearBook> currentNLB) 
-    : AbstractNodeItem(currentNLB) {
+    : AbstractNodeItem(currentNLB),
+      m_varId(DEFAULT_VARID),
+      m_constrId(DEFAULT_CONSTRID),
+      m_commonToId(DEFAULT_COMMON_TO_ID),
+      m_name(DEFAULT_NAME),
+      m_imageFileName(DEFAULT_IMAGE_FILE_NAME),
+      m_soundFileName(DEFAULT_SOUND_FILE_NAME),
+      m_soundSFX(DEFAULT_SOUND_SFX),
+      m_animatedImage(DEFAULT_ANIMATED_IMAGE),
+      m_suppressDsc(DEFAULT_SUPPRESS_DSC),
+      m_text(DEFAULT_TEXT),
+      m_actText(DEFAULT_ACT_TEXT),
+      m_nouseText(DEFAULT_NOUSE_TEXT),
+      m_disp(DEFAULT_DISP),
+      m_graphical(DEFAULT_GRAPHICAL),
+      m_showOnCursor(DEFAULT_SHOW_ON_CURSOR),
+      m_preserved(DEFAULT_PRESERVED),
+      m_loadOnce(DEFAULT_LOAD_ONCE),
+      m_collapsable(DEFAULT_COLLAPSABLE),
+      m_movementDirection(DEFAULT_MOVEMENT_DIRECTION),
+      m_effect(DEFAULT_EFFECT),
+      m_startFrame(DEFAULT_START_FRAME),
+      m_maxFrame(DEFAULT_MAX_FRAME),
+      m_preloadFrames(DEFAULT_PRELOAD_FRAMES),
+      m_pauseFrames(DEFAULT_PAUSE_FRAMES),
+      m_coordsOrigin(CoordsOrigin::LeftTop),
+      m_clearUnderTooltip(DEFAULT_CLEAR_UNDER_TOOLTIP),
+      m_actOnKey(DEFAULT_ACT_ON_KEY),
+      m_cacheText(DEFAULT_CACHE_TEXT),
+      m_looped(DEFAULT_LOOPED),
+      m_noRedrawOnAct(DEFAULT_NO_REDRAW_ON_ACT),
+      m_morphOverId(DEFAULT_MORPH_OVER_ID),
+      m_morphOutId(DEFAULT_MORPH_OUT_ID),
+      m_offset(DEFAULT_OFFSET),
+      m_takable(DEFAULT_TAKABLE),
+      m_callback(DEFAULT_CALLBACK),
+      m_imageInScene(DEFAULT_IMAGE_IN_SCENE),
+      m_imageInInventory(DEFAULT_IMAGE_IN_INVENTORY),
+      m_containerId(DEFAULT_CONTAINER_ID) {
 }
 
 ObjImpl::ObjImpl(std::shared_ptr<NonLinearBook> currentNLB, float left, float top)
-    : AbstractNodeItem(currentNLB, left, top) {
+    : AbstractNodeItem(currentNLB, left, top),
+      m_varId(DEFAULT_VARID),
+      m_constrId(DEFAULT_CONSTRID),
+      m_commonToId(DEFAULT_COMMON_TO_ID),
+      m_name(DEFAULT_NAME),
+      m_imageFileName(DEFAULT_IMAGE_FILE_NAME),
+      m_soundFileName(DEFAULT_SOUND_FILE_NAME),
+      m_soundSFX(DEFAULT_SOUND_SFX),
+      m_animatedImage(DEFAULT_ANIMATED_IMAGE),
+      m_suppressDsc(DEFAULT_SUPPRESS_DSC),
+      m_text(DEFAULT_TEXT),
+      m_actText(DEFAULT_ACT_TEXT),
+      m_nouseText(DEFAULT_NOUSE_TEXT),
+      m_disp(DEFAULT_DISP),
+      m_graphical(DEFAULT_GRAPHICAL),
+      m_showOnCursor(DEFAULT_SHOW_ON_CURSOR),
+      m_preserved(DEFAULT_PRESERVED),
+      m_loadOnce(DEFAULT_LOAD_ONCE),
+      m_collapsable(DEFAULT_COLLAPSABLE),
+      m_movementDirection(DEFAULT_MOVEMENT_DIRECTION),
+      m_effect(DEFAULT_EFFECT),
+      m_startFrame(DEFAULT_START_FRAME),
+      m_maxFrame(DEFAULT_MAX_FRAME),
+      m_preloadFrames(DEFAULT_PRELOAD_FRAMES),
+      m_pauseFrames(DEFAULT_PAUSE_FRAMES),
+      m_coordsOrigin(CoordsOrigin::LeftTop),
+      m_clearUnderTooltip(DEFAULT_CLEAR_UNDER_TOOLTIP),
+      m_actOnKey(DEFAULT_ACT_ON_KEY),
+      m_cacheText(DEFAULT_CACHE_TEXT),
+      m_looped(DEFAULT_LOOPED),
+      m_noRedrawOnAct(DEFAULT_NO_REDRAW_ON_ACT),
+      m_morphOverId(DEFAULT_MORPH_OVER_ID),
+      m_morphOutId(DEFAULT_MORPH_OUT_ID),
+      m_offset(DEFAULT_OFFSET),
+      m_takable(DEFAULT_TAKABLE),
+      m_callback(DEFAULT_CALLBACK),
+      m_imageInScene(DEFAULT_IMAGE_IN_SCENE),
+      m_imageInInventory(DEFAULT_IMAGE_IN_INVENTORY),
+      m_containerId(DEFAULT_CONTAINER_ID) {
 }
 
 void ObjImpl::setText(const std::string& text) {
@@ -173,7 +249,10 @@ std::shared_ptr<SearchResult> ObjImpl::searchText(const SearchContract& contract
         textMatches(m_name, contract) ||
         textMatches(m_disp, contract) ||
         textMatches(m_imageFileName, contract) ||
-        textMatches(m_soundFileName, contract)
+        textMatches(m_soundFileName, contract) ||
+        textMatches(m_varId, contract) ||
+        textMatches(m_constrId, contract) ||
+        textMatches(m_commonToId, contract)
     ) {
         result = std::make_shared<SearchResult>();
         result->setId(AbstractNodeItem::getId());
@@ -423,6 +502,147 @@ Obj::ContainerType ObjImpl::getContainerType() const {
         }
     }
     return Obj::ContainerType::None;
+}
+
+// Setter methods implementations
+void ObjImpl::setCommonToId(const std::string& commonToId) {
+    m_commonToId = commonToId;
+}
+
+void ObjImpl::setVarId(const std::string& varId) {
+    m_varId = varId;
+}
+
+void ObjImpl::setConstrId(const std::string& constrId) {
+    m_constrId = constrId;
+}
+
+void ObjImpl::setImageFileName(const std::string& imageFileName) {
+    m_imageFileName = imageFileName;
+}
+
+void ObjImpl::setName(const std::string& name) {
+    m_name = name;
+}
+
+void ObjImpl::setSoundFileName(const std::string& soundFileName) {
+    m_soundFileName = soundFileName;
+}
+
+void ObjImpl::setSoundSFX(bool soundSFX) {
+    m_soundSFX = soundSFX;
+}
+
+void ObjImpl::setAnimatedImage(bool animatedImage) {
+    m_animatedImage = animatedImage;
+}
+
+void ObjImpl::setSuppressDsc(bool suppressDsc) {
+    m_suppressDsc = suppressDsc;
+}
+
+void ObjImpl::setDisp(const std::string& disp) {
+    m_disp.put(getCurrentNLB()->getLanguage(), disp);
+}
+
+void ObjImpl::setGraphical(bool graphical) {
+    m_graphical = graphical;
+}
+
+void ObjImpl::setShowOnCursor(bool showOnCursor) {
+    m_showOnCursor = showOnCursor;
+}
+
+void ObjImpl::setPreserved(bool preserved) {
+    m_preserved = preserved;
+}
+
+void ObjImpl::setLoadOnce(bool loadOnce) {
+    m_loadOnce = loadOnce;
+}
+
+void ObjImpl::setCollapsable(bool collapsable) {
+    m_collapsable = collapsable;
+}
+
+void ObjImpl::setMovementDirection(MovementDirection movementDirection) {
+    m_movementDirection = movementDirection;
+}
+
+void ObjImpl::setEffect(Effect effect) {
+    m_effect = effect;
+}
+
+void ObjImpl::setStartFrame(int startFrame) {
+    m_startFrame = startFrame;
+}
+
+void ObjImpl::setMaxFrame(int maxFrame) {
+    m_maxFrame = maxFrame;
+}
+
+void ObjImpl::setPreloadFrames(int preloadFrames) {
+    m_preloadFrames = preloadFrames;
+}
+
+void ObjImpl::setPauseFrames(int pauseFrames) {
+    m_pauseFrames = pauseFrames;
+}
+
+void ObjImpl::setCoordsOrigin(CoordsOrigin coordsOrigin) {
+    m_coordsOrigin = coordsOrigin;
+}
+
+void ObjImpl::setClearUnderTooltip(bool clearUnderTooltip) {
+    m_clearUnderTooltip = clearUnderTooltip;
+}
+
+void ObjImpl::setActOnKey(bool actOnKey) {
+    m_actOnKey = actOnKey;
+}
+
+void ObjImpl::setCacheText(bool cacheText) {
+    m_cacheText = cacheText;
+}
+
+void ObjImpl::setLooped(bool looped) {
+    m_looped = looped;
+}
+
+void ObjImpl::setNoRedrawOnAct(bool noRedrawOnAct) {
+    m_noRedrawOnAct = noRedrawOnAct;
+}
+
+void ObjImpl::setMorphOverId(const std::string& morphOverId) {
+    m_morphOverId = morphOverId;
+}
+
+void ObjImpl::setMorphOutId(const std::string& morphOutId) {
+    m_morphOutId = morphOutId;
+}
+
+void ObjImpl::setOffset(const std::string& offset) {
+    m_offset = offset;
+}
+
+void ObjImpl::setTakable(bool takable) {
+    m_takable = takable;
+}
+
+void ObjImpl::setCallback(bool callback) {
+    m_callback = callback;
+}
+
+void ObjImpl::setImageInScene(bool imageInScene) {
+    m_imageInScene = imageInScene;
+}
+
+void ObjImpl::setImageInInventory(bool imageInInventory) {
+    m_imageInInventory = imageInInventory;
+}
+
+void ObjImpl::setContainerId(const std::string& containerId) {
+    m_containerId = containerId;
 }
 
 void ObjImpl::writeObj(const std::shared_ptr<FileManipulator>& fileManipulator, const std::string& objsDir,

@@ -1,4 +1,5 @@
 #include "nlb/domain/NullObj.h"
+#include "nlb/api/Constants.h"
 
 NullObj NullObj::s_instance;
 
@@ -6,7 +7,10 @@ NullObj& NullObj::create() {
     return s_instance;
 }
 
-NullObj::NullObj() : AbstractNodeItem() {}
+NullObj::NullObj() : AbstractNodeItem() {
+    // Initialize with default values following the Null Object pattern
+    // The ID should be set to Variable::NA as per Java implementation
+}
 
 std::string NullObj::getText() const {
     return nlb::Constants::EMPTY_STRING;
@@ -205,10 +209,6 @@ std::string NullObj::getCumulativeText(
     std::map<std::string, std::string>& visitedVars
 ) const {
     return nlb::Constants::EMPTY_STRING;
-}
-
-void NullObj::setId(const std::string& id) {
-    // Do nothing
 }
 
 std::string NullObj::getId() const {

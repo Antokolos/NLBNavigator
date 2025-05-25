@@ -94,13 +94,13 @@ public:
     std::string getImageFileName() const override;
     std::string getSoundFileName() const override;
     void setSoundFileName(const std::string& soundFileName);
+    void setImageFileName(const std::string& imageFileName);
     bool isSoundSFX() const override;
     void setSoundSFX(bool soundSFX);
     void setAnimatedImage(bool animatedImage);
     bool isAnimatedImage() const override;
     void setSuppressDsc(bool suppressDsc);
     bool isSuppressDsc() const override;
-    void setImageFileName(const std::string& imageFileName);
     void setName(const std::string& name);
 
     // Display properties
@@ -163,9 +163,9 @@ public:
     Coords& getRelativeCoords(bool lookInMorphs) const override;
 
     // Display text handling
-    void setDisps(const MultiLangString& disp);
     void setDisp(const std::string& disp);
-
+    void setDisps(const MultiLangString& disp);
+    
     // Object capabilities
     bool isTakable() const override;
     void setTakable(bool takable);
