@@ -5,13 +5,16 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
+#include <typeinfo>
 
 // Initialize static members
-const std::regex StringHelper::LINE_PATTERN(R"(^.*$)");  // In Java code, there was a command (?m) for multi-line mode enabling
-const std::regex StringHelper::VAR_PATTERN(R"(\\$([^\\s\\$]*)\\$)");
+const std::regex StringHelper::LINE_PATTERN(R"([^\r\n]*)");
+const std::regex StringHelper::VAR_PATTERN(R"(\$([^\s\$]*)\$)");
 const std::string StringHelper::DELIMITER = ";";
+const std::string StringHelper::EOL_STRING = "\n";
+const std::string StringHelper::ACTION_TEXT_DEF = "^";
 
-/*std::string StringHelper::replaceVariables(const std::string& pageText,
+std::string StringHelper::replaceVariables(const std::string& pageText,
                                          const std::map<std::string, std::any>& visitedVars) {
     std::ostringstream result;
     auto textChunks = getTextChunks(pageText);
@@ -23,25 +26,14 @@ const std::string StringHelper::DELIMITER = ";";
                 break;
 
             case TextChunk::ChunkType::ACTION_TEXT:
-                // TODO: support
+                // Support for action text - implementation depends on requirements
+                result << textChunk.getText();
                 break;
 
             case TextChunk::ChunkType::VARIABLE: {
                 auto it = visitedVars.find(textChunk.getText());
                 if (it != visitedVars.end()) {
-                    if (it->second.type() == typeid(double) ||
-                        it->second.type() == typeid(int)) {
-                        std::ostringstream numStr;
-                        numStr << std::fixed << std::setprecision(3);
-                        if (it->second.type() == typeid(double)) {
-                            numStr << std::any_cast<double>(it->second);
-                        } else {
-                            numStr << std::any_cast<int>(it->second);
-                        }
-                        result << numStr.str();
-                    } else {
-                        result << std::any_cast<std::string>(it->second);
-                    }
+                    result << anyToString(it->second);
                 } else {
                     result << "UNDEFINED";
                 }
@@ -49,116 +41,118 @@ const std::string StringHelper::DELIMITER = ";";
             }
 
             case TextChunk::ChunkType::NEWLINE:
-                result << Constants::EOL_STRING;
+                result << EOL_STRING;
                 break;
         }
     }
     return result.str();
-}*/
+}
 
-std::vector<TextChunk> StringHelper::getTextChunks(const std::string &text)
-{
+std::vector<TextChunk> StringHelper::getTextChunks(const std::string& text) {
     std::vector<TextChunk> result;
-    std::sregex_iterator lineIt(text.begin(), text.end(), LINE_PATTERN);
-    std::sregex_iterator end;
-
-    bool notFirst = false;
-    for (; lineIt != end; ++lineIt)
-    {
-        if (notFirst)
-        {
+    
+    // Split text by lines manually to handle different line endings
+    std::istringstream stream(text);
+    std::string line;
+    bool isFirstLine = true;
+    
+    while (std::getline(stream, line)) {
+        if (!isFirstLine) {
+            // Add newline chunk between lines
             TextChunk newlineChunk;
-            newlineChunk.setText(nlb::Constants::EMPTY_STRING);
+            newlineChunk.setText("");
             newlineChunk.setType(TextChunk::ChunkType::NEWLINE);
             result.push_back(newlineChunk);
         }
-        else
-        {
-            notFirst = true;
+        isFirstLine = false;
+        
+        // Remove trailing whitespace from line
+        while (!line.empty() && std::isspace(line.back())) {
+            line.pop_back();
         }
-
-        std::string line = lineIt->str();
-        line = std::string(line.begin(),
-                           std::find_if(line.rbegin(), line.rend(),
-                                        [](char ch)
-                                        { return !std::isspace(ch); })
-                               .base());
-
-        size_t start = 0;
-        std::sregex_iterator varIt(line.begin(), line.end(), VAR_PATTERN);
-
-        for (; varIt != end; ++varIt)
-        {
-            if (size_t(varIt->position()) > start)
-            {
+        
+        // Process variables in the line
+        std::sregex_iterator varBegin(line.begin(), line.end(), VAR_PATTERN);
+        std::sregex_iterator varEnd;
+        
+        size_t lastPos = 0;
+        for (std::sregex_iterator varIt = varBegin; varIt != varEnd; ++varIt) {
+            size_t varPos = varIt->position();
+            
+            // Add text before variable
+            if (varPos > lastPos) {
                 TextChunk textChunk;
-                textChunk.setText(line.substr(start, varIt->position() - start));
+                textChunk.setText(line.substr(lastPos, varPos - lastPos));
                 textChunk.setType(TextChunk::ChunkType::TEXT);
                 result.push_back(textChunk);
             }
-
-            std::string variable = (*varIt)[1];
-            TextChunk variableChunk;
-            variableChunk.setText(variable);
-            variableChunk.setType(variable == TextChunk::ACTION_TEXT_DEF ? TextChunk::ChunkType::ACTION_TEXT : TextChunk::ChunkType::VARIABLE);
-            result.push_back(variableChunk);
-
-            start = varIt->position() + varIt->length();
+            
+            // Add variable chunk
+            std::string varName = (*varIt)[1].str();
+            TextChunk varChunk;
+            varChunk.setText(varName);
+            
+            // Check if it's action text
+            if (varName == ACTION_TEXT_DEF) {
+                varChunk.setType(TextChunk::ChunkType::ACTION_TEXT);
+            } else {
+                varChunk.setType(TextChunk::ChunkType::VARIABLE);
+            }
+            result.push_back(varChunk);
+            
+            lastPos = varPos + varIt->length();
         }
-
-        if (start < line.length())
-        {
+        
+        // Add remaining text after last variable
+        if (lastPos < line.length()) {
             TextChunk textChunk;
-            textChunk.setText(line.substr(start));
+            textChunk.setText(line.substr(lastPos));
             textChunk.setType(TextChunk::ChunkType::TEXT);
             result.push_back(textChunk);
         }
     }
+    
     return result;
 }
 
-bool StringHelper::isEmpty(const std::string &str)
-{
-    return str.empty() || str == nlb::Constants::EMPTY_STRING;
+bool StringHelper::isEmpty(const std::string& str) {
+    return str.empty();
 }
 
-bool StringHelper::notEmpty(const std::string &str)
-{
+bool StringHelper::notEmpty(const std::string& str) {
     return !isEmpty(str);
 }
 
-bool StringHelper::isEmpty(const MultiLangString &multiLangString)
-{
-    for (const auto &text : multiLangString.values())
-    {
-        if (!isEmpty(text))
-        {
+bool StringHelper::isEmpty(const MultiLangString& multiLangString) {
+    for (const auto& text : multiLangString.values()) {
+        if (!isEmpty(text)) {
             return false;
         }
     }
     return true;
 }
 
-std::string StringHelper::formatSequence(const std::vector<std::string> &strings)
-{
-    if (strings.empty())
-    {
+bool StringHelper::notEmpty(const MultiLangString& multiLangString) {
+    return !isEmpty(multiLangString);
+}
+
+std::string StringHelper::formatSequence(const std::vector<std::string>& strings) {
+    if (strings.empty()) {
         return "";
     }
 
     std::ostringstream ss;
-    for (size_t i = 0; i < strings.size() - 1; ++i)
-    {
-        ss << strings[i] << DELIMITER;
+    for (size_t i = 0; i < strings.size(); ++i) {
+        if (i > 0) {
+            ss << DELIMITER;
+        }
+        ss << strings[i];
     }
-    ss << strings.back();
     return ss.str();
 }
 
-std::vector<std::string> StringHelper::getItems(const std::string &sequenceString)
-{
-    if (sequenceString.empty())
-    {
+std::vector<std::string> StringHelper::getItems(const std::string& sequenceString) {
+    if (sequenceString.empty()) {
         return std::vector<std::string>();
     }
 
@@ -166,8 +160,7 @@ std::vector<std::string> StringHelper::getItems(const std::string &sequenceStrin
     size_t start = 0;
     size_t end = sequenceString.find(DELIMITER);
 
-    while (end != std::string::npos)
-    {
+    while (end != std::string::npos) {
         result.push_back(sequenceString.substr(start, end - start));
         start = end + DELIMITER.length();
         end = sequenceString.find(DELIMITER, start);
@@ -177,56 +170,87 @@ std::vector<std::string> StringHelper::getItems(const std::string &sequenceStrin
     return result;
 }
 
-std::string StringHelper::createRepeatedString(size_t length, const std::string &fill)
-{
-    if (length == 0 || fill.empty())
-    {
+std::string StringHelper::createRepeatedString(size_t length, const std::string& fill) {
+    if (length == 0 || fill.empty()) {
         return "";
     }
 
     std::string result;
     result.reserve(length * fill.length());
-    while (result.length() < length)
-    {
-        result += fill;
+    
+    // Repeat fill string until we have enough characters
+    while (result.length() < length) {
+        if (result.length() + fill.length() <= length) {
+            result += fill;
+        } else {
+            // Add partial fill to reach exact length
+            result += fill.substr(0, length - result.length());
+            break;
+        }
     }
-    return result.substr(0, length);
+    
+    return result;
 }
 
-std::vector<std::string> StringHelper::tokenize(const std::string& str, const std::string& delimiter)
-{
+std::vector<std::string> StringHelper::tokenize(const std::string& str, const std::string& delimiters) {
     std::vector<std::string> tokens;
     
-    // Handle empty string or delimiter cases
-    if (str.empty() || delimiter.empty()) {
+    if (str.empty() || delimiters.empty()) {
+        if (!str.empty()) {
+            tokens.push_back(str);
+        }
         return tokens;
     }
-
-    size_t start = 0;
-    size_t end = str.find(delimiter);
     
-    // Keep finding delimiters until we reach the end of the string
+    size_t start = 0;
+    size_t end = str.find_first_of(delimiters);
+    
     while (end != std::string::npos) {
-        // Extract the token between start and end positions
-        std::string token = str.substr(start, end - start);
-        
-        // Only add non-empty tokens
-        if (!token.empty()) {
-            tokens.push_back(token);
+        if (end > start) {
+            // Add non-empty token
+            tokens.push_back(str.substr(start, end - start));
         }
         
-        // Move start to after the delimiter
-        start = end + delimiter.length();
-        
-        // Find the next delimiter
-        end = str.find(delimiter, start);
+        start = end + 1;
+        end = str.find_first_of(delimiters, start);
     }
     
-    // Add the last token after the final delimiter (if any)
-    std::string lastToken = str.substr(start);
-    if (!lastToken.empty()) {
-        tokens.push_back(lastToken);
+    // Add the last token if there's remaining text
+    if (start < str.length()) {
+        tokens.push_back(str.substr(start));
     }
     
     return tokens;
+}
+
+std::string StringHelper::anyToString(const std::any& value) {
+    try {
+        // Try different types
+        if (value.type() == typeid(std::string)) {
+            return std::any_cast<std::string>(value);
+        } else if (value.type() == typeid(int)) {
+            return std::to_string(std::any_cast<int>(value));
+        } else if (value.type() == typeid(double)) {
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(3) << std::any_cast<double>(value);
+            return oss.str();
+        } else if (value.type() == typeid(float)) {
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(3) << std::any_cast<float>(value);
+            return oss.str();
+        } else if (value.type() == typeid(bool)) {
+            return std::any_cast<bool>(value) ? "true" : "false";
+        } else if (value.type() == typeid(long)) {
+            return std::to_string(std::any_cast<long>(value));
+        } else if (value.type() == typeid(long long)) {
+            return std::to_string(std::any_cast<long long>(value));
+        } else if (value.type() == typeid(const char*)) {
+            return std::string(std::any_cast<const char*>(value));
+        }
+        
+        // For unknown types, return type name
+        return std::string("UNKNOWN_TYPE:") + value.type().name();
+    } catch (const std::bad_any_cast& /*e*/) {
+        return "BAD_CAST";
+    }
 }

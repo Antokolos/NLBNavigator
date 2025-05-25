@@ -5,6 +5,7 @@
 #include <map>
 #include <regex>
 #include <memory>
+#include <any>
 
 class MultiLangString;
 class TextChunk;
@@ -20,13 +21,17 @@ private:
     static const std::string DELIMITER;
 
 public:
+    static const std::string EOL_STRING;
+    static const std::string ACTION_TEXT_DEF;
+
     /*!
      * @brief Replace variables in text with their values
      * @param pageText Text containing variables in format $varname$
      * @param visitedVars Map of variable names to their values
      * @return Text with replaced variables
      */
-    //static std::string replaceVariables(const std::string& pageText, const std::map<std::string, std::any>& visitedVars);
+    static std::string replaceVariables(const std::string& pageText, 
+                                       const std::map<std::string, std::any>& visitedVars);
 
     /*!
      * @brief Split text into chunks (text, variables, newlines)
@@ -57,6 +62,13 @@ public:
     static bool isEmpty(const MultiLangString& multiLangString);
 
     /*!
+     * @brief Check if MultiLangString is not empty in at least one language
+     * @param multiLangString MultiLangString to check
+     * @return true if at least one string is not empty
+     */
+    static bool notEmpty(const MultiLangString& multiLangString);
+
+    /*!
      * @brief Format sequence of strings with delimiter
      * @param strings Vector of strings to format
      * @return Formatted string
@@ -79,10 +91,17 @@ public:
     static std::string createRepeatedString(size_t length, const std::string& fill);
 
     /*!
-     * @brief Tokenize string by delimiter
+     * @brief Tokenize string by delimiter (similar to Java StringTokenizer)
      * @param str String to tokenize
-     * @param delimiter Delimiter
+     * @param delimiters String containing delimiter characters
      * @return Vector of tokens
      */
-    static std::vector<std::string> tokenize(const std::string& str, const std::string& delimiter);
+    static std::vector<std::string> tokenize(const std::string& str, const std::string& delimiters);
+
+    /*!
+     * @brief Convert any value to string representation
+     * @param value Value to convert
+     * @return String representation
+     */
+    static std::string anyToString(const std::any& value);
 };
