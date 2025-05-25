@@ -6,7 +6,6 @@
 class NonLinearBookImpl;
 class Link;
 class LinkImpl;
-class CoordsImpl;
 
 /*!
  * Command that updates the coordinates of a link, allowing to modify its position

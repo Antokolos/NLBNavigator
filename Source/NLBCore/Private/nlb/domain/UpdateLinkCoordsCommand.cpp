@@ -15,37 +15,34 @@ UpdateLinkCoordsCommand::UpdateLinkCoordsCommand(
     std::shared_ptr<Link> link
 ) {
     std::shared_ptr<IdentifiableItem> parent = link->getParent();
-    // auto pageImpl = nonLinearBook->getPageImplById(parent->getId());
-    // AbstractNodeItem* rawPagePtr = static_cast<AbstractNodeItem*>(pageImpl.get());
-    // std::shared_ptr<AbstractNodeItem> nodeItem(pageImpl, rawPagePtr);
+    
+    // Попытка получить AbstractNodeItem как PageImpl
     std::shared_ptr<AbstractNodeItem> nodeItem = std::static_pointer_cast<AbstractNodeItem>(
         nonLinearBook->getPageImplById(parent->getId())
     );
     
+    // Если не найден как страница, ищем как объект
     if (!nodeItem) {
-        // auto objImpl = nonLinearBook->getObjImplById(parent->getId());
-        // AbstractNodeItem* rawObjPtr = static_cast<AbstractNodeItem*>(objImpl.get());
-        // nodeItem = std::shared_ptr<AbstractNodeItem>(objImpl, rawObjPtr);
         nodeItem = std::static_pointer_cast<AbstractNodeItem>(
             nonLinearBook->getObjImplById(parent->getId())
         );
     }
 
     if (!nodeItem) {
-        throw std::runtime_error("Failed to get node item");
+        throw std::runtime_error("Failed to get node item for link with id: " + link->getId());
     }
     
+    // Получаем LinkImpl из nodeItem
     m_linkImpl = std::static_pointer_cast<LinkImpl>(nodeItem->getLinkById(link->getId()));
     if (!m_linkImpl) {
-        throw std::runtime_error("Failed to get link implementation");
+        throw std::runtime_error("Failed to get link implementation for link with id: " + link->getId());
     }
 
+    // Сохраняем текущие координаты
     const Coords& coords = m_linkImpl->getCoords();
-    const CoordsImpl* coordsImpl = static_cast<const CoordsImpl*>(&coords);
-    
-    m_leftPrev = coordsImpl->getLeft();
-    m_topPrev = coordsImpl->getTop();
-    m_heightPrev = coordsImpl->getHeight();
+    m_leftPrev = coords.getLeft();
+    m_topPrev = coords.getTop();
+    m_heightPrev = coords.getHeight();
 }
 
 UpdateLinkCoordsCommand::UpdateLinkCoordsCommand(
@@ -55,9 +52,10 @@ UpdateLinkCoordsCommand::UpdateLinkCoordsCommand(
     float top
 ) : UpdateLinkCoordsCommand(nonLinearBook, link)
 {
-    m_height = m_heightPrev;
+    // Устанавливаем новые координаты, высота остается прежней
     m_left = left;
     m_top = top;
+    m_height = m_heightPrev;
 }
 
 UpdateLinkCoordsCommand::UpdateLinkCoordsCommand(
@@ -66,18 +64,22 @@ UpdateLinkCoordsCommand::UpdateLinkCoordsCommand(
     float height
 ) : UpdateLinkCoordsCommand(nonLinearBook, link)
 {
-    m_height = height;
+    // Устанавливаем новую высоту, координаты остаются прежними
     m_left = m_leftPrev;
     m_top = m_topPrev;
+    m_height = height;
 }
 
 void UpdateLinkCoordsCommand::execute() {
     const Coords& coords = m_linkImpl->getCoords();
     const CoordsImpl* coordsImpl = static_cast<const CoordsImpl*>(&coords);
     
+    // Применяем новые координаты
     const_cast<CoordsImpl*>(coordsImpl)->setLeft(m_left);
     const_cast<CoordsImpl*>(coordsImpl)->setTop(m_top);
     const_cast<CoordsImpl*>(coordsImpl)->setHeight(m_height);
+    
+    // Уведомляем наблюдателей об изменениях
     m_linkImpl->notifyObservers();
 }
 
@@ -85,8 +87,11 @@ void UpdateLinkCoordsCommand::revert() {
     const Coords& coords = m_linkImpl->getCoords();
     const CoordsImpl* coordsImpl = static_cast<const CoordsImpl*>(&coords);
     
+    // Восстанавливаем предыдущие координаты
     const_cast<CoordsImpl*>(coordsImpl)->setLeft(m_leftPrev);
     const_cast<CoordsImpl*>(coordsImpl)->setTop(m_topPrev);
     const_cast<CoordsImpl*>(coordsImpl)->setHeight(m_heightPrev);
+    
+    // Уведомляем наблюдателей об изменениях
     m_linkImpl->notifyObservers();
 }

@@ -1,6 +1,8 @@
 #include "nlb/domain/SearchResult.h"
+#include "nlb/api/Constants.h"
 
-SearchResult::SearchResult() : m_modulePageId("") {}
+SearchResult::SearchResult() : m_modulePageId(nlb::Constants::EMPTY_STRING) {
+}
 
 SearchResult::SearchResult(
     const std::string& id,
@@ -37,4 +39,8 @@ void SearchResult::addInformation(const std::string& information) {
 
 std::string SearchResult::getInformationByPosition(size_t i) const {
     return m_information.at(i);
+}
+
+const std::vector<std::string>& SearchResult::getInformation() const {
+    return m_information;
 }

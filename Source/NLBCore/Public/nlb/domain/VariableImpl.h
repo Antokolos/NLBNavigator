@@ -20,11 +20,11 @@ private:
     static const std::string TARGET_FILE_NAME;
     static const std::string VALUE_FILE_NAME;
 
-    Type m_type = Type::PAGE;
-    DataType m_dataType = DataType::AUTO;
-    std::string m_name = DEFAULT_NAME;
+    Type m_type;
+    DataType m_dataType;
+    std::string m_name;
     std::string m_target;
-    std::string m_value = DEFAULT_VALUE;
+    std::string m_value;
 
 public:
     /*!
@@ -45,7 +45,7 @@ public:
      * @param currentNLB Current NonLinearBook instance
      */
     VariableImpl(const std::shared_ptr<Variable>& variable, 
-                 std::shared_ptr<NonLinearBook> currentNLB) {};
+                 std::shared_ptr<NonLinearBook> currentNLB);
 
     /*!
      * @brief Detailed constructor
@@ -61,7 +61,7 @@ public:
                  DataType dataType,
                  const std::string& name,
                  const std::string& value,
-                 const std::string& target) {};
+                 const std::string& target);
 
     /*!
      * @brief Copy method to copy variable properties
@@ -77,11 +77,11 @@ public:
     std::string getValue() const override { return m_value; }
 
     // Setter methods
-    void setType(Type type) {};
-    void setDataType(DataType dataType) {};
-    void setTarget(const std::string& target) {};
-    void setName(const std::string& name) {};
-    void setValue(const std::string& value) {};
+    void setType(Type type);
+    void setDataType(DataType dataType);
+    void setTarget(const std::string& target);
+    void setName(const std::string& name);
+    void setValue(const std::string& value);
 
     /*!
      * @brief Search text method implementation

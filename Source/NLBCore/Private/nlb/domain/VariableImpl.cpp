@@ -1,5 +1,6 @@
 #include "nlb/domain/VariableImpl.h"
 #include "nlb/util/EnumUtils.h"
+#include "nlb/api/Constants.h"
 #include <fstream>
 #include <sstream>
 
@@ -33,11 +34,56 @@ void writeFileContents(const std::string& filePath, const std::string& content) 
     file.close();
 }
 
-// Constructors and other method implementations remain the same as in the previous version
+// Constructors
+VariableImpl::VariableImpl()
+    : AbstractIdentifiableItem()
+    , m_type(Type::VAR)
+    , m_dataType(DEFAULT_DATATYPE)
+    , m_name(DEFAULT_NAME)
+    , m_target("")
+    , m_value(DEFAULT_VALUE) {
+}
 
 VariableImpl::VariableImpl(std::shared_ptr<NonLinearBook> currentNLB)
-{
-    // stub
+    : AbstractIdentifiableItem(currentNLB)
+    , m_type(Type::VAR)
+    , m_dataType(DEFAULT_DATATYPE)
+    , m_name(DEFAULT_NAME)
+    , m_target("")
+    , m_value(DEFAULT_VALUE) {
+}
+
+VariableImpl::VariableImpl(const std::shared_ptr<Variable>& variable, 
+                           std::shared_ptr<NonLinearBook> currentNLB)
+    : AbstractIdentifiableItem(variable, currentNLB)
+    , m_type(variable->getType())
+    , m_dataType(variable->getDataType())
+    , m_name(variable->getName())
+    , m_target(variable->getTarget())
+    , m_value(variable->getValue()) {
+}
+
+VariableImpl::VariableImpl(std::shared_ptr<NonLinearBook> currentNLB,
+                           Type type,
+                           DataType dataType,
+                           const std::string& name,
+                           const std::string& value,
+                           const std::string& target)
+    : AbstractIdentifiableItem(currentNLB)
+    , m_type(type)
+    , m_dataType(dataType)
+    , m_name(name)
+    , m_target(target)
+    , m_value(value) {
+}
+
+void VariableImpl::copy(const std::shared_ptr<Variable>& variable) {
+    AbstractIdentifiableItem::copy(variable);
+    m_type = variable->getType();
+    m_dataType = variable->getDataType();
+    m_name = variable->getName();
+    m_target = variable->getTarget();
+    m_value = variable->getValue();
 }
 
 void VariableImpl::readVariable(const std::string& varDir) {
@@ -50,7 +96,7 @@ void VariableImpl::readVariable(const std::string& varDir) {
     type.erase(type.find_last_not_of(" \n\r\t") + 1);
     type.erase(0, type.find_first_not_of(" \n\r\t"));
 
-    // Type conversion logic
+    // Type conversion logic (handle legacy COMMONTO type)
     if (type == "PAGE") m_type = Type::PAGE;
     else if (type == "TIMER") m_type = Type::TIMER;
     else if (type == "OBJ") m_type = Type::OBJ;
@@ -166,18 +212,33 @@ void VariableImpl::writeVariable(
         if (m_dataType != DEFAULT_DATATYPE) {
             std::string dataTypeFilePath = FileUtils::combinePath(varDir, DATATYPE_FILE_NAME);
             writeFileContents(dataTypeFilePath, EnumUtils::name(m_dataType));
+        } else {
+            std::string dataTypeFilePath = FileUtils::combinePath(varDir, DATATYPE_FILE_NAME);
+            if (FileUtils::exists(dataTypeFilePath)) {
+                FileUtils::remove(dataTypeFilePath);
+            }
         }
 
         // Write name (optional, only if different from default)
         if (m_name != DEFAULT_NAME) {
             std::string nameFilePath = FileUtils::combinePath(varDir, NAME_FILE_NAME);
             writeFileContents(nameFilePath, m_name);
+        } else {
+            std::string nameFilePath = FileUtils::combinePath(varDir, NAME_FILE_NAME);
+            if (FileUtils::exists(nameFilePath)) {
+                FileUtils::remove(nameFilePath);
+            }
         }
 
         // Write value (optional, only if different from default)
         if (m_value != DEFAULT_VALUE) {
             std::string valueFilePath = FileUtils::combinePath(varDir, VALUE_FILE_NAME);
             writeFileContents(valueFilePath, m_value);
+        } else {
+            std::string valueFilePath = FileUtils::combinePath(varDir, VALUE_FILE_NAME);
+            if (FileUtils::exists(valueFilePath)) {
+                FileUtils::remove(valueFilePath);
+            }
         }
 
         // Write target (required)
@@ -186,4 +247,23 @@ void VariableImpl::writeVariable(
     }
 }
 
-// Rest of the implementation remains the same as in the previous version
+// Setter implementations
+void VariableImpl::setType(Type type) {
+    m_type = type;
+}
+
+void VariableImpl::setDataType(DataType dataType) {
+    m_dataType = dataType;
+}
+
+void VariableImpl::setTarget(const std::string& target) {
+    m_target = target;
+}
+
+void VariableImpl::setName(const std::string& name) {
+    m_name = name;
+}
+
+void VariableImpl::setValue(const std::string& value) {
+    m_value = value;
+}

@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+class Constants;
+
 /*!
  * @brief Class representing a search result with associated information
  *
@@ -75,4 +77,10 @@ public:
      * @return The information string at the specified position
      */
     std::string getInformationByPosition(size_t i) const;
+    
+    /*!
+     * @brief Get all information strings
+     * @return The vector of all information strings
+     */
+    const std::vector<std::string>& getInformation() const;
 };
