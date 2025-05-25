@@ -4,7 +4,6 @@
 #include "nlb/api/PartialProgressData.h"
 #include "nlb/domain/AbstractNodeItem.h"
 #include "nlb/util/MultiLangString.h"
-#include "nlb/util/FileUtils.h"
 #include "nlb/domain/NonLinearBookImpl.h"
 #include <string>
 #include <vector>
