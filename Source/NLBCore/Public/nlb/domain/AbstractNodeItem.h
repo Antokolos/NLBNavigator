@@ -19,7 +19,7 @@ class LinkImpl;
 class Link;
 class Page;
 
-class AbstractNodeItem : public AbstractModifyingItem, public NodeItem {
+class AbstractNodeItem : public AbstractModifyingItem, public NodeItem, public std::enable_shared_from_this<AbstractNodeItem> {
 public:
     static const std::string COORDS_DIR_NAME;
     static const std::string LINKS_DIR_NAME;

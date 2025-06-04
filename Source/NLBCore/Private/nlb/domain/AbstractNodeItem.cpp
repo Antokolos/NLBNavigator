@@ -359,35 +359,146 @@ Coords& AbstractNodeItem::getRelativeCoords() const {
 
 void AbstractNodeItem::writeLinkOrderFile(const std::shared_ptr<FileManipulator>& fileManipulator,
                                         const std::string& nodeDir) {
-    // Заглушка для метода writeLinkOrderFile - требуется реализация
+    std::string content;
+    const int lastElemIndex = static_cast<int>(m_links.size()) - 1;
+    
+    if (lastElemIndex >= 0) {
+        for (int i = 0; i < lastElemIndex; i++) {
+            const auto& link = m_links[i];
+            if (!link->isDeleted()) {
+                content += link->getId() + LNKORDER_SEPARATOR;
+            }
+        }
+        
+        if (!m_links[lastElemIndex]->isDeleted()) {
+            content += m_links[lastElemIndex]->getId();
+        }
+        
+        fileManipulator->writeOptionalString(nodeDir, LNKORDER_FILE_NAME, content, "");
+    } else {
+        fileManipulator->writeOptionalString(nodeDir, LNKORDER_FILE_NAME, "", "");
+    }
 }
 
 void AbstractNodeItem::writeContent(const std::shared_ptr<FileManipulator>& fileManipulator,
                                   const std::string& nodeDir,
                                   std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
-    // Заглушка для метода writeContent - требуется реализация
+    std::string content;
+    const int lastElemIndex = static_cast<int>(m_containedObjIds.size()) - 1;
+    
+    if (lastElemIndex >= 0) {
+        for (int i = 0; i < lastElemIndex; i++) {
+            content += m_containedObjIds[i] + CONTENT_SEPARATOR;
+        }
+        content += m_containedObjIds[lastElemIndex];
+        
+        fileManipulator->writeOptionalString(nodeDir, CONTENT_FILE_NAME, content, "");
+    } else {
+        fileManipulator->writeOptionalString(nodeDir, CONTENT_FILE_NAME, "", "");
+    }
 }
 
 void AbstractNodeItem::writeCoords(const std::shared_ptr<FileManipulator>& fileManipulator,
                                  const std::string& nodeDir) {
-    // Заглушка для метода writeCoords - требуется реализация
+    const std::string coordsDir = FileUtils::combinePath(nodeDir, COORDS_DIR_NAME);
+    fileManipulator->createDir(coordsDir,
+        "Cannot create node coords directory for node with Id = " + AbstractIdentifiableItem::getId());
+    
+    auto coordsImpl = std::static_pointer_cast<CoordsImpl>(m_coords);
+    coordsImpl->writeCoords(*fileManipulator, coordsDir);
 }
 
 void AbstractNodeItem::writeLinks(const std::shared_ptr<FileManipulator>& fileManipulator,
                                 const std::string& nodeDir) {
-    // Заглушка для метода writeLinks - требуется реализация
+    const std::string linksDir = FileUtils::combinePath(nodeDir, LINKS_DIR_NAME);
+    
+    if (m_links.empty()) {
+        if (FileUtils::exists(linksDir)) {
+            fileManipulator->deleteFileOrDir(linksDir);
+        }
+    } else {
+        fileManipulator->createDir(linksDir,
+            "Cannot create node links directory for node with Id = " + AbstractIdentifiableItem::getId());
+        
+        for (const auto& link : m_links) {
+            link->writeLink(fileManipulator, linksDir);
+        }
+    }
 }
 
 void AbstractNodeItem::readContent(const std::string& nodeDir) {
-    // Заглушка для метода readContent - требуется реализация 
+    std::string contentString = FileManipulator::getOptionalFileAsString(
+        nodeDir,
+        CONTENT_FILE_NAME,
+        ""
+    );
+
+    m_containedObjIds.clear();
+    
+    if (!contentString.empty()) {
+        std::vector<std::string> objIds = StringHelper::tokenize(contentString, CONTENT_SEPARATOR);
+        m_containedObjIds = objIds;
+    }
 }
 
 void AbstractNodeItem::readCoords(const std::string& nodeDir) {
-    // Заглушка для метода readCoords - требуется реализация
+    const std::string coordsDir = FileUtils::combinePath(nodeDir, COORDS_DIR_NAME);
+    if (!FileUtils::exists(coordsDir)) {
+        throw NLBIOException(
+            "Invalid NLB structure: coords directory does not exist for node with Id = " + AbstractIdentifiableItem::getId()
+        );
+    }
+    
+    auto coordsImpl = std::static_pointer_cast<CoordsImpl>(m_coords);
+    coordsImpl->read(coordsDir);
 }
 
 void AbstractNodeItem::readLinks(const std::string& nodeDir) {
-    // Заглушка для метода readLinks - требуется реализация
+    std::string linkOrderString = FileManipulator::getOptionalFileAsString(
+        nodeDir,
+        LNKORDER_FILE_NAME,
+        ""
+    );
+
+    const std::string linksDir = FileUtils::combinePath(nodeDir, LINKS_DIR_NAME);
+    if (!FileUtils::exists(linksDir) && !linkOrderString.empty()) {
+        throw NLBIOException(
+            "Invalid NLB structure: links directory does not exist for node with Id = " 
+            + AbstractIdentifiableItem::getId() 
+            + ", but some links should be specified"
+        );
+    }
+
+    m_links.clear();
+    
+    if (FileUtils::exists(linksDir)) {
+        std::vector<std::string> linkDirs = FileUtils::getDirectoryFiles(linksDir);
+        
+        if (linkOrderString.empty()) {
+            // Если нет файла порядка, читаем ссылки в произвольном порядке
+            for (const auto& linkDirName : linkDirs) {
+                std::string linkDir = FileUtils::combinePath(linksDir, linkDirName);
+                if (FileUtils::isDirectory(linkDir)) {
+                    auto link = std::make_shared<LinkImpl>(
+                        std::enable_shared_from_this<AbstractNodeItem>::shared_from_this());
+                    link->readLink(linkDir);
+                    m_links.push_back(link);
+                }
+            }
+        } else {
+            // Если есть файл порядка, читаем ссылки в указанном порядке
+            std::vector<std::string> linkOrderList = StringHelper::tokenize(linkOrderString, LNKORDER_SEPARATOR);
+            std::vector<std::string> linkDirsSortedList = createSortedDirList(linkDirs, linkOrderList);
+
+            for (const auto& linkDirName : linkDirsSortedList) {
+                std::string linkDir = FileUtils::combinePath(linksDir, linkDirName);
+                auto link = std::make_shared<LinkImpl>(
+                    std::enable_shared_from_this<AbstractNodeItem>::shared_from_this());
+                link->readLink(linkDir);
+                m_links.push_back(link);
+            }
+        }
+    }
 }
 
 void AbstractNodeItem::addLink(std::shared_ptr<LinkImpl> link) {

@@ -530,8 +530,144 @@ void PageImpl::writePage(
 }
 
 void PageImpl::readPage(const std::string& pageDir) {
-    // Заглушка для метода readPage
-    // Здесь должна быть полная логика чтения страницы
+    // Устанавливаем ID из имени директории
+    setId(FileUtils::getFileName(pageDir));
+    
+    // Читаем базовые свойства страницы
+    m_imageFileName = FileManipulator::getOptionalFileAsString(
+        pageDir, IMAGE_FILE_NAME, DEFAULT_IMAGE_FILE_NAME);
+    
+    m_imageBackground = FileManipulator::getOptionalFileAsString(
+        pageDir, IMAGEBG_FILE_NAME, DEFAULT_IMAGE_BACKGROUND ? "true" : "false") == "true";
+    
+    m_imageAnimated = FileManipulator::getOptionalFileAsString(
+        pageDir, IMGANIM_FILE_NAME, DEFAULT_IMAGE_ANIMATED ? "true" : "false") == "true";
+    
+    m_soundFileName = FileManipulator::getOptionalFileAsString(
+        pageDir, SOUND_FILE_NAME, DEFAULT_SOUND_FILE_NAME);
+    
+    m_soundSFX = FileManipulator::getOptionalFileAsString(
+        pageDir, SOUND_SFX_FILE_NAME, DEFAULT_SOUND_SFX ? "true" : "false") == "true";
+    
+    // Читаем тему
+    std::string themeStr = FileManipulator::getOptionalFileAsString(
+        pageDir, THEME_FILE_NAME, ThemeUtils::toString(DEFAULT_THEME));
+    m_theme = ThemeUtils::fromString(themeStr);
+    
+    // Читаем переменные
+    m_varId = FileManipulator::getOptionalFileAsString(
+        pageDir, VARID_FILE_NAME, DEFAULT_VARID);
+    
+    m_timerVarId = FileManipulator::getOptionalFileAsString(
+        pageDir, TVARID_FILE_NAME, DEFAULT_TVARID);
+    
+    // Читаем многоязычные тексты
+    m_text = FileManipulator::readOptionalMultiLangString(
+        pageDir + "/" + TEXT_SUBDIR_NAME, DEFAULT_TEXT);
+    
+    m_caption = FileManipulator::readOptionalMultiLangString(
+        pageDir + "/" + CAPTION_SUBDIR_NAME, DEFAULT_CAPTION);
+    
+    // Читаем флаги использования
+    m_useCaption = FileManipulator::getOptionalFileAsString(
+        pageDir, USE_CAPT_FILE_NAME, DEFAULT_USE_CAPTION ? "true" : "false") == "true";
+    
+    m_useMPL = FileManipulator::getOptionalFileAsString(
+        pageDir, USE_MPL_FILE_NAME, DEFAULT_USE_MPL ? "true" : "false") == "true";
+    
+    // Читаем модульные свойства
+    const std::string moduleDir = FileUtils::combinePath(pageDir, MODULE_SUBDIR_NAME);
+    m_moduleName = FileManipulator::getOptionalFileAsString(
+        moduleDir, MODNAME_FILE_NAME, m_defaultModuleName);
+    
+    m_moduleExternal = FileManipulator::getOptionalFileAsString(
+        moduleDir, EXTMOD_FILE_NAME, DEFAULT_MODULE_EXTERNAL ? "true" : "false") == "true";
+    
+    m_moduleConstrId = FileManipulator::getOptionalFileAsString(
+        pageDir, MODCNSID_FILE_NAME, DEFAULT_MODULE_CONSTR_ID);
+    
+    // Читаем свойства обхода
+    m_traverseText = FileManipulator::readOptionalMultiLangString(
+        pageDir + "/" + TRAVTEXT_FILE_NAME, DEFAULT_TRAVERSE_TEXT);
+    
+    m_autoTraverse = FileManipulator::getOptionalFileAsString(
+        pageDir, AUTOTRAV_FILE_NAME, DEFAULT_AUTO_TRAVERSE ? "true" : "false") == "true";
+    
+    m_autoReturn = FileManipulator::getOptionalFileAsString(
+        pageDir, AUTORET_FILE_NAME, DEFAULT_AUTO_RETURN ? "true" : "false") == "true";
+    
+    // Читаем свойства возврата
+    m_returnText = FileManipulator::readOptionalMultiLangString(
+        pageDir + "/" + RETTEXT_SUBDIR_NAME, DEFAULT_RETURN_TEXT);
+    
+    m_returnPageId = FileManipulator::getOptionalFileAsString(
+        pageDir, RETPAGE_FILE_NAME, DEFAULT_RETURN_PAGE_ID);
+    
+    // Читаем свойства автосвязи
+    m_autowireInText = FileManipulator::readOptionalMultiLangString(
+        pageDir + "/" + AUTO_IN_TEXT_SUBDIR_NAME, DEFAULT_AUTOWIRE_IN_TEXT);
+    
+    m_autowireOutText = FileManipulator::readOptionalMultiLangString(
+        pageDir + "/" + AUTO_OUT_TEXT_SUBDIR_NAME, DEFAULT_AUTOWIRE_OUT_TEXT);
+    
+    m_autoIn = FileManipulator::getOptionalFileAsString(
+        pageDir, AUTO_IN_FILE_NAME, DEFAULT_AUTO_IN ? "true" : "false") == "true";
+    
+    m_needsAction = FileManipulator::getOptionalFileAsString(
+        pageDir, NEEDS_ACTION_FILE_NAME, DEFAULT_NEEDS_ACTION ? "true" : "false") == "true";
+    
+    m_autoOut = FileManipulator::getOptionalFileAsString(
+        pageDir, AUTO_OUT_FILE_NAME, DEFAULT_AUTO_OUT ? "true" : "false") == "true";
+    
+    m_autowireInConstrId = FileManipulator::getOptionalFileAsString(
+        pageDir, AUTOWIRE_IN_CONSTRID_FILE_NAME, DEFAULT_AUTOWIRE_IN_CONSTR_ID);
+    
+    m_autowireOutConstrId = FileManipulator::getOptionalFileAsString(
+        pageDir, AUTOWIRE_OUT_CONSTRID_FILE_NAME, DEFAULT_AUTOWIRE_OUT_CONSTR_ID);
+    
+    // Читаем дополнительные флаги
+    m_globalAutoWired = FileManipulator::getOptionalFileAsString(
+        pageDir, GLOBAL_AUTOWIRE_FILE_NAME, DEFAULT_GLOBAL_AUTOWIRED ? "true" : "false") == "true";
+    
+    m_noSave = FileManipulator::getOptionalFileAsString(
+        pageDir, NOSAVE_FILE_NAME, DEFAULT_NOSAVE ? "true" : "false") == "true";
+    
+    m_autosFirst = FileManipulator::getOptionalFileAsString(
+        pageDir, AUTOS_FIRST_FILE_NAME, DEFAULT_AUTOS_FIRST ? "true" : "false") == "true";
+    
+    // Читаем общие свойства узла (координаты, ссылки, модификации)
+    readNodeItemProperties(pageDir);
+    
+    // Инициализируем модуль, если еще не создан
+    if (!m_module) {
+        m_module = std::make_shared<NonLinearBookImpl>(getCurrentNLB(), 
+            std::enable_shared_from_this<PageImpl>::shared_from_this());
+    }
+    
+    // Загружаем модуль в зависимости от типа (внешний или локальный)
+    if (isModuleExternal()) {
+        // Для внешних модулей
+        m_module->clear();
+        std::shared_ptr<NonLinearBook> externalModule = getCurrentNLB()->findExternalModule(m_moduleName);
+        if (externalModule) {
+            m_module->append(externalModule, true, true);
+        }
+    } else {
+        // Для локальных модулей
+        if (FileUtils::exists(moduleDir) && FileUtils::isDirectory(moduleDir)) {
+            try {
+                std::string canonicalModuleDir = FileUtils::normalizePath(moduleDir);
+                m_module->loadAndSetParent(canonicalModuleDir, getCurrentNLB(), 
+                    std::enable_shared_from_this<PageImpl>::shared_from_this());
+            } catch (const std::exception& e) {
+                throw NLBIOException("Error loading module from directory: " + moduleDir + 
+                    ". Error: " + e.what());
+            }
+        }
+    }
+    
+    // Читаем модификации (важно делать это в конце)
+    readModifications(pageDir);
 }
 
 std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
