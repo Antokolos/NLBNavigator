@@ -645,13 +645,245 @@ void ObjImpl::setContainerId(const std::string& containerId) {
     m_containerId = containerId;
 }
 
-void ObjImpl::writeObj(const std::shared_ptr<FileManipulator>& fileManipulator, const std::string& objsDir,
-    std::shared_ptr<NonLinearBookImpl> nonLinearBook)
-{
-    // stub
+void ObjImpl::writeObj(
+    const std::shared_ptr<FileManipulator>& fileManipulator,
+    const std::string& objsDir,
+    std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+    
+    writeToFile(fileManipulator, objsDir, getId(), nonLinearBook);
+    
+    const std::string objDir = objsDir + "/" + getId();
+    
+    if (!isDeleted()) {
+        // Write basic object properties
+        fileManipulator->writeOptionalString(objDir, VARID_FILE_NAME, m_varId, DEFAULT_VARID);
+        fileManipulator->writeOptionalString(objDir, CONSTRID_FILE_NAME, m_constrId, DEFAULT_CONSTRID);
+        fileManipulator->writeOptionalString(objDir, COMMONTOID_FILE_NAME, m_commonToId, DEFAULT_COMMON_TO_ID);
+        fileManipulator->writeOptionalString(objDir, NAME_FILE_NAME, m_name, DEFAULT_NAME);
+        fileManipulator->writeOptionalString(objDir, IMAGE_FILE_NAME, m_imageFileName, DEFAULT_IMAGE_FILE_NAME);
+        fileManipulator->writeOptionalString(objDir, SOUND_FILE_NAME, m_soundFileName, DEFAULT_SOUND_FILE_NAME);
+        
+        // Write boolean flags
+        fileManipulator->writeOptionalString(objDir, SOUND_SFX_FILE_NAME,
+            m_soundSFX ? "true" : "false", DEFAULT_SOUND_SFX ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, ANIMATED_FILE_NAME,
+            m_animatedImage ? "true" : "false", DEFAULT_ANIMATED_IMAGE ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, SUPPRESS_DSC_FILE_NAME,
+            m_suppressDsc ? "true" : "false", DEFAULT_SUPPRESS_DSC ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, GRAPHICAL_FILE_NAME,
+            m_graphical ? "true" : "false", DEFAULT_GRAPHICAL ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, SHOW_ON_CURSOR_FILE_NAME,
+            m_showOnCursor ? "true" : "false", DEFAULT_SHOW_ON_CURSOR ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, PRESERVED_FILE_NAME,
+            m_preserved ? "true" : "false", DEFAULT_PRESERVED ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, LOADONCE_FILE_NAME,
+            m_loadOnce ? "true" : "false", DEFAULT_LOAD_ONCE ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, COLLAPSABLE_FILE_NAME,
+            m_collapsable ? "true" : "false", DEFAULT_COLLAPSABLE ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, CLEARUTT_FILE_NAME,
+            m_clearUnderTooltip ? "true" : "false", DEFAULT_CLEAR_UNDER_TOOLTIP ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, ACTONKEY_FILE_NAME,
+            m_actOnKey ? "true" : "false", DEFAULT_ACT_ON_KEY ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, CACHETEXT_FILE_NAME,
+            m_cacheText ? "true" : "false", DEFAULT_CACHE_TEXT ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, LOOPED_FILE_NAME,
+            m_looped ? "true" : "false", DEFAULT_LOOPED ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, NO_REDRAW_ON_ACT_FILE_NAME,
+            m_noRedrawOnAct ? "true" : "false", DEFAULT_NO_REDRAW_ON_ACT ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, TAKABLE_FILE_NAME,
+            m_takable ? "true" : "false", DEFAULT_TAKABLE ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, CALLBACK_FILE_NAME,
+            m_callback ? "true" : "false", DEFAULT_CALLBACK ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, IMAGE_IN_SCENE_FILE_NAME,
+            m_imageInScene ? "true" : "false", DEFAULT_IMAGE_IN_SCENE ? "true" : "false");
+        fileManipulator->writeOptionalString(objDir, IMAGE_IN_INVENTORY_FILE_NAME,
+            m_imageInInventory ? "true" : "false", DEFAULT_IMAGE_IN_INVENTORY ? "true" : "false");
+        
+        // Write enum values
+        fileManipulator->writeOptionalString(objDir, MVDIRECTION_FILE_NAME,
+            movementDirectionToString(m_movementDirection),
+            movementDirectionToString(DEFAULT_MOVEMENT_DIRECTION));
+        fileManipulator->writeOptionalString(objDir, EFFECT_FILE_NAME,
+            effectToString(m_effect),
+            effectToString(DEFAULT_EFFECT));
+        fileManipulator->writeOptionalString(objDir, COORDSOR_FILE_NAME,
+            coordsOriginToString(m_coordsOrigin),
+            coordsOriginToString(CoordsOrigin::LeftTop));
+        
+        // Write integer values
+        fileManipulator->writeOptionalString(objDir, START_FRAME_FILE_NAME,
+            std::to_string(m_startFrame), std::to_string(DEFAULT_START_FRAME));
+        fileManipulator->writeOptionalString(objDir, MAX_FRAME_FILE_NAME,
+            std::to_string(m_maxFrame), std::to_string(DEFAULT_MAX_FRAME));
+        fileManipulator->writeOptionalString(objDir, PRELOAD_FRAMES_FILE_NAME,
+            std::to_string(m_preloadFrames), std::to_string(DEFAULT_PRELOAD_FRAMES));
+        fileManipulator->writeOptionalString(objDir, PAUSE_FRAMES_FILE_NAME,
+            std::to_string(m_pauseFrames), std::to_string(DEFAULT_PAUSE_FRAMES));
+        
+        // Write additional properties
+        fileManipulator->writeOptionalString(objDir, MORPH_OVER_FILE_NAME, m_morphOverId, DEFAULT_MORPH_OVER_ID);
+        fileManipulator->writeOptionalString(objDir, MORPH_OUT_FILE_NAME, m_morphOutId, DEFAULT_MORPH_OUT_ID);
+        fileManipulator->writeOptionalString(objDir, OFFSET_FILE_NAME, m_offset, DEFAULT_OFFSET);
+        fileManipulator->writeOptionalString(objDir, CONTAINERID_FILE_NAME, m_containerId, DEFAULT_CONTAINER_ID);
+        
+        // Write multilanguage strings
+        fileManipulator->writeOptionalMultiLangString(objDir + "/" + TEXT_SUBDIR_NAME, m_text, DEFAULT_TEXT);
+        fileManipulator->writeOptionalMultiLangString(objDir + "/" + ACT_TEXT_SUBDIR_NAME, m_actText, DEFAULT_ACT_TEXT);
+        fileManipulator->writeOptionalMultiLangString(objDir + "/" + NOUSE_TEXT_SUBDIR_NAME, m_nouseText, DEFAULT_NOUSE_TEXT);
+        fileManipulator->writeOptionalMultiLangString(objDir + "/" + DISP_SUBDIR_NAME, m_disp, DEFAULT_DISP);
+    }
 }
 
-void ObjImpl::readObj(const std::string& objDir)
-{
-    // stub
+void ObjImpl::readObj(const std::string& objDir) {
+    setId(FileUtils::getFileName(objDir));
+    readNodeItemProperties(objDir);
+    
+    // Read basic object properties
+    m_varId = FileManipulator::getOptionalFileAsString(objDir, VARID_FILE_NAME, DEFAULT_VARID);
+    m_constrId = FileManipulator::getOptionalFileAsString(objDir, CONSTRID_FILE_NAME, DEFAULT_CONSTRID);
+    m_commonToId = FileManipulator::getOptionalFileAsString(objDir, COMMONTOID_FILE_NAME, DEFAULT_COMMON_TO_ID);
+    m_name = FileManipulator::getOptionalFileAsString(objDir, NAME_FILE_NAME, DEFAULT_NAME);
+    m_imageFileName = FileManipulator::getOptionalFileAsString(objDir, IMAGE_FILE_NAME, DEFAULT_IMAGE_FILE_NAME);
+    m_soundFileName = FileManipulator::getOptionalFileAsString(objDir, SOUND_FILE_NAME, DEFAULT_SOUND_FILE_NAME);
+    
+    // Read boolean flags
+    m_soundSFX = FileManipulator::getOptionalFileAsString(objDir, SOUND_SFX_FILE_NAME,
+        DEFAULT_SOUND_SFX ? "true" : "false") == "true";
+    m_animatedImage = FileManipulator::getOptionalFileAsString(objDir, ANIMATED_FILE_NAME,
+        DEFAULT_ANIMATED_IMAGE ? "true" : "false") == "true";
+    m_suppressDsc = FileManipulator::getOptionalFileAsString(objDir, SUPPRESS_DSC_FILE_NAME,
+        DEFAULT_SUPPRESS_DSC ? "true" : "false") == "true";
+    m_graphical = FileManipulator::getOptionalFileAsString(objDir, GRAPHICAL_FILE_NAME,
+        DEFAULT_GRAPHICAL ? "true" : "false") == "true";
+    m_showOnCursor = FileManipulator::getOptionalFileAsString(objDir, SHOW_ON_CURSOR_FILE_NAME,
+        DEFAULT_SHOW_ON_CURSOR ? "true" : "false") == "true";
+    m_preserved = FileManipulator::getOptionalFileAsString(objDir, PRESERVED_FILE_NAME,
+        DEFAULT_PRESERVED ? "true" : "false") == "true";
+    m_loadOnce = FileManipulator::getOptionalFileAsString(objDir, LOADONCE_FILE_NAME,
+        DEFAULT_LOAD_ONCE ? "true" : "false") == "true";
+    m_collapsable = FileManipulator::getOptionalFileAsString(objDir, COLLAPSABLE_FILE_NAME,
+        DEFAULT_COLLAPSABLE ? "true" : "false") == "true";
+    m_clearUnderTooltip = FileManipulator::getOptionalFileAsString(objDir, CLEARUTT_FILE_NAME,
+        DEFAULT_CLEAR_UNDER_TOOLTIP ? "true" : "false") == "true";
+    m_actOnKey = FileManipulator::getOptionalFileAsString(objDir, ACTONKEY_FILE_NAME,
+        DEFAULT_ACT_ON_KEY ? "true" : "false") == "true";
+    m_cacheText = FileManipulator::getOptionalFileAsString(objDir, CACHETEXT_FILE_NAME,
+        DEFAULT_CACHE_TEXT ? "true" : "false") == "true";
+    m_looped = FileManipulator::getOptionalFileAsString(objDir, LOOPED_FILE_NAME,
+        DEFAULT_LOOPED ? "true" : "false") == "true";
+    m_noRedrawOnAct = FileManipulator::getOptionalFileAsString(objDir, NO_REDRAW_ON_ACT_FILE_NAME,
+        DEFAULT_NO_REDRAW_ON_ACT ? "true" : "false") == "true";
+    m_takable = FileManipulator::getOptionalFileAsString(objDir, TAKABLE_FILE_NAME,
+        DEFAULT_TAKABLE ? "true" : "false") == "true";
+    m_callback = FileManipulator::getOptionalFileAsString(objDir, CALLBACK_FILE_NAME,
+        DEFAULT_CALLBACK ? "true" : "false") == "true";
+    m_imageInScene = FileManipulator::getOptionalFileAsString(objDir, IMAGE_IN_SCENE_FILE_NAME,
+        DEFAULT_IMAGE_IN_SCENE ? "true" : "false") == "true";
+    m_imageInInventory = FileManipulator::getOptionalFileAsString(objDir, IMAGE_IN_INVENTORY_FILE_NAME,
+        DEFAULT_IMAGE_IN_INVENTORY ? "true" : "false") == "true";
+    
+    // Read enum values
+    m_movementDirection = stringToMovementDirection(
+        FileManipulator::getOptionalFileAsString(objDir, MVDIRECTION_FILE_NAME,
+            movementDirectionToString(DEFAULT_MOVEMENT_DIRECTION)));
+    m_effect = stringToEffect(
+        FileManipulator::getOptionalFileAsString(objDir, EFFECT_FILE_NAME,
+            effectToString(DEFAULT_EFFECT)));
+    m_coordsOrigin = stringToCoordsOrigin(
+        FileManipulator::getOptionalFileAsString(objDir, COORDSOR_FILE_NAME,
+            coordsOriginToString(CoordsOrigin::LeftTop)));
+    
+    // Read integer values
+    m_startFrame = std::stoi(FileManipulator::getOptionalFileAsString(objDir, START_FRAME_FILE_NAME,
+        std::to_string(DEFAULT_START_FRAME)));
+    m_maxFrame = std::stoi(FileManipulator::getOptionalFileAsString(objDir, MAX_FRAME_FILE_NAME,
+        std::to_string(DEFAULT_MAX_FRAME)));
+    m_preloadFrames = std::stoi(FileManipulator::getOptionalFileAsString(objDir, PRELOAD_FRAMES_FILE_NAME,
+        std::to_string(DEFAULT_PRELOAD_FRAMES)));
+    m_pauseFrames = std::stoi(FileManipulator::getOptionalFileAsString(objDir, PAUSE_FRAMES_FILE_NAME,
+        std::to_string(DEFAULT_PAUSE_FRAMES)));
+    
+    // Read additional properties
+    m_morphOverId = FileManipulator::getOptionalFileAsString(objDir, MORPH_OVER_FILE_NAME, DEFAULT_MORPH_OVER_ID);
+    m_morphOutId = FileManipulator::getOptionalFileAsString(objDir, MORPH_OUT_FILE_NAME, DEFAULT_MORPH_OUT_ID);
+    m_offset = FileManipulator::getOptionalFileAsString(objDir, OFFSET_FILE_NAME, DEFAULT_OFFSET);
+    m_containerId = FileManipulator::getOptionalFileAsString(objDir, CONTAINERID_FILE_NAME, DEFAULT_CONTAINER_ID);
+    
+    // Read multilanguage strings
+    m_text = FileManipulator::readOptionalMultiLangString(objDir + "/" + TEXT_SUBDIR_NAME, DEFAULT_TEXT);
+    m_actText = FileManipulator::readOptionalMultiLangString(objDir + "/" + ACT_TEXT_SUBDIR_NAME, DEFAULT_ACT_TEXT);
+    m_nouseText = FileManipulator::readOptionalMultiLangString(objDir + "/" + NOUSE_TEXT_SUBDIR_NAME, DEFAULT_NOUSE_TEXT);
+    m_disp = FileManipulator::readOptionalMultiLangString(objDir + "/" + DISP_SUBDIR_NAME, DEFAULT_DISP);
+}
+
+std::string ObjImpl::movementDirectionToString(MovementDirection direction) const {
+    switch (direction) {
+        case MovementDirection::Top: return "Top";
+        case MovementDirection::Left: return "Left";
+        case MovementDirection::Right: return "Right";
+        case MovementDirection::Bottom: return "Bottom";
+        case MovementDirection::None:
+        default: return "None";
+    }
+}
+
+ObjImpl::MovementDirection ObjImpl::stringToMovementDirection(const std::string& str) const {
+    if (str == "Top") return MovementDirection::Top;
+    if (str == "Left") return MovementDirection::Left;
+    if (str == "Right") return MovementDirection::Right;
+    if (str == "Bottom") return MovementDirection::Bottom;
+    return MovementDirection::None;
+}
+
+std::string ObjImpl::effectToString(Effect effect) const {
+    switch (effect) {
+        case Effect::MoveIn: return "MoveIn";
+        case Effect::MoveOut: return "MoveOut";
+        case Effect::FadeIn: return "FadeIn";
+        case Effect::FadeOut: return "FadeOut";
+        case Effect::ZoomIn: return "ZoomIn";
+        case Effect::ZoomOut: return "ZoomOut";
+        case Effect::Overlap: return "Overlap";
+        case Effect::None:
+        default: return "None";
+    }
+}
+
+ObjImpl::Effect ObjImpl::stringToEffect(const std::string& str) const {
+    if (str == "MoveIn") return Effect::MoveIn;
+    if (str == "MoveOut") return Effect::MoveOut;
+    if (str == "FadeIn") return Effect::FadeIn;
+    if (str == "FadeOut") return Effect::FadeOut;
+    if (str == "ZoomIn") return Effect::ZoomIn;
+    if (str == "ZoomOut") return Effect::ZoomOut;
+    if (str == "Overlap") return Effect::Overlap;
+    return Effect::None;
+}
+
+std::string ObjImpl::coordsOriginToString(CoordsOrigin origin) const {
+    switch (origin) {
+        case CoordsOrigin::LeftTop: return "LeftTop";
+        case CoordsOrigin::MiddleTop: return "MiddleTop";
+        case CoordsOrigin::RightTop: return "RightTop";
+        case CoordsOrigin::LeftMiddle: return "LeftMiddle";
+        case CoordsOrigin::MiddleMiddle: return "MiddleMiddle";
+        case CoordsOrigin::RightMiddle: return "RightMiddle";
+        case CoordsOrigin::LeftBottom: return "LeftBottom";
+        case CoordsOrigin::MiddleBottom: return "MiddleBottom";
+        case CoordsOrigin::RightBottom: return "RightBottom";
+        default: return "LeftTop";
+    }
+}
+
+ObjImpl::CoordsOrigin ObjImpl::stringToCoordsOrigin(const std::string& str) const {
+    if (str == "LeftTop") return ObjImpl::CoordsOrigin::LeftTop;
+    if (str == "MiddleTop") return ObjImpl::CoordsOrigin::MiddleTop;
+    if (str == "RightTop") return ObjImpl::CoordsOrigin::RightTop;
+    if (str == "LeftMiddle") return ObjImpl::CoordsOrigin::LeftMiddle;
+    if (str == "MiddleMiddle") return ObjImpl::CoordsOrigin::MiddleMiddle;
+    if (str == "RightMiddle") return ObjImpl::CoordsOrigin::RightMiddle;
+    if (str == "LeftBottom") return ObjImpl::CoordsOrigin::LeftBottom;
+    if (str == "MiddleBottom") return ObjImpl::CoordsOrigin::MiddleBottom;
+    if (str == "RightBottom") return ObjImpl::CoordsOrigin::RightBottom;
+    return ObjImpl::CoordsOrigin::LeftTop;
 }

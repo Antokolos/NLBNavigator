@@ -227,6 +227,14 @@ public:
 private:
     Coords& getRelativeCoordsByMorph(bool lookInMorphs) const;
     std::string getObjIdByMorphId(const std::string& morphId) const;
+    
+    // Helper methods for enum conversion
+    std::string movementDirectionToString(MovementDirection direction) const;
+    MovementDirection stringToMovementDirection(const std::string& str) const;
+    std::string effectToString(Effect effect) const;
+    Effect stringToEffect(const std::string& str) const;
+    std::string coordsOriginToString(CoordsOrigin origin) const;
+    CoordsOrigin stringToCoordsOrigin(const std::string& str) const;
 
     // Member variables
     std::string m_varId;
