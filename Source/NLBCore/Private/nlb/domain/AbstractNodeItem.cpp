@@ -430,52 +430,6 @@ void AbstractNodeItem::validateLinks() {
     notifyObservers();
 }
 
-Coords& AbstractNodeItem::getRelativeCoords() const {
-    // Если нет родителя, возвращаем нулевые координаты
-    auto parent = getParent();
-    if (!parent) {
-        return CoordsLw::getZeroCoords();
-    }
-    
-    // Ищем родителя среди страниц и объектов текущей книги
-    auto currentNLB = getCurrentNLB();
-    auto parentId = parent->getId();
-    
-    // Сначала проверяем страницы
-    auto pages = currentNLB->getPages();
-    auto pageIt = pages.find(parentId);
-    if (pageIt != pages.end()) {
-        auto parentCoords = pageIt->second->getCoords();
-        auto thisCoords = getCoords();
-        
-        static CoordsLw relativeCoords;
-        relativeCoords.setLeft(thisCoords->getLeft() - parentCoords->getLeft());
-        relativeCoords.setTop(thisCoords->getTop() - parentCoords->getTop());
-        relativeCoords.setWidth(thisCoords->getWidth());
-        relativeCoords.setHeight(thisCoords->getHeight());
-        
-        return relativeCoords;
-    }
-    
-    // Затем проверяем объекты
-    auto objs = currentNLB->getObjs();
-    auto objIt = objs.find(parentId);
-    if (objIt != objs.end()) {
-        auto parentCoords = objIt->second->getCoords();
-        auto thisCoords = getCoords();
-        
-        static CoordsLw relativeCoords;
-        relativeCoords.setLeft(thisCoords->getLeft() - parentCoords->getLeft());
-        relativeCoords.setTop(thisCoords->getTop() - parentCoords->getTop());
-        relativeCoords.setWidth(thisCoords->getWidth());
-        relativeCoords.setHeight(thisCoords->getHeight());
-        
-        return relativeCoords;
-    }
-    
-    return CoordsLw::getZeroCoords();
-}
-
 void AbstractNodeItem::writeLinkOrderFile(const std::shared_ptr<FileManipulator>& fileManipulator,
                                         const std::string& nodeDir) {
     std::string content;

@@ -150,9 +150,6 @@ public:
                            
     // Методы валидации
     virtual void validateLinks();
-    
-    // Метод для относительных координат
-    virtual Coords& getRelativeCoords() const;
 
     virtual std::string getId() const override { return AbstractModifyingItem::getId(); }
     virtual std::string getFullId() const override { return AbstractModifyingItem::getFullId(); }
