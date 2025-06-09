@@ -1,6 +1,8 @@
 #include "nlb/domain/AbstractNodeItem.h"
 #include "nlb/domain/CoordsImpl.h"
 #include "nlb/domain/LinkImpl.h"
+#include "nlb/domain/ObjImpl.h"
+#include "nlb/domain/PageImpl.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/util/StringHelper.h"
 #include "nlb/exception/NLBExceptions.h"
@@ -352,21 +354,34 @@ void AbstractNodeItem::readNodeItemProperties(const std::string& nodeDir) {
 }
 
 std::shared_ptr<NLBCommand> AbstractNodeItem::createPageCommand(float left, float top) {
-    // Создание команды для страницы
-    // Эта реализация зависит от других классов, поэтому дана упрощенная версия
-    return nullptr; // В реальной реализации возвращает команду
+    // Создаем команду для добавления новой страницы
+    auto currentNLB = std::static_pointer_cast<NonLinearBookImpl>(getCurrentNLB());
+    auto newPageImpl = std::make_shared<PageImpl>(getCurrentNLB(), left, top);
+    
+    // Возвращаем команду добавления страницы в книгу
+    return currentNLB->createAddPageCommand(newPageImpl);
 }
 
 std::shared_ptr<NLBCommand> AbstractNodeItem::createLinkCommand(const std::string& pageId) {
-    // Создание команды для ссылки
-    // Эта реализация зависит от других классов, поэтому дана упрощенная версия
-    return nullptr; // В реальной реализации возвращает команду
+    // Создаем новую ссылку на указанную страницу
+    // Явно используем shared_from_this от AbstractNodeItem
+    auto self = std::enable_shared_from_this<AbstractNodeItem>::shared_from_this();
+    auto newLink = std::make_shared<LinkImpl>(self, pageId);
+    
+    // Возвращаем команду добавления ссылки
+    return createAddLinkCommand(newLink);
 }
 
 std::shared_ptr<NLBCommand> AbstractNodeItem::createObjCommand(float left, float top) {
-    // Создание команды для объекта
-    // Эта реализация зависит от других классов, поэтому дана упрощенная версия
-    return nullptr; // В реальной реализации возвращает команду
+    // Создаем команду для добавления нового объекта
+    auto currentNLB = std::static_pointer_cast<NonLinearBookImpl>(getCurrentNLB());
+    auto newObjImpl = std::make_shared<ObjImpl>(getCurrentNLB(), left, top);
+    
+    // Устанавливаем контейнер объекта как текущий узел
+    newObjImpl->setContainerId(getId());
+    
+    // Возвращаем команду добавления объекта в книгу
+    return currentNLB->createAddObjCommand(newObjImpl);
 }
 
 void AbstractNodeItem::writeToFile(const std::shared_ptr<FileManipulator>& fileManipulator, 
@@ -396,13 +411,68 @@ void AbstractNodeItem::validateLinks() {
         if ((*it)->isDeleted() || (*it)->hasDeletedParent()) {
             it = m_links.erase(it);
         } else {
+            // Проверяем, существует ли целевая страница
+            std::string targetId = (*it)->getTarget();
+            if (!StringHelper::isEmpty(targetId)) {
+                auto targetPage = getCurrentNLB()->getPageById(targetId);
+                if (!targetPage || targetPage->isDeleted()) {
+                    // Целевая страница не существует или удалена
+                    (*it)->setDeleted(true);
+                    it = m_links.erase(it);
+                    continue;
+                }
+            }
             ++it;
         }
     }
+    
+    // Уведомляем об изменениях если были удалены ссылки
+    notifyObservers();
 }
 
 Coords& AbstractNodeItem::getRelativeCoords() const {
-    // В Java версии этот метод возвращает CoordsLw.getZeroCoords()
+    // Если нет родителя, возвращаем нулевые координаты
+    auto parent = getParent();
+    if (!parent) {
+        return CoordsLw::getZeroCoords();
+    }
+    
+    // Ищем родителя среди страниц и объектов текущей книги
+    auto currentNLB = getCurrentNLB();
+    auto parentId = parent->getId();
+    
+    // Сначала проверяем страницы
+    auto pages = currentNLB->getPages();
+    auto pageIt = pages.find(parentId);
+    if (pageIt != pages.end()) {
+        auto parentCoords = pageIt->second->getCoords();
+        auto thisCoords = getCoords();
+        
+        static CoordsLw relativeCoords;
+        relativeCoords.setLeft(thisCoords->getLeft() - parentCoords->getLeft());
+        relativeCoords.setTop(thisCoords->getTop() - parentCoords->getTop());
+        relativeCoords.setWidth(thisCoords->getWidth());
+        relativeCoords.setHeight(thisCoords->getHeight());
+        
+        return relativeCoords;
+    }
+    
+    // Затем проверяем объекты
+    auto objs = currentNLB->getObjs();
+    auto objIt = objs.find(parentId);
+    if (objIt != objs.end()) {
+        auto parentCoords = objIt->second->getCoords();
+        auto thisCoords = getCoords();
+        
+        static CoordsLw relativeCoords;
+        relativeCoords.setLeft(thisCoords->getLeft() - parentCoords->getLeft());
+        relativeCoords.setTop(thisCoords->getTop() - parentCoords->getTop());
+        relativeCoords.setWidth(thisCoords->getWidth());
+        relativeCoords.setHeight(thisCoords->getHeight());
+        
+        return relativeCoords;
+    }
+    
     return CoordsLw::getZeroCoords();
 }
 
@@ -528,8 +598,8 @@ void AbstractNodeItem::readLinks(const std::string& nodeDir) {
             for (const auto& linkDirName : linkDirs) {
                 std::string linkDir = FileUtils::combinePath(linksDir, linkDirName);
                 if (FileUtils::isDirectory(linkDir)) {
-                    auto link = std::make_shared<LinkImpl>(
-                        std::enable_shared_from_this<AbstractNodeItem>::shared_from_this());
+                    auto self = std::enable_shared_from_this<AbstractNodeItem>::shared_from_this();
+                    auto link = std::make_shared<LinkImpl>(self);
                     link->readLink(linkDir);
                     m_links.push_back(link);
                 }
@@ -541,8 +611,8 @@ void AbstractNodeItem::readLinks(const std::string& nodeDir) {
 
             for (const auto& linkDirName : linkDirsSortedList) {
                 std::string linkDir = FileUtils::combinePath(linksDir, linkDirName);
-                auto link = std::make_shared<LinkImpl>(
-                    std::enable_shared_from_this<AbstractNodeItem>::shared_from_this());
+                auto self = std::enable_shared_from_this<AbstractNodeItem>::shared_from_this();
+                auto link = std::make_shared<LinkImpl>(self);
                 link->readLink(linkDir);
                 m_links.push_back(link);
             }
@@ -652,4 +722,24 @@ std::shared_ptr<AbstractNodeItem::SortLinksCommand> AbstractNodeItem::createSort
         idsSortingOrder.push_back(link->getId());
     }
     return std::make_shared<SortLinksCommand>(this, idsSortingOrder);
+}
+
+void AbstractNodeItem::setDefaultTagId(const std::string& defaultTagId) {
+    m_defaultTagId = defaultTagId;
+    notifyObservers();
+}
+
+void AbstractNodeItem::setStroke(const std::string& stroke) {
+    m_stroke = stroke;
+    notifyObservers();
+}
+
+void AbstractNodeItem::setFill(const std::string& fill) {
+    m_fill = fill;
+    notifyObservers();
+}
+
+void AbstractNodeItem::setTextColor(const std::string& textColor) {
+    m_textColor = textColor;
+    notifyObservers();
 }

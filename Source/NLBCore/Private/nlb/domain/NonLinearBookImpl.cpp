@@ -1332,3 +1332,15 @@ void NonLinearBookImpl::readNLB(const std::string& nlbDir) {
     loadMediaFiles(nlbDir, IMAGES_DIR_NAME, m_imageFiles);
     loadMediaFiles(nlbDir, SOUND_DIR_NAME, m_soundFiles);
 }
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createAddPageCommand(const std::shared_ptr<PageImpl>& pageImpl)
+{
+    // TODO: implement
+    return nullptr;
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createAddObjCommand(const std::shared_ptr<ObjImpl>& objImpl)
+{
+    // TODO: implement
+    return nullptr;
+}

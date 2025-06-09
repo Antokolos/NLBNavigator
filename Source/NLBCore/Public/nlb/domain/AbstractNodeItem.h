@@ -18,6 +18,8 @@ class CoordsImpl;
 class LinkImpl;
 class Link;
 class Page;
+class PageImpl;
+class ObjImpl;
 
 class AbstractNodeItem : public AbstractModifyingItem, public NodeItem, public std::enable_shared_from_this<AbstractNodeItem> {
 public:
