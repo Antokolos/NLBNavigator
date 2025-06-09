@@ -41,12 +41,13 @@ public:
 
     class ResizeNodeCommand : public NLBCommand {
     public:
-        ResizeNodeCommand(Orientation orientation, double deltaX, double deltaY,
+        ResizeNodeCommand(AbstractNodeItem* nodeItem, Orientation orientation, double deltaX, double deltaY,
                          const std::vector<std::shared_ptr<Link>>& adjacentLinks);
         void execute() override;
         void revert() override;
 
     private:
+        AbstractNodeItem* m_nodeItem;
         Orientation m_orientation;
         double m_deltaX;
         double m_deltaY;
@@ -55,21 +56,23 @@ public:
 
     class AddLinkCommand : public NLBCommand {
     public:
-        explicit AddLinkCommand(std::shared_ptr<LinkImpl> link);
+        explicit AddLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<LinkImpl> link);
         void execute() override;
         void revert() override;
 
     private:
+        AbstractNodeItem* m_nodeItem;
         std::shared_ptr<LinkImpl> m_link;
     };
 
     class DeleteLinkCommand : public NLBCommand {
     public:
-        explicit DeleteLinkCommand(std::shared_ptr<Link> link);
+        explicit DeleteLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<Link> link);
         void execute() override;
         void revert() override;
 
     private:
+        AbstractNodeItem* m_nodeItem;
         std::shared_ptr<LinkImpl> m_link;
         bool m_previousDeletedState;
     };
@@ -112,6 +115,12 @@ public:
     size_t getLinkCount() const;
     void addLink(std::shared_ptr<LinkImpl> link);
     virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const override;
+    void removeLinkById(const std::string& linkId);
+    static void filterTargetLinkList(
+        std::shared_ptr<AbstractNodeItem> target,
+        std::shared_ptr<AbstractNodeItem> source,
+        const std::vector<std::string>& linkIdsToBeExcluded
+    );
 
     // Observer methods
     std::string addObserver(std::shared_ptr<NLBObserver> observer);

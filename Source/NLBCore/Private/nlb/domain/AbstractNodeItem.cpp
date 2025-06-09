@@ -21,41 +21,66 @@ const std::string AbstractNodeItem::TEXTCOLOR_FILE_NAME = "txtcolor";
 
 // ResizeNodeCommand implementation
 AbstractNodeItem::ResizeNodeCommand::ResizeNodeCommand(
+        AbstractNodeItem* nodeItem,
         Orientation orientation, double deltaX, double deltaY,
         const std::vector<std::shared_ptr<Link>>& adjacentLinks)
-    : m_orientation(orientation)
+    : m_nodeItem(nodeItem)
+    , m_orientation(orientation)
     , m_deltaX(deltaX)
     , m_deltaY(deltaY)
     , m_adjacentLinks(adjacentLinks) {
 }
 
 void AbstractNodeItem::ResizeNodeCommand::execute() {
-    // Implementation
+    m_nodeItem->resizeNode(m_orientation, m_deltaX, m_deltaY);
+    m_nodeItem->notifyObservers();
+    for (const auto& link : m_adjacentLinks) {
+        link->notifyObservers();
+    }
 }
 
 void AbstractNodeItem::ResizeNodeCommand::revert() {
-    // Implementation
+    m_nodeItem->resizeNode(m_orientation, -m_deltaX, -m_deltaY);
+    m_nodeItem->notifyObservers();
+    for (const auto& link : m_adjacentLinks) {
+        link->notifyObservers();
+    }
 }
 
 // AddLinkCommand implementation
-AbstractNodeItem::AddLinkCommand::AddLinkCommand(std::shared_ptr<LinkImpl> link)
-    : m_link(link) {
+AbstractNodeItem::AddLinkCommand::AddLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<LinkImpl> link)
+    : m_nodeItem(nodeItem), m_link(link) {
 }
 
 void AbstractNodeItem::AddLinkCommand::execute() {
     m_link->setDeleted(false);
-    // Implementation for adding link
+    // Добавляем ссылку в список, если её там еще нет
+    auto it = std::find_if(m_nodeItem->m_links.begin(), m_nodeItem->m_links.end(),
+                          [this](const auto& link) {
+                              return link->getId() == m_link->getId();
+                          });
+    if (it == m_nodeItem->m_links.end()) {
+        m_nodeItem->m_links.push_back(m_link);
+    }
+    m_link->notifyObservers();
 }
 
 void AbstractNodeItem::AddLinkCommand::revert() {
     m_link->setDeleted(true);
-    // Implementation for removing link
+    auto it = std::find_if(m_nodeItem->m_links.begin(), m_nodeItem->m_links.end(),
+                          [this](const auto& link) {
+                              return link->getId() == m_link->getId();
+                          });
+    if (it != m_nodeItem->m_links.end()) {
+        m_nodeItem->m_links.erase(it);
+    }
+    m_link->notifyObservers();
 }
 
 // DeleteLinkCommand implementation
-AbstractNodeItem::DeleteLinkCommand::DeleteLinkCommand(std::shared_ptr<Link> link)
-    //: m_link(std::dynamic_pointer_cast<LinkImpl>(link))
-    : m_link(std::static_pointer_cast<LinkImpl>(link))
+AbstractNodeItem::DeleteLinkCommand::DeleteLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<Link> link)
+    : m_nodeItem(nodeItem)
+    , m_link(std::static_pointer_cast<LinkImpl>(link))
     , m_previousDeletedState(m_link->AbstractIdentifiableItem::isDeleted()) {
 }
 
@@ -210,6 +235,30 @@ std::shared_ptr<Link> AbstractNodeItem::getLinkById(const std::string& linkId) c
                               return link->getId() == linkId;
                           });
     return (it != m_links.end()) ? *it : nullptr;
+}
+
+void AbstractNodeItem::removeLinkById(const std::string& linkId) {
+    auto it = std::find_if(m_links.begin(), m_links.end(),
+                          [&linkId](const auto& link) {
+                              return link->getId() == linkId;
+                          });
+    if (it != m_links.end()) {
+        m_links.erase(it);
+    }
+}
+
+void AbstractNodeItem::filterTargetLinkList(
+    std::shared_ptr<AbstractNodeItem> target,
+    std::shared_ptr<AbstractNodeItem> source,
+    const std::vector<std::string>& linkIdsToBeExcluded) {
+    
+    target->m_links.clear();
+    for (const auto& link : source->m_links) {
+        if (std::find(linkIdsToBeExcluded.begin(), linkIdsToBeExcluded.end(), 
+                     link->getId()) == linkIdsToBeExcluded.end()) {
+            target->m_links.push_back(std::make_shared<LinkImpl>(target, link));
+                     }
+    }
 }
 
 std::string AbstractNodeItem::getExternalHierarchy() const {
@@ -515,34 +564,46 @@ size_t AbstractNodeItem::getLinkCount() const {
 }
 
 void AbstractNodeItem::resizeNode(Orientation orientation, double deltaX, double deltaY) {
-    std::shared_ptr<Coords> coordsPtr = getCoords();
-    CoordsImpl* coords = static_cast<CoordsImpl*>(coordsPtr.get());
-    
-    float minNodeWidth = static_cast<float>(MIN_NODE_WIDTH);
-    float minNodeHeight = static_cast<float>(MIN_NODE_HEIGHT);
+    auto coordsImpl = std::static_pointer_cast<CoordsImpl>(m_coords);
+    float width;
+    float height;
+    float ignoredDistance = 0.0f;
     
     switch (orientation) {
-    case Orientation::TOP:
-        if (coords->getHeight() - deltaY >= minNodeHeight) {
-            coords->setTop(coords->getTop() + static_cast<float>(deltaY));
-            coords->setHeight(coords->getHeight() - static_cast<float>(deltaY));
-        }
-        break;
-    case Orientation::BOTTOM:
-        if (coords->getHeight() + deltaY >= minNodeHeight) {
-            coords->setHeight(coords->getHeight() + static_cast<float>(deltaY));
-        }
-        break;
-    case Orientation::LEFT:
-        if (coords->getWidth() - deltaX >= minNodeWidth) {
-            coords->setLeft(coords->getLeft() + static_cast<float>(deltaX));
-            coords->setWidth(coords->getWidth() - static_cast<float>(deltaX));
-        }
-        break;
     case Orientation::RIGHT:
-        if (coords->getWidth() + deltaX >= minNodeWidth) {
-            coords->setWidth(coords->getWidth() + static_cast<float>(deltaX));
+        width = coordsImpl->getWidth() + static_cast<float>(deltaX);
+        if (width < MIN_NODE_WIDTH) {
+            width = MIN_NODE_WIDTH;
         }
+        coordsImpl->setWidth(width);
+        break;
+            
+    case Orientation::BOTTOM:
+        height = coordsImpl->getHeight() + static_cast<float>(deltaY);
+        if (height < MIN_NODE_HEIGHT) {
+            height = MIN_NODE_HEIGHT;
+        }
+        coordsImpl->setHeight(height);
+        break;
+            
+    case Orientation::LEFT:
+        width = coordsImpl->getWidth() - static_cast<float>(deltaX);
+        if (width < MIN_NODE_WIDTH) {
+            ignoredDistance = MIN_NODE_WIDTH - width;
+            width = MIN_NODE_WIDTH;
+        }
+        coordsImpl->setLeft(coordsImpl->getLeft() + static_cast<float>(deltaX) - ignoredDistance);
+        coordsImpl->setWidth(width);
+        break;
+            
+    case Orientation::TOP:
+        height = coordsImpl->getHeight() - static_cast<float>(deltaY);
+        if (height < MIN_NODE_HEIGHT) {
+            ignoredDistance = MIN_NODE_HEIGHT - height;
+            height = MIN_NODE_HEIGHT;
+        }
+        coordsImpl->setTop(coordsImpl->getTop() + static_cast<float>(deltaY) - ignoredDistance);
+        coordsImpl->setHeight(height);
         break;
     }
 }
@@ -560,4 +621,35 @@ void AbstractNodeItem::removeContainedObjId(const std::string& containedObjId) {
         m_containedObjIds.erase(it);
         notifyObservers();
     }
+}
+
+std::shared_ptr<AbstractNodeItem::ResizeNodeCommand> AbstractNodeItem::createResizeNodeCommand(
+        Orientation orientation, double deltaX, double deltaY,
+        const std::vector<std::shared_ptr<Link>>& adjacentLinks) {
+    return std::make_shared<ResizeNodeCommand>(this, orientation, deltaX, deltaY, adjacentLinks);
+}
+
+std::shared_ptr<AbstractNodeItem::ResizeNodeCommand> AbstractNodeItem::createResizeNodeCommand(
+        Orientation orientation, double deltaX, double deltaY) {
+    return std::make_shared<ResizeNodeCommand>(this, orientation, deltaX, deltaY, 
+                                             std::vector<std::shared_ptr<Link>>());
+}
+
+std::shared_ptr<AbstractNodeItem::AddLinkCommand> AbstractNodeItem::createAddLinkCommand(
+        std::shared_ptr<LinkImpl> link) {
+    return std::make_shared<AddLinkCommand>(this, link);
+}
+
+std::shared_ptr<AbstractNodeItem::DeleteLinkCommand> AbstractNodeItem::createDeleteLinkCommand(
+        std::shared_ptr<Link> link) {
+    return std::make_shared<DeleteLinkCommand>(this, link);
+}
+
+std::shared_ptr<AbstractNodeItem::SortLinksCommand> AbstractNodeItem::createSortLinksCommand(
+        const std::vector<std::shared_ptr<Link>>& newSortingOrder) {
+    std::vector<std::string> idsSortingOrder;
+    for (const auto& link : newSortingOrder) {
+        idsSortingOrder.push_back(link->getId());
+    }
+    return std::make_shared<SortLinksCommand>(this, idsSortingOrder);
 }
