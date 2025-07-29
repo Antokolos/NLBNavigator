@@ -414,8 +414,8 @@ bool PageImpl::isAutowire() const {
     return isAutoIn() || isAutoOut();
 }
 
-void PageImpl::setGlobalAutoWired(bool globalAutoWired) {
-    m_globalAutoWired = globalAutoWired;
+void PageImpl::setGlobalAutowire(bool globalAutowire) {
+    m_globalAutoWired = globalAutowire;
 }
 
 bool PageImpl::isGlobalAutowire() const {
@@ -693,15 +693,13 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
     // Создаем новую страницу-результат
     auto result = std::make_shared<PageImpl>(AbstractNodeItem::getCurrentNLB());
     
-    // Основные идентификаторы и флаги
+    // 1. Основные идентификаторы и флаги
     result->AbstractIdentifiableItem::setId(AbstractIdentifiableItem::getId());
     result->AbstractIdentifiableItem::setDeleted(AbstractIdentifiableItem::isDeleted());
     
-    // Преобразуем visitedVars для использования с StringHelper::replaceVariables
+    // 2. Преобразуем visitedVars для использования с StringHelper::replaceVariables
     std::map<std::string, std::any> visitedVarsAny;
     for (const auto& [key, value] : visitedVars) {
-        // Предполагаем, что значения хранятся как указатели на строки или числа
-        // В реальной реализации может потребоваться более сложная логика преобразования
         try {
             // Пытаемся получить строковое значение
             auto strPtr = std::static_pointer_cast<std::string>(value);
@@ -714,12 +712,12 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
         }
     }
     
-    // Текст с заменой переменных и добавлением текста объектов
+    // 3. Текст с заменой переменных и добавлением текста объектов
     std::string replacedText = StringHelper::replaceVariables(getText(), visitedVarsAny);
     std::string objText = generateObjText(objIdsToBeExcluded, visitedVars);
     result->setText(replacedText + objText);
     
-    // Копирование координат
+    // 4. Копирование координат
     auto sourceCoords = getCoords();
     auto resultCoords = result->getCoords();
     auto resultCoordsImpl = std::static_pointer_cast<CoordsImpl>(resultCoords);
@@ -728,7 +726,7 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
     resultCoordsImpl->setWidth(sourceCoords->getWidth());
     resultCoordsImpl->setHeight(sourceCoords->getHeight());
     
-    // Копирование всех основных свойств страницы (строго в том же порядке, что в Java)
+    // 5. Копирование всех основных свойств страницы (строго в том же порядке, что в Java)
     result->setImageFileName(getImageFileName());
     result->setReturnPageId(getReturnPageId());
     result->setTheme(getTheme());
@@ -748,25 +746,43 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
     result->setAutowireOutText(getAutowireOutText());
     result->setAutoIn(isAutoIn());
     result->setAutoOut(isAutoOut());
-    result->setGlobalAutoWired(isGlobalAutowire());
+    //result->setAutowire(isAutowire()); not needed because autowired is autoIn || autoOut
+    result->setGlobalAutowire(isGlobalAutowire());
     result->setNoSave(isNoSave());
     result->setAutosFirst(isAutosFirst());
     result->setAutowireInConstrId(getAutowireInConstrId());
     result->setAutowireOutConstrId(getAutowireOutConstrId());
     result->setFill(getFill());
-    result->AbstractIdentifiableItem::setParent(AbstractIdentifiableItem::getParent());
     result->setStroke(getStroke());
     result->setDefaultTagId(getDefaultTagId());
     result->setTextColor(getTextColor());
     
-    // Фильтрация существующих ссылок (метод из AbstractNodeItem)
+    // 6. Дополнительные свойства
+    result->setImageBackground(isImageBackground());
+    result->setImageAnimated(isImageAnimated());
+    result->setSoundFileName(getSoundFileName());
+    result->setSoundSFX(isSoundSFX());
+    result->setNeedsAction(isNeedsAction());
+    
+    // 7. Копирование содержимого объектов (если есть)
+    for (const std::string& objId : getContainedObjIds()) {
+        // Проверяем, что объект не исключен
+        if (std::find(objIdsToBeExcluded.begin(), objIdsToBeExcluded.end(), objId) == objIdsToBeExcluded.end()) {
+            result->addContainedObjId(objId);
+        }
+    }
+    
+    // 8. Установка родителя
+    result->AbstractIdentifiableItem::setParent(AbstractIdentifiableItem::getParent());
+    
+    // 9. Фильтрация существующих ссылок (исключаем linkIdsToBeExcluded)
     AbstractNodeItem::filterTargetLinkList(
         std::static_pointer_cast<AbstractNodeItem>(result),
         std::static_pointer_cast<AbstractNodeItem>(std::enable_shared_from_this<PageImpl>::shared_from_this()),
         linkIdsToBeExcluded
     );
     
-    // Добавление новых ссылок
+    // 10. Добавление новых ссылок
     for (const auto& link : linksToBeAdded) {
         auto newLink = std::make_shared<LinkImpl>(
             std::static_pointer_cast<AbstractNodeItem>(result), 
@@ -775,12 +791,13 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
         result->addLink(newLink);
     }
     
-    // Замена переменных в ссылках (метод с побочными эффектами)
+    // 11. Замена переменных в ссылках (метод с побочными эффектами)
     result->replaceVariablesInLinks(visitedVars);
     
     return result;
 }
 
+// Вспомогательный метод для замены переменных в ссылках
 void PageImpl::replaceVariablesInLinks(std::map<std::string, std::shared_ptr<void>> visitedVars) {
     // Преобразуем visitedVars для использования с StringHelper::replaceVariables
     std::map<std::string, std::any> visitedVarsAny;
@@ -803,9 +820,15 @@ void PageImpl::replaceVariablesInLinks(std::map<std::string, std::shared_ptr<voi
         std::string originalText = link->getText();
         std::string replacedText = StringHelper::replaceVariables(originalText, visitedVarsAny);
         link->setText(replacedText);
+        
+        // Также заменяем переменные в альтернативном тексте ссылки
+        std::string originalAltText = link->getAltText();
+        std::string replacedAltText = StringHelper::replaceVariables(originalAltText, visitedVarsAny);
+        link->setAltText(replacedAltText);
     }
 }
 
+// Вспомогательный метод для генерации текста объектов
 std::string PageImpl::generateObjText(
     const std::vector<std::string>& objIdsToBeExcluded, 
     std::map<std::string, std::shared_ptr<void>> visitedVars)
@@ -835,7 +858,7 @@ std::string PageImpl::generateObjText(
         if (std::find(objIdsToBeExcluded.begin(), objIdsToBeExcluded.end(), objId) == objIdsToBeExcluded.end()) {
             // Получаем объект из книги
             auto obj = getCurrentNLB()->getObjById(objId);
-            if (obj != nullptr) {
+            if (obj && !obj->isDeleted()) {
                 // Добавляем кумулятивный текст объекта
                 result << obj->getCumulativeText(objIdsToBeExcluded, visitedVarsString);
             }

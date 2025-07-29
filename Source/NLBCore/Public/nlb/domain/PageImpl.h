@@ -127,8 +127,9 @@ public:
     void setAutowireOutConstrId(const std::string& autowireOutConstrId);
 
     bool isAutowire() const override;
+	
     bool isGlobalAutowire() const override;
-    void setGlobalAutoWired(bool globalAutoWired);
+    void setGlobalAutowire(bool globalAutowire);
 
     bool isNoSave() const override;
     void setNoSave(bool noSave);
@@ -207,9 +208,21 @@ private:
     // Private helper methods
     void init();
     void resetDefaultModuleName();
-    void replaceVariablesInLinks(std::map<std::string, std::shared_ptr<void>> visitedVars);
-    std::string generateObjText(const std::vector<std::string>& objIdsToBeExcluded, 
-                                std::map<std::string, std::shared_ptr<void>> visitedVars);
+	
+	/*!
+	 * @brief Replace variables in all links text and alt-text
+	 * @param visitedVars Map of variables to substitute
+	 */
+	void replaceVariablesInLinks(std::map<std::string, std::shared_ptr<void>> visitedVars);
+    
+	/*!
+	 * @brief Generate cumulative text from contained objects
+	 * @param objIdsToBeExcluded Object IDs to exclude from text generation
+	 * @param visitedVars Variables for substitution in object texts
+	 * @return Combined text from all non-excluded objects
+	 */
+	std::string generateObjText(const std::vector<std::string>& objIdsToBeExcluded, 
+								std::map<std::string, std::shared_ptr<void>> visitedVars);
 
     // Constants for file and directory names
     static const std::string TEXT_SUBDIR_NAME;

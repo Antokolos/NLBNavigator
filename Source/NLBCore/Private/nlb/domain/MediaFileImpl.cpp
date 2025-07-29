@@ -69,8 +69,12 @@ bool MediaFileImpl::operator<(const MediaFile& other) const {
 
 std::size_t MediaFileImpl::hash() const {
     std::size_t result = std::hash<std::string>{}(m_fileName);
-    result = 31 * result + std::hash<std::string>{}(m_redirect);
-    result = 31 * result + std::hash<std::string>{}(m_constrId);
+    if (!m_redirect.empty()) {
+        result = 31 * result + std::hash<std::string>{}(m_redirect);
+    }
+    if (!m_constrId.empty()) {
+        result = 31 * result + std::hash<std::string>{}(m_constrId);
+    }
     result = 31 * result + std::hash<bool>{}(m_flagged);
     result = 31 * result + std::hash<int>{}(static_cast<int>(m_preset));
     return result;
