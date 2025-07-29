@@ -1,7 +1,13 @@
 #include "nlb/domain/PageImpl.h"
 #include "nlb/util/FileManipulator.h"
+#include "nlb/util/StringHelper.h"
+#include "nlb/domain/CoordsImpl.h"
+#include "nlb/domain/LinkImpl.h"
+#include "nlb/api/Obj.h"
+#include "nlb/domain/AbstractNodeItem.h"
 #include <sstream>
 #include <algorithm>
+#include <any>
 
 // Constants
 const std::string PageImpl::TEXT_SUBDIR_NAME = "text";
@@ -286,6 +292,14 @@ bool PageImpl::isUseCaption() const {
 
 bool PageImpl::isUseMPL() const {
     return m_useMPL;
+}
+
+void PageImpl::setUseCaption(bool useCaption) {
+    m_useCaption = useCaption;
+}
+
+void PageImpl::setUseMPL(bool useMPL) {
+    m_useMPL = useMPL;
 }
 
 bool PageImpl::isLeaf() const {
@@ -676,23 +690,157 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
     const std::vector<std::shared_ptr<Link>>& linksToBeAdded,
     std::map<std::string, std::shared_ptr<void>> visitedVars)
 {
-    // Реализация клонирования страницы с подстановкой переменных
+    // Создаем новую страницу-результат
     auto result = std::make_shared<PageImpl>(AbstractNodeItem::getCurrentNLB());
-    // Копирование и подстановка атрибутов
+    
+    // Основные идентификаторы и флаги
+    result->AbstractIdentifiableItem::setId(AbstractIdentifiableItem::getId());
+    result->AbstractIdentifiableItem::setDeleted(AbstractIdentifiableItem::isDeleted());
+    
+    // Преобразуем visitedVars для использования с StringHelper::replaceVariables
+    std::map<std::string, std::any> visitedVarsAny;
+    for (const auto& [key, value] : visitedVars) {
+        // Предполагаем, что значения хранятся как указатели на строки или числа
+        // В реальной реализации может потребоваться более сложная логика преобразования
+        try {
+            // Пытаемся получить строковое значение
+            auto strPtr = std::static_pointer_cast<std::string>(value);
+            if (strPtr) {
+                visitedVarsAny[key] = *strPtr;
+            }
+        } catch (...) {
+            // Если не удалось преобразовать в строку, используем пустую строку
+            visitedVarsAny[key] = std::string("");
+        }
+    }
+    
+    // Текст с заменой переменных и добавлением текста объектов
+    std::string replacedText = StringHelper::replaceVariables(getText(), visitedVarsAny);
+    std::string objText = generateObjText(objIdsToBeExcluded, visitedVars);
+    result->setText(replacedText + objText);
+    
+    // Копирование координат
+    auto sourceCoords = getCoords();
+    auto resultCoords = result->getCoords();
+    auto resultCoordsImpl = std::static_pointer_cast<CoordsImpl>(resultCoords);
+    resultCoordsImpl->setLeft(sourceCoords->getLeft());
+    resultCoordsImpl->setTop(sourceCoords->getTop());
+    resultCoordsImpl->setWidth(sourceCoords->getWidth());
+    resultCoordsImpl->setHeight(sourceCoords->getHeight());
+    
+    // Копирование всех основных свойств страницы (строго в том же порядке, что в Java)
+    result->setImageFileName(getImageFileName());
+    result->setReturnPageId(getReturnPageId());
+    result->setTheme(getTheme());
+    result->setVarId(getVarId());
+    result->setTimerVarId(getTimerVarId());
+    result->setCaption(getCaption());
+    result->setModuleConstrId(getModuleConstrId());
+    result->setModuleName(getModuleName());
+    result->setModuleExternal(isModuleExternal());
+    result->setReturnText(getReturnText());
+    result->setTraverseText(getTraverseText());
+    result->setUseCaption(isUseCaption());
+    result->setUseMPL(isUseMPL());
+    result->setAutoTraverse(isAutoTraverse());
+    result->setAutoReturn(isAutoReturn());
+    result->setAutowireInText(getAutowireInText());
+    result->setAutowireOutText(getAutowireOutText());
+    result->setAutoIn(isAutoIn());
+    result->setAutoOut(isAutoOut());
+    result->setGlobalAutoWired(isGlobalAutowire());
+    result->setNoSave(isNoSave());
+    result->setAutosFirst(isAutosFirst());
+    result->setAutowireInConstrId(getAutowireInConstrId());
+    result->setAutowireOutConstrId(getAutowireOutConstrId());
+    result->setFill(getFill());
+    result->AbstractIdentifiableItem::setParent(AbstractIdentifiableItem::getParent());
+    result->setStroke(getStroke());
+    result->setDefaultTagId(getDefaultTagId());
+    result->setTextColor(getTextColor());
+    
+    // Фильтрация существующих ссылок (метод из AbstractNodeItem)
+    AbstractNodeItem::filterTargetLinkList(
+        std::static_pointer_cast<AbstractNodeItem>(result),
+        std::static_pointer_cast<AbstractNodeItem>(std::enable_shared_from_this<PageImpl>::shared_from_this()),
+        linkIdsToBeExcluded
+    );
+    
+    // Добавление новых ссылок
+    for (const auto& link : linksToBeAdded) {
+        auto newLink = std::make_shared<LinkImpl>(
+            std::static_pointer_cast<AbstractNodeItem>(result), 
+            link
+        );
+        result->addLink(newLink);
+    }
+    
+    // Замена переменных в ссылках (метод с побочными эффектами)
+    result->replaceVariablesInLinks(visitedVars);
     
     return result;
 }
 
 void PageImpl::replaceVariablesInLinks(std::map<std::string, std::shared_ptr<void>> visitedVars) {
-    // Замена переменных в ссылках
+    // Преобразуем visitedVars для использования с StringHelper::replaceVariables
+    std::map<std::string, std::any> visitedVarsAny;
+    for (const auto& [key, value] : visitedVars) {
+        try {
+            // Пытаемся получить строковое значение
+            auto strPtr = std::static_pointer_cast<std::string>(value);
+            if (strPtr) {
+                visitedVarsAny[key] = *strPtr;
+            }
+        } catch (...) {
+            // Если не удалось преобразовать в строку, используем пустую строку
+            visitedVarsAny[key] = std::string("");
+        }
+    }
+    
+    // Заменяем переменные в тексте каждой ссылки
+    auto linkImpls = getLinkImpls();
+    for (auto& link : linkImpls) {
+        std::string originalText = link->getText();
+        std::string replacedText = StringHelper::replaceVariables(originalText, visitedVarsAny);
+        link->setText(replacedText);
+    }
 }
 
 std::string PageImpl::generateObjText(
     const std::vector<std::string>& objIdsToBeExcluded, 
     std::map<std::string, std::shared_ptr<void>> visitedVars)
 {
-    // Генерация текста объектов
-    std::stringstream result;
-    // Логика генерации
+    std::ostringstream result;
+    
+    // Получаем все объекты, содержащиеся на данной странице
+    std::vector<std::string> containedObjIds = getContainedObjIds();
+    
+    // Преобразуем visitedVars для getCumulativeText (который принимает std::map<std::string, std::string>&)
+    std::map<std::string, std::string> visitedVarsString;
+    for (const auto& [key, value] : visitedVars) {
+        try {
+            // Пытаемся получить строковое значение
+            auto strPtr = std::static_pointer_cast<std::string>(value);
+            if (strPtr) {
+                visitedVarsString[key] = *strPtr;
+            }
+        } catch (...) {
+            // Если не удалось преобразовать, используем строковое представление "UNDEFINED"
+            visitedVarsString[key] = "UNDEFINED";
+        }
+    }
+    
+    for (const std::string& objId : containedObjIds) {
+        // Проверяем, что объект не исключен
+        if (std::find(objIdsToBeExcluded.begin(), objIdsToBeExcluded.end(), objId) == objIdsToBeExcluded.end()) {
+            // Получаем объект из книги
+            auto obj = getCurrentNLB()->getObjById(objId);
+            if (obj != nullptr) {
+                // Добавляем кумулятивный текст объекта
+                result << obj->getCumulativeText(objIdsToBeExcluded, visitedVarsString);
+            }
+        }
+    }
+    
     return result.str();
 }

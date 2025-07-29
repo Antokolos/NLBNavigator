@@ -83,6 +83,9 @@ public:
     bool isUseCaption() const override;
     bool isUseMPL() const override;
 
+	void setUseCaption(bool useCaption);
+	void setUseMPL(bool useMPL);
+
     bool isLeaf() const override;
     bool isFinish() const override;
 
