@@ -52,6 +52,11 @@ const std::string NonLinearBookImpl::OBJORDER_SEPARATOR = "\n";
 const std::string NonLinearBookImpl::VARORDER_SEPARATOR = "\n";
 const std::string NonLinearBookImpl::AUTOWIRED_PAGES_SEPARATOR = "\n";
 const std::string NonLinearBookImpl::NLB_EXTENSION = ".nlb";
+const std::string NonLinearBookImpl::CONSTRID_EXT = ".constrid";
+const std::string NonLinearBookImpl::REDIRECT_EXT = ".redirect";
+const std::string NonLinearBookImpl::FLAG_EXT = ".flag";
+const std::string NonLinearBookImpl::PRESET_EXT = ".preset";
+const std::string NonLinearBookImpl::MEDIA_FILE_NAME_TEMPLATE = "%s_%d%s";
 
 // Конструкторы
 NonLinearBookImpl::NonLinearBookImpl()
@@ -802,20 +807,245 @@ void NonLinearBookImpl::setMediaFileExportParametersPreset(MediaFile::Type media
     m_mediaExportParametersMap[key] = MediaExportParameters::fromPreset(preset);
 }
 
-void NonLinearBookImpl::copyAndAddImageFile(const FileManipulator& fileManipulator, const std::string& imageFile, const std::string& imageFileName) {
-    // Заглушка - копирование и добавление изображения
+void NonLinearBookImpl::addImageFile(std::shared_ptr<MediaFileImpl> imageFile) {
+    if (imageFile) {
+        m_imageFiles.push_back(imageFile);
+    }
 }
 
-void NonLinearBookImpl::copyAndAddSoundFile(const FileManipulator& fileManipulator, const std::string& soundFile, const std::string& soundFileName) {
-    // Заглушка - копирование и добавление звука
+void NonLinearBookImpl::addSoundFile(std::shared_ptr<MediaFileImpl> soundFile) {
+    if (soundFile) {
+        m_soundFiles.push_back(soundFile);
+    }
 }
 
-void NonLinearBookImpl::removeImageFile(const FileManipulator& fileManipulator, const std::string& imageFileName) {
-    // Заглушка - удаление изображения
+std::shared_ptr<MediaFileImpl> NonLinearBookImpl::copyMediaFile(
+    FileManipulator& fileManipulator,
+    const std::string& sourceFile,
+    const std::string& fileName,
+    const std::string& mediaDirName)
+{
+    // Создаем уникальное имя файла в медиа-директории
+    std::string localFilePath = createUniqueMediaFile(fileManipulator, sourceFile, fileName, mediaDirName);
+    
+    // Копируем файл
+    try {
+        fileManipulator.copyFile(localFilePath, sourceFile, "Cannot copy media file " + FileUtils::getFileName(localFilePath));
+    } catch (const std::exception& e) {
+        throw NLBFileManipulationException("Failed to copy media file: " + std::string(e.what()));
+    }
+    
+    // Создаем объект MediaFileImpl с именем скопированного файла
+    auto mediaFile = std::make_shared<MediaFileImpl>(FileUtils::getFileName(localFilePath));
+    return mediaFile;
 }
 
-void NonLinearBookImpl::removeSoundFile(const FileManipulator& fileManipulator, const std::string& soundFileName) {
-    // Заглушка - удаление звука
+std::string NonLinearBookImpl::createUniqueMediaFile(
+    FileManipulator& fileManipulator,
+    const std::string& sourceFile,
+    const std::string& fileName,
+    const std::string& mediaDirName)
+{
+    // Определяем имя файла (переданное или из исходного файла)
+    std::string uniqueFileName = fileName.empty() ? 
+        StringHelper::toLowerCase(FileUtils::getFileName(sourceFile)) : 
+        StringHelper::toLowerCase(fileName);
+    
+    // Создаем медиа-директорию
+    std::string mediaDir = FileUtils::combinePath(m_rootDir, mediaDirName);
+    fileManipulator.createDir(mediaDir, "Cannot create NLB media directory");
+    
+    // Формируем полный путь к файлу
+    std::string localFilePath = FileUtils::combinePath(mediaDir, uniqueFileName);
+    
+    // Если файл уже существует, создаем уникальное имя
+    if (FileUtils::exists(localFilePath)) {
+        // Разделяем имя на части: имя + расширение
+        size_t extIndex = uniqueFileName.find_last_of('.');
+        std::string namePart = (extIndex != std::string::npos) ? 
+            uniqueFileName.substr(0, extIndex) : uniqueFileName;
+        std::string extPart = (extIndex != std::string::npos) ? 
+            uniqueFileName.substr(extIndex) : "";
+        
+        // Ищем уникальное имя
+        int counter = 1;
+        do {
+            uniqueFileName = namePart + "_" + std::to_string(counter++) + extPart;
+            localFilePath = FileUtils::combinePath(mediaDir, uniqueFileName);
+        } while (FileUtils::exists(localFilePath));
+    }
+    
+    return localFilePath;
+}
+
+void NonLinearBookImpl::copyAndAddImageFile(
+    const FileManipulator& fileManipulator,
+    const std::string& imageFile,
+    const std::string& imageFileName)
+{
+    // Создаем неконстантную копию fileManipulator для работы
+    FileManipulator& fm = const_cast<FileManipulator&>(fileManipulator);
+    
+    try {
+        // Копируем медиафайл
+        auto mediaFile = copyMediaFile(fm, imageFile, imageFileName, IMAGES_DIR_NAME);
+        
+        // Добавляем в коллекцию изображений
+        addImageFile(std::static_pointer_cast<MediaFileImpl>(mediaFile));
+        
+    } catch (const std::exception& e) {
+        throw NLBIOException("Failed to copy and add image file: " + std::string(e.what()));
+    }
+}
+
+void NonLinearBookImpl::copyAndAddSoundFile(
+    const FileManipulator& fileManipulator,
+    const std::string& soundFile,
+    const std::string& soundFileName)
+{
+    // Создаем неконстантную копию fileManipulator для работы
+    FileManipulator& fm = const_cast<FileManipulator&>(fileManipulator);
+    
+    try {
+        // Копируем медиафайл
+        auto mediaFile = copyMediaFile(fm, soundFile, soundFileName, SOUND_DIR_NAME);
+        
+        // Добавляем в коллекцию звуков
+        addSoundFile(std::static_pointer_cast<MediaFileImpl>(mediaFile));
+        
+    } catch (const std::exception& e) {
+        throw NLBIOException("Failed to copy and add sound file: " + std::string(e.what()));
+    }
+}
+
+void NonLinearBookImpl::removeImageFile(
+    const FileManipulator& fileManipulator,
+    const std::string& imageFileName)
+{
+    // Создаем неконстантную копию fileManipulator для работы
+    FileManipulator& fm = const_cast<FileManipulator&>(fileManipulator);
+    
+    // Ищем файл в коллекции изображений
+    auto it = std::find_if(m_imageFiles.begin(), m_imageFiles.end(),
+        [&imageFileName](const std::shared_ptr<MediaFile>& mediaFile) {
+            return mediaFile->getFileName() == imageFileName;
+        });
+    
+    if (it != m_imageFiles.end()) {
+        // Проверяем существование директории изображений
+        std::string imagesDir = FileUtils::combinePath(m_rootDir, IMAGES_DIR_NAME);
+        if (!FileUtils::exists(imagesDir)) {
+            throw NLBConsistencyException("NLB images dir does not exist");
+        }
+        
+        try {
+            // Удаляем основной файл
+            std::string imageFilePath = FileUtils::combinePath(imagesDir, imageFileName);
+            fm.deleteFileOrDir(imageFilePath);
+            
+            // Удаляем файлы метаданных (игнорируем ошибки, если они не существуют)
+            try {
+                std::string redirectFilePath = FileUtils::combinePath(imagesDir, imageFileName + REDIRECT_EXT);
+                fm.deleteFileOrDir(redirectFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            try {
+                std::string constridFilePath = FileUtils::combinePath(imagesDir, imageFileName + CONSTRID_EXT);
+                fm.deleteFileOrDir(constridFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            try {
+                std::string flagFilePath = FileUtils::combinePath(imagesDir, imageFileName + FLAG_EXT);
+                fm.deleteFileOrDir(flagFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            try {
+                std::string presetFilePath = FileUtils::combinePath(imagesDir, imageFileName + PRESET_EXT);
+                fm.deleteFileOrDir(presetFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            // Удаляем из коллекции
+            m_imageFiles.erase(it);
+            
+        } catch (const std::exception& e) {
+            throw NLBFileManipulationException("Failed to delete image file: " + std::string(e.what()));
+        }
+    } else {
+        throw NLBConsistencyException("Specified image file does not exist in images collection");
+    }
+}
+
+void NonLinearBookImpl::removeSoundFile(
+    const FileManipulator& fileManipulator,
+    const std::string& soundFileName)
+{
+    // Создаем неконстантную копию fileManipulator для работы
+    FileManipulator& fm = const_cast<FileManipulator&>(fileManipulator);
+    
+    // Ищем файл в коллекции звуков
+    auto it = std::find_if(m_soundFiles.begin(), m_soundFiles.end(),
+        [&soundFileName](const std::shared_ptr<MediaFile>& mediaFile) {
+            return mediaFile->getFileName() == soundFileName;
+        });
+    
+    if (it != m_soundFiles.end()) {
+        // Проверяем существование директории звуков
+        std::string soundDir = FileUtils::combinePath(m_rootDir, SOUND_DIR_NAME);
+        if (!FileUtils::exists(soundDir)) {
+            throw NLBConsistencyException("NLB sound dir does not exist");
+        }
+        
+        try {
+            // Удаляем основной файл
+            std::string soundFilePath = FileUtils::combinePath(soundDir, soundFileName);
+            fm.deleteFileOrDir(soundFilePath);
+            
+            // Удаляем файлы метаданных (игнорируем ошибки, если они не существуют)
+            try {
+                std::string redirectFilePath = FileUtils::combinePath(soundDir, soundFileName + REDIRECT_EXT);
+                fm.deleteFileOrDir(redirectFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            try {
+                std::string constridFilePath = FileUtils::combinePath(soundDir, soundFileName + CONSTRID_EXT);
+                fm.deleteFileOrDir(constridFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            try {
+                std::string flagFilePath = FileUtils::combinePath(soundDir, soundFileName + FLAG_EXT);
+                fm.deleteFileOrDir(flagFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            try {
+                std::string presetFilePath = FileUtils::combinePath(soundDir, soundFileName + PRESET_EXT);
+                fm.deleteFileOrDir(presetFilePath);
+            } catch (...) {
+                // Игнорируем ошибку - файл может не существовать
+            }
+            
+            // Удаляем из коллекции
+            m_soundFiles.erase(it);
+            
+        } catch (const std::exception& e) {
+            throw NLBFileManipulationException("Failed to delete sound file: " + std::string(e.what()));
+        }
+    } else {
+        throw NLBConsistencyException("Specified sound file does not exist in sound collection");
+    }
 }
 
 // Методы получения реализаций

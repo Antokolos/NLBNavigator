@@ -6,6 +6,9 @@
 #include <sstream>
 #include <algorithm>
 #include <typeinfo>
+#include <cstdarg>
+#include <vector>
+#include <cctype>
 
 // Initialize static members
 const std::regex StringHelper::LINE_PATTERN(R"([^\r\n]*)");
@@ -253,4 +256,11 @@ std::string StringHelper::anyToString(const std::any& value) {
     } catch (const std::bad_any_cast& /*e*/) {
         return "BAD_CAST";
     }
+}
+
+std::string StringHelper::toLowerCase(const std::string& str) {
+    std::string result = str;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    return result;
 }

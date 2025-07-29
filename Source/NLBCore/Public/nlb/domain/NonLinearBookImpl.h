@@ -19,6 +19,7 @@
 class PageImpl;
 class ObjImpl;
 class VariableImpl;
+class MediaFileImpl;
 class FileManipulator;
 class ProgressData;
 class PartialProgressData;
@@ -66,6 +67,11 @@ public:
     static const std::string VARORDER_SEPARATOR;
     static const std::string AUTOWIRED_PAGES_SEPARATOR;
     static const std::string NLB_EXTENSION;
+	static const std::string CONSTRID_EXT;
+	static const std::string REDIRECT_EXT;
+	static const std::string FLAG_EXT;
+	static const std::string PRESET_EXT;
+	static const std::string MEDIA_FILE_NAME_TEMPLATE;
 
     // Конструкторы
     NonLinearBookImpl();
@@ -168,6 +174,18 @@ public:
     void setMediaFileFlag(MediaFile::Type mediaType, const std::string& fileName, bool flag);
     void setMediaFileExportParametersPreset(MediaFile::Type mediaType, const std::string& fileName, MediaExportParameters::Preset preset);
 
+	/*!
+	 * @brief Add image file to collection
+	 * @param imageFile MediaFileImpl to add
+	 */
+	void addImageFile(std::shared_ptr<MediaFileImpl> imageFile);
+    
+	/*!
+	 * @brief Add sound file to collection  
+	 * @param soundFile MediaFileImpl to add
+	 */
+	void addSoundFile(std::shared_ptr<MediaFileImpl> soundFile);
+	
     void copyAndAddImageFile(const FileManipulator& fileManipulator, const std::string& imageFile, const std::string& imageFileName);
     void copyAndAddSoundFile(const FileManipulator& fileManipulator, const std::string& soundFile, const std::string& soundFileName);
     void removeImageFile(const FileManipulator& fileManipulator, const std::string& imageFileName);
@@ -223,6 +241,20 @@ private:
     std::set<std::string> getUsedMediaFiles(MediaFile::Type mediaType) const;
     void addUsedImages(std::set<std::string>& usedImages, const std::string& imageFileName) const;
     void addUsedSounds(std::set<std::string>& usedSounds, const std::string& soundFileName) const;
+
+	std::shared_ptr<MediaFileImpl> copyMediaFile(
+		FileManipulator& fileManipulator,
+		const std::string& sourceFile,
+		const std::string& fileName,
+		const std::string& mediaDirName
+	);
+    
+	std::string createUniqueMediaFile(
+		FileManipulator& fileManipulator,
+		const std::string& sourceFile,
+		const std::string& fileName,
+		const std::string& mediaDirName
+	);
 
     // Переменные-члены
     std::shared_ptr<NonLinearBook> m_parentNLB;

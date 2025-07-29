@@ -104,4 +104,11 @@ public:
      * @return String representation
      */
     static std::string anyToString(const std::any& value);
+
+	/*!
+	 * @brief Convert string to lowercase
+	 * @param str Input string
+	 * @return Lowercase string
+	 */
+	static std::string toLowerCase(const std::string& str);
 };
