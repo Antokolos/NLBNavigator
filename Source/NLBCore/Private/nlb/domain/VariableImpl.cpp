@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "nlb/domain/SearchResult.h"
+
 // Static constant definitions
 const std::string VariableImpl::TYPE_FILE_NAME = "type";
 const std::string VariableImpl::DATATYPE_FILE_NAME = "datatype";
@@ -84,6 +86,26 @@ void VariableImpl::copy(const std::shared_ptr<Variable>& variable) {
     m_name = variable->getName();
     m_target = variable->getTarget();
     m_value = variable->getValue();
+}
+
+std::shared_ptr<SearchResult> VariableImpl::searchText(const SearchContract& contract) const {
+    auto result = AbstractIdentifiableItem::searchText(contract);
+    if (result) {
+        return result;
+    }
+    
+    result = std::make_shared<SearchResult>();
+    if (m_name != DEFAULT_NAME && textMatches(m_name, contract)) {
+        result->setId(getId());
+        result->setInformation(m_name);
+        return result;
+    } else if (m_value != DEFAULT_VALUE && textMatches(m_value, contract)) {
+        result->setId(getId());
+        result->setInformation(m_value);
+        return result;
+    }
+    
+    return nullptr;
 }
 
 void VariableImpl::readVariable(const std::string& varDir) {

@@ -246,7 +246,7 @@ void ModificationImpl::writeModification(const std::shared_ptr<FileManipulator>&
         );
         
         fileManipulator->writeRequiredString(modificationDir, VARID_FILE_NAME, m_varId);
-        fileManipulator->writeRequiredString(modificationDir, TYPE_FILE_NAME, std::to_string(static_cast<int>(m_type)));
+        fileManipulator->writeRequiredString(modificationDir, TYPE_FILE_NAME, Modification::typeToString(m_type)); // ✅ ИСПРАВЛЕНО!
         fileManipulator->writeRequiredString(modificationDir, EXPRID_FILE_NAME, m_exprId);
     }
 }

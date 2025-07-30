@@ -88,11 +88,7 @@ public:
      * @param contract Search contract
      * @return SearchResult pointer
      */
-    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override {
-        // TODO: Implement search logic for VariableImpl
-        // This is a placeholder implementation
-        return AbstractIdentifiableItem::searchText(contract);
-    }
+    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
 
     /*!
      * @brief Read variable from file directory
