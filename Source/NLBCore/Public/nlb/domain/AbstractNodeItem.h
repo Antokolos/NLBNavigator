@@ -34,13 +34,6 @@ public:
     static const std::string FILL_FILE_NAME;
     static const std::string TEXTCOLOR_FILE_NAME;
 
-    enum class Orientation {
-        TOP,
-        BOTTOM,
-        LEFT,
-        RIGHT
-    };
-
     class ResizeNodeCommand : public NLBCommand {
     public:
         ResizeNodeCommand(AbstractNodeItem* nodeItem, Orientation orientation, double deltaX, double deltaY,
@@ -142,6 +135,16 @@ public:
     virtual std::shared_ptr<NLBCommand> createLinkCommand(const std::string& pageId);
     virtual std::shared_ptr<NLBCommand> createObjCommand(float left, float top);
     
+    std::shared_ptr<ResizeNodeCommand> createResizeNodeCommand(
+            Orientation orientation, double deltaX, double deltaY,
+            const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+    std::shared_ptr<ResizeNodeCommand> createResizeNodeCommand(
+            Orientation orientation, double deltaX, double deltaY);
+    std::shared_ptr<AddLinkCommand> createAddLinkCommand(std::shared_ptr<LinkImpl> link);
+    std::shared_ptr<DeleteLinkCommand> createDeleteLinkCommand(std::shared_ptr<Link> link);
+    std::shared_ptr<SortLinksCommand> createSortLinksCommand(
+            const std::vector<std::shared_ptr<Link>>& newSortingOrder);
+    
     // Методы для файловой системы
     virtual void writeToFile(const std::shared_ptr<FileManipulator>& fileManipulator, 
                            const std::string& nodesDir,
@@ -162,17 +165,6 @@ public:
     virtual std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractModifyingItem::getModifications(); }
     virtual bool hasNoModifications() const override { return AbstractModifyingItem::hasNoModifications(); }
     virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractModifyingItem::getModificationById(modId); }
-
-protected:
-    std::shared_ptr<ResizeNodeCommand> createResizeNodeCommand(
-            Orientation orientation, double deltaX, double deltaY,
-            const std::vector<std::shared_ptr<Link>>& adjacentLinks);
-    std::shared_ptr<ResizeNodeCommand> createResizeNodeCommand(
-            Orientation orientation, double deltaX, double deltaY);
-    std::shared_ptr<AddLinkCommand> createAddLinkCommand(std::shared_ptr<LinkImpl> link);
-    std::shared_ptr<DeleteLinkCommand> createDeleteLinkCommand(std::shared_ptr<Link> link);
-    std::shared_ptr<SortLinksCommand> createSortLinksCommand(
-            const std::vector<std::shared_ptr<Link>>& newSortingOrder);
 
 private:
     void applyLinkSortingOrder(const std::vector<std::string>& sortingOrder);

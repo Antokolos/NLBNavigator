@@ -34,6 +34,9 @@
 #include "nlb/api/RootModulePage.h"
 #include <cmath>
 
+#include "nlb/domain/ChangeContainerCommand.h"
+#include "nlb/domain/UpdateLinkCoordsCommand.h"
+#include "nlb/domain/UpdateNodeCoordsCommand.h"
 #include "nlb/util/UUID.h"
 
 NonLinearBookFacade::NonLinearBookFacade(std::shared_ptr<Author> author, std::shared_ptr<VCSAdapter> vcsAdapter) 
@@ -197,10 +200,8 @@ void NonLinearBookFacade::updateModifications(
     std::shared_ptr<ModifyingItem> modifyingItem,
     std::shared_ptr<ModificationsTableModel> modificationsTableModel
 ) {
-    /* TODO: compilation errors
     auto command = m_nlb->createUpdateModificationsCommand(modifyingItem, modificationsTableModel);
     getUndoManagerByItemId(modifyingItem->getId() + nlb::Constants::MODIFICATIONS_UNDO_ID_POSTFIX)->executeAndStore(command);
-    */
     notifyObservers();
 }
 
@@ -249,14 +250,12 @@ void NonLinearBookFacade::updateBookProperties(
     bool suppressSound,
     bool propagateToSubmodules
 ) {
-    /* TODO: compilation error
     auto command = m_nlb->createUpdateBookPropertiesCommand(
         license, theme, language, title, author, version,
         perfectGameAchievementName, fullAutowire, suppressMedia,
         suppressSound, propagateToSubmodules
     );
     m_undoManager->executeAndStore(command);
-    */
     notifyObservers();
 }
 
@@ -296,7 +295,6 @@ void NonLinearBookFacade::updatePage(
     bool autosFirst,
     std::shared_ptr<LinksTableModel> linksTableModel
 ) {
-    /* TODO: compilation error
     auto command = m_nlb->createUpdatePageCommand(
         page, imageFileName, imageBackground, imageAnimated,
         soundFileName, soundSFX, pageVariableName, pageTimerVariableName,
@@ -309,7 +307,6 @@ void NonLinearBookFacade::updatePage(
         noSave, autosFirst, linksTableModel
     );
     getUndoManagerByItemId(page->getId())->executeAndStore(command);
-    */
     notifyObservers();
 }
 
@@ -407,10 +404,8 @@ void NonLinearBookFacade::updateLinkCoords(
     float left,
     float top
 ) {
-    /* TODO: compilation error
     auto command = std::make_shared<UpdateLinkCoordsCommand>(m_nlb, link, left, top);
     m_undoManager->executeAndStore(command);
-    */
     notifyObservers();
 }
 
@@ -418,10 +413,8 @@ void NonLinearBookFacade::updateLinkCoords(
     std::shared_ptr<Link> link,
     float height
 ) {
-    /* TODO: compilation error
     auto command = std::make_shared<UpdateLinkCoordsCommand>(m_nlb, link, height);
     m_undoManager->executeAndStore(command);
-    */
     notifyObservers();
 }
 
@@ -482,10 +475,8 @@ void NonLinearBookFacade::resizeNode(
         node = m_nlb->getObjImplById(nodeItem->getId());
     }
     auto adjacentLinks = m_nlb->getAssociatedLinks(nodeItem);
-    /* TODO: compilation error
     auto command = node->createResizeNodeCommand(orientation, deltaX, deltaY, adjacentLinks);
     m_undoManager->executeAndStore(command);
-    */
     notifyObservers();
 }
 
@@ -510,10 +501,8 @@ void NonLinearBookFacade::updateNodeCoords(
     float deltaX,
     float deltaY
 ) {
-    /* TDOO: compilation error
     auto command = std::make_shared<UpdateNodeCoordsCommand>(m_nlb, nodeItem, deltaX, deltaY);
     commandChain->addCommand(command);
-    */
     offsetContainedObjects(commandChain, nodeItem, deltaX, deltaY);
 }
 
@@ -556,7 +545,7 @@ void NonLinearBookFacade::changeContainer(
         (prevContainer != nullptr && newContainer == nullptr) ||
         (prevContainer != nullptr && prevContainer->getId() != newContainer->getId())) {
         auto obj = m_nlb->getObjImplById(objId);
-        /* TODO: compilation error
+        /* TODO:   LNK2019: unresolved external symbol "public: __cdecl ChangeContainerCommand::ChangeContainerCommand(class std::shared_ptr<class AbstractNodeItem>,class std::shared_ptr<class AbstractNodeItem>,class std::shared_ptr<class ObjImpl>)" (??0ChangeContainerCommand@@QEAA@V?$shared_ptr@VAbstractNodeItem@@@std@@0V?$shared_ptr@VObjImpl@@@2@@Z) referenced in function "public: void __cdecl NonLinearBookFacade::changeContainer(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?changeContainer@NonLinearBookFacade@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@00@Z)
         auto command = std::make_shared<ChangeContainerCommand>(prevContainer, newContainer, obj);
         m_undoManager->executeAndStore(command);
         */
@@ -565,10 +554,8 @@ void NonLinearBookFacade::changeContainer(
 }
 
 void NonLinearBookFacade::changeStartPoint(const std::string& startPoint) {
-    /* TODO: compilationb error
     auto command = m_nlb->createChangeStartPointCommand(startPoint);
     m_undoManager->executeAndStore(command);
-    */
     notifyObservers();
 }
 
@@ -577,10 +564,8 @@ void NonLinearBookFacade::cut(
     const std::vector<std::string>& objIds
 ) {
     auto command = std::make_shared<CommandChainCommand>();
-    /* TODO: compilationb error
     command->addCommand(m_nlb->createCopyCommand(pageIds, objIds));
     command->addCommand(m_nlb->createDeleteCommand(pageIds, objIds));
-    */
     m_undoManager->executeAndStore(command);
     notifyObservers();
 }
@@ -589,20 +574,16 @@ void NonLinearBookFacade::copy(
     const std::vector<std::string>& pageIds,
     const std::vector<std::string>& objIds
 ) {
-    /* TODO: compilationb error
     auto command = m_nlb->createCopyCommand(pageIds, objIds);
     m_undoManager->executeAndStore(command);
-    */
     notifyObservers();
 }
 
 void NonLinearBookFacade::paste() {
     auto nlbToPaste = Clipboard::singleton().getNonLinearBook();
     if (nlbToPaste) {
-    /* TODO: compilationb error
         auto command = m_nlb->createPasteCommand(nlbToPaste);
         m_undoManager->executeAndStore(command);
-        */
         notifyObservers();
     }
 }
@@ -655,9 +636,8 @@ void NonLinearBookFacade::addPage(std::shared_ptr<Page> page) {
     
     if (pageImpl) {
         m_newPagesPool.erase(pageId);
-        // TODO: Compilation error fix
-        // auto command = m_nlb->createAddPageCommand(pageImpl);
-        // m_undoManager->executeAndStore(command);
+        auto command = m_nlb->createAddPageCommand(pageImpl);
+        m_undoManager->executeAndStore(command);
         notifyObservers();
     }
 }
@@ -676,9 +656,8 @@ void NonLinearBookFacade::addObj(std::shared_ptr<Obj> obj) {
     
     if (objImpl) {
         m_newObjsPool.erase(objId);
-        // TODO: Compilation error fix
-        // auto command = m_nlb->createAddObjCommand(objImpl);
-        // m_undoManager->executeAndStore(command);
+        auto command = m_nlb->createAddObjCommand(objImpl);
+        m_undoManager->executeAndStore(command);
         notifyObservers();
     }
 }
