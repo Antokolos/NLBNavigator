@@ -47,7 +47,7 @@ NonLinearBookFacade::NonLinearBookFacade(std::shared_ptr<Author> author, std::sh
     , m_undoManager(std::make_shared<UndoManager>())
     , m_observerHandler(std::make_shared<ObserverHandler>())
 {
-    // m_nlb should be initialized later
+    // m_nlb will be initialized later via createNewBook() or load()
 }
 
 NonLinearBookFacade::NonLinearBookFacade(
@@ -239,7 +239,7 @@ void NonLinearBookFacade::setMediaFileExportParametersPreset(
 
 void NonLinearBookFacade::updateBookProperties(
     const std::string& license,
-    std::shared_ptr<Theme> theme,
+    Theme theme,
     const std::string& language,
     const std::string& title,
     const std::string& author,
@@ -271,7 +271,7 @@ void NonLinearBookFacade::updatePage(
     const std::string& pageDefTagVariableValue,
     std::shared_ptr<MultiLangString> pageText,
     std::shared_ptr<MultiLangString> pageCaptionText,
-    std::shared_ptr<Theme> theme,
+    Theme theme,
     bool useCaption,
     bool useMPL,
     const std::string& moduleName,
@@ -682,42 +682,169 @@ void NonLinearBookFacade::addLink(std::shared_ptr<Link> link) {
             nodeItem = m_nlb->getObjImplById(parent->getId());
         }
         
-        nodeItem->addLink(linkImpl);
+        if (nodeItem) {
+            // Используем команду для добавления ссылки (с undo support)
+            auto command = nodeItem->createAddLinkCommand(linkImpl);
+            m_undoManager->executeAndStore(command);
+        }
+        
         notifyObservers();
     }
 }
 
 bool NonLinearBookFacade::hasChanges() {
-    // TODO: Implementation needed
+    // Проверяем основной undo manager
+    if (canUndo() || canRedo()) {
+        return true;
+    }
+    
+    // Проверяем все undo managers элементов
+    for (const auto& entry : m_undoManagersMap) {
+        if (entry.second->canUndo() || entry.second->canRedo()) {
+            return true;
+        }
+    }
+    
+    // Проверяем дочерние фасады модулей
+    for (const auto& facade : m_moduleFacades) {
+        if (facade->hasChanges()) {
+            return true;
+        }
+    }
+    
     return false;
 }
 
 void NonLinearBookFacade::saveNLB(bool create, std::shared_ptr<ProgressData> progressData) {
-    // Implementation for saving NLB
-    // TODO: Implementation needed
-}
-
-void NonLinearBookFacade::save(bool create, std::shared_ptr<ProgressData> progressData) {
-    saveNLB(create, progressData);
-    notifyObservers();
+    try {
+        std::string rootDir = m_nlb->getRootDir();
+        progressData->setProgressValue(5);
+        progressData->setNoteText("Opening VCS repository...");
+        
+        // Проверяем и создаем директорию если нужно
+        if (!FileUtils::exists(rootDir)) {
+            if (!FileUtils::createDirectoryRecursive(rootDir)) {
+                throw NLBIOException("Cannot create NLB root directory");
+            }
+            m_vcsAdapter->initRepo(FileUtils::normalizePath(rootDir));
+        } else {
+            if (create) {
+                m_vcsAdapter->initRepo(FileUtils::normalizePath(rootDir));
+            } else {
+                m_vcsAdapter->openRepo(FileUtils::normalizePath(rootDir));
+            }
+        }
+        
+        progressData->setProgressValue(15);
+        progressData->setNoteText("Saving Non-Linear Book...");
+        
+        // Создаем FileManipulator для работы с файлами
+        auto fileManipulator = std::make_shared<FileManipulator>(m_vcsAdapter, rootDir);
+        
+        // Вычисляем прогресс для страниц
+        int effectivePagesCount = m_nlb->getEffectivePagesCountForSave();
+        int startProgress = 25;
+        int maxProgress = 85;
+        double itemsCountPerIncrement = std::ceil(
+            static_cast<double>(effectivePagesCount) / static_cast<double>(maxProgress - startProgress)
+        );
+        
+        // Создаем частичный прогресс для детальной обратной связи
+        auto partialProgressData = std::make_shared<PartialProgressData>(
+            progressData, startProgress, maxProgress, static_cast<int>(itemsCountPerIncrement)
+        );
+        
+        // Сохраняем книгу
+        m_nlb->save(fileManipulator, progressData, partialProgressData);
+        
+    } catch (const std::exception& e) {
+        throw NLBIOException("Error while saving: " + std::string(e.what()));
+    }
 }
 
 void NonLinearBookFacade::saveAs(const std::string& nlbFolder, std::shared_ptr<ProgressData> progressData) {
-    // TODO: Implementation needed
+    // Устанавливаем новый корневой путь
+    m_nlb->setRootDir(nlbFolder);
+    
+    // Сохраняем как новую книгу (create = true)
+    saveNLB(true, progressData);
+    
+    // Очищаем undo и пулы после успешного сохранения
+    clearUndosAndPools();
+    
     notifyObservers();
 }
 
 void NonLinearBookFacade::load(const std::string& path, std::shared_ptr<ProgressData> progressData) {
-    clear();
-    // TODO: Implementation needed
-    m_nlb->load(path, *progressData);
-    notifyObservers();
+    try {
+        // Проверяем существование директории
+        if (!FileUtils::exists(path)) {
+            throw NLBIOException("Specified NLB root directory " + path + " does not exist");
+        }
+        
+        progressData->setNoteText("Opening VCS repository...");
+        progressData->setProgressValue(5);
+        
+        // Открываем VCS репозиторий
+        m_vcsAdapter->openRepo(FileUtils::normalizePath(path));
+        
+        progressData->setNoteText("Loading book contents...");
+        progressData->setProgressValue(15);
+        
+        // Очищаем текущие данные
+        clear();
+        
+        // Загружаем книгу через NonLinearBookImpl
+        if (!m_nlb->load(path, *progressData)) {
+            throw NLBIOException("Failed to load book from: " + path);
+        }
+        
+        progressData->setProgressValue(70);
+        progressData->setNoteText("Prepare to drawing...");
+        
+        notifyObservers();
+        
+    } catch (const std::exception& e) {
+        throw NLBIOException("Error while loading: " + std::string(e.what()));
+    }
 }
 
 void NonLinearBookFacade::deleteNode(std::shared_ptr<NodeItem> nodeToDelete) {
-    // TODO: Compilation error fix
-    // auto command = m_nlb->createDeleteNodeCommand(nodeToDelete);
-    // m_undoManager->executeAndStore(command);
+    // Получаем связанные ссылки, которые нужно будет удалить
+    auto adjacentLinks = m_nlb->getAssociatedLinks(nodeToDelete);
+    
+    // Пытаемся найти узел как страницу
+    auto page = m_nlb->getPageImplById(nodeToDelete->getId());
+    
+    std::shared_ptr<NLBCommand> command;
+    
+    if (page) {
+        // Это страница - создаем команду удаления страницы
+        command = m_nlb->createDeletePageCommand(page, adjacentLinks);
+    } else {
+        // Это объект - создаем команду удаления объекта
+        auto obj = m_nlb->getObjImplById(nodeToDelete->getId());
+        if (obj) {
+            command = m_nlb->createDeleteObjCommand(obj, adjacentLinks);
+        } else {
+            throw NLBConsistencyException("Node with id " + nodeToDelete->getId() + " not found");
+        }
+    }
+    
+    // Выполняем команду через undo manager
+    if (command) {
+        m_undoManager->executeAndStore(command);
+        notifyObservers();
+    }
+}
+
+void NonLinearBookFacade::save(bool create, std::shared_ptr<ProgressData> progressData) {
+    // Сохраняем книгу
+    saveNLB(create, progressData);
+    
+    // Очищаем undo и пулы после успешного сохранения
+    clearUndosAndPools();
+    
     notifyObservers();
 }
 
@@ -728,9 +855,12 @@ void NonLinearBookFacade::deleteLink(std::shared_ptr<Link> link) {
         nodeItem = m_nlb->getObjImplById(parent->getId());
     }
     
-    // auto command = nodeItem->createDeleteLinkCommand(link);
-    // m_undoManager->executeAndStore(command);
-    notifyObservers();
+    if (nodeItem) {
+        // Создаем команду удаления ссылки
+        auto command = nodeItem->createDeleteLinkCommand(link);
+        m_undoManager->executeAndStore(command);
+        notifyObservers();
+    }
 }
 
 void NonLinearBookFacade::invalidateAssociatedLinks(std::shared_ptr<NodeItem> nodeItem) {

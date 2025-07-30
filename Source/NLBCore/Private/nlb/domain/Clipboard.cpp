@@ -14,6 +14,10 @@ void Clipboard::setNonLinearBook(std::shared_ptr<NonLinearBookImpl> nonLinearBoo
     m_nonLinearBook = nonLinearBook;
 }
 
+// void Clipboard::reset() {
+//     setNonLinearBook(nullptr);
+// }
+
 void Clipboard::reset() {
-    setNonLinearBook(nullptr);
+    m_nonLinearBook.reset();
 }

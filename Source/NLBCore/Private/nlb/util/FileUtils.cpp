@@ -117,6 +117,28 @@ bool FileUtils::createDirectory(const std::string& path) {
 #endif
 }
 
+bool FileUtils::createDirectoryRecursive(const std::string& path) {
+    if (path.empty()) return false;
+    
+    // Если директория уже существует, возвращаем true
+    if (exists(path) && isDirectory(path)) {
+        return true;
+    }
+    
+    // Получаем родительскую директорию
+    std::string parentPath = getFilePath(path);
+    
+    // Если есть родительская директория и она не существует, создаем её рекурсивно
+    if (!parentPath.empty() && !exists(parentPath)) {
+        if (!createDirectoryRecursive(parentPath)) {
+            return false;
+        }
+    }
+    
+    // Создаем текущую директорию
+    return createDirectory(path);
+}
+
 bool FileUtils::remove(const std::string& path, bool recursive) {
     if (!exists(path)) return true;
 

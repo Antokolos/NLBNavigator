@@ -58,6 +58,12 @@ public:
      * \return true if successful
      */
     static bool createDirectory(const std::string& path);
+    /*!
+     * \brief Create directory recursively (with parent directories)
+     * \param path Directory path to create
+     * \return true if successful
+     */
+    static bool createDirectoryRecursive(const std::string& path);
 
     /*!
      * \brief Delete file or directory

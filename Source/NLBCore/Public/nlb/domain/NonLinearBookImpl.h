@@ -16,6 +16,12 @@
 #include <string>
 #include <regex>
 
+#include "ModificationImpl.h"
+#include "nlb/api/NLBCommand.h"
+
+#include "nlb/util/UUID.h"
+#include "nlb/domain/Clipboard.h"
+
 class PageImpl;
 class ObjImpl;
 class VariableImpl;
@@ -147,6 +153,8 @@ public:
 
     std::vector<std::shared_ptr<Variable>> getVariables() const override;
     std::shared_ptr<Variable> getVariableById(const std::string& id) const override;
+    void save(std::shared_ptr<FileManipulator> fileManipulator, std::shared_ptr<ProgressData> progressData,
+              std::shared_ptr<PartialProgressData> partialProgressData);
     bool load(const std::string& path, const ProgressData& progressData) override;
 
     // Дополнительные методы
@@ -201,8 +209,21 @@ public:
 
     // Методы для работы с командами (заглушки)
     std::shared_ptr<NLBCommand> createUpdateModificationsCommand(std::shared_ptr<ModifyingItem> modifyingItem, std::shared_ptr<ModificationsTableModel> modificationsTableModel);
-    std::shared_ptr<NLBCommand> createUpdateBookPropertiesCommand(const std::string& license, std::shared_ptr<Theme> theme, const std::string& language, const std::string& title, const std::string& author, const std::string& version, const std::string& perfectGameAchievementName, bool fullAutowire, bool suppressMedia, bool suppressSound, bool propagateToSubmodules);
-    std::shared_ptr<NLBCommand> createUpdatePageCommand(std::shared_ptr<Page> page, const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName, bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName, const std::string& pageDefTagVariableValue, std::shared_ptr<MultiLangString> pageText, std::shared_ptr<MultiLangString> pageCaptionText, std::shared_ptr<Theme> theme, bool useCaption, bool useMPL, const std::string& moduleName, bool moduleExternal, std::shared_ptr<MultiLangString> traverseText, bool autoTraverse, bool autoReturn, std::shared_ptr<MultiLangString> returnText, const std::string& returnPageId, const std::string& moduleConsraintVariableName, bool autowire, std::shared_ptr<MultiLangString> autowireInText, std::shared_ptr<MultiLangString> autowireOutText, bool autoIn, bool needsAction, bool autoOut, const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave, bool autosFirst, std::shared_ptr<LinksTableModel> linksTableModel);
+    void setStartPoint(const std::string& startPoint);
+    void setLicense(const std::string& license);
+    void setTheme(Theme theme);
+    void setLanguage(const std::string& language);
+    void setTitle(const std::string& title);
+    void setAuthor(const std::string& author);
+    void setVersion(const std::string& version);
+    void setPerfectGameAchievementName(const std::string& name);
+    void setFullAutowire(bool fullAutowire);
+    void setSuppressMedia(bool suppressMedia);
+    void setSuppressSound(bool suppressSound);
+    void setRootDir(const std::string& rootDir);
+    int getEffectivePagesCountForSave() const;
+    std::shared_ptr<NLBCommand> createUpdateBookPropertiesCommand(const std::string& license, Theme theme, const std::string& language, const std::string& title, const std::string& author, const std::string& version, const std::string& perfectGameAchievementName, bool fullAutowire, bool suppressMedia, bool suppressSound, bool propagateToSubmodules);
+    std::shared_ptr<NLBCommand> createUpdatePageCommand(std::shared_ptr<Page> page, const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName, bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName, const std::string& pageDefTagVariableValue, std::shared_ptr<MultiLangString> pageText, std::shared_ptr<MultiLangString> pageCaptionText, Theme theme, bool useCaption, bool useMPL, const std::string& moduleName, bool moduleExternal, std::shared_ptr<MultiLangString> traverseText, bool autoTraverse, bool autoReturn, std::shared_ptr<MultiLangString> returnText, const std::string& returnPageId, const std::string& moduleConsraintVariableName, bool autowire, std::shared_ptr<MultiLangString> autowireInText, std::shared_ptr<MultiLangString> autowireOutText, bool autoIn, bool needsAction, bool autoOut, const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave, bool autosFirst, std::shared_ptr<LinksTableModel> linksTableModel);
     std::shared_ptr<NLBCommand> createChangeStartPointCommand(const std::string& startPoint);
     std::shared_ptr<NLBCommand> createCopyCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
     std::shared_ptr<NLBCommand> createDeleteCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
@@ -215,6 +236,10 @@ public:
     void readNLB(const std::string& nlbDir);
     std::shared_ptr<NLBCommand> createAddPageCommand(const std::shared_ptr<PageImpl>& pageImpl);
     std::shared_ptr<NLBCommand> createAddObjCommand(const std::shared_ptr<ObjImpl>& objImpl);
+    std::shared_ptr<NLBCommand> createDeletePageCommand(std::shared_ptr<PageImpl> page,
+                                                        const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+    std::shared_ptr<NLBCommand> createDeleteObjCommand(std::shared_ptr<ObjImpl> obj,
+                                                       const std::vector<std::shared_ptr<Link>>& adjacentLinks);
 
 private:
     // Приватные методы
@@ -285,4 +310,131 @@ private:
     std::map<std::string, MediaExportParameters> m_mediaExportParametersMap;
     std::map<std::string, bool> m_mediaFlagsMap;
     std::map<std::string, Variable::DataType> m_variableDataTypes;
+
+	class AddPageCommand : public NLBCommand {
+	private:
+	    NonLinearBookImpl* m_nlb;
+	    std::shared_ptr<PageImpl> m_page;
+	    
+	public:
+	    AddPageCommand(NonLinearBookImpl* nlb, std::shared_ptr<PageImpl> page);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class AddObjCommand : public NLBCommand {
+	private:
+	    NonLinearBookImpl* m_nlb;
+	    std::shared_ptr<ObjImpl> m_obj;
+	    
+	public:
+	    AddObjCommand(NonLinearBookImpl* nlb, std::shared_ptr<ObjImpl> obj);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class DeletePageCommand : public NLBCommand {
+	private:
+	    NonLinearBookImpl* m_nlb;
+	    std::shared_ptr<PageImpl> m_page;
+	    std::vector<std::shared_ptr<Link>> m_adjacentLinks;
+	    bool m_wasDeleted;
+	    
+	public:
+	    DeletePageCommand(NonLinearBookImpl* nlb, std::shared_ptr<PageImpl> page, 
+	                     const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class DeleteObjCommand : public NLBCommand {
+	private:
+	    NonLinearBookImpl* m_nlb;
+	    std::shared_ptr<ObjImpl> m_obj;
+	    std::vector<std::shared_ptr<Link>> m_adjacentLinks;
+	    bool m_wasDeleted;
+	    
+	public:
+	    DeleteObjCommand(NonLinearBookImpl* nlb, std::shared_ptr<ObjImpl> obj,
+	                    const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class CopyCommand : public NLBCommand {
+	private:
+	    std::vector<std::string> m_pageIds;
+	    std::vector<std::string> m_objIds;
+	    
+	public:
+	    CopyCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class PasteCommand : public NLBCommand {
+	private:
+	    NonLinearBookImpl* m_nlb;
+	    std::shared_ptr<NonLinearBookImpl> m_nlbToPaste;
+	    std::vector<std::string> m_addedPageIds;
+	    std::vector<std::string> m_addedObjIds;
+	    
+	public:
+	    PasteCommand(NonLinearBookImpl* nlb, std::shared_ptr<NonLinearBookImpl> nlbToPaste);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class ChangeStartPointCommand : public NLBCommand {
+	private:
+	    NonLinearBookImpl* m_nlb;
+	    std::string m_newStartPoint;
+	    std::string m_oldStartPoint;
+	    
+	public:
+	    ChangeStartPointCommand(NonLinearBookImpl* nlb, const std::string& startPoint);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class UpdateBookPropertiesCommand : public NLBCommand {
+	private:
+	    NonLinearBookImpl* m_nlb;
+	    // Store old and new values
+	    std::string m_oldLicense, m_newLicense;
+	    Theme m_oldTheme, m_newTheme;
+	    std::string m_oldLanguage, m_newLanguage;
+	    std::string m_oldTitle, m_newTitle;
+	    std::string m_oldAuthor, m_newAuthor;
+	    std::string m_oldVersion, m_newVersion;
+	    std::string m_oldPerfectGameAchievementName, m_newPerfectGameAchievementName;
+	    bool m_oldFullAutowire, m_newFullAutowire;
+	    bool m_oldSuppressMedia, m_newSuppressMedia;
+	    bool m_oldSuppressSound, m_newSuppressSound;
+	    bool m_propagateToSubmodules;
+	    
+	public:
+	    UpdateBookPropertiesCommand(NonLinearBookImpl* nlb,
+	                               const std::string& license, Theme theme,
+	                               const std::string& language, const std::string& title,
+	                               const std::string& author, const std::string& version,
+	                               const std::string& perfectGameAchievementName,
+	                               bool fullAutowire, bool suppressMedia, bool suppressSound,
+	                               bool propagateToSubmodules);
+	    void execute() override;
+	    void revert() override;
+	};
+
+	class UpdateModificationsCommand : public NLBCommand {
+	private:
+	    std::shared_ptr<ModifyingItem> m_modifyingItem;
+	    std::shared_ptr<ModificationsTableModel> m_modificationsTableModel;
+	    std::vector<std::shared_ptr<ModificationImpl>> m_oldModifications;
+	    
+	public:
+	    UpdateModificationsCommand(std::shared_ptr<ModifyingItem> modifyingItem,
+	                              std::shared_ptr<ModificationsTableModel> modificationsTableModel);
+	    void execute() override;
+	    void revert() override;
+	};
 };

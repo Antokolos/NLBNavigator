@@ -2,6 +2,7 @@
 #include "nlb/domain/MediaExportParameters.h"
 #include "nlb/domain/PageImpl.h"
 #include "nlb/domain/ObjImpl.h"
+#include "nlb/domain/LinkImpl.h"
 #include "nlb/domain/VariableImpl.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/api/Constants.h"
@@ -655,6 +656,15 @@ std::shared_ptr<Variable> NonLinearBookImpl::getVariableById(const std::string& 
     return (it != m_variables.end()) ? it->second : nullptr;
 }
 
+void NonLinearBookImpl::save(std::shared_ptr<FileManipulator> fileManipulator, 
+                           std::shared_ptr<ProgressData> progressData,
+                           std::shared_ptr<PartialProgressData> partialProgressData) {
+    // Если этот метод отсутствует, реализуйте его:
+    writeNLB(fileManipulator, m_rootDir, partialProgressData);
+    progressData->setProgressValue(90);
+    progressData->setNoteText("Save completed");
+}
+
 bool NonLinearBookImpl::load(const std::string& path, const ProgressData& progressData) {
     try {
         m_rootDir = path;
@@ -1080,35 +1090,6 @@ std::vector<std::shared_ptr<Link>> NonLinearBookImpl::getAssociatedLinks(std::sh
     }
     
     return result;
-}
-
-// Заглушки для команд
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createUpdateModificationsCommand(std::shared_ptr<ModifyingItem> modifyingItem, std::shared_ptr<ModificationsTableModel> modificationsTableModel) {
-    return nullptr; // Заглушка
-}
-
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createUpdateBookPropertiesCommand(const std::string& license, std::shared_ptr<Theme> theme, const std::string& language, const std::string& title, const std::string& author, const std::string& version, const std::string& perfectGameAchievementName, bool fullAutowire, bool suppressMedia, bool suppressSound, bool propagateToSubmodules) {
-    return nullptr; // Заглушка
-}
-
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createUpdatePageCommand(std::shared_ptr<Page> page, const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName, bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName, const std::string& pageDefTagVariableValue, std::shared_ptr<MultiLangString> pageText, std::shared_ptr<MultiLangString> pageCaptionText, std::shared_ptr<Theme> theme, bool useCaption, bool useMPL, const std::string& moduleName, bool moduleExternal, std::shared_ptr<MultiLangString> traverseText, bool autoTraverse, bool autoReturn, std::shared_ptr<MultiLangString> returnText, const std::string& returnPageId, const std::string& moduleConsraintVariableName, bool autowire, std::shared_ptr<MultiLangString> autowireInText, std::shared_ptr<MultiLangString> autowireOutText, bool autoIn, bool needsAction, bool autoOut, const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave, bool autosFirst, std::shared_ptr<LinksTableModel> linksTableModel) {
-    return nullptr; // Заглушка
-}
-
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createChangeStartPointCommand(const std::string& startPoint) {
-    return nullptr; // Заглушка
-}
-
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createCopyCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds) {
-    return nullptr; // Заглушка
-}
-
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createDeleteCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds) {
-    return nullptr; // Заглушка
-}
-
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createPasteCommand(std::shared_ptr<NonLinearBookImpl> nlbToPaste) {
-    return nullptr; // Заглушка
 }
 
 // Приватные методы
@@ -1563,14 +1544,414 @@ void NonLinearBookImpl::readNLB(const std::string& nlbDir) {
     loadMediaFiles(nlbDir, SOUND_DIR_NAME, m_soundFiles);
 }
 
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createAddPageCommand(const std::shared_ptr<PageImpl>& pageImpl)
+NonLinearBookImpl::AddPageCommand::AddPageCommand(NonLinearBookImpl* nlb, std::shared_ptr<PageImpl> page)
+    : m_nlb(nlb), m_page(page) {
+}
+
+void NonLinearBookImpl::AddPageCommand::execute() {
+    // Добавляем страницу в коллекцию
+    m_nlb->m_pages[m_page->getId()] = m_page;
+    m_page->setDeleted(false);
+    
+    // Уведомляем наблюдателей
+    m_page->notifyObservers();
+}
+
+void NonLinearBookImpl::AddPageCommand::revert() {
+    // Удаляем страницу из коллекции
+    m_nlb->m_pages.erase(m_page->getId());
+    m_page->setDeleted(true);
+    
+    // Уведомляем наблюдателей
+    m_page->notifyObservers();
+}
+
+// AddObjCommand
+NonLinearBookImpl::AddObjCommand::AddObjCommand(NonLinearBookImpl* nlb, std::shared_ptr<ObjImpl> obj)
+    : m_nlb(nlb), m_obj(obj) {
+}
+
+void NonLinearBookImpl::AddObjCommand::execute() {
+    // Добавляем объект в коллекцию
+    m_nlb->m_objs[m_obj->getId()] = m_obj;
+    m_obj->setDeleted(false);
+    
+    // Уведомляем наблюдателей
+    m_obj->notifyObservers();
+}
+
+void NonLinearBookImpl::AddObjCommand::revert() {
+    // Удаляем объект из коллекции
+    m_nlb->m_objs.erase(m_obj->getId());
+    m_obj->setDeleted(true);
+    
+    // Уведомляем наблюдателей
+    m_obj->notifyObservers();
+}
+
+// DeletePageCommand
+NonLinearBookImpl::DeletePageCommand::DeletePageCommand(NonLinearBookImpl* nlb, 
+                                                       std::shared_ptr<PageImpl> page,
+                                                       const std::vector<std::shared_ptr<Link>>& adjacentLinks)
+    : m_nlb(nlb), m_page(page), m_adjacentLinks(adjacentLinks), m_wasDeleted(page->isDeleted()) {
+}
+
+void NonLinearBookImpl::DeletePageCommand::execute() {
+    // Помечаем страницу как удаленную
+    m_page->setDeleted(true);
+    
+    // Удаляем все связанные ссылки
+    for (auto& link : m_adjacentLinks) {
+        std::static_pointer_cast<LinkImpl>(link)->setDeleted(true);
+        link->notifyObservers();
+    }
+    
+    // Уведомляем наблюдателей
+    m_page->notifyObservers();
+}
+
+void NonLinearBookImpl::DeletePageCommand::revert() {
+    // Восстанавливаем страницу
+    m_page->setDeleted(m_wasDeleted);
+    
+    // Восстанавливаем все связанные ссылки
+    for (auto& link : m_adjacentLinks) {
+        std::static_pointer_cast<LinkImpl>(link)->setDeleted(false);
+        link->notifyObservers();
+    }
+    
+    // Уведомляем наблюдателей
+    m_page->notifyObservers();
+}
+
+// DeleteObjCommand
+NonLinearBookImpl::DeleteObjCommand::DeleteObjCommand(NonLinearBookImpl* nlb,
+                                                     std::shared_ptr<ObjImpl> obj,
+                                                     const std::vector<std::shared_ptr<Link>>& adjacentLinks)
+    : m_nlb(nlb), m_obj(obj), m_adjacentLinks(adjacentLinks), m_wasDeleted(obj->isDeleted()) {
+}
+
+void NonLinearBookImpl::DeleteObjCommand::execute() {
+    // Помечаем объект как удаленный
+    m_obj->setDeleted(true);
+    
+    // Удаляем все связанные ссылки
+    for (auto& link : m_adjacentLinks) {
+        std::static_pointer_cast<LinkImpl>(link)->setDeleted(true);
+        link->notifyObservers();
+    }
+    
+    // Уведомляем наблюдателей
+    m_obj->notifyObservers();
+}
+
+void NonLinearBookImpl::DeleteObjCommand::revert() {
+    // Восстанавливаем объект
+    m_obj->setDeleted(m_wasDeleted);
+    
+    // Восстанавливаем все связанные ссылки
+    for (auto& link : m_adjacentLinks) {
+        std::static_pointer_cast<LinkImpl>(link)->setDeleted(false);
+        link->notifyObservers();
+    }
+    
+    // Уведомляем наблюдателей
+    m_obj->notifyObservers();
+}
+
+// CopyCommand
+NonLinearBookImpl::CopyCommand::CopyCommand(const std::vector<std::string>& pageIds,
+                                          const std::vector<std::string>& objIds)
+    : m_pageIds(pageIds), m_objIds(objIds) {
+}
+
+void NonLinearBookImpl::CopyCommand::execute() {
+    // Создаем временную книгу для копирования
+    auto clipboard = std::make_shared<NonLinearBookImpl>();
+    
+    // TODO: Реализовать копирование страниц и объектов в clipboard
+    // Это сложная операция, которая требует клонирования элементов
+    
+    // Сохраняем в глобальный буфер обмена
+    Clipboard::singleton().setNonLinearBook(clipboard);
+}
+
+void NonLinearBookImpl::CopyCommand::revert() {
+    // Копирование необратимо - ничего не делаем
+    // В Java версии этот метод тоже пустой
+}
+
+// PasteCommand
+NonLinearBookImpl::PasteCommand::PasteCommand(NonLinearBookImpl* nlb,
+                                             std::shared_ptr<NonLinearBookImpl> nlbToPaste)
+    : m_nlb(nlb), m_nlbToPaste(nlbToPaste) {
+}
+
+void NonLinearBookImpl::PasteCommand::execute() {
+    if (!m_nlbToPaste) {
+        return;
+    }
+    
+    // Добавляем страницы из буфера обмена
+    auto pages = m_nlbToPaste->getPages();
+    for (const auto& [pageId, page] : pages) {
+        if (!page->isDeleted()) {
+            auto newPage = std::make_shared<PageImpl>(page, m_nlb->shared_from_this(), true);
+            // Генерируем новый ID для избежания конфликтов
+            std::string newId = NLBUUID::randomUUID();
+            newPage->setId(newId);
+            m_nlb->m_pages[newId] = newPage;
+            m_addedPageIds.push_back(newId);
+        }
+    }
+    
+    // Добавляем объекты из буфера обмена
+    auto objs = m_nlbToPaste->getObjs();
+    for (const auto& [objId, obj] : objs) {
+        if (!obj->isDeleted()) {
+            auto newObj = std::make_shared<ObjImpl>(obj, m_nlb->shared_from_this());
+            // Генерируем новый ID для избежания конфликтов
+            std::string newId = NLBUUID::randomUUID();
+            newObj->setId(newId);
+            m_nlb->m_objs[newId] = newObj;
+            m_addedObjIds.push_back(newId);
+        }
+    }
+}
+
+void NonLinearBookImpl::PasteCommand::revert() {
+    // Удаляем добавленные страницы
+    for (const auto& pageId : m_addedPageIds) {
+        m_nlb->m_pages.erase(pageId);
+    }
+    
+    // Удаляем добавленные объекты
+    for (const auto& objId : m_addedObjIds) {
+        m_nlb->m_objs.erase(objId);
+    }
+}
+
+// ChangeStartPointCommand
+NonLinearBookImpl::ChangeStartPointCommand::ChangeStartPointCommand(NonLinearBookImpl* nlb,
+                                                                   const std::string& startPoint)
+    : m_nlb(nlb), m_newStartPoint(startPoint), m_oldStartPoint(nlb->getStartPoint()) {
+}
+
+void NonLinearBookImpl::ChangeStartPointCommand::execute() {
+    m_nlb->setStartPoint(m_newStartPoint);
+}
+
+void NonLinearBookImpl::ChangeStartPointCommand::revert() {
+    m_nlb->setStartPoint(m_oldStartPoint);
+}
+
+// UpdateBookPropertiesCommand
+NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+    NonLinearBookImpl* nlb,
+    const std::string& license, Theme theme,
+    const std::string& language, const std::string& title,
+    const std::string& author, const std::string& version,
+    const std::string& perfectGameAchievementName,
+    bool fullAutowire, bool suppressMedia, bool suppressSound,
+    bool propagateToSubmodules)
+    : m_nlb(nlb)
+    , m_newLicense(license), m_oldLicense(nlb->getLicense())
+    , m_newTheme(theme), m_oldTheme(nlb->getTheme())
+    , m_newLanguage(language), m_oldLanguage(nlb->getLanguage())
+    , m_newTitle(title), m_oldTitle(nlb->getTitle())
+    , m_newAuthor(author), m_oldAuthor(nlb->getAuthor())
+    , m_newVersion(version), m_oldVersion(nlb->getVersion())
+    , m_newPerfectGameAchievementName(perfectGameAchievementName)
+    , m_oldPerfectGameAchievementName(nlb->getPerfectGameAchievementName())
+    , m_newFullAutowire(fullAutowire), m_oldFullAutowire(nlb->isFullAutowire())
+    , m_newSuppressMedia(suppressMedia), m_oldSuppressMedia(nlb->isSuppressMedia())
+    , m_newSuppressSound(suppressSound), m_oldSuppressSound(nlb->isSuppressSound())
+    , m_propagateToSubmodules(propagateToSubmodules) {
+}
+
+void NonLinearBookImpl::UpdateBookPropertiesCommand::execute() {
+    m_nlb->setLicense(m_newLicense);
+    m_nlb->setTheme(m_newTheme);
+    m_nlb->setLanguage(m_newLanguage);
+    m_nlb->setTitle(m_newTitle);
+    m_nlb->setAuthor(m_newAuthor);
+    m_nlb->setVersion(m_newVersion);
+    m_nlb->setPerfectGameAchievementName(m_newPerfectGameAchievementName);
+    m_nlb->setFullAutowire(m_newFullAutowire);
+    m_nlb->setSuppressMedia(m_newSuppressMedia);
+    m_nlb->setSuppressSound(m_newSuppressSound);
+    
+    // TODO: Если propagateToSubmodules = true, применить изменения к подмодулям
+}
+
+void NonLinearBookImpl::UpdateBookPropertiesCommand::revert() {
+    m_nlb->setLicense(m_oldLicense);
+    m_nlb->setTheme(m_oldTheme);
+    m_nlb->setLanguage(m_oldLanguage);
+    m_nlb->setTitle(m_oldTitle);
+    m_nlb->setAuthor(m_oldAuthor);
+    m_nlb->setVersion(m_oldVersion);
+    m_nlb->setPerfectGameAchievementName(m_oldPerfectGameAchievementName);
+    m_nlb->setFullAutowire(m_oldFullAutowire);
+    m_nlb->setSuppressMedia(m_oldSuppressMedia);
+    m_nlb->setSuppressSound(m_oldSuppressSound);
+}
+
+// UpdateModificationsCommand
+NonLinearBookImpl::UpdateModificationsCommand::UpdateModificationsCommand(
+    std::shared_ptr<ModifyingItem> modifyingItem,
+    std::shared_ptr<ModificationsTableModel> modificationsTableModel)
+    : m_modifyingItem(modifyingItem), m_modificationsTableModel(modificationsTableModel) {
+    
+    // Сохраняем текущие модификации для отката
+    auto currentMods = modifyingItem->getModifications();
+    for (const auto& mod : currentMods) {
+        m_oldModifications.push_back(std::static_pointer_cast<ModificationImpl>(mod));
+    }
+}
+
+void NonLinearBookImpl::UpdateModificationsCommand::execute() {
+    // TODO: Применить модификации из table model к modifying item
+    // Это требует доступа к внутренней структуре ModificationsTableModel
+}
+
+void NonLinearBookImpl::UpdateModificationsCommand::revert() {
+    // TODO: Восстановить старые модификации
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createAddPageCommand(const std::shared_ptr<PageImpl>& pageImpl) {
+    return std::make_shared<AddPageCommand>(this, pageImpl);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createAddObjCommand(const std::shared_ptr<ObjImpl>& objImpl) {
+    return std::make_shared<AddObjCommand>(this, objImpl);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createDeletePageCommand(
+    std::shared_ptr<PageImpl> page, 
+    const std::vector<std::shared_ptr<Link>>& adjacentLinks) {
+    return std::make_shared<DeletePageCommand>(this, page, adjacentLinks);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createDeleteObjCommand(
+    std::shared_ptr<ObjImpl> obj,
+    const std::vector<std::shared_ptr<Link>>& adjacentLinks) {
+    return std::make_shared<DeleteObjCommand>(this, obj, adjacentLinks);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createCopyCommand(
+    const std::vector<std::string>& pageIds, 
+    const std::vector<std::string>& objIds) {
+    return std::make_shared<CopyCommand>(pageIds, objIds);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createDeleteCommand(const std::vector<std::string>& pageIds,
+    const std::vector<std::string>& objIds)
 {
     // TODO: implement
     return nullptr;
 }
 
-std::shared_ptr<NLBCommand> NonLinearBookImpl::createAddObjCommand(const std::shared_ptr<ObjImpl>& objImpl)
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createPasteCommand(
+    std::shared_ptr<NonLinearBookImpl> nlbToPaste) {
+    return std::make_shared<PasteCommand>(this, nlbToPaste);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createChangeStartPointCommand(
+    const std::string& startPoint) {
+    return std::make_shared<ChangeStartPointCommand>(this, startPoint);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createUpdateBookPropertiesCommand(
+    const std::string& license, Theme theme,
+    const std::string& language, const std::string& title,
+    const std::string& author, const std::string& version,
+    const std::string& perfectGameAchievementName,
+    bool fullAutowire, bool suppressMedia, bool suppressSound,
+    bool propagateToSubmodules) {
+    return std::make_shared<UpdateBookPropertiesCommand>(
+        this, license, theme, language, title, author, version,
+        perfectGameAchievementName, fullAutowire, suppressMedia, 
+        suppressSound, propagateToSubmodules);
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createUpdatePageCommand(std::shared_ptr<Page> page,
+    const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName,
+    bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName,
+    const std::string& pageDefTagVariableValue, std::shared_ptr<MultiLangString> pageText,
+    std::shared_ptr<MultiLangString> pageCaptionText, Theme theme, bool useCaption, bool useMPL,
+    const std::string& moduleName, bool moduleExternal, std::shared_ptr<MultiLangString> traverseText,
+    bool autoTraverse, bool autoReturn, std::shared_ptr<MultiLangString> returnText, const std::string& returnPageId,
+    const std::string& moduleConsraintVariableName, bool autowire, std::shared_ptr<MultiLangString> autowireInText,
+    std::shared_ptr<MultiLangString> autowireOutText, bool autoIn, bool needsAction, bool autoOut,
+    const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave,
+    bool autosFirst, std::shared_ptr<LinksTableModel> linksTableModel)
 {
     // TODO: implement
     return nullptr;
+}
+
+std::shared_ptr<NLBCommand> NonLinearBookImpl::createUpdateModificationsCommand(
+    std::shared_ptr<ModifyingItem> modifyingItem,
+    std::shared_ptr<ModificationsTableModel> modificationsTableModel) {
+    return std::make_shared<UpdateModificationsCommand>(modifyingItem, modificationsTableModel);
+}
+
+void NonLinearBookImpl::setStartPoint(const std::string& startPoint) {
+    m_startPoint = startPoint;
+}
+
+void NonLinearBookImpl::setLicense(const std::string& license) {
+    m_license = license;
+}
+
+void NonLinearBookImpl::setTheme(Theme theme) {
+    m_theme = theme;
+}
+
+void NonLinearBookImpl::setLanguage(const std::string& language) {
+    m_language = language;
+}
+
+void NonLinearBookImpl::setTitle(const std::string& title) {
+    m_title = title;
+}
+
+void NonLinearBookImpl::setAuthor(const std::string& author) {
+    m_author = author;
+}
+
+void NonLinearBookImpl::setVersion(const std::string& version) {
+    m_version = version;
+}
+
+void NonLinearBookImpl::setPerfectGameAchievementName(const std::string& name) {
+    m_perfectGameAchievementName = name;
+}
+
+void NonLinearBookImpl::setFullAutowire(bool fullAutowire) {
+    m_fullAutowire = fullAutowire;
+}
+
+void NonLinearBookImpl::setSuppressMedia(bool suppressMedia) {
+    m_suppressMedia = suppressMedia;
+}
+
+void NonLinearBookImpl::setSuppressSound(bool suppressSound) {
+    m_suppressSound = suppressSound;
+}
+
+void NonLinearBookImpl::setRootDir(const std::string& rootDir) {
+    m_rootDir = rootDir;
+}
+
+// Метод для получения эффективного количества страниц для сохранения
+int NonLinearBookImpl::getEffectivePagesCountForSave() const {
+    int count = 0;
+    for (const auto& [pageId, page] : m_pages) {
+        if (!page->isDeleted()) {
+            count++;
+        }
+    }
+    return count;
 }

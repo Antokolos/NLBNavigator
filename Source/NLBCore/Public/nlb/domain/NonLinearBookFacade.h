@@ -11,6 +11,10 @@
 #include "nlb/api/LinksTableModel.h"
 #include "nlb/domain/MediaExportParameters.h"
 
+#include "nlb/util/FileUtils.h"
+#include "nlb/api/PartialProgressData.h"
+#include "nlb/exception/NLBExceptions.h"
+
 class NLBObserver;
 class ModifyingItem;
 class ModificationsTableModel;
@@ -103,7 +107,7 @@ public:
 
     void updateBookProperties(
         const std::string& license,
-        std::shared_ptr<Theme> theme,
+        Theme theme,
         const std::string& language,
         const std::string& title,
         const std::string& author,
@@ -127,7 +131,7 @@ public:
         const std::string& pageDefTagVariableValue,
         std::shared_ptr<MultiLangString> pageText,
         std::shared_ptr<MultiLangString> pageCaptionText,
-        std::shared_ptr<Theme> theme,
+        Theme theme,
         bool useCaption,
         bool useMPL,
         const std::string& moduleName,
