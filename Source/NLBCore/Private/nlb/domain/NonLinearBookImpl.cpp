@@ -1490,15 +1490,6 @@ void NonLinearBookImpl::addUsedSounds(std::set<std::string>& usedSounds, const s
     }
 }
 
-void NonLinearBookImpl::loadBook(const std::string& path, std::shared_ptr<ProgressData> progressData) {
-    m_rootDir = path;
-    readNLB(path);
-}
-
-void NonLinearBookImpl::saveBook(const std::string& path, std::shared_ptr<ProgressData> progressData) {
-    // Заглушка для сохранения книги
-}
-
 void NonLinearBookImpl::writeNLB(std::shared_ptr<FileManipulator> fileManipulator, const std::string& nlbDir, std::shared_ptr<PartialProgressData> partialProgressData) {
     // Записываем свойства книги
     writeBookProperties(fileManipulator, nlbDir);

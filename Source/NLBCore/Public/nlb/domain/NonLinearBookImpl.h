@@ -230,8 +230,6 @@ public:
     std::shared_ptr<NLBCommand> createPasteCommand(std::shared_ptr<NonLinearBookImpl> nlbToPaste);
 
     // Методы загрузки и сохранения
-    void loadBook(const std::string& path, std::shared_ptr<ProgressData> progressData);
-    void saveBook(const std::string& path, std::shared_ptr<ProgressData> progressData);
     void writeNLB(std::shared_ptr<FileManipulator> fileManipulator, const std::string& nlbDir, std::shared_ptr<PartialProgressData> partialProgressData);
     void readNLB(const std::string& nlbDir);
     std::shared_ptr<NLBCommand> createAddPageCommand(const std::shared_ptr<PageImpl>& pageImpl);
