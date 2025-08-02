@@ -5,7 +5,7 @@
 /*!
  * @brief Helper class for handling special variable names
  */
-class NLBCORE_API SpecialVariablesNameHelper {
+class SpecialVariablesNameHelper {
 public:
     /*!
      * @brief Decorate an ID by replacing hyphens with underscores

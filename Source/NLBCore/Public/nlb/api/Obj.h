@@ -13,7 +13,7 @@ class NonLinearBook;
 /*!
  * Interface representing an object in the system
  */
-class NLBCORE_API Obj : public NodeItem {
+class Obj : public NodeItem {
 public:
     enum class ContainerType { Page, Obj, None };
     enum class MovementDirection { Top, Left, None, Right, Bottom };

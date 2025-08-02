@@ -7,7 +7,7 @@
  * @class Variable
  * @brief Interface for variable representation
  */
-class NLBCORE_API Variable : public IdentifiableItem {
+class Variable : public IdentifiableItem {
 public:
     static const std::string NA;
     static const std::string DEFAULT_NAME;

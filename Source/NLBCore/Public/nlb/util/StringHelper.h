@@ -14,7 +14,7 @@ class TextChunk;
  * @class StringHelper
  * @brief Utility class for string operations and text processing
  */
-class NLBCORE_API StringHelper {
+class StringHelper {
 private:
     static const std::regex LINE_PATTERN;
     static const std::regex VAR_PATTERN;

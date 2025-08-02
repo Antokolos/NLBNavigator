@@ -12,7 +12,7 @@ class NonLinearBook;
  * @brief Implementation of root module page in non-linear book
  * @implements Page
  */
-class NLBCORE_API RootModulePage : public Page {
+class RootModulePage : public Page {
 public:
     RootModulePage(std::shared_ptr<NonLinearBook> nlb, const std::string& pageId);
 

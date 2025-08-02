@@ -9,7 +9,7 @@
  * CoordsLw provides a basic implementation of the Coords interface,
  * representing rectangular coordinates with left, top, width, and height.
  */
-class NLBCORE_API CoordsLw : public Coords {
+class CoordsLw : public Coords {
 public:
     /*!
      * \brief Default constructor initializing all coordinates to zero

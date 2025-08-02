@@ -24,7 +24,7 @@
  * - Left/Right double quotation marks (" " ") - U+201C, U+201D, U+201F
  * - Left/Right single quotation marks (' ' ') - U+2018, U+2019, U+201B
  */
-class NLBCORE_API QuotationHelper {
+class QuotationHelper {
 public:
     // Deleted constructors to prevent instantiation
     QuotationHelper() = delete;

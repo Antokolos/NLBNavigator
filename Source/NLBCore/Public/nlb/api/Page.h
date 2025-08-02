@@ -11,7 +11,7 @@ class NonLinearBook;
  * @brief Interface for page objects in non-linear book
  * @extends NodeItem
  */
-class NLBCORE_API Page : public NodeItem {
+class Page : public NodeItem {
 public:
     // Default constants
     static const std::string DEFAULT_IMAGE_FILE_NAME;

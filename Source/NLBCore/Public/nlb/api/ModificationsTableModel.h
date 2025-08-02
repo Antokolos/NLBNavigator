@@ -18,7 +18,7 @@ class ModifyingItem;
  * Provides functionality for working with a table of modifications and variables,
  * supporting editing, adding, removing, and moving operations.
  */
-class NLBCORE_API ModificationsTableModel {
+class ModificationsTableModel {
 public:
     /*!
      * @brief Constructs a new ModificationsTableModel
