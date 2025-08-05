@@ -1,11 +1,11 @@
 #pragma once
 
+#include "nlb/api/Any.h"
+
 #include <string>
 #include <vector>
 #include <map>
 #include <regex>
-#include <memory>
-#include <any>
 
 class MultiLangString;
 class TextChunk;
@@ -31,7 +31,7 @@ public:
      * @return Text with replaced variables
      */
     static std::string replaceVariables(const std::string& pageText, 
-                                       const std::map<std::string, std::any>& visitedVars);
+                                       const std::map<std::string, Any>& visitedVars);
 
     /*!
      * @brief Split text into chunks (text, variables, newlines)
@@ -103,7 +103,10 @@ public:
      * @param value Value to convert
      * @return String representation
      */
-    static std::string anyToString(const std::any& value);
+    static std::string anyToString(const Any& value);
+
+	// Дополнительный метод для форматированного вывода чисел
+	static std::string anyToString(const Any& value, int precision);
 
 	/*!
 	 * @brief Convert string to lowercase

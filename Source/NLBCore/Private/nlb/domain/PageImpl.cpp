@@ -698,7 +698,7 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
     result->AbstractIdentifiableItem::setDeleted(AbstractIdentifiableItem::isDeleted());
     
     // 2. Преобразуем visitedVars для использования с StringHelper::replaceVariables
-    std::map<std::string, std::any> visitedVarsAny;
+    std::map<std::string, Any> visitedVarsAny;
     for (const auto& [key, value] : visitedVars) {
         try {
             // Пытаемся получить строковое значение
@@ -800,7 +800,7 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
 // Вспомогательный метод для замены переменных в ссылках
 void PageImpl::replaceVariablesInLinks(std::map<std::string, std::shared_ptr<void>> visitedVars) {
     // Преобразуем visitedVars для использования с StringHelper::replaceVariables
-    std::map<std::string, std::any> visitedVarsAny;
+    std::map<std::string, Any> visitedVarsAny;
     for (const auto& [key, value] : visitedVars) {
         try {
             // Пытаемся получить строковое значение

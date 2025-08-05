@@ -18,7 +18,7 @@ const std::string StringHelper::EOL_STRING = "\n";
 const std::string StringHelper::ACTION_TEXT_DEF = "^";
 
 std::string StringHelper::replaceVariables(const std::string& pageText,
-                                         const std::map<std::string, std::any>& visitedVars) {
+                                         const std::map<std::string, Any>& visitedVars) {
     std::ostringstream result;
     auto textChunks = getTextChunks(pageText);
 
@@ -226,38 +226,77 @@ std::vector<std::string> StringHelper::tokenize(const std::string& str, const st
     return tokens;
 }
 
-std::string StringHelper::anyToString(const std::any& value) {
-    /*try {
-        // Try different types
-        if (value.type() == typeid(std::string)) {
-            return std::any_cast<std::string>(value);
-        } else if (value.type() == typeid(int)) {
-            return std::to_string(std::any_cast<int>(value));
-        } else if (value.type() == typeid(double)) {
-            std::ostringstream oss;
-            oss << std::fixed << std::setprecision(3) << std::any_cast<double>(value);
-            return oss.str();
-        } else if (value.type() == typeid(float)) {
-            std::ostringstream oss;
-            oss << std::fixed << std::setprecision(3) << std::any_cast<float>(value);
-            return oss.str();
-        } else if (value.type() == typeid(bool)) {
-            return std::any_cast<bool>(value) ? "true" : "false";
-        } else if (value.type() == typeid(long)) {
-            return std::to_string(std::any_cast<long>(value));
-        } else if (value.type() == typeid(long long)) {
-            return std::to_string(std::any_cast<long long>(value));
-        } else if (value.type() == typeid(const char*)) {
-            return std::string(std::any_cast<const char*>(value));
+std::string StringHelper::anyToString(const Any& value) {
+    try {
+        if (value.empty()) {
+            return "EMPTY";
         }
-        
-        // For unknown types, return type name
+
+        // Проверяем различные типы
+        if (value.is_type<std::string>()) {
+            return value.cast<std::string>();
+        } else if (value.is_type<int>()) {
+            return std::to_string(value.cast<int>());
+        } else if (value.is_type<double>()) {
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(3) << value.cast<double>();
+            return oss.str();
+        } else if (value.is_type<float>()) {
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(3) << value.cast<float>();
+            return oss.str();
+        } else if (value.is_type<bool>()) {
+            return value.cast<bool>() ? "true" : "false";
+        } else if (value.is_type<long>()) {
+            return std::to_string(value.cast<long>());
+        } else if (value.is_type<long long>()) {
+            return std::to_string(value.cast<long long>());
+        } else if (value.is_type<short>()) {
+            return std::to_string(value.cast<short>());
+        } else if (value.is_type<unsigned int>()) {
+            return std::to_string(value.cast<unsigned int>());
+        } else if (value.is_type<unsigned long>()) {
+            return std::to_string(value.cast<unsigned long>());
+        } else if (value.is_type<unsigned long long>()) {
+            return std::to_string(value.cast<unsigned long long>());
+        } else if (value.is_type<const char*>()) {
+            const char* str = value.cast<const char*>();
+            return str ? std::string(str) : "NULL";
+        } else if (value.is_type<char*>()) {
+            char* str = value.cast<char*>();
+            return str ? std::string(str) : "NULL";
+        }
+
+        // Для неизвестных типов возвращаем имя типа
         return std::string("UNKNOWN_TYPE:") + value.type().name();
-    } catch (const std::bad_any_cast& e) {
-        return "BAD_CAST";
+
+    } catch (const std::exception& e) {
+        return std::string("CONVERSION_ERROR:") + e.what();
     }
-    */
-    return "BAD_CAST"; // call to unavailable function 'any_cast' introduced in macOS 10.14
+}
+
+std::string StringHelper::anyToString(const Any& value, int precision) {
+    try {
+        if (value.empty()) {
+            return "EMPTY";
+        }
+
+        if (value.is_type<double>()) {
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(precision) << value.cast<double>();
+            return oss.str();
+        } else if (value.is_type<float>()) {
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(precision) << value.cast<float>();
+            return oss.str();
+        }
+
+        // Для других типов используем стандартный метод
+        return anyToString(value);
+
+    } catch (const std::exception& e) {
+        return std::string("CONVERSION_ERROR:") + e.what();
+    }
 }
 
 std::string StringHelper::toLowerCase(const std::string& str) {
