@@ -1,6 +1,4 @@
 #include "nlb/domain/CoordsImpl.h"
-#include <filesystem>
-#include <stdexcept>
 
 const std::string CoordsImpl::LEFT_FILE_NAME = "left";
 const std::string CoordsImpl::TOP_FILE_NAME = "top";

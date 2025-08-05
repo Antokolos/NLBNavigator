@@ -1,7 +1,4 @@
 #include "nlb/util/ResourceManager.h"
-#include <filesystem>
-#include <iostream>
-#include <sstream>
 
 const std::string ResourceManager::VNSTEAD = "vnstead";
 

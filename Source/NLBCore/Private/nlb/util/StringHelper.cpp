@@ -227,7 +227,7 @@ std::vector<std::string> StringHelper::tokenize(const std::string& str, const st
 }
 
 std::string StringHelper::anyToString(const std::any& value) {
-    try {
+    /*try {
         // Try different types
         if (value.type() == typeid(std::string)) {
             return std::any_cast<std::string>(value);
@@ -253,9 +253,11 @@ std::string StringHelper::anyToString(const std::any& value) {
         
         // For unknown types, return type name
         return std::string("UNKNOWN_TYPE:") + value.type().name();
-    } catch (const std::bad_any_cast& /*e*/) {
+    } catch (const std::bad_any_cast& e) {
         return "BAD_CAST";
     }
+    */
+    return "BAD_CAST"; // call to unavailable function 'any_cast' introduced in macOS 10.14
 }
 
 std::string StringHelper::toLowerCase(const std::string& str) {
