@@ -6,12 +6,12 @@
 #include <sstream>
 #include <stdexcept>
 
-FileManipulator::FileManipulator(std::shared_ptr<VCSAdapter> vcsAdapter, const std::string& mainRoot)
+FileManipulator::FileManipulator(VCSAdapter* vcsAdapter, const std::string& mainRoot)
     : m_vcsAdapter(vcsAdapter)
     , m_mainRoot(mainRoot) {
 }
 
-bool FileManipulator::deleteFileOrDir(const std::string& filePath) {
+bool FileManipulator::deleteFileOrDir(const std::string& filePath) const {
     try {
         if (!FileUtils::exists(filePath)) {
             return true;
@@ -74,7 +74,7 @@ bool FileManipulator::deleteFileOrDir(const std::string& filePath) {
 void FileManipulator::writeRequiredString(
     const std::string& rootDir,
     const std::string& fileName,
-    const std::string& content) {
+    const std::string& content) const {
     try {
         std::string filePath = FileUtils::combinePath(rootDir, fileName);
         bool newFile = !FileUtils::exists(filePath);
@@ -96,7 +96,7 @@ void FileManipulator::writeOptionalString(
     const std::string& rootDir,
     const std::string& fileName,
     const std::string& content,
-    const std::string& defaultContent) {
+    const std::string& defaultContent) const {
     try {
         std::string filePath = FileUtils::combinePath(rootDir, fileName);
         bool newFile = !FileUtils::exists(filePath);
@@ -130,7 +130,7 @@ void FileManipulator::writeOptionalString(
 void FileManipulator::writeOptionalMultiLangString(
     const std::string& mlsRootDir,
     const MultiLangString& content,
-    const MultiLangString& defaultContent) {
+    const MultiLangString& defaultContent) const {
     try {
         bool rootDirExists = FileUtils::exists(mlsRootDir);
         
@@ -174,7 +174,7 @@ void FileManipulator::writeOptionalMultiLangString(
 
 void FileManipulator::createDir(
     const std::string& dirPath,
-    const std::string& errorMessage) {
+    const std::string& errorMessage) const {
     try {
         if (!FileUtils::exists(dirPath)) {
             if (!FileUtils::createDirectory(dirPath)) {
@@ -192,7 +192,7 @@ void FileManipulator::createDir(
 void FileManipulator::copyFile(
     const std::string& target,
     const std::string& source,
-    const std::string& errorMessage) {
+    const std::string& errorMessage) const {
     try {
         bool newFile = !FileUtils::exists(target);
         
@@ -215,7 +215,7 @@ void FileManipulator::copyFile(
 
 void FileManipulator::createFile(
     const std::string& filePath,
-    const std::string& errorMessage) {
+    const std::string& errorMessage) const {
     try {
         if (!FileUtils::exists(filePath)) {
             std::ofstream file(filePath);
@@ -232,7 +232,7 @@ void FileManipulator::createFile(
     }
 }
 
-std::string FileManipulator::getPathRelativeToMainRoot(const std::string& filePath) {
+std::string FileManipulator::getPathRelativeToMainRoot(const std::string& filePath) const {
     std::string absolutePath = FileUtils::normalizePath(filePath);
     std::string rootPath = FileUtils::normalizePath(m_mainRoot);
     
@@ -376,7 +376,7 @@ void FileManipulator::transfer(std::istream& input, std::ostream& output) {
     }
 }
 
-void FileManipulator::addToVCS(const std::string& filePath, bool isNewFile) {
+void FileManipulator::addToVCS(const std::string& filePath, bool isNewFile) const {
     if (FileUtils::isDirectory(filePath) && !m_vcsAdapter->getDirAddFlag()) {
         return;
     }

@@ -39,48 +39,48 @@
 #include "nlb/domain/UpdateNodeCoordsCommand.h"
 #include "nlb/util/UUID.h"
 
-NonLinearBookFacade::NonLinearBookFacade(std::shared_ptr<Author> author, std::shared_ptr<VCSAdapter> vcsAdapter) 
+NonLinearBookFacade::NonLinearBookFacade(Author* author, VCSAdapter* vcsAdapter)
     : m_rootFacade(true)
     , m_parentFacade(nullptr)
     , m_author(author)
     , m_vcsAdapter(vcsAdapter)
-    , m_undoManager(std::make_shared<UndoManager>())
-    , m_observerHandler(std::make_shared<ObserverHandler>())
+    , m_undoManager(new UndoManager())
+    , m_observerHandler(new ObserverHandler())
 {
     // m_nlb will be initialized later via createNewBook() or load()
 }
 
 NonLinearBookFacade::NonLinearBookFacade(
-    std::shared_ptr<NonLinearBookFacade> parentFacade,
-    std::shared_ptr<Author> author,
-    std::shared_ptr<VCSAdapter> vcsAdapter,
-    std::shared_ptr<NonLinearBookImpl> nlb
+    NonLinearBookFacade* parentFacade,
+    Author* author,
+    VCSAdapter* vcsAdapter,
+    NonLinearBookImpl* nlb
 ) : m_rootFacade(false)
   , m_parentFacade(parentFacade)
   , m_author(author)
   , m_vcsAdapter(vcsAdapter)
   , m_nlb(nlb)
-  , m_undoManager(std::make_shared<UndoManager>())
-  , m_observerHandler(std::make_shared<ObserverHandler>())
+  , m_undoManager(new UndoManager())
+  , m_observerHandler(new ObserverHandler())
 {
 }
 
 void NonLinearBookFacade::createNewBook() {
     auto parentNLB = DummyNLB::singleton();
-    m_nlb = std::make_shared<NonLinearBookImpl>(parentNLB, std::make_shared<RootModulePage>(parentNLB, nlb::Constants::MAIN_MODULE_NAME));
+    m_nlb = new NonLinearBookImpl(parentNLB, new RootModulePage(parentNLB, nlb::Constants::MAIN_MODULE_NAME));
     notifyObservers();
 }
 
-std::shared_ptr<NonLinearBookFacade> NonLinearBookFacade::createModuleFacade(const std::string& modulePageId) {
+NonLinearBookFacade* NonLinearBookFacade::createModuleFacade(const std::string& modulePageId) {
     auto page = m_nlb->getPageImplById(modulePageId);
-    auto facade = std::make_shared<NonLinearBookFacade>(shared_from_this(), m_author, m_vcsAdapter, page->getModuleImpl());
+    auto facade = new NonLinearBookFacade(this, m_author, m_vcsAdapter, page->getModuleImpl());
     m_moduleFacades.push_back(facade);
     notifyObservers();
     return facade;
 }
 
-std::shared_ptr<NonLinearBookFacade> NonLinearBookFacade::getMainFacade() {
-    auto result = shared_from_this();
+NonLinearBookFacade* NonLinearBookFacade::getMainFacade() {
+    auto result = this;
     while (result->getParentFacade() != nullptr) {
         result = result->getParentFacade();
     }
@@ -116,12 +116,12 @@ void NonLinearBookFacade::commit(const std::string& commitMessageText) {
     notifyObservers();
 }
 
-void NonLinearBookFacade::pull(const std::string& userName, const std::string& password, std::shared_ptr<ProgressData> progressData) {
+void NonLinearBookFacade::pull(const std::string& userName, const std::string& password, ProgressData* progressData) {
     m_vcsAdapter->pull(userName, password, progressData);
     notifyObservers();
 }
 
-void NonLinearBookFacade::push(const std::string& userName, const std::string& password, std::shared_ptr<ProgressData> progressData) {
+void NonLinearBookFacade::push(const std::string& userName, const std::string& password, ProgressData* progressData) {
     m_vcsAdapter->push(userName, password, progressData);
     notifyObservers();
 }
@@ -197,8 +197,8 @@ void NonLinearBookFacade::exportToASMFile(const std::string& exportDir) {
 }
 
 void NonLinearBookFacade::updateModifications(
-    std::shared_ptr<ModifyingItem> modifyingItem,
-    std::shared_ptr<ModificationsTableModel> modificationsTableModel
+    ModifyingItem* modifyingItem,
+    ModificationsTableModel* modificationsTableModel
 ) {
     auto command = m_nlb->createUpdateModificationsCommand(modifyingItem, modificationsTableModel);
     getUndoManagerByItemId(modifyingItem->getId() + nlb::Constants::MODIFICATIONS_UNDO_ID_POSTFIX)->executeAndStore(command);
@@ -260,7 +260,7 @@ void NonLinearBookFacade::updateBookProperties(
 }
 
 void NonLinearBookFacade::updatePage(
-    std::shared_ptr<Page> page,
+    Page* page,
     const std::string& imageFileName,
     bool imageBackground,
     bool imageAnimated,
@@ -269,22 +269,22 @@ void NonLinearBookFacade::updatePage(
     const std::string& pageVariableName,
     const std::string& pageTimerVariableName,
     const std::string& pageDefTagVariableValue,
-    std::shared_ptr<MultiLangString> pageText,
-    std::shared_ptr<MultiLangString> pageCaptionText,
+    MultiLangString* pageText,
+    MultiLangString* pageCaptionText,
     Theme theme,
     bool useCaption,
     bool useMPL,
     const std::string& moduleName,
     bool moduleExternal,
-    std::shared_ptr<MultiLangString> traverseText,
+    MultiLangString* traverseText,
     bool autoTraverse,
     bool autoReturn,
-    std::shared_ptr<MultiLangString> returnText,
+    MultiLangString* returnText,
     const std::string& returnPageId,
     const std::string& moduleConsraintVariableName,
     bool autowire,
-    std::shared_ptr<MultiLangString> autowireInText,
-    std::shared_ptr<MultiLangString> autowireOutText,
+    MultiLangString* autowireInText,
+    MultiLangString* autowireOutText,
     bool autoIn,
     bool needsAction,
     bool autoOut,
@@ -293,7 +293,7 @@ void NonLinearBookFacade::updatePage(
     bool globalAutowire,
     bool noSave,
     bool autosFirst,
-    std::shared_ptr<LinksTableModel> linksTableModel
+    LinksTableModel* linksTableModel
 ) {
     auto command = m_nlb->createUpdatePageCommand(
         page, imageFileName, imageBackground, imageAnimated,
@@ -311,11 +311,11 @@ void NonLinearBookFacade::updatePage(
 }
 
 void NonLinearBookFacade::updateLink(
-    std::shared_ptr<Link> link,
+    Link* link,
     const std::string& linkVariableName,
     const std::string& linkConstraintValue,
-    std::shared_ptr<MultiLangString> linkText,
-    std::shared_ptr<MultiLangString> linkAltText,
+    MultiLangString* linkText,
+    MultiLangString* linkAltText,
     bool autoFlag,
     bool once
 ) {
@@ -329,7 +329,7 @@ void NonLinearBookFacade::updateLink(
     notifyObservers();
 }
 
-void NonLinearBookFacade::updateNode(std::shared_ptr<NodeItem> nodeToUpdate) {
+void NonLinearBookFacade::updateNode(NodeItem* nodeToUpdate) {
     nodeToUpdate->notifyObservers();
     auto adjacentLinks = m_nlb->getAssociatedLinks(nodeToUpdate);
     for (auto& link : adjacentLinks) {
@@ -337,12 +337,12 @@ void NonLinearBookFacade::updateNode(std::shared_ptr<NodeItem> nodeToUpdate) {
     }
 }
 
-void NonLinearBookFacade::updateLink(std::shared_ptr<Link> linkToUpdate) {
+void NonLinearBookFacade::updateLink(Link* linkToUpdate) {
     linkToUpdate->notifyObservers();
 }
 
 void NonLinearBookFacade::updateObj(
-    std::shared_ptr<Obj> obj,
+    Obj* obj,
     const std::string& objVariableName,
     const std::string& objDefTagVariableValue,
     const std::string& objConstraintValue,
@@ -353,10 +353,10 @@ void NonLinearBookFacade::updateObj(
     bool soundSFX,
     bool animatedImage,
     bool suppressDsc,
-    std::shared_ptr<MultiLangString> objDisp,
-    std::shared_ptr<MultiLangString> objText,
-    std::shared_ptr<MultiLangString> objActText,
-    std::shared_ptr<MultiLangString> objNouseText,
+    MultiLangString* objDisp,
+    MultiLangString* objText,
+    MultiLangString* objActText,
+    MultiLangString* objNouseText,
     bool objIsGraphical,
     bool objIsShowOnCursor,
     bool objIsPreserved,
@@ -400,20 +400,20 @@ void NonLinearBookFacade::updateObj(
 }
 
 void NonLinearBookFacade::updateLinkCoords(
-    std::shared_ptr<Link> link,
+    Link* link,
     float left,
     float top
 ) {
-    auto command = std::make_shared<UpdateLinkCoordsCommand>(m_nlb, link, left, top);
+    auto command = new UpdateLinkCoordsCommand(m_nlb, link, left, top);
     m_undoManager->executeAndStore(command);
     notifyObservers();
 }
 
 void NonLinearBookFacade::updateLinkCoords(
-    std::shared_ptr<Link> link,
+    Link* link,
     float height
 ) {
-    auto command = std::make_shared<UpdateLinkCoordsCommand>(m_nlb, link, height);
+    auto command = new UpdateLinkCoordsCommand(m_nlb, link, height);
     m_undoManager->executeAndStore(command);
     notifyObservers();
 }
@@ -465,12 +465,12 @@ void NonLinearBookFacade::removeSoundFile(const std::string& soundFileName) {
 }
 
 void NonLinearBookFacade::resizeNode(
-    std::shared_ptr<NodeItem> nodeItem,
+    NodeItem* nodeItem,
     NodeItem::Orientation orientation,
     double deltaX,
     double deltaY
 ) {
-    std::shared_ptr<AbstractNodeItem> node = m_nlb->getPageImplById(nodeItem->getId());
+    AbstractNodeItem* node = m_nlb->getPageImplById(nodeItem->getId());
     if (!node) {
         node = m_nlb->getObjImplById(nodeItem->getId());
     }
@@ -481,12 +481,12 @@ void NonLinearBookFacade::resizeNode(
 }
 
 void NonLinearBookFacade::updateNodeCoords(
-    std::shared_ptr<NodeItem> nodeItem,
-    const std::set<std::shared_ptr<NodeItem>>& additionallyMovedItems,
+    NodeItem* nodeItem,
+    const std::set<NodeItem*>& additionallyMovedItems,
     float deltaX,
     float deltaY
 ) {
-    auto commandChain = std::make_shared<CommandChainCommand>();
+    auto commandChain = new CommandChainCommand();
     updateNodeCoords(commandChain, nodeItem, deltaX, deltaY);
     for (const auto& additionalNodeItem : additionallyMovedItems) {
         updateNodeCoords(commandChain, additionalNodeItem, deltaX, deltaY);
@@ -496,19 +496,19 @@ void NonLinearBookFacade::updateNodeCoords(
 }
 
 void NonLinearBookFacade::updateNodeCoords(
-    std::shared_ptr<CommandChainCommand> commandChain,
-    std::shared_ptr<NodeItem> nodeItem,
+    CommandChainCommand* commandChain,
+    NodeItem* nodeItem,
     float deltaX,
     float deltaY
 ) {
-    auto command = std::make_shared<UpdateNodeCoordsCommand>(m_nlb, nodeItem, deltaX, deltaY);
+    auto command = new UpdateNodeCoordsCommand(m_nlb, nodeItem, deltaX, deltaY);
     commandChain->addCommand(command);
     offsetContainedObjects(commandChain, nodeItem, deltaX, deltaY);
 }
 
 void NonLinearBookFacade::offsetContainedObjects(
-    std::shared_ptr<CommandChainCommand> commandChain,
-    std::shared_ptr<NodeItem> container,
+    CommandChainCommand* commandChain,
+    NodeItem* container,
     float deltaX,
     float deltaY
 ) {
@@ -525,7 +525,7 @@ void NonLinearBookFacade::changeContainer(
     const std::string& newContainerId,
     const std::string& objId
 ) {
-    std::shared_ptr<AbstractNodeItem> prevContainer;
+    AbstractNodeItem* prevContainer;
     if (!StringHelper::isEmpty(previousContainerId)) {
         prevContainer = m_nlb->getPageImplById(previousContainerId);
         if (!prevContainer) {
@@ -533,7 +533,7 @@ void NonLinearBookFacade::changeContainer(
         }
     }
 
-    std::shared_ptr<AbstractNodeItem> newContainer;
+    AbstractNodeItem* newContainer;
     if (!StringHelper::isEmpty(newContainerId)) {
         newContainer = m_nlb->getPageImplById(newContainerId);
         if (!newContainer) {
@@ -563,7 +563,7 @@ void NonLinearBookFacade::cut(
     const std::vector<std::string>& pageIds,
     const std::vector<std::string>& objIds
 ) {
-    auto command = std::make_shared<CommandChainCommand>();
+    auto command = new CommandChainCommand();
     command->addCommand(m_nlb->createCopyCommand(pageIds, objIds));
     command->addCommand(m_nlb->createDeleteCommand(pageIds, objIds));
     m_undoManager->executeAndStore(command);
@@ -595,7 +595,7 @@ void NonLinearBookFacade::clearPools()
     m_newLinksPool.clear();
 }
 
-std::string NonLinearBookFacade::addObserver(std::shared_ptr<NLBObserver> observer) {
+std::string NonLinearBookFacade::addObserver(NLBObserver* observer) {
     return m_observerHandler ? m_observerHandler->addObserver(observer) : nlb::Constants::EMPTY_STRING;
 }
 
@@ -611,26 +611,26 @@ void NonLinearBookFacade::notifyObservers() {
     }
 }
 
-std::shared_ptr<UndoManager> NonLinearBookFacade::getUndoManagerByItemId(const std::string& id) {
+UndoManager* NonLinearBookFacade::getUndoManagerByItemId(const std::string& id) {
     auto it = m_undoManagersMap.find(id);
     if (it != m_undoManagersMap.end()) {
         return it->second;
     }
     
-    std::shared_ptr<UndoManager> result = std::make_shared<UndoManager>();
+    UndoManager* result = new UndoManager();
     m_undoManagersMap[id] = result;
     return result;
 }
 
-std::shared_ptr<Page> NonLinearBookFacade::createPage(float left, float top) {
+Page* NonLinearBookFacade::createPage(float left, float top) {
     std::string id = NLBUUID::randomUUID();
-    auto result = std::make_shared<PageImpl>(m_nlb, left, top);
+    auto result = new PageImpl(m_nlb, left, top);
     result->setId(id);
     m_newPagesPool[id] = result;
     return result;
 }
 
-void NonLinearBookFacade::addPage(std::shared_ptr<Page> page) {
+void NonLinearBookFacade::addPage(Page* page) {
     auto pageId = page->getId();
     auto pageImpl = m_newPagesPool[pageId];
     
@@ -642,15 +642,15 @@ void NonLinearBookFacade::addPage(std::shared_ptr<Page> page) {
     }
 }
 
-std::shared_ptr<Obj> NonLinearBookFacade::createObj(float left, float top) {
+Obj* NonLinearBookFacade::createObj(float left, float top) {
     std::string id = NLBUUID::randomUUID();
-    auto result = std::make_shared<ObjImpl>(m_nlb, left, top);
+    auto result = new ObjImpl(m_nlb, left, top);
     result->setId(id);
     m_newObjsPool[id] = result;
     return result;
 }
 
-void NonLinearBookFacade::addObj(std::shared_ptr<Obj> obj) {
+void NonLinearBookFacade::addObj(Obj* obj) {
     auto objId = obj->getId();
     auto objImpl = m_newObjsPool[objId];
     
@@ -662,22 +662,22 @@ void NonLinearBookFacade::addObj(std::shared_ptr<Obj> obj) {
     }
 }
 
-std::shared_ptr<Link> NonLinearBookFacade::createLink(std::shared_ptr<NodeItem> item, std::shared_ptr<NodeItem> target) {
+Link* NonLinearBookFacade::createLink(NodeItem* item, NodeItem* target) {
     std::string id = NLBUUID::randomUUID();
-    auto result = std::make_shared<LinkImpl>(item, target->getId());
+    auto result = new LinkImpl(item, target->getId());
     result->setId(id);
     m_newLinksPool[id] = result;
     return result;
 }
 
-void NonLinearBookFacade::addLink(std::shared_ptr<Link> link) {
+void NonLinearBookFacade::addLink(Link* link) {
     auto linkId = link->getId();
     auto linkImpl = m_newLinksPool[linkId];
     
     if (linkImpl) {
         m_newLinksPool.erase(linkId);
         auto parent = link->getParent();
-        std::shared_ptr<AbstractNodeItem> nodeItem = m_nlb->getPageImplById(parent->getId());
+        AbstractNodeItem* nodeItem = m_nlb->getPageImplById(parent->getId());
         if (!nodeItem) {
             nodeItem = m_nlb->getObjImplById(parent->getId());
         }
@@ -715,7 +715,7 @@ bool NonLinearBookFacade::hasChanges() {
     return false;
 }
 
-void NonLinearBookFacade::saveNLB(bool create, std::shared_ptr<ProgressData> progressData) {
+void NonLinearBookFacade::saveNLB(bool create, ProgressData* progressData) {
     try {
         std::string rootDir = m_nlb->getRootDir();
         progressData->setProgressValue(5);
@@ -739,7 +739,7 @@ void NonLinearBookFacade::saveNLB(bool create, std::shared_ptr<ProgressData> pro
         progressData->setNoteText("Saving Non-Linear Book...");
         
         // Создаем FileManipulator для работы с файлами
-        auto fileManipulator = std::make_shared<FileManipulator>(m_vcsAdapter, rootDir);
+        auto fileManipulator = new FileManipulator(m_vcsAdapter, rootDir);
         
         // Вычисляем прогресс для страниц
         int effectivePagesCount = m_nlb->getEffectivePagesCountForSave();
@@ -750,7 +750,7 @@ void NonLinearBookFacade::saveNLB(bool create, std::shared_ptr<ProgressData> pro
         );
         
         // Создаем частичный прогресс для детальной обратной связи
-        auto partialProgressData = std::make_shared<PartialProgressData>(
+        auto partialProgressData = new PartialProgressData(
             progressData, startProgress, maxProgress, static_cast<int>(itemsCountPerIncrement)
         );
         
@@ -762,7 +762,7 @@ void NonLinearBookFacade::saveNLB(bool create, std::shared_ptr<ProgressData> pro
     }
 }
 
-void NonLinearBookFacade::saveAs(const std::string& nlbFolder, std::shared_ptr<ProgressData> progressData) {
+void NonLinearBookFacade::saveAs(const std::string& nlbFolder, ProgressData* progressData) {
     // Устанавливаем новый корневой путь
     m_nlb->setRootDir(nlbFolder);
     
@@ -775,7 +775,7 @@ void NonLinearBookFacade::saveAs(const std::string& nlbFolder, std::shared_ptr<P
     notifyObservers();
 }
 
-void NonLinearBookFacade::load(const std::string& path, std::shared_ptr<ProgressData> progressData) {
+void NonLinearBookFacade::load(const std::string& path, ProgressData* progressData) {
     try {
         // Проверяем существование директории
         if (!FileUtils::exists(path)) {
@@ -809,14 +809,14 @@ void NonLinearBookFacade::load(const std::string& path, std::shared_ptr<Progress
     }
 }
 
-void NonLinearBookFacade::deleteNode(std::shared_ptr<NodeItem> nodeToDelete) {
+void NonLinearBookFacade::deleteNode(NodeItem* nodeToDelete) {
     // Получаем связанные ссылки, которые нужно будет удалить
     auto adjacentLinks = m_nlb->getAssociatedLinks(nodeToDelete);
     
     // Пытаемся найти узел как страницу
     auto page = m_nlb->getPageImplById(nodeToDelete->getId());
     
-    std::shared_ptr<NLBCommand> command;
+    NLBCommand* command;
     
     if (page) {
         // Это страница - создаем команду удаления страницы
@@ -838,7 +838,7 @@ void NonLinearBookFacade::deleteNode(std::shared_ptr<NodeItem> nodeToDelete) {
     }
 }
 
-void NonLinearBookFacade::save(bool create, std::shared_ptr<ProgressData> progressData) {
+void NonLinearBookFacade::save(bool create, ProgressData* progressData) {
     // Сохраняем книгу
     saveNLB(create, progressData);
     
@@ -848,9 +848,9 @@ void NonLinearBookFacade::save(bool create, std::shared_ptr<ProgressData> progre
     notifyObservers();
 }
 
-void NonLinearBookFacade::deleteLink(std::shared_ptr<Link> link) {
+void NonLinearBookFacade::deleteLink(Link* link) {
     auto parent = link->getParent();
-    std::shared_ptr<AbstractNodeItem> nodeItem = m_nlb->getPageImplById(parent->getId());
+    AbstractNodeItem* nodeItem = m_nlb->getPageImplById(parent->getId());
     if (!nodeItem) {
         nodeItem = m_nlb->getObjImplById(parent->getId());
     }
@@ -863,7 +863,7 @@ void NonLinearBookFacade::deleteLink(std::shared_ptr<Link> link) {
     }
 }
 
-void NonLinearBookFacade::invalidateAssociatedLinks(std::shared_ptr<NodeItem> nodeItem) {
+void NonLinearBookFacade::invalidateAssociatedLinks(NodeItem* nodeItem) {
     auto associatedLinks = m_nlb->getAssociatedLinks(nodeItem);
     for (const auto& link : associatedLinks) {
         link->notifyObservers();

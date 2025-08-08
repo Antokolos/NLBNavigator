@@ -22,19 +22,19 @@ const std::string LinkImpl::OBEY_MODULE_CONSTRAINT_FILE_NAME = "obeymodconstr";
 
 LinkImpl::LinkImpl() : AbstractModifyingItem() {}
 
-LinkImpl::LinkImpl(const std::shared_ptr<NodeItem>& parent)
+LinkImpl::LinkImpl(const NodeItem* parent)
     : AbstractModifyingItem(parent->getCurrentNLB()) {
     setParent(parent);
 }
 
-LinkImpl::LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::shared_ptr<Link>& sourceLink)
+LinkImpl::LinkImpl(const NodeItem* parent, const Link* sourceLink)
     : AbstractModifyingItem(parent->getCurrentNLB()) {
     setId(sourceLink->getId());
     setDeleted(sourceLink->isDeleted());
     setParent(parent);
 
     for (const auto& modification : sourceLink->getModifications()) {
-        addModification(std::make_shared<ModificationImpl>(modification, std::enable_shared_from_this<AbstractModifyingItem>::shared_from_this(), parent->getCurrentNLB()));
+        addModification(new ModificationImpl(modification, (AbstractModifyingItem*) this, parent->getCurrentNLB()));
     }
 
     m_varId = sourceLink->getVarId();
@@ -57,7 +57,7 @@ LinkImpl::LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::shared_pt
     m_once = sourceLink->isOnce();
 }
 
-LinkImpl::LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::string& target)
+LinkImpl::LinkImpl(const NodeItem* parent, const std::string& target)
     : LinkImpl(parent) {
     m_target = target;
 }
@@ -86,21 +86,21 @@ void LinkImpl::setAltText(const std::string& altText) {
     m_altText.put(AbstractIdentifiableItem::getCurrentNLB()->getLanguage(), altText);
 }
 
-std::shared_ptr<SearchResult> LinkImpl::searchText(const SearchContract& contract) const {
+SearchResult* LinkImpl::searchText(const SearchContract& contract) const {
     auto result = AbstractIdentifiableItem::searchText(contract);
     if (result) {
         return result;
     }
     
     if (textMatches(m_text, contract)) {
-        result = std::make_shared<SearchResult>();
+        result = new SearchResult();
         result->setId(AbstractModifyingItem::getId());
         result->setInformation(getText());
         return result;
     }
     
     if (textMatches(m_altText, contract)) {
-        result = std::make_shared<SearchResult>();
+        result = new SearchResult();
         result->setId(AbstractModifyingItem::getId());
         result->setInformation(getAltText());
         return result;
@@ -109,7 +109,7 @@ std::shared_ptr<SearchResult> LinkImpl::searchText(const SearchContract& contrac
     return nullptr;
 }
 
-void LinkImpl::writeCoords(const std::shared_ptr<FileManipulator>& fileManipulator,
+void LinkImpl::writeCoords(const FileManipulator* fileManipulator,
                           const std::string& linkDir) {
     const std::string coordsDir = linkDir + "/" + COORDS_DIR_NAME;
     fileManipulator->createDir(coordsDir,
@@ -127,7 +127,7 @@ void LinkImpl::readCoords(const std::string& linkDir) {
     m_coords.read(coordsDir);
 }
 
-void LinkImpl::writeLink(const std::shared_ptr<FileManipulator>& fileManipulator,
+void LinkImpl::writeLink(const FileManipulator* fileManipulator,
                         const std::string& linksDir) {
     const std::string linkDir = linksDir + "/" + AbstractModifyingItem::getId();
     
@@ -298,7 +298,7 @@ void LinkImpl::readLink(const std::string& linkDir) {
     readModifications(linkDir);
 }
 
-std::string LinkImpl::addObserver(std::shared_ptr<NLBObserver> observer) {
+std::string LinkImpl::addObserver(NLBObserver* observer) {
     return m_observerHandler.addObserver(observer);
 }
 

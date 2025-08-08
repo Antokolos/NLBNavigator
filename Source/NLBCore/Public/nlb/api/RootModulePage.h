@@ -14,7 +14,7 @@ class NonLinearBook;
  */
 class RootModulePage : public Page {
 public:
-    RootModulePage(std::shared_ptr<NonLinearBook> nlb, const std::string& pageId);
+    RootModulePage(NonLinearBook* nlb, const std::string& pageId);
 
     // Image related methods
     std::string getImageFileName() const override;
@@ -56,7 +56,7 @@ public:
     std::string getModuleConstrId() const override;
     std::string getModuleName() const override;
     bool isModuleExternal() const override;
-    std::shared_ptr<NonLinearBook> getModule() const override;
+    NonLinearBook* getModule() const override;
 
     // Autowire related methods
     bool isAutowire() const override;
@@ -77,13 +77,13 @@ public:
     std::string getId() const override;
     std::string getFullId() const override;
     bool isDeleted() const override;
-    std::shared_ptr<IdentifiableItem> getParent() const override;
+    IdentifiableItem* getParent() const override;
     bool hasDeletedParent() const override;
-    std::shared_ptr<NonLinearBook> getCurrentNLB() const override;
-    std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
-    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override;
+    NonLinearBook* getCurrentNLB() const override;
+    SearchResult* searchText(const SearchContract& contract) const override;
+    virtual std::vector<Modification*> getModifications() const override;
     virtual bool hasNoModifications() const override { return true; }
-    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return nullptr; }
+    virtual Modification* getModificationById(const std::string& modId) const override { return nullptr; }
 
     // Методы из NodeItem
     virtual std::string getDefaultTagId() const override { return DEFAULT_TAG_ID; }
@@ -91,16 +91,16 @@ public:
     virtual std::string getFill() const override { return nlb::Constants::EMPTY_STRING; }
     virtual std::string getTextColor() const override { return nlb::Constants::EMPTY_STRING; }
     virtual std::vector<std::string> getContainedObjIds() const override { return std::vector<std::string>(); }
-    virtual std::shared_ptr<Coords> getCoords() const override { return std::make_shared<CoordsLw>(); }
-    virtual std::vector<std::shared_ptr<Link>> getLinks() const override { return std::vector<std::shared_ptr<Link>>(); }
-    virtual std::shared_ptr<Link> getLinkById(const std::string& id) const override { return nullptr; }
+    virtual Coords* getCoords() const override { return new CoordsLw(); }
+    virtual std::vector<Link*> getLinks() const override { return std::vector<Link*>(); }
+    virtual Link* getLinkById(const std::string& id) const override { return nullptr; }
     virtual std::string getExternalHierarchy() const override { return nlb::Constants::EMPTY_STRING; }
 
-    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override { return nlb::Constants::EMPTY_STRING; }
+    virtual std::string addObserver(NLBObserver* observer) override { return nlb::Constants::EMPTY_STRING; }
     virtual void removeObserver(const std::string& observerId) override {}
     virtual void notifyObservers() override {}
 
 private:
-    std::shared_ptr<NonLinearBook> m_nlb;
+    NonLinearBook* m_nlb;
     std::string m_pageId;
 };

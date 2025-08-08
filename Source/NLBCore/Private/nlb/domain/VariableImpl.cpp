@@ -46,7 +46,7 @@ VariableImpl::VariableImpl()
     , m_value(DEFAULT_VALUE) {
 }
 
-VariableImpl::VariableImpl(std::shared_ptr<NonLinearBook> currentNLB)
+VariableImpl::VariableImpl(NonLinearBook* currentNLB)
     : AbstractIdentifiableItem(currentNLB)
     , m_type(Type::VAR)
     , m_dataType(DEFAULT_DATATYPE)
@@ -55,8 +55,8 @@ VariableImpl::VariableImpl(std::shared_ptr<NonLinearBook> currentNLB)
     , m_value(DEFAULT_VALUE) {
 }
 
-VariableImpl::VariableImpl(const std::shared_ptr<Variable>& variable, 
-                           std::shared_ptr<NonLinearBook> currentNLB)
+VariableImpl::VariableImpl(const Variable* variable,
+                           NonLinearBook* currentNLB)
     : AbstractIdentifiableItem(variable, currentNLB)
     , m_type(variable->getType())
     , m_dataType(variable->getDataType())
@@ -65,7 +65,7 @@ VariableImpl::VariableImpl(const std::shared_ptr<Variable>& variable,
     , m_value(variable->getValue()) {
 }
 
-VariableImpl::VariableImpl(std::shared_ptr<NonLinearBook> currentNLB,
+VariableImpl::VariableImpl(NonLinearBook* currentNLB,
                            Type type,
                            DataType dataType,
                            const std::string& name,
@@ -79,7 +79,7 @@ VariableImpl::VariableImpl(std::shared_ptr<NonLinearBook> currentNLB,
     , m_value(value) {
 }
 
-void VariableImpl::copy(const std::shared_ptr<Variable>& variable) {
+void VariableImpl::copy(const Variable* variable) {
     AbstractIdentifiableItem::copy(variable);
     m_type = variable->getType();
     m_dataType = variable->getDataType();
@@ -88,13 +88,13 @@ void VariableImpl::copy(const std::shared_ptr<Variable>& variable) {
     m_value = variable->getValue();
 }
 
-std::shared_ptr<SearchResult> VariableImpl::searchText(const SearchContract& contract) const {
+SearchResult* VariableImpl::searchText(const SearchContract& contract) const {
     auto result = AbstractIdentifiableItem::searchText(contract);
     if (result) {
         return result;
     }
     
-    result = std::make_shared<SearchResult>();
+    result = new SearchResult();
     if (m_name != DEFAULT_NAME && textMatches(m_name, contract)) {
         result->setId(getId());
         result->setInformation(m_name);

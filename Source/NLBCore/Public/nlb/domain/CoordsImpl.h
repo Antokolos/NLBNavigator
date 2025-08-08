@@ -79,7 +79,7 @@ public:
      * @throw NLBFileManipulationException On file manipulation errors
      * @throw NLBVCSException On version control errors
      */
-    void writeCoords(FileManipulator& fileManipulator, const std::string& coordsDir);
+    void writeCoords(const FileManipulator& fileManipulator, const std::string& coordsDir);
 
     /*!
      * @brief Reads coordinates from files

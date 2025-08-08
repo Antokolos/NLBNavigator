@@ -6,18 +6,18 @@ Clipboard& Clipboard::singleton() {
     return instance;
 }
 
-std::shared_ptr<NonLinearBookImpl> Clipboard::getNonLinearBook() const {
+NonLinearBookImpl* Clipboard::getNonLinearBook() const {
     return m_nonLinearBook;
 }
 
-void Clipboard::setNonLinearBook(std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+void Clipboard::setNonLinearBook(NonLinearBookImpl* nonLinearBook) {
     m_nonLinearBook = nonLinearBook;
 }
 
-// void Clipboard::reset() {
-//     setNonLinearBook(nullptr);
-// }
-
 void Clipboard::reset() {
-    m_nonLinearBook.reset();
+    setNonLinearBook(nullptr);
 }
+
+//void Clipboard::reset() {
+//    m_nonLinearBook.reset();
+//}

@@ -25,7 +25,7 @@ const std::string AbstractNodeItem::TEXTCOLOR_FILE_NAME = "txtcolor";
 AbstractNodeItem::ResizeNodeCommand::ResizeNodeCommand(
         AbstractNodeItem* nodeItem,
         Orientation orientation, double deltaX, double deltaY,
-        const std::vector<std::shared_ptr<Link>>& adjacentLinks)
+        const std::vector<Link*>& adjacentLinks)
     : m_nodeItem(nodeItem)
     , m_orientation(orientation)
     , m_deltaX(deltaX)
@@ -50,7 +50,7 @@ void AbstractNodeItem::ResizeNodeCommand::revert() {
 }
 
 // AddLinkCommand implementation
-AbstractNodeItem::AddLinkCommand::AddLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<LinkImpl> link)
+AbstractNodeItem::AddLinkCommand::AddLinkCommand(AbstractNodeItem* nodeItem, LinkImpl* link)
     : m_nodeItem(nodeItem), m_link(link) {
 }
 
@@ -80,9 +80,9 @@ void AbstractNodeItem::AddLinkCommand::revert() {
 }
 
 // DeleteLinkCommand implementation
-AbstractNodeItem::DeleteLinkCommand::DeleteLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<Link> link)
+AbstractNodeItem::DeleteLinkCommand::DeleteLinkCommand(AbstractNodeItem* nodeItem, Link* link)
     : m_nodeItem(nodeItem)
-    , m_link(std::static_pointer_cast<LinkImpl>(link))
+    , m_link((LinkImpl*) (link))
     , m_previousDeletedState(m_link->AbstractIdentifiableItem::isDeleted()) {
 }
 
@@ -125,28 +125,28 @@ AbstractNodeItem::AbstractNodeItem()
     , m_stroke(DEFAULT_STROKE)
     , m_fill(DEFAULT_FILL)
     , m_textColor(DEFAULT_TEXTCOLOR)
-    , m_coords(std::make_shared<CoordsImpl>())
-    , m_observerHandler(std::make_shared<ObserverHandler>()) {
+    , m_coords(new CoordsImpl())
+    , m_observerHandler(new ObserverHandler()) {
 }
 
-AbstractNodeItem::AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB)
+AbstractNodeItem::AbstractNodeItem(NonLinearBook* currentNLB)
     : AbstractModifyingItem(currentNLB)
     , m_defaultTagId(DEFAULT_TAG_ID)
     , m_stroke(DEFAULT_STROKE)
     , m_fill(DEFAULT_FILL)
     , m_textColor(DEFAULT_TEXTCOLOR)
-    , m_coords(std::make_shared<CoordsImpl>())
-    , m_observerHandler(std::make_shared<ObserverHandler>()) {
+    , m_coords(new CoordsImpl())
+    , m_observerHandler(new ObserverHandler()) {
 }
 
-AbstractNodeItem::AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB, float left, float top)
+AbstractNodeItem::AbstractNodeItem(NonLinearBook* currentNLB, float left, float top)
     : AbstractModifyingItem(currentNLB)
     , m_defaultTagId(DEFAULT_TAG_ID)
     , m_stroke(DEFAULT_STROKE)
     , m_fill(DEFAULT_FILL)
     , m_textColor(DEFAULT_TEXTCOLOR)
-    , m_coords(std::make_shared<CoordsImpl>())
-    , m_observerHandler(std::make_shared<ObserverHandler>()) {
+    , m_coords(new CoordsImpl())
+    , m_observerHandler(new ObserverHandler()) {
     
     m_coords->setLeft(left);
     m_coords->setTop(top);
@@ -155,15 +155,15 @@ AbstractNodeItem::AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB, fl
 }
 
 AbstractNodeItem::AbstractNodeItem(
-        const std::shared_ptr<NodeItem>& nodeItem,
-        std::shared_ptr<NonLinearBook> currentNLB)
+        const NodeItem* nodeItem,
+        NonLinearBook* currentNLB)
     : AbstractModifyingItem(nodeItem, currentNLB)
     , m_defaultTagId(nodeItem->getDefaultTagId())
     , m_stroke(nodeItem->getStroke())
     , m_fill(nodeItem->getFill())
     , m_textColor(nodeItem->getTextColor())
-    , m_coords(std::make_shared<CoordsImpl>())
-    , m_observerHandler(std::make_shared<ObserverHandler>()) {
+    , m_coords(new CoordsImpl())
+    , m_observerHandler(new ObserverHandler()) {
     
     auto coords = nodeItem->getCoords();
     m_coords->setHeight(coords->getHeight());
@@ -172,7 +172,7 @@ AbstractNodeItem::AbstractNodeItem(
     m_coords->setTop(coords->getTop());
     
     for (const auto& link : nodeItem->getLinks()) {
-        auto linkImpl = std::static_pointer_cast<LinkImpl>(link);
+        auto linkImpl = (LinkImpl*) (link);
         m_links.push_back(linkImpl);
     }
     
@@ -180,7 +180,7 @@ AbstractNodeItem::AbstractNodeItem(
 }
 
 void AbstractNodeItem::applyLinkSortingOrder(const std::vector<std::string>& sortingOrder) {
-    std::vector<std::shared_ptr<LinkImpl>> sortedLinks;
+    std::vector<LinkImpl*> sortedLinks;
     // TODO: Optimize sorting
     for (const auto& linkId : sortingOrder) {
         auto it = std::find_if(m_links.begin(), m_links.end(),
@@ -218,12 +218,12 @@ std::vector<std::string> AbstractNodeItem::getContainedObjIds() const {
     return m_containedObjIds;
 }
 
-std::shared_ptr<Coords> AbstractNodeItem::getCoords() const {
+Coords* AbstractNodeItem::getCoords() const {
     return m_coords;
 }
 
-std::vector<std::shared_ptr<Link>> AbstractNodeItem::getLinks() const {
-    std::vector<std::shared_ptr<Link>> result;
+std::vector<Link*> AbstractNodeItem::getLinks() const {
+    std::vector<Link*> result;
     result.reserve(m_links.size());
     for (const auto& link : m_links) {
         result.push_back(link);
@@ -231,7 +231,7 @@ std::vector<std::shared_ptr<Link>> AbstractNodeItem::getLinks() const {
     return result;
 }
 
-std::shared_ptr<Link> AbstractNodeItem::getLinkById(const std::string& linkId) const {
+Link* AbstractNodeItem::getLinkById(const std::string& linkId) const {
     auto it = std::find_if(m_links.begin(), m_links.end(),
                           [&linkId](const auto& link) {
                               return link->getId() == linkId;
@@ -250,15 +250,15 @@ void AbstractNodeItem::removeLinkById(const std::string& linkId) {
 }
 
 void AbstractNodeItem::filterTargetLinkList(
-    std::shared_ptr<AbstractNodeItem> target,
-    std::shared_ptr<AbstractNodeItem> source,
+    AbstractNodeItem* target,
+    AbstractNodeItem* source,
     const std::vector<std::string>& linkIdsToBeExcluded) {
     
     target->m_links.clear();
     for (const auto& link : source->m_links) {
         if (std::find(linkIdsToBeExcluded.begin(), linkIdsToBeExcluded.end(), 
                      link->getId()) == linkIdsToBeExcluded.end()) {
-            target->m_links.push_back(std::make_shared<LinkImpl>(target, link));
+            target->m_links.push_back(new LinkImpl(target, link));
                      }
     }
 }
@@ -293,7 +293,7 @@ std::string AbstractNodeItem::getExternalHierarchy() const {
     return result;
 }
 
-std::string AbstractNodeItem::addObserver(std::shared_ptr<NLBObserver> observer) {
+std::string AbstractNodeItem::addObserver(NLBObserver* observer) {
     return m_observerHandler ? m_observerHandler->addObserver(observer) : nlb::Constants::EMPTY_STRING;
 }
 
@@ -309,9 +309,9 @@ void AbstractNodeItem::notifyObservers() {
     }
 }
 
-void AbstractNodeItem::writeNodeItemProperties(const std::shared_ptr<FileManipulator>& fileManipulator,
+void AbstractNodeItem::writeNodeItemProperties(const FileManipulator* fileManipulator,
                                            const std::string& nodeDir,
-                                           std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+                                           NonLinearBookImpl* nonLinearBook) {
     fileManipulator->writeOptionalString(nodeDir, STROKE_FILE_NAME, m_stroke, DEFAULT_STROKE);
     fileManipulator->writeOptionalString(nodeDir, FILL_FILE_NAME, m_fill, DEFAULT_FILL);
     fileManipulator->writeOptionalString(nodeDir, TEXTCOLOR_FILE_NAME, m_textColor, DEFAULT_TEXTCOLOR);
@@ -353,29 +353,27 @@ void AbstractNodeItem::readNodeItemProperties(const std::string& nodeDir) {
     readLinks(nodeDir);
 }
 
-std::shared_ptr<NLBCommand> AbstractNodeItem::createPageCommand(float left, float top) {
+NLBCommand* AbstractNodeItem::createPageCommand(float left, float top) {
     // Создаем команду для добавления новой страницы
-    auto currentNLB = std::static_pointer_cast<NonLinearBookImpl>(getCurrentNLB());
-    auto newPageImpl = std::make_shared<PageImpl>(getCurrentNLB(), left, top);
+    auto currentNLB = (NonLinearBookImpl*)(getCurrentNLB());
+    auto newPageImpl = new PageImpl(getCurrentNLB(), left, top);
     
     // Возвращаем команду добавления страницы в книгу
     return currentNLB->createAddPageCommand(newPageImpl);
 }
 
-std::shared_ptr<NLBCommand> AbstractNodeItem::createLinkCommand(const std::string& pageId) {
+NLBCommand* AbstractNodeItem::createLinkCommand(const std::string& pageId) {
     // Создаем новую ссылку на указанную страницу
-    // Явно используем shared_from_this от AbstractNodeItem
-    auto self = std::enable_shared_from_this<AbstractNodeItem>::shared_from_this();
-    auto newLink = std::make_shared<LinkImpl>(self, pageId);
+    auto newLink = new LinkImpl(this, pageId);
     
     // Возвращаем команду добавления ссылки
     return createAddLinkCommand(newLink);
 }
 
-std::shared_ptr<NLBCommand> AbstractNodeItem::createObjCommand(float left, float top) {
+NLBCommand* AbstractNodeItem::createObjCommand(float left, float top) {
     // Создаем команду для добавления нового объекта
-    auto currentNLB = std::static_pointer_cast<NonLinearBookImpl>(getCurrentNLB());
-    auto newObjImpl = std::make_shared<ObjImpl>(getCurrentNLB(), left, top);
+    auto currentNLB = (NonLinearBookImpl*)(getCurrentNLB());
+    auto newObjImpl = new ObjImpl(getCurrentNLB(), left, top);
     
     // Устанавливаем контейнер объекта как текущий узел
     newObjImpl->setContainerId(getId());
@@ -384,10 +382,10 @@ std::shared_ptr<NLBCommand> AbstractNodeItem::createObjCommand(float left, float
     return currentNLB->createAddObjCommand(newObjImpl);
 }
 
-void AbstractNodeItem::writeToFile(const std::shared_ptr<FileManipulator>& fileManipulator, 
+void AbstractNodeItem::writeToFile(const FileManipulator* fileManipulator,
                                  const std::string& nodesDir,
                                  const std::string& nodeDirName,
-                                 std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+                                 NonLinearBookImpl* nonLinearBook) {
     const std::string nodeDir = nodesDir + "/" + nodeDirName;
     
     if (AbstractIdentifiableItem::isDeleted()) {
@@ -430,7 +428,7 @@ void AbstractNodeItem::validateLinks() {
     notifyObservers();
 }
 
-void AbstractNodeItem::writeLinkOrderFile(const std::shared_ptr<FileManipulator>& fileManipulator,
+void AbstractNodeItem::writeLinkOrderFile(const FileManipulator* fileManipulator,
                                         const std::string& nodeDir) {
     std::string content;
     const int lastElemIndex = static_cast<int>(m_links.size()) - 1;
@@ -453,9 +451,9 @@ void AbstractNodeItem::writeLinkOrderFile(const std::shared_ptr<FileManipulator>
     }
 }
 
-void AbstractNodeItem::writeContent(const std::shared_ptr<FileManipulator>& fileManipulator,
+void AbstractNodeItem::writeContent(const FileManipulator* fileManipulator,
                                   const std::string& nodeDir,
-                                  std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+                                  NonLinearBookImpl* nonLinearBook) {
     std::string content;
     const int lastElemIndex = static_cast<int>(m_containedObjIds.size()) - 1;
     
@@ -471,17 +469,17 @@ void AbstractNodeItem::writeContent(const std::shared_ptr<FileManipulator>& file
     }
 }
 
-void AbstractNodeItem::writeCoords(const std::shared_ptr<FileManipulator>& fileManipulator,
+void AbstractNodeItem::writeCoords(const FileManipulator* fileManipulator,
                                  const std::string& nodeDir) {
     const std::string coordsDir = FileUtils::combinePath(nodeDir, COORDS_DIR_NAME);
     fileManipulator->createDir(coordsDir,
         "Cannot create node coords directory for node with Id = " + AbstractIdentifiableItem::getId());
     
-    auto coordsImpl = std::static_pointer_cast<CoordsImpl>(m_coords);
+    auto coordsImpl = (CoordsImpl*) (m_coords);
     coordsImpl->writeCoords(*fileManipulator, coordsDir);
 }
 
-void AbstractNodeItem::writeLinks(const std::shared_ptr<FileManipulator>& fileManipulator,
+void AbstractNodeItem::writeLinks(const FileManipulator* fileManipulator,
                                 const std::string& nodeDir) {
     const std::string linksDir = FileUtils::combinePath(nodeDir, LINKS_DIR_NAME);
     
@@ -522,7 +520,7 @@ void AbstractNodeItem::readCoords(const std::string& nodeDir) {
         );
     }
     
-    auto coordsImpl = std::static_pointer_cast<CoordsImpl>(m_coords);
+    auto coordsImpl = (CoordsImpl*) (m_coords);
     coordsImpl->read(coordsDir);
 }
 
@@ -552,8 +550,7 @@ void AbstractNodeItem::readLinks(const std::string& nodeDir) {
             for (const auto& linkDirName : linkDirs) {
                 std::string linkDir = FileUtils::combinePath(linksDir, linkDirName);
                 if (FileUtils::isDirectory(linkDir)) {
-                    auto self = std::enable_shared_from_this<AbstractNodeItem>::shared_from_this();
-                    auto link = std::make_shared<LinkImpl>(self);
+                    auto link = new LinkImpl(this);
                     link->readLink(linkDir);
                     m_links.push_back(link);
                 }
@@ -565,8 +562,7 @@ void AbstractNodeItem::readLinks(const std::string& nodeDir) {
 
             for (const auto& linkDirName : linkDirsSortedList) {
                 std::string linkDir = FileUtils::combinePath(linksDir, linkDirName);
-                auto self = std::enable_shared_from_this<AbstractNodeItem>::shared_from_this();
-                auto link = std::make_shared<LinkImpl>(self);
+                auto link = new LinkImpl(this);
                 link->readLink(linkDir);
                 m_links.push_back(link);
             }
@@ -574,12 +570,12 @@ void AbstractNodeItem::readLinks(const std::string& nodeDir) {
     }
 }
 
-void AbstractNodeItem::addLink(std::shared_ptr<LinkImpl> link) {
+void AbstractNodeItem::addLink(LinkImpl* link) {
     m_links.push_back(link);
     notifyObservers();
 }
 
-std::vector<std::shared_ptr<LinkImpl>> AbstractNodeItem::getLinkImpls() const {
+std::vector<LinkImpl*> AbstractNodeItem::getLinkImpls() const {
     return m_links;
 }
 
@@ -588,7 +584,7 @@ size_t AbstractNodeItem::getLinkCount() const {
 }
 
 void AbstractNodeItem::resizeNode(Orientation orientation, double deltaX, double deltaY) {
-    auto coordsImpl = std::static_pointer_cast<CoordsImpl>(m_coords);
+    auto coordsImpl = (CoordsImpl*) (m_coords);
     float width;
     float height;
     float ignoredDistance = 0.0f;
@@ -647,35 +643,35 @@ void AbstractNodeItem::removeContainedObjId(const std::string& containedObjId) {
     }
 }
 
-std::shared_ptr<AbstractNodeItem::ResizeNodeCommand> AbstractNodeItem::createResizeNodeCommand(
+AbstractNodeItem::ResizeNodeCommand* AbstractNodeItem::createResizeNodeCommand(
         Orientation orientation, double deltaX, double deltaY,
-        const std::vector<std::shared_ptr<Link>>& adjacentLinks) {
-    return std::make_shared<ResizeNodeCommand>(this, orientation, deltaX, deltaY, adjacentLinks);
+        const std::vector<Link*>& adjacentLinks) {
+    return new ResizeNodeCommand(this, orientation, deltaX, deltaY, adjacentLinks);
 }
 
-std::shared_ptr<AbstractNodeItem::ResizeNodeCommand> AbstractNodeItem::createResizeNodeCommand(
+AbstractNodeItem::ResizeNodeCommand* AbstractNodeItem::createResizeNodeCommand(
         Orientation orientation, double deltaX, double deltaY) {
-    return std::make_shared<ResizeNodeCommand>(this, orientation, deltaX, deltaY, 
-                                             std::vector<std::shared_ptr<Link>>());
+    return new ResizeNodeCommand(this, orientation, deltaX, deltaY,
+                                             std::vector<Link*>());
 }
 
-std::shared_ptr<AbstractNodeItem::AddLinkCommand> AbstractNodeItem::createAddLinkCommand(
-        std::shared_ptr<LinkImpl> link) {
-    return std::make_shared<AddLinkCommand>(this, link);
+AbstractNodeItem::AddLinkCommand* AbstractNodeItem::createAddLinkCommand(
+        LinkImpl* link) {
+    return new AddLinkCommand(this, link);
 }
 
-std::shared_ptr<AbstractNodeItem::DeleteLinkCommand> AbstractNodeItem::createDeleteLinkCommand(
-        std::shared_ptr<Link> link) {
-    return std::make_shared<DeleteLinkCommand>(this, link);
+AbstractNodeItem::DeleteLinkCommand* AbstractNodeItem::createDeleteLinkCommand(
+        Link* link) {
+    return new DeleteLinkCommand(this, link);
 }
 
-std::shared_ptr<AbstractNodeItem::SortLinksCommand> AbstractNodeItem::createSortLinksCommand(
-        const std::vector<std::shared_ptr<Link>>& newSortingOrder) {
+AbstractNodeItem::SortLinksCommand* AbstractNodeItem::createSortLinksCommand(
+        const std::vector<Link*>& newSortingOrder) {
     std::vector<std::string> idsSortingOrder;
     for (const auto& link : newSortingOrder) {
         idsSortingOrder.push_back(link->getId());
     }
-    return std::make_shared<SortLinksCommand>(this, idsSortingOrder);
+    return new SortLinksCommand(this, idsSortingOrder);
 }
 
 void AbstractNodeItem::setDefaultTagId(const std::string& defaultTagId) {

@@ -92,7 +92,7 @@ public:
     void pull(
         const std::string& userName, 
         const std::string& password, 
-        std::shared_ptr<ProgressData> progressData
+        ProgressData* progressData
     ) override;
 
     /*!
@@ -104,6 +104,6 @@ public:
     void push(
         const std::string& userName, 
         const std::string& password, 
-        std::shared_ptr<ProgressData> progressData
+        ProgressData* progressData
     ) override;
 };

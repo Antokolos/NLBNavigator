@@ -72,11 +72,11 @@ std::set<std::string> DummyNLB::getUsedSounds() const {
     return std::set<std::string>();
 }
 
-const std::vector<std::shared_ptr<MediaFile>>& DummyNLB::getImageFiles() const {
+const std::vector<MediaFile*>& DummyNLB::getImageFiles() const {
     return m_imageFiles;
 }
 
-const std::vector<std::shared_ptr<MediaFile>>& DummyNLB::getSoundFiles() const {
+const std::vector<MediaFile*>& DummyNLB::getSoundFiles() const {
     return m_soundFiles;
 }
 
@@ -84,22 +84,22 @@ void DummyNLB::exportMedia(
     bool isRoot,
     const std::string& mainExportDir,
     const std::string& mediaDirName,
-    const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
+    const std::vector<MediaFile*>& mediaFiles,
     MediaFile::Type mediaType
 ) const {
     // do nothing
 }
 
-std::map<std::string, std::shared_ptr<Page>> DummyNLB::getPages() const {
-    return std::map<std::string, std::shared_ptr<Page>>();
+std::map<std::string, Page*> DummyNLB::getPages() const {
+    return std::map<std::string, Page*>();
 }
 
-std::map<std::string, std::shared_ptr<Page>> DummyNLB::getDownwardPagesHeirarchy() const {
-    return std::map<std::string, std::shared_ptr<Page>>();
+std::map<std::string, Page*> DummyNLB::getDownwardPagesHeirarchy() const {
+    return std::map<std::string, Page*>();
 }
 
-std::map<std::string, std::shared_ptr<Page>> DummyNLB::getUpwardPagesHeirarchy() const {
-    return std::map<std::string, std::shared_ptr<Page>>();
+std::map<std::string, Page*> DummyNLB::getUpwardPagesHeirarchy() const {
+    return std::map<std::string, Page*>();
 }
 
 std::vector<std::string> DummyNLB::getAutowiredPagesIds() const {
@@ -114,19 +114,19 @@ bool DummyNLB::isAutowired(const std::string& pageId) const {
     return false;
 }
 
-std::shared_ptr<Page> DummyNLB::getPageById(const std::string& id) const {
+Page* DummyNLB::getPageById(const std::string& id) const {
     return nullptr;
 }
 
-std::map<std::string, std::shared_ptr<Obj>> DummyNLB::getObjs() const {
-    return std::map<std::string, std::shared_ptr<Obj>>();
+std::map<std::string, Obj*> DummyNLB::getObjs() const {
+    return std::map<std::string, Obj*>();
 }
 
-std::shared_ptr<Obj> DummyNLB::getObjById(const std::string& objId) const {
+Obj* DummyNLB::getObjById(const std::string& objId) const {
     return nullptr;
 }
 
-std::shared_ptr<Page> DummyNLB::createFilteredPage(
+Page* DummyNLB::createFilteredPage(
     const std::string& sourceId,
     const History& history
 ) const {
@@ -140,12 +140,12 @@ bool DummyNLB::load(
     throw std::runtime_error("This operation is unsupported!");
 }
 
-std::shared_ptr<Variable> DummyNLB::getVariableById(const std::string& varId) const {
+Variable* DummyNLB::getVariableById(const std::string& varId) const {
     return nullptr;
 }
 
-std::vector<std::shared_ptr<Variable>> DummyNLB::getVariables() const {
-    return std::vector<std::shared_ptr<Variable>>();
+std::vector<Variable*> DummyNLB::getVariables() const {
+    return std::vector<Variable*>();
 }
 
 SearchResultTableModel DummyNLB::getLeafs(const std::string& modulePageId) const {
@@ -179,7 +179,7 @@ NonLinearBook::VariableStatistics DummyNLB::getVariableStatistics() const {
     return VariableStatistics();
 }
 
-std::shared_ptr<NonLinearBook> DummyNLB::getParentNLB() const {
+NonLinearBook* DummyNLB::getParentNLB() const {
     return nullptr;
 }
 
@@ -187,15 +187,15 @@ bool DummyNLB::isDummy() const {
     return true;
 }
 
-std::shared_ptr<Page> DummyNLB::getParentPage() const {
+Page* DummyNLB::getParentPage() const {
     return nullptr;
 }
 
-std::map<std::string, std::shared_ptr<NonLinearBook>> DummyNLB::getExternalModules() const {
-    return std::map<std::string, std::shared_ptr<NonLinearBook>>();
+std::map<std::string, NonLinearBook*> DummyNLB::getExternalModules() const {
+    return std::map<std::string, NonLinearBook*>();
 }
 
-std::shared_ptr<NonLinearBook> DummyNLB::findExternalModule(const std::string& name) const {
+NonLinearBook* DummyNLB::findExternalModule(const std::string& name) const {
     return nullptr;
 }
 

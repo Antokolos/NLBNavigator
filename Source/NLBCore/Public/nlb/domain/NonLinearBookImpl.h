@@ -39,7 +39,7 @@ class NLBCommand;
 class ModificationsTableModel;
 class LinksTableModel;
 
-class NonLinearBookImpl : public NonLinearBook, public std::enable_shared_from_this<NonLinearBookImpl> {
+class NonLinearBookImpl : public NonLinearBook {
 public:
     // Константы
     static const std::string PAGES_DIR_NAME;
@@ -81,10 +81,10 @@ public:
 
     // Конструкторы
     NonLinearBookImpl();
-    NonLinearBookImpl(std::shared_ptr<NonLinearBook> parentNLB, std::shared_ptr<Page> parentPage);
-    NonLinearBookImpl(const std::shared_ptr<NonLinearBook>& source, 
-                     std::shared_ptr<NonLinearBook> parentNLB, 
-                     std::shared_ptr<Page> parentPage);
+    NonLinearBookImpl(NonLinearBook* parentNLB, Page* parentPage);
+    NonLinearBookImpl(const NonLinearBook* source,
+                     NonLinearBook* parentNLB,
+                     Page* parentPage);
 
     // Деструктор
     virtual ~NonLinearBookImpl() = default;
@@ -108,28 +108,28 @@ public:
 
     std::set<std::string> getUsedImages() const override;
     std::set<std::string> getUsedSounds() const override;
-	const std::vector<std::shared_ptr<MediaFile>>& getImageFiles() const override;
-	const std::vector<std::shared_ptr<MediaFile>>& getSoundFiles() const override;
+    const std::vector<MediaFile*>& getImageFiles() const override;
+    const std::vector<MediaFile*>& getSoundFiles() const override;
 
-    std::map<std::string, std::shared_ptr<Page>> getPages() const override;
-    std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() const override;
-    std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() const override;
+    std::map<std::string, Page*> getPages() const override;
+    std::map<std::string, Page*> getDownwardPagesHeirarchy() const override;
+    std::map<std::string, Page*> getUpwardPagesHeirarchy() const override;
     std::vector<std::string> getAutowiredPagesIds() const override;
     std::vector<std::string> getParentGlobalAutowiredPagesIds() const override;
     bool isAutowired(const std::string& pageId) const override;
-    std::shared_ptr<Page> getPageById(const std::string& id) const override;
+    Page* getPageById(const std::string& id) const override;
 
-    std::map<std::string, std::shared_ptr<Obj>> getObjs() const override;
-    std::shared_ptr<Obj> getObjById(const std::string& objId) const override;
+    std::map<std::string, Obj*> getObjs() const override;
+    Obj* getObjById(const std::string& objId) const override;
 
 	void exportMedia(
 		bool recursively,
 		const std::string& mediaDir,
 		const std::string& exportDir,
-		const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
+        const std::vector<MediaFile*>& mediaFiles,
 		MediaFile::Type type) const override;
                     
-    std::shared_ptr<Page> createFilteredPage(const std::string& pageId, 
+    Page* createFilteredPage(const std::string& pageId,
                                            const History& history) const override;
                                            
     SearchResultTableModel getVariables(const std::string& filter) const override;
@@ -140,27 +140,27 @@ public:
     SearchResultTableModel checkBook(const std::string& filter) const override;
     BookStatistics getBookStatistics() const override;
     VariableStatistics getVariableStatistics() const override;
-    std::shared_ptr<NonLinearBook> getParentNLB() const override;
+    NonLinearBook* getParentNLB() const override;
     bool isDummy() const override;
-    std::shared_ptr<Page> getParentPage() const override;
-    std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() const override;
-    std::shared_ptr<NonLinearBook> findExternalModule(const std::string& moduleId) const override;
+    Page* getParentPage() const override;
+    std::map<std::string, NonLinearBook*> getExternalModules() const override;
+    NonLinearBook* findExternalModule(const std::string& moduleId) const override;
     std::map<std::string, Variable::DataType> getVariableDataTypes() const override;
     std::map<std::string, std::string> getMediaToConstraintMap() const override;
     std::map<std::string, std::string> getMediaRedirectsMap() const override;
     std::map<std::string, MediaExportParameters> getMediaExportParametersMap() const override;
     std::map<std::string, bool> getMediaFlagsMap() const override;
 
-    std::vector<std::shared_ptr<Variable>> getVariables() const override;
-    std::shared_ptr<Variable> getVariableById(const std::string& id) const override;
-    void save(std::shared_ptr<FileManipulator> fileManipulator, std::shared_ptr<ProgressData> progressData,
-              std::shared_ptr<PartialProgressData> partialProgressData);
+    std::vector<Variable*> getVariables() const override;
+    Variable* getVariableById(const std::string& id) const override;
+    void save(FileManipulator* fileManipulator, ProgressData* progressData,
+              PartialProgressData* partialProgressData);
     bool load(const std::string& path, const ProgressData& progressData) override;
 
     // Дополнительные методы
     void clear();
-    bool loadAndSetParent(const std::string& path, std::shared_ptr<NonLinearBook> parentNLB, std::shared_ptr<Page> parentPage);
-    void append(const std::shared_ptr<NonLinearBook>& source, bool generateNewIds, bool overwriteTheme);
+    bool loadAndSetParent(const std::string& path, NonLinearBook* parentNLB, Page* parentPage);
+    void append(const NonLinearBook* source, bool generateNewIds, bool overwriteTheme);
 
     // Методы экспорта
     void exportImages(bool isRoot, const std::string& exportDir) const;
@@ -186,13 +186,13 @@ public:
 	 * @brief Add image file to collection
 	 * @param imageFile MediaFileImpl to add
 	 */
-	void addImageFile(std::shared_ptr<MediaFileImpl> imageFile);
+    void addImageFile(MediaFileImpl* imageFile);
     
 	/*!
 	 * @brief Add sound file to collection  
 	 * @param soundFile MediaFileImpl to add
 	 */
-	void addSoundFile(std::shared_ptr<MediaFileImpl> soundFile);
+    void addSoundFile(MediaFileImpl* soundFile);
 	
     void copyAndAddImageFile(const FileManipulator& fileManipulator, const std::string& imageFile, const std::string& imageFileName);
     void copyAndAddSoundFile(const FileManipulator& fileManipulator, const std::string& soundFile, const std::string& soundFileName);
@@ -200,15 +200,15 @@ public:
     void removeSoundFile(const FileManipulator& fileManipulator, const std::string& soundFileName);
 
     // Методы получения реализаций
-    std::shared_ptr<PageImpl> getPageImplById(const std::string& id) const;
-    std::shared_ptr<ObjImpl> getObjImplById(const std::string& id) const;
-    std::shared_ptr<VariableImpl> getVariableImplById(const std::string& id) const;
+    PageImpl* getPageImplById(const std::string& id) const;
+    ObjImpl* getObjImplById(const std::string& id) const;
+    VariableImpl* getVariableImplById(const std::string& id) const;
 
     // Вспомогательные методы для получения связанных элементов
-    std::vector<std::shared_ptr<Link>> getAssociatedLinks(std::shared_ptr<NodeItem> nodeItem);
+    std::vector<Link*> getAssociatedLinks(NodeItem* nodeItem);
 
     // Методы для работы с командами (заглушки)
-    std::shared_ptr<NLBCommand> createUpdateModificationsCommand(std::shared_ptr<ModifyingItem> modifyingItem, std::shared_ptr<ModificationsTableModel> modificationsTableModel);
+    NLBCommand* createUpdateModificationsCommand(ModifyingItem* modifyingItem, ModificationsTableModel* modificationsTableModel);
     void setStartPoint(const std::string& startPoint);
     void setLicense(const std::string& license);
     void setTheme(Theme theme);
@@ -222,40 +222,40 @@ public:
     void setSuppressSound(bool suppressSound);
     void setRootDir(const std::string& rootDir);
     int getEffectivePagesCountForSave() const;
-    std::shared_ptr<NLBCommand> createUpdateBookPropertiesCommand(const std::string& license, Theme theme, const std::string& language, const std::string& title, const std::string& author, const std::string& version, const std::string& perfectGameAchievementName, bool fullAutowire, bool suppressMedia, bool suppressSound, bool propagateToSubmodules);
-    std::shared_ptr<NLBCommand> createUpdatePageCommand(std::shared_ptr<Page> page, const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName, bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName, const std::string& pageDefTagVariableValue, std::shared_ptr<MultiLangString> pageText, std::shared_ptr<MultiLangString> pageCaptionText, Theme theme, bool useCaption, bool useMPL, const std::string& moduleName, bool moduleExternal, std::shared_ptr<MultiLangString> traverseText, bool autoTraverse, bool autoReturn, std::shared_ptr<MultiLangString> returnText, const std::string& returnPageId, const std::string& moduleConsraintVariableName, bool autowire, std::shared_ptr<MultiLangString> autowireInText, std::shared_ptr<MultiLangString> autowireOutText, bool autoIn, bool needsAction, bool autoOut, const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave, bool autosFirst, std::shared_ptr<LinksTableModel> linksTableModel);
-    std::shared_ptr<NLBCommand> createChangeStartPointCommand(const std::string& startPoint);
-    std::shared_ptr<NLBCommand> createCopyCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
-    std::shared_ptr<NLBCommand> createDeleteCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
-    std::shared_ptr<NLBCommand> createPasteCommand(std::shared_ptr<NonLinearBookImpl> nlbToPaste);
+    NLBCommand* createUpdateBookPropertiesCommand(const std::string& license, Theme theme, const std::string& language, const std::string& title, const std::string& author, const std::string& version, const std::string& perfectGameAchievementName, bool fullAutowire, bool suppressMedia, bool suppressSound, bool propagateToSubmodules);
+    NLBCommand* createUpdatePageCommand(Page* page, const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName, bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName, const std::string& pageDefTagVariableValue, MultiLangString* pageText, MultiLangString* pageCaptionText, Theme theme, bool useCaption, bool useMPL, const std::string& moduleName, bool moduleExternal, MultiLangString* traverseText, bool autoTraverse, bool autoReturn, MultiLangString* returnText, const std::string& returnPageId, const std::string& moduleConsraintVariableName, bool autowire, MultiLangString* autowireInText, MultiLangString* autowireOutText, bool autoIn, bool needsAction, bool autoOut, const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave, bool autosFirst, LinksTableModel* linksTableModel);
+    NLBCommand* createChangeStartPointCommand(const std::string& startPoint);
+    NLBCommand* createCopyCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
+    NLBCommand* createDeleteCommand(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
+    NLBCommand* createPasteCommand(NonLinearBookImpl* nlbToPaste);
 
     // Методы загрузки и сохранения
-    void writeNLB(std::shared_ptr<FileManipulator> fileManipulator, const std::string& nlbDir, std::shared_ptr<PartialProgressData> partialProgressData);
+    void writeNLB(FileManipulator* fileManipulator, const std::string& nlbDir, PartialProgressData* partialProgressData);
     void readNLB(const std::string& nlbDir);
-    std::shared_ptr<NLBCommand> createAddPageCommand(const std::shared_ptr<PageImpl>& pageImpl);
-    std::shared_ptr<NLBCommand> createAddObjCommand(const std::shared_ptr<ObjImpl>& objImpl);
-    std::shared_ptr<NLBCommand> createDeletePageCommand(std::shared_ptr<PageImpl> page,
-                                                        const std::vector<std::shared_ptr<Link>>& adjacentLinks);
-    std::shared_ptr<NLBCommand> createDeleteObjCommand(std::shared_ptr<ObjImpl> obj,
-                                                       const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+    NLBCommand* createAddPageCommand(const PageImpl* pageImpl);
+    NLBCommand* createAddObjCommand(const ObjImpl* objImpl);
+    NLBCommand* createDeletePageCommand(PageImpl* page,
+                                                        const std::vector<Link*>& adjacentLinks);
+    NLBCommand* createDeleteObjCommand(ObjImpl* obj,
+                                                       const std::vector<Link*>& adjacentLinks);
 
 private:
     // Приватные методы
     void readBookProperties(const std::string& rootDir);
-    void writeBookProperties(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir);
-    void loadPages(const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
-    void loadObjs(const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
-    void loadVariables(const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
-    void loadMediaFiles(const std::string& rootDir, const std::string& mediaDirName, std::vector<std::shared_ptr<MediaFile>>& mediaFiles);
-    void writeMediaFiles(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, const std::vector<std::shared_ptr<MediaFile>>& mediaFiles, const std::string& mediaDirName);
-    void writePages(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
-    void writeObjs(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
-    void writeVariables(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir, std::shared_ptr<PartialProgressData> partialProgressData);
+    void writeBookProperties(FileManipulator* fileManipulator, const std::string& rootDir);
+    void loadPages(const std::string& rootDir, PartialProgressData* partialProgressData);
+    void loadObjs(const std::string& rootDir, PartialProgressData* partialProgressData);
+    void loadVariables(const std::string& rootDir, PartialProgressData* partialProgressData);
+    void loadMediaFiles(const std::string& rootDir, const std::string& mediaDirName, std::vector<MediaFile*>& mediaFiles);
+    void writeMediaFiles(FileManipulator* fileManipulator, const std::string& rootDir, const std::vector<MediaFile*>& mediaFiles, const std::string& mediaDirName);
+    void writePages(FileManipulator* fileManipulator, const std::string& rootDir, PartialProgressData* partialProgressData);
+    void writeObjs(FileManipulator* fileManipulator, const std::string& rootDir, PartialProgressData* partialProgressData);
+    void writeVariables(FileManipulator* fileManipulator, const std::string& rootDir, PartialProgressData* partialProgressData);
 
-    void writePageOrderFile(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir);
-    void writeObjOrderFile(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir);
-    void writeVarOrderFile(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir);
-    void writeAutowiredPagesFile(std::shared_ptr<FileManipulator> fileManipulator, const std::string& rootDir);
+    void writePageOrderFile(FileManipulator* fileManipulator, const std::string& rootDir);
+    void writeObjOrderFile(FileManipulator* fileManipulator, const std::string& rootDir);
+    void writeVarOrderFile(FileManipulator* fileManipulator, const std::string& rootDir);
+    void writeAutowiredPagesFile(FileManipulator* fileManipulator, const std::string& rootDir);
 
     std::vector<std::string> createSortedDirList(const std::vector<std::string>& dirs, const std::vector<std::string>& orderList, const std::string& entityName);
     void validateVariableReferences();
@@ -265,7 +265,7 @@ private:
     void addUsedImages(std::set<std::string>& usedImages, const std::string& imageFileName) const;
     void addUsedSounds(std::set<std::string>& usedSounds, const std::string& soundFileName) const;
 
-	std::shared_ptr<MediaFileImpl> copyMediaFile(
+    MediaFileImpl* copyMediaFile(
 		FileManipulator& fileManipulator,
 		const std::string& sourceFile,
 		const std::string& fileName,
@@ -280,8 +280,8 @@ private:
 	);
 
     // Переменные-члены
-    std::shared_ptr<NonLinearBook> m_parentNLB;
-    std::shared_ptr<Page> m_parentPage;
+    NonLinearBook* m_parentNLB;
+    Page* m_parentPage;
     std::string m_startPoint;
     Theme m_theme;
     std::string m_language;
@@ -295,12 +295,12 @@ private:
     bool m_suppressSound;
     std::string m_rootDir;
     
-    std::map<std::string, std::shared_ptr<PageImpl>> m_pages;
+    std::map<std::string, PageImpl*> m_pages;
     std::vector<std::string> m_autowiredPages;
-    std::map<std::string, std::shared_ptr<ObjImpl>> m_objs;
-    std::map<std::string, std::shared_ptr<VariableImpl>> m_variables;
-	std::vector<std::shared_ptr<MediaFile>> m_imageFiles;
-	std::vector<std::shared_ptr<MediaFile>> m_soundFiles;
+    std::map<std::string, ObjImpl*> m_objs;
+    std::map<std::string, VariableImpl*> m_variables;
+    std::vector<MediaFile*> m_imageFiles;
+    std::vector<MediaFile*> m_soundFiles;
 
     // Карты для медиафайлов
     std::map<std::string, std::string> m_mediaToConstraintMap;
@@ -312,10 +312,10 @@ private:
 	class AddPageCommand : public NLBCommand {
 	private:
 	    NonLinearBookImpl* m_nlb;
-	    std::shared_ptr<PageImpl> m_page;
+        PageImpl* m_page;
 	    
 	public:
-	    AddPageCommand(NonLinearBookImpl* nlb, std::shared_ptr<PageImpl> page);
+        AddPageCommand(NonLinearBookImpl* nlb, PageImpl* page);
 	    void execute() override;
 	    void revert() override;
 	};
@@ -323,10 +323,10 @@ private:
 	class AddObjCommand : public NLBCommand {
 	private:
 	    NonLinearBookImpl* m_nlb;
-	    std::shared_ptr<ObjImpl> m_obj;
+        ObjImpl* m_obj;
 	    
 	public:
-	    AddObjCommand(NonLinearBookImpl* nlb, std::shared_ptr<ObjImpl> obj);
+        AddObjCommand(NonLinearBookImpl* nlb, ObjImpl* obj);
 	    void execute() override;
 	    void revert() override;
 	};
@@ -334,13 +334,13 @@ private:
 	class DeletePageCommand : public NLBCommand {
 	private:
 	    NonLinearBookImpl* m_nlb;
-	    std::shared_ptr<PageImpl> m_page;
-	    std::vector<std::shared_ptr<Link>> m_adjacentLinks;
+        PageImpl* m_page;
+        std::vector<Link*> m_adjacentLinks;
 	    bool m_wasDeleted;
 	    
 	public:
-	    DeletePageCommand(NonLinearBookImpl* nlb, std::shared_ptr<PageImpl> page, 
-	                     const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+        DeletePageCommand(NonLinearBookImpl* nlb, PageImpl* page,
+                         const std::vector<Link*>& adjacentLinks);
 	    void execute() override;
 	    void revert() override;
 	};
@@ -348,13 +348,13 @@ private:
 	class DeleteObjCommand : public NLBCommand {
 	private:
 	    NonLinearBookImpl* m_nlb;
-	    std::shared_ptr<ObjImpl> m_obj;
-	    std::vector<std::shared_ptr<Link>> m_adjacentLinks;
+        ObjImpl* m_obj;
+        std::vector<Link*> m_adjacentLinks;
 	    bool m_wasDeleted;
 	    
 	public:
-	    DeleteObjCommand(NonLinearBookImpl* nlb, std::shared_ptr<ObjImpl> obj,
-	                    const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+        DeleteObjCommand(NonLinearBookImpl* nlb, ObjImpl* obj,
+                        const std::vector<Link*>& adjacentLinks);
 	    void execute() override;
 	    void revert() override;
 	};
@@ -373,12 +373,12 @@ private:
 	class PasteCommand : public NLBCommand {
 	private:
 	    NonLinearBookImpl* m_nlb;
-	    std::shared_ptr<NonLinearBookImpl> m_nlbToPaste;
+        NonLinearBookImpl* m_nlbToPaste;
 	    std::vector<std::string> m_addedPageIds;
 	    std::vector<std::string> m_addedObjIds;
 	    
 	public:
-	    PasteCommand(NonLinearBookImpl* nlb, std::shared_ptr<NonLinearBookImpl> nlbToPaste);
+        PasteCommand(NonLinearBookImpl* nlb, NonLinearBookImpl* nlbToPaste);
 	    void execute() override;
 	    void revert() override;
 	};
@@ -425,13 +425,13 @@ private:
 
 	class UpdateModificationsCommand : public NLBCommand {
 	private:
-	    std::shared_ptr<ModifyingItem> m_modifyingItem;
-	    std::shared_ptr<ModificationsTableModel> m_modificationsTableModel;
-	    std::vector<std::shared_ptr<ModificationImpl>> m_oldModifications;
+        ModifyingItem* m_modifyingItem;
+        ModificationsTableModel* m_modificationsTableModel;
+        std::vector<ModificationImpl*> m_oldModifications;
 	    
 	public:
-	    UpdateModificationsCommand(std::shared_ptr<ModifyingItem> modifyingItem,
-	                              std::shared_ptr<ModificationsTableModel> modificationsTableModel);
+        UpdateModificationsCommand(ModifyingItem* modifyingItem,
+                                  ModificationsTableModel* modificationsTableModel);
 	    void execute() override;
 	    void revert() override;
 	};

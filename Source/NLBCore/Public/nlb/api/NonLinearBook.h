@@ -170,30 +170,30 @@ public:
      */
     virtual std::set<std::string> getUsedSounds() const = 0;
 
-    virtual const std::vector<std::shared_ptr<MediaFile>>& getImageFiles() const = 0;
-    virtual const std::vector<std::shared_ptr<MediaFile>>& getSoundFiles() const = 0;
+    virtual const std::vector<MediaFile*>& getImageFiles() const = 0;
+    virtual const std::vector<MediaFile*>& getSoundFiles() const = 0;
 
     virtual void exportMedia(
         bool isRoot,
         const std::string& mainExportDir,
         const std::string& mediaDirName,
-        const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
+        const std::vector<MediaFile*>& mediaFiles,
         MediaFile::Type mediaType
     ) const = 0;
 
-    virtual std::map<std::string, std::shared_ptr<Page>> getPages() const = 0;
-    virtual std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() const = 0;
-    virtual std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() const = 0;
+    virtual std::map<std::string, Page*> getPages() const = 0;
+    virtual std::map<std::string, Page*> getDownwardPagesHeirarchy() const = 0;
+    virtual std::map<std::string, Page*> getUpwardPagesHeirarchy() const = 0;
     virtual std::vector<std::string> getAutowiredPagesIds() const = 0;
     virtual std::vector<std::string> getParentGlobalAutowiredPagesIds() const = 0;
     virtual bool isAutowired(const std::string& pageId) const = 0;
-    virtual std::shared_ptr<Page> getPageById(const std::string& id) const = 0;
-    virtual std::map<std::string, std::shared_ptr<Obj>> getObjs() const = 0;
-    virtual std::shared_ptr<Obj> getObjById(const std::string& objId) const = 0;
-    virtual std::shared_ptr<Page> createFilteredPage(const std::string& sourceId, const History& history) const = 0;
+    virtual Page* getPageById(const std::string& id) const = 0;
+    virtual std::map<std::string, Obj*> getObjs() const = 0;
+    virtual Obj* getObjById(const std::string& objId) const = 0;
+    virtual Page* createFilteredPage(const std::string& sourceId, const History& history) const = 0;
     virtual bool load(const std::string& path, const ProgressData& progressData) = 0;
-    virtual std::shared_ptr<Variable> getVariableById(const std::string& varId) const = 0;
-    virtual std::vector<std::shared_ptr<Variable>> getVariables() const = 0;
+    virtual Variable* getVariableById(const std::string& varId) const = 0;
+    virtual std::vector<Variable*> getVariables() const = 0;
     virtual SearchResultTableModel getLeafs(const std::string& modulePageId) const = 0;
     virtual SearchResultTableModel searchText(const SearchContract& searchContract, const std::string& modulePageId) const = 0;
     virtual SearchResultTableModel getVariables(const std::string& modulePageId) const = 0;
@@ -201,15 +201,15 @@ public:
     virtual SearchResultTableModel checkBook(const std::string& modulePageId) const = 0;
     virtual BookStatistics getBookStatistics() const = 0;
     virtual VariableStatistics getVariableStatistics() const = 0;
-    virtual std::shared_ptr<NonLinearBook> getParentNLB() const = 0;
+    virtual NonLinearBook* getParentNLB() const = 0;
     virtual bool isDummy() const = 0;
-    virtual std::shared_ptr<Page> getParentPage() const = 0;
-    virtual std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() const = 0;
+    virtual Page* getParentPage() const = 0;
+    virtual std::map<std::string, NonLinearBook*> getExternalModules() const = 0;
 
     /*!
      * Find external module recursively by name (if not found in the current book, will find in the parent book and so on)
      */
-    virtual std::shared_ptr<NonLinearBook> findExternalModule(const std::string& name) const = 0;
+    virtual NonLinearBook* findExternalModule(const std::string& name) const = 0;
 
     virtual std::map<std::string, Variable::DataType> getVariableDataTypes() const = 0;
     virtual std::map<std::string, std::string> getMediaToConstraintMap() const = 0;

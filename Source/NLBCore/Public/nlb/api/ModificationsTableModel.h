@@ -29,8 +29,8 @@ public:
      * @param modifications List of modifications to populate the model
      */
     ModificationsTableModel(
-        std::shared_ptr<NonLinearBook> nlb,
-        const std::vector<std::shared_ptr<Modification>>& modifications
+        NonLinearBook* nlb,
+        const std::vector<Modification*>& modifications
     );
 
     /*!
@@ -103,7 +103,7 @@ public:
      * @param rowIndex Row index
      * @return Shared pointer to the modification
      */
-    std::shared_ptr<ModificationImpl> getModificationAt(int rowIndex) const;
+    ModificationImpl* getModificationAt(int rowIndex) const;
 
     /*!
      * @brief Gets the modification IDs at specified rows
@@ -119,7 +119,7 @@ public:
      *
      * @param modifyingItem Item that owns the modification
      */
-    void add(std::shared_ptr<ModifyingItem> modifyingItem);
+    void add(ModifyingItem* modifyingItem);
 
     /*!
      * @brief Removes modifications with the specified IDs
@@ -133,14 +133,14 @@ public:
      *
      * @return Vector of modifications
      */
-    std::vector<std::shared_ptr<Modification>> getModifications() const;
+    std::vector<Modification*> getModifications() const;
 
     /*!
      * @brief Gets the variable map
      *
      * @return Map of variable IDs to variables
      */
-    std::map<std::string, std::shared_ptr<Variable>> getVariableMap() const;
+    std::map<std::string, Variable*> getVariableMap() const;
 
     /*!
      * @brief Moves the modification at specified row up
@@ -163,7 +163,7 @@ private:
      * @param modification Modification to update
      * @param dataType Data type string
      */
-    void setDataType(std::shared_ptr<ModificationImpl> modification, const std::string& dataType);
+    void setDataType(ModificationImpl* modification, const std::string& dataType);
 
     /*!
      * @brief Gets the variable associated with a modification
@@ -171,7 +171,7 @@ private:
      * @param modification Modification
      * @return The associated variable or nullptr
      */
-    std::shared_ptr<VariableImpl> getVariable(const std::shared_ptr<Modification>& modification) const;
+    VariableImpl* getVariable(const Modification* modification) const;
 
     /*!
      * @brief Gets the expression associated with a modification
@@ -179,9 +179,9 @@ private:
      * @param modification Modification
      * @return The associated expression or nullptr
      */
-    std::shared_ptr<VariableImpl> getExpression(const std::shared_ptr<Modification>& modification) const;
+    VariableImpl* getExpression(const Modification* modification) const;
 
-    std::shared_ptr<NonLinearBook> m_currentNLB;
-    std::vector<std::shared_ptr<ModificationImpl>> m_modifications;
-    std::map<std::string, std::shared_ptr<VariableImpl>> m_variableMap;
+    NonLinearBook* m_currentNLB;
+    std::vector<ModificationImpl*> m_modifications;
+    std::map<std::string, VariableImpl*> m_variableMap;
 };

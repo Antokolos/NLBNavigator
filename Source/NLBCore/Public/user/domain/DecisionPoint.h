@@ -37,11 +37,11 @@ public:
     void setVisitCount(int visitCount) { m_visitCount = visitCount; }
     void incVisitCount() { ++m_visitCount; }
 
-    const std::vector<std::shared_ptr<DecisionPoint>>& getPossibleNextDecisionPoints() const {
+    const std::vector<DecisionPoint*>& getPossibleNextDecisionPoints() const {
         return m_possibleNextDecisionPoints;
     }
 
-    void addPossibleNextDecisionPoint(const std::shared_ptr<DecisionPoint>& decisionPoint);
+    void addPossibleNextDecisionPoint(const DecisionPoint* decisionPoint);
     void clearPossibleNextDecisionPoints() { m_possibleNextDecisionPoints.clear(); }
 
     bool isLinkInfo() const { return !StringHelper::isEmpty(m_linkId); }
@@ -57,7 +57,7 @@ private:
     std::string m_linkId;
     std::string m_text;
     int m_visitCount;
-    std::vector<std::shared_ptr<DecisionPoint>> m_possibleNextDecisionPoints;
+    std::vector<DecisionPoint*> m_possibleNextDecisionPoints;
 };
 
 // Custom hash function for std::unordered_map/set support

@@ -32,13 +32,13 @@ public:
      * \brief Gets the list of decision points
      * \return List of decision points
      */
-    const std::list<std::shared_ptr<DecisionPoint>>& getDecisionPoints() const;
+    const std::list<DecisionPoint*>& getDecisionPoints() const;
 
     /*!
      * \brief Sets the list of decision points
      * \param decisionPoints New list of decision points
      */
-    void setDecisionPoints(const std::list<std::shared_ptr<DecisionPoint>>& decisionPoints);
+    void setDecisionPoints(const std::list<DecisionPoint*>& decisionPoints);
 
     /*!
      * \brief Sets the text for the decision point to be made
@@ -56,13 +56,13 @@ public:
      * \param decisionPoint Decision point to predict count for
      * \return Predicted count
      */
-    int predictDecisionCount(const std::shared_ptr<DecisionPoint>& decisionPoint) const;
+    int predictDecisionCount(const DecisionPoint* decisionPoint) const;
 
     /*!
      * \brief Gets the decision point that is pending
      * \return Pointer to the pending decision point
      */
-    std::shared_ptr<DecisionPoint> getDecisionPointToBeMade() const;
+    DecisionPoint* getDecisionPointToBeMade() const;
 
     /*!
      * \brief Suggests a decision point to be made
@@ -72,7 +72,7 @@ public:
      * \throw DecisionException if the suggested decision cannot be found
      */
     void suggestDecisionPointToBeMade(
-        const std::shared_ptr<DecisionPoint>& decisionPointToBeMade,
+        const DecisionPoint* decisionPointToBeMade,
         bool rollback,
         int visitCount
     );
@@ -85,7 +85,7 @@ public:
     bool containsLink(const Link& link) const;
 
 private:
-    std::list<std::shared_ptr<DecisionPoint>> m_decisionPoints;
-    std::shared_ptr<DecisionPoint> m_decisionPointToBeMade;
+    std::list<DecisionPoint*> m_decisionPoints;
+    DecisionPoint* m_decisionPointToBeMade;
     std::string m_decisionPointToBeMadeText;
 };

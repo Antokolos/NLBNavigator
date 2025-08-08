@@ -26,14 +26,14 @@ public:
      * \param vcsAdapter Version control system adapter
      * \param mainRoot Main root directory path
      */
-    FileManipulator(std::shared_ptr<VCSAdapter> vcsAdapter, const std::string& mainRoot);
+    FileManipulator(VCSAdapter* vcsAdapter, const std::string& mainRoot);
 
     /*!
      * \brief Deletes file or directory with VCS handling
      * \param filePath Path to file or directory to delete
      * \return true if deletion was successful
      */
-    bool deleteFileOrDir(const std::string& filePath);
+    bool deleteFileOrDir(const std::string& filePath) const;
 
     /*!
      * \brief Writes required string content to file
@@ -44,7 +44,7 @@ public:
      */
     void writeRequiredString(const std::string& rootDir,
                            const std::string& fileName,
-                           const std::string& content);
+                           const std::string& content) const;
 
     /*!
      * \brief Writes optional string content to file
@@ -57,7 +57,7 @@ public:
     void writeOptionalString(const std::string& rootDir,
                            const std::string& fileName,
                            const std::string& content,
-                           const std::string& defaultContent);
+                           const std::string& defaultContent) const;
 
     /*!
      * \brief Writes multilanguage string content
@@ -68,7 +68,7 @@ public:
      */
     void writeOptionalMultiLangString(const std::string& mlsRootDir,
                                     const MultiLangString& content,
-                                    const MultiLangString& defaultContent);
+                                    const MultiLangString& defaultContent) const;
 
     /*!
      * \brief Creates directory with error handling
@@ -77,7 +77,7 @@ public:
      * \throws NLBIOException if directory creation fails
      */
     void createDir(const std::string& dirPath,
-                  const std::string& errorMessage);
+                  const std::string& errorMessage) const;
 
     /*!
      * \brief Copies file with error handling
@@ -88,7 +88,7 @@ public:
      */
     void copyFile(const std::string& target,
                  const std::string& source,
-                 const std::string& errorMessage);
+                 const std::string& errorMessage) const;
 
     /*!
      * \brief Creates empty file
@@ -96,14 +96,14 @@ public:
      * \param errorMessage Error message if creation fails
      * \throws NLBIOException if file creation fails
      */
-    void createFile(const std::string& filePath, const std::string& errorMessage);
+    void createFile(const std::string& filePath, const std::string& errorMessage) const;
 
     /*!
      * \brief Gets path relative to main root directory
      * \param filePath Absolute file path
      * \return Path relative to main root
      */
-    std::string getPathRelativeToMainRoot(const std::string& filePath);
+    std::string getPathRelativeToMainRoot(const std::string& filePath) const;
 
     /*!
      * \brief Reads required file as string
@@ -164,7 +164,7 @@ public:
 private:
     static const int BLOCK_SIZE = 1024; ///< Buffer size for file operations
 
-    std::shared_ptr<VCSAdapter> m_vcsAdapter; ///< Version control system adapter
+    VCSAdapter* m_vcsAdapter; ///< Version control system adapter
     std::string m_mainRoot; ///< Main root directory path
 
     /*!
@@ -172,5 +172,5 @@ private:
      * \param filePath Path of file to add
      * \param isNewFile true if file is newly created
      */
-    void addToVCS(const std::string& filePath, bool isNewFile);
+    void addToVCS(const std::string& filePath, bool isNewFile) const;
 };

@@ -37,15 +37,15 @@ public:
      * @brief Constructor with current NonLinearBook
      * @param currentNLB Current NonLinearBook instance
      */
-    explicit VariableImpl(std::shared_ptr<NonLinearBook> currentNLB);
+    explicit VariableImpl(NonLinearBook* currentNLB);
 
     /*!
      * @brief Copy constructor
      * @param variable Source variable to copy
      * @param currentNLB Current NonLinearBook instance
      */
-    VariableImpl(const std::shared_ptr<Variable>& variable, 
-                 std::shared_ptr<NonLinearBook> currentNLB);
+    VariableImpl(const Variable* variable,
+                 NonLinearBook* currentNLB);
 
     /*!
      * @brief Detailed constructor
@@ -56,7 +56,7 @@ public:
      * @param value Variable value
      * @param target Variable target
      */
-    VariableImpl(std::shared_ptr<NonLinearBook> currentNLB,
+    VariableImpl(NonLinearBook* currentNLB,
                  Type type,
                  DataType dataType,
                  const std::string& name,
@@ -67,7 +67,7 @@ public:
      * @brief Copy method to copy variable properties
      * @param variable Source variable to copy from
      */
-    void copy(const std::shared_ptr<Variable>& variable);
+    void copy(const Variable* variable);
 
     // Getter methods from Variable interface
     Type getType() const override { return m_type; }
@@ -88,7 +88,7 @@ public:
      * @param contract Search contract
      * @return SearchResult pointer
      */
-    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
+    virtual SearchResult* searchText(const SearchContract& contract) const override;
 
     /*!
      * @brief Read variable from file directory
@@ -114,7 +114,7 @@ public:
     virtual std::string getId() const override { return AbstractIdentifiableItem::getId(); }
     virtual std::string getFullId() const override { return AbstractIdentifiableItem::getFullId(); }
     virtual bool isDeleted() const override { return AbstractIdentifiableItem::isDeleted(); }
-    virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractIdentifiableItem::getParent(); }
+    virtual IdentifiableItem* getParent() const override { return AbstractIdentifiableItem::getParent(); }
     virtual bool hasDeletedParent() const override { return AbstractIdentifiableItem::hasDeletedParent(); }
-    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractIdentifiableItem::getCurrentNLB(); }
+    virtual NonLinearBook* getCurrentNLB() const override { return AbstractIdentifiableItem::getCurrentNLB(); }
 };

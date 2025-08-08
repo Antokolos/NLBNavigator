@@ -4,7 +4,7 @@ CommandChainCommand::CommandChainCommand() {
 }
 
 // Добавление команды в цепочку
-void CommandChainCommand::addCommand(std::shared_ptr<NLBCommand> command) {
+void CommandChainCommand::addCommand(NLBCommand* command) {
     m_commands.push_back(command);
 }
 

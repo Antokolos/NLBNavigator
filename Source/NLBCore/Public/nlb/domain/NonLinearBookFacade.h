@@ -38,55 +38,55 @@ class MultiLangString;
 /*!
  * @brief Facade class for managing non-linear book operations
  */
-class NonLinearBookFacade : public NLBObservable, public std::enable_shared_from_this<NonLinearBookFacade> {
+class NonLinearBookFacade : public NLBObservable {
 private:
-    std::shared_ptr<NonLinearBookImpl> m_nlb;
-    std::map<std::string, std::shared_ptr<PageImpl>> m_newPagesPool;
-    std::map<std::string, std::shared_ptr<ObjImpl>> m_newObjsPool;
-    std::map<std::string, std::shared_ptr<LinkImpl>> m_newLinksPool;
+    NonLinearBookImpl* m_nlb;
+    std::map<std::string, PageImpl*> m_newPagesPool;
+    std::map<std::string, ObjImpl*> m_newObjsPool;
+    std::map<std::string, LinkImpl*> m_newLinksPool;
     
     /*!
      * @brief Main undo manager
      */
-    std::shared_ptr<UndoManager> m_undoManager;
+    UndoManager* m_undoManager;
     
     /*!
      * @brief Items' own undo managers
      */
-    std::map<std::string, std::shared_ptr<UndoManager>> m_undoManagersMap;
+    std::map<std::string, UndoManager*> m_undoManagersMap;
     
-    std::shared_ptr<ObserverHandler> m_observerHandler;
-    std::shared_ptr<VCSAdapter> m_vcsAdapter;
-    std::shared_ptr<Author> m_author;
+    ObserverHandler* m_observerHandler;
+    VCSAdapter* m_vcsAdapter;
+    Author* m_author;
     bool m_rootFacade;
-    std::shared_ptr<NonLinearBookFacade> m_parentFacade;
-    std::vector<std::shared_ptr<NonLinearBookFacade>> m_moduleFacades;
+    NonLinearBookFacade* m_parentFacade;
+    std::vector<NonLinearBookFacade*> m_moduleFacades;
 
-    std::shared_ptr<UndoManager> getUndoManagerByItemId(const std::string& id);
+    UndoManager* getUndoManagerByItemId(const std::string& id);
     void clearUndos();
     void clearPools();
     void exportMedia(const std::string& exportDir);
     void exportAdditionalMedia(const std::string& exportDir);
-    void updateNodeCoords(std::shared_ptr<CommandChainCommand> commandChain, std::shared_ptr<NodeItem> nodeItem, float deltaX, float deltaY);
-    void offsetContainedObjects(std::shared_ptr<CommandChainCommand> commandChain, std::shared_ptr<NodeItem> container, float deltaX, float deltaY);
-    void saveNLB(bool create, std::shared_ptr<ProgressData> progressData);
+    void updateNodeCoords(CommandChainCommand* commandChain, NodeItem* nodeItem, float deltaX, float deltaY);
+    void offsetContainedObjects(CommandChainCommand* commandChain, NodeItem* container, float deltaX, float deltaY);
+    void saveNLB(bool create, ProgressData* progressData);
 
 public:
-    NonLinearBookFacade(std::shared_ptr<Author> author, std::shared_ptr<VCSAdapter> vcsAdapter);
-    NonLinearBookFacade(std::shared_ptr<NonLinearBookFacade> parentFacade, std::shared_ptr<Author> author, std::shared_ptr<VCSAdapter> vcsAdapter, std::shared_ptr<NonLinearBookImpl> nlb);
+    NonLinearBookFacade(Author* author, VCSAdapter* vcsAdapter);
+    NonLinearBookFacade(NonLinearBookFacade* parentFacade, Author* author, VCSAdapter* vcsAdapter, NonLinearBookImpl* nlb);
     virtual ~NonLinearBookFacade() = default;
 
     void createNewBook();
-    std::shared_ptr<NonLinearBookFacade> createModuleFacade(const std::string& modulePageId);
-    std::shared_ptr<NonLinearBookFacade> getMainFacade();
-    std::shared_ptr<NonLinearBookFacade> getParentFacade() { return m_parentFacade; }
-    std::shared_ptr<NonLinearBook> getNlb() { return std::static_pointer_cast<NonLinearBook>(m_nlb); }
+    NonLinearBookFacade* createModuleFacade(const std::string& modulePageId);
+    NonLinearBookFacade* getMainFacade();
+    NonLinearBookFacade* getParentFacade() { return m_parentFacade; }
+    NonLinearBook* getNlb() { return (NonLinearBook*) (m_nlb); }
 
     void clear();
     void clearUndosAndPools();
     void commit(const std::string& commitMessageText);
-    void pull(const std::string& userName, const std::string& password, std::shared_ptr<ProgressData> progressData);
-    void push(const std::string& userName, const std::string& password, std::shared_ptr<ProgressData> progressData);
+    void pull(const std::string& userName, const std::string& password, ProgressData* progressData);
+    void push(const std::string& userName, const std::string& password, ProgressData* progressData);
 
     void exportToChoiceScript(const std::string& exportDir);
     void exportToQSPTextFile(const std::string& exportDir);
@@ -99,7 +99,7 @@ public:
     void exportToVNSTEADFile(const std::string& exportDir);
     void exportToASMFile(const std::string& exportDir);
 
-    void updateModifications(std::shared_ptr<ModifyingItem> modifyingItem, std::shared_ptr<ModificationsTableModel> modificationsTableModel);
+    void updateModifications(ModifyingItem* modifyingItem, ModificationsTableModel* modificationsTableModel);
     void setMediaFileConstrId(MediaFile::Type mediaType, const std::string& fileName, const std::string& constrId);
     void setMediaFileRedirect(MediaFile::Type mediaType, const std::string& fileName, const std::string& redirect);
     void setMediaFileFlag(MediaFile::Type mediaType, const std::string& fileName, bool flag);
@@ -120,7 +120,7 @@ public:
     );
 
     void updatePage(
-        std::shared_ptr<Page> page,
+        Page* page,
         const std::string& imageFileName,
         bool imageBackground,
         bool imageAnimated,
@@ -129,22 +129,22 @@ public:
         const std::string& pageVariableName,
         const std::string& pageTimerVariableName,
         const std::string& pageDefTagVariableValue,
-        std::shared_ptr<MultiLangString> pageText,
-        std::shared_ptr<MultiLangString> pageCaptionText,
+        MultiLangString* pageText,
+        MultiLangString* pageCaptionText,
         Theme theme,
         bool useCaption,
         bool useMPL,
         const std::string& moduleName,
         bool moduleExternal,
-        std::shared_ptr<MultiLangString> traverseText,
+        MultiLangString* traverseText,
         bool autoTraverse,
         bool autoReturn,
-        std::shared_ptr<MultiLangString> returnText,
+        MultiLangString* returnText,
         const std::string& returnPageId,
         const std::string& moduleConsraintVariableName,
         bool autowire,
-        std::shared_ptr<MultiLangString> autowireInText,
-        std::shared_ptr<MultiLangString> autowireOutText,
+        MultiLangString* autowireInText,
+        MultiLangString* autowireOutText,
         bool autoIn,
         bool needsAction,
         bool autoOut,
@@ -153,24 +153,24 @@ public:
         bool globalAutowire,
         bool noSave,
         bool autosFirst,
-        std::shared_ptr<LinksTableModel> linksTableModel
+        LinksTableModel* linksTableModel
     );
 
     void updateLink(
-        std::shared_ptr<Link> link,
+        Link* link,
         const std::string& linkVariableName,
         const std::string& linkConstraintValue,
-        std::shared_ptr<MultiLangString> linkText,
-        std::shared_ptr<MultiLangString> linkAltText,
+        MultiLangString* linkText,
+        MultiLangString* linkAltText,
         bool autoFlag,
         bool once
     );
 
-    void updateNode(std::shared_ptr<NodeItem> nodeToUpdate);
-    void updateLink(std::shared_ptr<Link> linkToUpdate);
+    void updateNode(NodeItem* nodeToUpdate);
+    void updateLink(Link* linkToUpdate);
 
     void updateObj(
-        std::shared_ptr<Obj> obj,
+        Obj* obj,
         const std::string& objVariableName,
         const std::string& objDefTagVariableValue,
         const std::string& objConstraintValue,
@@ -181,10 +181,10 @@ public:
         bool soundSFX,
         bool animatedImage,
         bool suppressDsc,
-        std::shared_ptr<MultiLangString> objDisp,
-        std::shared_ptr<MultiLangString> objText,
-        std::shared_ptr<MultiLangString> objActText,
-        std::shared_ptr<MultiLangString> objNouseText,
+        MultiLangString* objDisp,
+        MultiLangString* objText,
+        MultiLangString* objActText,
+        MultiLangString* objNouseText,
         bool objIsGraphical,
         bool objIsShowOnCursor,
         bool objIsPreserved,
@@ -211,16 +211,16 @@ public:
         bool imageInInventory
     );
 
-    void updateLinkCoords(std::shared_ptr<Link> link, float left, float top);
-    void updateLinkCoords(std::shared_ptr<Link> link, float height);
+    void updateLinkCoords(Link* link, float left, float top);
+    void updateLinkCoords(Link* link, float height);
 
     void addImageFile(const std::string& imageFile, const std::string& imageFileName = "");
     void addSoundFile(const std::string& soundFile, const std::string& soundFileName = "");
     void removeImageFile(const std::string& imageFileName);
     void removeSoundFile(const std::string& soundFileName);
 
-    void resizeNode(std::shared_ptr<NodeItem> nodeItem, NodeItem::Orientation orientation, double deltaX, double deltaY);
-    void updateNodeCoords(std::shared_ptr<NodeItem> nodeItem, const std::set<std::shared_ptr<NodeItem>>& additionallyMovedItems, float deltaX, float deltaY);
+    void resizeNode(NodeItem* nodeItem, NodeItem::Orientation orientation, double deltaX, double deltaY);
+    void updateNodeCoords(NodeItem* nodeItem, const std::set<NodeItem*>& additionallyMovedItems, float deltaX, float deltaY);
     void changeContainer(const std::string& previousContainerId, const std::string& newContainerId, const std::string& objId);
     void changeStartPoint(const std::string& startPoint);
 
@@ -228,21 +228,21 @@ public:
     void copy(const std::vector<std::string>& pageIds, const std::vector<std::string>& objIds);
     void paste();
 
-    std::shared_ptr<Page> createPage(float left, float top);
-    void addPage(std::shared_ptr<Page> page);
-    std::shared_ptr<Obj> createObj(float left, float top);
-    void addObj(std::shared_ptr<Obj> obj);
-    std::shared_ptr<Link> createLink(std::shared_ptr<NodeItem> item, std::shared_ptr<NodeItem> target);
-    void addLink(std::shared_ptr<Link> link);
+    Page* createPage(float left, float top);
+    void addPage(Page* page);
+    Obj* createObj(float left, float top);
+    void addObj(Obj* obj);
+    Link* createLink(NodeItem* item, NodeItem* target);
+    void addLink(Link* link);
 
     bool hasChanges();
-    void save(bool create, std::shared_ptr<ProgressData> progressData);
-    void saveAs(const std::string& nlbFolder, std::shared_ptr<ProgressData> progressData);
-    void load(const std::string& path, std::shared_ptr<ProgressData> progressData);
+    void save(bool create, ProgressData* progressData);
+    void saveAs(const std::string& nlbFolder, ProgressData* progressData);
+    void load(const std::string& path, ProgressData* progressData);
 
-    void deleteNode(std::shared_ptr<NodeItem> nodeToDelete);
-    void deleteLink(std::shared_ptr<Link> link);
-    void invalidateAssociatedLinks(std::shared_ptr<NodeItem> nodeItem);
+    void deleteNode(NodeItem* nodeToDelete);
+    void deleteLink(Link* link);
+    void invalidateAssociatedLinks(NodeItem* nodeItem);
     void updateAllViews();
 
     bool canUndo();
@@ -256,7 +256,7 @@ public:
     void redoAll(const std::string& id);
 
     // NLBObservable interface implementation
-    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override;
+    virtual std::string addObserver(NLBObserver* observer) override;
     virtual void removeObserver(const std::string& observerId) override;
     virtual void notifyObservers() override;
 };

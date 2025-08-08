@@ -24,8 +24,8 @@ public:
      * @param deltaY The change in Y coordinate
      */
     UpdateNodeCoordsCommand(
-        std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-        std::shared_ptr<NodeItem> node,
+        NonLinearBookImpl* nonLinearBook,
+        NodeItem* node,
         float deltaX,
         float deltaY
     );
@@ -40,8 +40,8 @@ public:
      * @param height New height
      */
     UpdateNodeCoordsCommand(
-        std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-        std::shared_ptr<NodeItem> node,
+        NonLinearBookImpl* nonLinearBook,
+        NodeItem* node,
         float left,
         float top,
         float width,
@@ -63,12 +63,12 @@ private:
      * Helper constructor for initialization
      */
     UpdateNodeCoordsCommand(
-        std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-        std::shared_ptr<NodeItem> node
+        NonLinearBookImpl* nonLinearBook,
+        NodeItem* node
     );
 
-    std::shared_ptr<AbstractNodeItem> m_nodeItem;
-    std::vector<std::shared_ptr<Link>> m_associatedLinks;
+    AbstractNodeItem* m_nodeItem;
+    std::vector<Link*> m_associatedLinks;
     float m_left;
     float m_top;
     float m_height;

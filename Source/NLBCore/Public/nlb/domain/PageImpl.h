@@ -8,8 +8,7 @@
 #include <string>
 #include <vector>
 
-class PageImpl : public AbstractNodeItem, public Page, 
-                            public std::enable_shared_from_this<PageImpl> {
+class PageImpl : public AbstractNodeItem, public Page {
 public:
     /*!
      * @brief Default constructor
@@ -21,7 +20,7 @@ public:
      * @brief Constructor with current NonLinearBook
      * @param currentNLB Current NonLinearBook context
      */
-    explicit PageImpl(std::shared_ptr<NonLinearBook> currentNLB);
+    explicit PageImpl(NonLinearBook* currentNLB);
 
     /*!
      * @brief Constructor with coordinates and current NonLinearBook
@@ -29,7 +28,7 @@ public:
      * @param left Left coordinate
      * @param top Top coordinate
      */
-    PageImpl(std::shared_ptr<NonLinearBook> currentNLB, float left, float top);
+    PageImpl(NonLinearBook* currentNLB, float left, float top);
 
     /*!
      * @brief Copy constructor
@@ -37,8 +36,8 @@ public:
      * @param currentNLB Current NonLinearBook context
      * @param overwriteTheme Flag to overwrite theme
      */
-    PageImpl(const std::shared_ptr<Page>& source, 
-             std::shared_ptr<NonLinearBook> currentNLB, 
+    PageImpl(const Page* source,
+             NonLinearBook* currentNLB,
              bool overwriteTheme);
 
     // Getters and setters for various page attributes
@@ -117,8 +116,8 @@ public:
     void setTraverseText(const std::string& traverseText);
     void setReturnText(const std::string& returnText);
 
-    std::shared_ptr<NonLinearBook> getModule() const override;
-    std::shared_ptr<NonLinearBookImpl> getModuleImpl() const {return m_module; };
+    NonLinearBook* getModule() const override;
+    NonLinearBookImpl* getModuleImpl() const {return m_module; };
 
     void setAutoIn(bool autoIn);
     void setNeedsAction(bool needsAction);
@@ -153,10 +152,10 @@ public:
     std::string getAutowireInConstrId() const override;
     std::string getAutowireOutConstrId() const override;
 
-    void writePage(std::shared_ptr<FileManipulator> fileManipulator,
+    void writePage(FileManipulator* fileManipulator,
                    const std::string& pagesDir,
-                   std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-                   std::shared_ptr<PartialProgressData> partialProgressData);
+                   NonLinearBookImpl* nonLinearBook,
+                   PartialProgressData* partialProgressData);
 
     void readPage(const std::string& pageDir);
 
@@ -168,26 +167,26 @@ public:
      * @param visitedVars Variables to substitute
      * @return New filtered PageImpl
      */
-    std::shared_ptr<PageImpl> createFilteredCloneWithSubstitutions(
+    PageImpl* createFilteredCloneWithSubstitutions(
         const std::vector<std::string>& objIdsToBeExcluded,
         const std::vector<std::string>& linkIdsToBeExcluded,
-        const std::vector<std::shared_ptr<Link>>& linksToBeAdded,
-        std::map<std::string, std::shared_ptr<void>> visitedVars
+        const std::vector<Link*>& linksToBeAdded,
+        std::map<std::string, void*> visitedVars
     );
 
     // Методы из IdentifiableItem
     virtual std::string getId() const override { return AbstractIdentifiableItem::getId(); }
     virtual std::string getFullId() const override { return AbstractNodeItem::getFullId(); }
     virtual bool isDeleted() const override { return AbstractNodeItem::isDeleted(); }
-    virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractNodeItem::getParent(); }
+    virtual IdentifiableItem* getParent() const override { return AbstractNodeItem::getParent(); }
     virtual bool hasDeletedParent() const override { return AbstractNodeItem::hasDeletedParent(); }
-    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractNodeItem::getCurrentNLB(); }
-    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override { return AbstractNodeItem::searchText(contract); }
+    virtual NonLinearBook* getCurrentNLB() const override { return AbstractNodeItem::getCurrentNLB(); }
+    virtual SearchResult* searchText(const SearchContract& contract) const override { return AbstractNodeItem::searchText(contract); }
 
     // Методы из ModifyingItem
-    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractNodeItem::getModifications(); }
+    virtual std::vector<Modification*> getModifications() const override { return AbstractNodeItem::getModifications(); }
     virtual bool hasNoModifications() const override { return AbstractNodeItem::hasNoModifications(); }
-    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractNodeItem::getModificationById(modId); }
+    virtual Modification* getModificationById(const std::string& modId) const override { return AbstractNodeItem::getModificationById(modId); }
 
     // Методы из NodeItem
     virtual std::string getDefaultTagId() const override { return AbstractNodeItem::getDefaultTagId(); }
@@ -195,12 +194,12 @@ public:
     virtual std::string getFill() const override { return AbstractNodeItem::getFill(); }
     virtual std::string getTextColor() const override { return AbstractNodeItem::getTextColor(); }
     virtual std::vector<std::string> getContainedObjIds() const override { return AbstractNodeItem::getContainedObjIds(); }
-    virtual std::shared_ptr<Coords> getCoords() const override { return AbstractNodeItem::getCoords(); }
-    virtual std::vector<std::shared_ptr<Link>> getLinks() const override { return AbstractNodeItem::getLinks(); }
-    virtual std::shared_ptr<Link> getLinkById(const std::string& id) const override { return AbstractNodeItem::getLinkById(id); }
+    virtual Coords* getCoords() const override { return AbstractNodeItem::getCoords(); }
+    virtual std::vector<Link*> getLinks() const override { return AbstractNodeItem::getLinks(); }
+    virtual Link* getLinkById(const std::string& id) const override { return AbstractNodeItem::getLinkById(id); }
     virtual std::string getExternalHierarchy() const override { return AbstractNodeItem::getExternalHierarchy(); }
 
-    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override { return AbstractNodeItem::addObserver(observer); }
+    virtual std::string addObserver(NLBObserver* observer) override { return AbstractNodeItem::addObserver(observer); }
     virtual void removeObserver(const std::string& observerId) override { AbstractNodeItem::removeObserver(observerId); }
     virtual void notifyObservers() override { AbstractNodeItem::notifyObservers(); }
 
@@ -213,7 +212,7 @@ private:
 	 * @brief Replace variables in all links text and alt-text
 	 * @param visitedVars Map of variables to substitute
 	 */
-	void replaceVariablesInLinks(std::map<std::string, std::shared_ptr<void>> visitedVars);
+    void replaceVariablesInLinks(std::map<std::string, void*> visitedVars);
     
 	/*!
 	 * @brief Generate cumulative text from contained objects
@@ -222,7 +221,7 @@ private:
 	 * @return Combined text from all non-excluded objects
 	 */
 	std::string generateObjText(const std::vector<std::string>& objIdsToBeExcluded, 
-								std::map<std::string, std::shared_ptr<void>> visitedVars);
+                                std::map<std::string, void*> visitedVars);
 
     // Constants for file and directory names
     static const std::string TEXT_SUBDIR_NAME;
@@ -283,7 +282,7 @@ private:
     std::string m_returnPageId;
     std::string m_moduleConstrId;
 
-    std::shared_ptr<NonLinearBookImpl> m_module;
+    NonLinearBookImpl* m_module;
 
     MultiLangString m_autowireInText;
     MultiLangString m_autowireOutText;

@@ -23,7 +23,7 @@ public:
     void readBook(const std::string& nlbPath) {
         try {
             // Load the book
-            auto book = std::make_shared<NonLinearBookImpl>();
+            auto book = new NonLinearBookImpl();
             book->load(nlbPath, DummyProgressData());
             
             // Display book information
@@ -52,7 +52,7 @@ private:
     /**
      * @brief Display basic book information
      */
-    void displayBookInfo(std::shared_ptr<NonLinearBook> book) {
+    void displayBookInfo(NonLinearBook* book) {
         std::cout << "=== BOOK INFORMATION ===" << std::endl;
         // std::cout << book->getInfo() << std::endl;
         
@@ -70,7 +70,7 @@ private:
     /**
      * @brief Display content overview (pages, objects, variables)
      */
-    void displayContentOverview(std::shared_ptr<NonLinearBook> book) {
+    void displayContentOverview(NonLinearBook* book) {
         std::cout << "=== CONTENT OVERVIEW ===" << std::endl;
         
         // Pages
@@ -114,7 +114,7 @@ private:
     /**
      * @brief Display navigation structure starting from start point
      */
-    void displayNavigationStructure(std::shared_ptr<NonLinearBook> book) {
+    void displayNavigationStructure(NonLinearBook* book) {
         std::cout << "=== NAVIGATION STRUCTURE ===" << std::endl;
         
         std::string startPoint = book->getStartPoint();
@@ -140,8 +140,8 @@ private:
     /**
      * @brief Recursively display page navigation
      */
-    void displayPageNavigation(std::shared_ptr<NonLinearBook> book, 
-                              std::shared_ptr<Page> page, 
+    void displayPageNavigation(NonLinearBook* book,
+                              Page* page,
                               int depth, 
                               std::set<std::string>& visited) {
         if (depth > 5) return; // Prevent deep recursion
@@ -179,7 +179,7 @@ private:
     /**
      * @brief Display media files information
      */
-    void displayMediaFiles(std::shared_ptr<NonLinearBook> book) {
+    void displayMediaFiles(NonLinearBook* book) {
         std::cout << "=== MEDIA FILES ===" << std::endl;
         
         auto imageFiles = book->getImageFiles();
@@ -204,7 +204,7 @@ private:
     /**
      * @brief Validate book structure and display results
      */
-    void validateBook(std::shared_ptr<NonLinearBook> book) {
+    void validateBook(NonLinearBook* book) {
         std::cout << "=== VALIDATION ===" << std::endl;
         
         // auto errors = book->validateStructure();
@@ -253,7 +253,7 @@ public:
      */
     void explore(const std::string& nlbPath) {
         try {
-            m_book = std::make_shared<NonLinearBookImpl>();
+            m_book = new NonLinearBookImpl();
             m_book->load(nlbPath, DummyProgressData());
             std::cout << "Loaded: " << m_book->getTitle() << " by " << m_book->getAuthor() << std::endl;
             
@@ -275,7 +275,7 @@ public:
     }
 
 private:
-    std::shared_ptr<NonLinearBook> m_book;
+    NonLinearBook* m_book;
     
     /**
      * @brief Show current page and get user's choice for next page

@@ -17,16 +17,16 @@ class DummyNLB : public NonLinearBook {
 protected:
     // Protected constructor for singleton, to allow object creation via new
     DummyNLB() = default;
-    std::vector<std::shared_ptr<MediaFile>> m_imageFiles;
-    std::vector<std::shared_ptr<MediaFile>> m_soundFiles;
+    std::vector<MediaFile*> m_imageFiles;
+    std::vector<MediaFile*> m_soundFiles;
     
 public:
     // Prevent copying and assignment
     DummyNLB(const DummyNLB&) = delete;
     DummyNLB& operator=(const DummyNLB&) = delete;
 
-    static std::shared_ptr<NonLinearBook> singleton() {
-        static std::shared_ptr<NonLinearBook> instance(new DummyNLB());
+    static NonLinearBook* singleton() {
+        static NonLinearBook* instance(new DummyNLB());
         return instance;
     }
 
@@ -48,29 +48,29 @@ public:
     std::string getImagesDir() const override;
     std::set<std::string> getUsedImages() const override;
     std::set<std::string> getUsedSounds() const override;
-    const std::vector<std::shared_ptr<MediaFile>>& getImageFiles() const override;
-    const std::vector<std::shared_ptr<MediaFile>>& getSoundFiles() const override;
+    const std::vector<MediaFile*>& getImageFiles() const override;
+    const std::vector<MediaFile*>& getSoundFiles() const override;
     
     void exportMedia(
         bool isRoot,
         const std::string& mainExportDir,
         const std::string& mediaDirName,
-        const std::vector<std::shared_ptr<MediaFile>>& mediaFiles,
+        const std::vector<MediaFile*>& mediaFiles,
         MediaFile::Type mediaType
     ) const override;
 
-    std::map<std::string, std::shared_ptr<Page>> getPages() const override;
-    std::map<std::string, std::shared_ptr<Page>> getDownwardPagesHeirarchy() const override;
-    std::map<std::string, std::shared_ptr<Page>> getUpwardPagesHeirarchy() const override;
+    std::map<std::string, Page*> getPages() const override;
+    std::map<std::string, Page*> getDownwardPagesHeirarchy() const override;
+    std::map<std::string, Page*> getUpwardPagesHeirarchy() const override;
     std::vector<std::string> getAutowiredPagesIds() const override;
     std::vector<std::string> getParentGlobalAutowiredPagesIds() const override;
     bool isAutowired(const std::string& pageId) const override;
-    std::shared_ptr<Page> getPageById(const std::string& id) const override;
+    Page* getPageById(const std::string& id) const override;
 
-    std::map<std::string, std::shared_ptr<Obj>> getObjs() const override;
-    std::shared_ptr<Obj> getObjById(const std::string& objId) const override;
+    std::map<std::string, Obj*> getObjs() const override;
+    Obj* getObjById(const std::string& objId) const override;
     
-    std::shared_ptr<Page> createFilteredPage(
+    Page* createFilteredPage(
         const std::string& sourceId,
         const History& history
     ) const override;
@@ -80,8 +80,8 @@ public:
         const ProgressData& progressData
     ) override;
 
-    std::shared_ptr<Variable> getVariableById(const std::string& varId) const override;
-    std::vector<std::shared_ptr<Variable>> getVariables() const override;
+    Variable* getVariableById(const std::string& varId) const override;
+    std::vector<Variable*> getVariables() const override;
     
     SearchResultTableModel getLeafs(const std::string& modulePageId) const override;
     SearchResultTableModel searchText(
@@ -94,12 +94,12 @@ public:
     
     BookStatistics getBookStatistics() const override;
     VariableStatistics getVariableStatistics() const override;
-    std::shared_ptr<NonLinearBook> getParentNLB() const override;
+    NonLinearBook* getParentNLB() const override;
     bool isDummy() const override;
-    std::shared_ptr<Page> getParentPage() const override;
+    Page* getParentPage() const override;
     
-    std::map<std::string, std::shared_ptr<NonLinearBook>> getExternalModules() const override;
-    std::shared_ptr<NonLinearBook> findExternalModule(const std::string& name) const override;
+    std::map<std::string, NonLinearBook*> getExternalModules() const override;
+    NonLinearBook* findExternalModule(const std::string& name) const override;
     std::map<std::string, Variable::DataType> getVariableDataTypes() const override;
     
     std::map<std::string, std::string> getMediaToConstraintMap() const override;

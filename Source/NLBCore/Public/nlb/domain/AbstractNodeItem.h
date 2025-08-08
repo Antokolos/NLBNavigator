@@ -21,7 +21,7 @@ class Page;
 class PageImpl;
 class ObjImpl;
 
-class AbstractNodeItem : public AbstractModifyingItem, public NodeItem, public std::enable_shared_from_this<AbstractNodeItem> {
+class AbstractNodeItem : public AbstractModifyingItem, public NodeItem {
 public:
     static const std::string COORDS_DIR_NAME;
     static const std::string LINKS_DIR_NAME;
@@ -37,7 +37,7 @@ public:
     class ResizeNodeCommand : public NLBCommand {
     public:
         ResizeNodeCommand(AbstractNodeItem* nodeItem, Orientation orientation, double deltaX, double deltaY,
-                         const std::vector<std::shared_ptr<Link>>& adjacentLinks);
+                         const std::vector<Link*>& adjacentLinks);
         void execute() override;
         void revert() override;
 
@@ -46,29 +46,29 @@ public:
         Orientation m_orientation;
         double m_deltaX;
         double m_deltaY;
-        std::vector<std::shared_ptr<Link>> m_adjacentLinks;
+        std::vector<Link*> m_adjacentLinks;
     };
 
     class AddLinkCommand : public NLBCommand {
     public:
-        explicit AddLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<LinkImpl> link);
+        explicit AddLinkCommand(AbstractNodeItem* nodeItem, LinkImpl* link);
         void execute() override;
         void revert() override;
 
     private:
         AbstractNodeItem* m_nodeItem;
-        std::shared_ptr<LinkImpl> m_link;
+        LinkImpl* m_link;
     };
 
     class DeleteLinkCommand : public NLBCommand {
     public:
-        explicit DeleteLinkCommand(AbstractNodeItem* nodeItem, std::shared_ptr<Link> link);
+        explicit DeleteLinkCommand(AbstractNodeItem* nodeItem, Link* link);
         void execute() override;
         void revert() override;
 
     private:
         AbstractNodeItem* m_nodeItem;
-        std::shared_ptr<LinkImpl> m_link;
+        LinkImpl* m_link;
         bool m_previousDeletedState;
     };
 
@@ -85,9 +85,9 @@ public:
     };
 
     AbstractNodeItem();
-    explicit AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB);
-    AbstractNodeItem(std::shared_ptr<NonLinearBook> currentNLB, float left, float top);
-    AbstractNodeItem(const std::shared_ptr<NodeItem>& nodeItem, std::shared_ptr<NonLinearBook> currentNLB);
+    explicit AbstractNodeItem(NonLinearBook* currentNLB);
+    AbstractNodeItem(NonLinearBook* currentNLB, float left, float top);
+    AbstractNodeItem(const NodeItem* nodeItem, NonLinearBook* currentNLB);
     virtual ~AbstractNodeItem() = default;
 
     // Getters and setters
@@ -104,52 +104,51 @@ public:
     void addContainedObjId(const std::string& containedObjId);
     void removeContainedObjId(const std::string& containedObjId);
     
-    virtual std::shared_ptr<Coords> getCoords() const override;
-    virtual std::vector<std::shared_ptr<Link>> getLinks() const override;
-    std::vector<std::shared_ptr<LinkImpl>> getLinkImpls() const;
+    virtual Coords* getCoords() const override;
+    virtual std::vector<Link*> getLinks() const override;
+    std::vector<LinkImpl*> getLinkImpls() const;
     size_t getLinkCount() const;
-    void addLink(std::shared_ptr<LinkImpl> link);
-    virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const override;
+    void addLink(LinkImpl* link);
+    virtual Link* getLinkById(const std::string& linkId) const override;
     void removeLinkById(const std::string& linkId);
     static void filterTargetLinkList(
-        std::shared_ptr<AbstractNodeItem> target,
-        std::shared_ptr<AbstractNodeItem> source,
+        AbstractNodeItem* target,
+        AbstractNodeItem* source,
         const std::vector<std::string>& linkIdsToBeExcluded
     );
 
     // Observer methods
-    std::string addObserver(std::shared_ptr<NLBObserver> observer);
+    std::string addObserver(NLBObserver* observer);
     void removeObserver(const std::string& observerId);
     void notifyObservers();
 
     // File operations
-    void writeNodeItemProperties(const std::shared_ptr<FileManipulator>& fileManipulator,
+    void writeNodeItemProperties(const FileManipulator* fileManipulator,
                                const std::string& nodeDir,
-                               std::shared_ptr<NonLinearBookImpl> nonLinearBook);
+                               NonLinearBookImpl* nonLinearBook);
     void readNodeItemProperties(const std::string& nodeDir);
 
     virtual std::string getExternalHierarchy() const override;
 
     // Команды создания объектов
-    virtual std::shared_ptr<NLBCommand> createPageCommand(float left, float top);
-    virtual std::shared_ptr<NLBCommand> createLinkCommand(const std::string& pageId);
-    virtual std::shared_ptr<NLBCommand> createObjCommand(float left, float top);
+    virtual NLBCommand* createPageCommand(float left, float top);
+    virtual NLBCommand* createLinkCommand(const std::string& pageId);
+    virtual NLBCommand* createObjCommand(float left, float top);
     
-    std::shared_ptr<ResizeNodeCommand> createResizeNodeCommand(
+    ResizeNodeCommand* createResizeNodeCommand(
             Orientation orientation, double deltaX, double deltaY,
-            const std::vector<std::shared_ptr<Link>>& adjacentLinks);
-    std::shared_ptr<ResizeNodeCommand> createResizeNodeCommand(
+            const std::vector<Link*>& adjacentLinks);
+    ResizeNodeCommand* createResizeNodeCommand(
             Orientation orientation, double deltaX, double deltaY);
-    std::shared_ptr<AddLinkCommand> createAddLinkCommand(std::shared_ptr<LinkImpl> link);
-    std::shared_ptr<DeleteLinkCommand> createDeleteLinkCommand(std::shared_ptr<Link> link);
-    std::shared_ptr<SortLinksCommand> createSortLinksCommand(
-            const std::vector<std::shared_ptr<Link>>& newSortingOrder);
+    AddLinkCommand* createAddLinkCommand(LinkImpl* link);
+    DeleteLinkCommand* createDeleteLinkCommand(Link* link);
+    SortLinksCommand* createSortLinksCommand(const std::vector<Link*>& newSortingOrder);
     
     // Методы для файловой системы
-    virtual void writeToFile(const std::shared_ptr<FileManipulator>& fileManipulator, 
+    virtual void writeToFile(const FileManipulator* fileManipulator, 
                            const std::string& nodesDir,
                            const std::string& nodeDirName,
-                           std::shared_ptr<NonLinearBookImpl> nonLinearBook);
+                           NonLinearBookImpl* nonLinearBook);
                            
     // Методы валидации
     virtual void validateLinks();
@@ -157,26 +156,26 @@ public:
     virtual std::string getId() const override { return AbstractModifyingItem::getId(); }
     virtual std::string getFullId() const override { return AbstractModifyingItem::getFullId(); }
     virtual bool isDeleted() const override { return AbstractModifyingItem::isDeleted(); }
-    virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractModifyingItem::getParent(); }
+    virtual IdentifiableItem* getParent() const override { return AbstractModifyingItem::getParent(); }
     virtual bool hasDeletedParent() const override { return AbstractModifyingItem::hasDeletedParent(); }
-    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractModifyingItem::getCurrentNLB(); }
-    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override { return AbstractModifyingItem::searchText(contract); }
+    virtual NonLinearBook* getCurrentNLB() const override { return AbstractModifyingItem::getCurrentNLB(); }
+    virtual SearchResult* searchText(const SearchContract& contract) const override { return AbstractModifyingItem::searchText(contract); }
 
-    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractModifyingItem::getModifications(); }
+    virtual std::vector<Modification*> getModifications() const override { return AbstractModifyingItem::getModifications(); }
     virtual bool hasNoModifications() const override { return AbstractModifyingItem::hasNoModifications(); }
-    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractModifyingItem::getModificationById(modId); }
+    virtual Modification* getModificationById(const std::string& modId) const override { return AbstractModifyingItem::getModificationById(modId); }
 
 private:
     void applyLinkSortingOrder(const std::vector<std::string>& sortingOrder);
     void resizeNode(Orientation orientation, double deltaX, double deltaY);
-    void writeLinkOrderFile(const std::shared_ptr<FileManipulator>& fileManipulator,
+    void writeLinkOrderFile(const FileManipulator* fileManipulator,
                            const std::string& nodeDir);
-    void writeContent(const std::shared_ptr<FileManipulator>& fileManipulator,
+    void writeContent(const FileManipulator* fileManipulator,
                      const std::string& nodeDir,
-                     std::shared_ptr<NonLinearBookImpl> nonLinearBook);
-    void writeCoords(const std::shared_ptr<FileManipulator>& fileManipulator,
+                     NonLinearBookImpl* nonLinearBook);
+    void writeCoords(const FileManipulator* fileManipulator,
                     const std::string& nodeDir);
-    void writeLinks(const std::shared_ptr<FileManipulator>& fileManipulator,
+    void writeLinks(const FileManipulator* fileManipulator,
                    const std::string& nodeDir);
     
     void readContent(const std::string& nodeDir);
@@ -187,8 +186,8 @@ private:
     std::string m_stroke;
     std::string m_fill;
     std::string m_textColor;
-    std::shared_ptr<CoordsImpl> m_coords;
-    std::vector<std::shared_ptr<LinkImpl>> m_links;
+    CoordsImpl* m_coords;
+    std::vector<LinkImpl*> m_links;
     std::vector<std::string> m_containedObjIds;
-    std::shared_ptr<ObserverHandler> m_observerHandler;
+    ObserverHandler* m_observerHandler;
 };

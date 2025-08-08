@@ -46,7 +46,7 @@ void CoordsImpl::setHeight(float height) {
     m_height = height;
 }
 
-void CoordsImpl::writeCoords(FileManipulator& fileManipulator, const std::string& coordsDir) {
+void CoordsImpl::writeCoords(const FileManipulator& fileManipulator, const std::string& coordsDir) {
     fileManipulator.writeRequiredString(coordsDir, LEFT_FILE_NAME, std::to_string(m_left));
     fileManipulator.writeRequiredString(coordsDir, TOP_FILE_NAME, std::to_string(m_top));
     fileManipulator.writeRequiredString(coordsDir, WIDTH_FILE_NAME, std::to_string(m_width));

@@ -53,12 +53,12 @@ public:
     virtual void pull(
         const std::string& userName, 
         const std::string& password, 
-        std::shared_ptr<ProgressData> progressData
+        ProgressData* progressData
     ) = 0;
     
     virtual void push(
         const std::string& userName, 
         const std::string& password, 
-        std::shared_ptr<ProgressData> progressData
+        ProgressData* progressData
     ) = 0;
 };

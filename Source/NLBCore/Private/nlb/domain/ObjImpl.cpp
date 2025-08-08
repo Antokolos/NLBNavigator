@@ -46,7 +46,7 @@ const std::string ObjImpl::IMAGE_IN_SCENE_FILE_NAME = "imgscene";
 const std::string ObjImpl::IMAGE_IN_INVENTORY_FILE_NAME = "imginv";
 const std::string ObjImpl::CONTAINERID_FILE_NAME = "containerid";
 
-ObjImpl::ObjImpl(std::shared_ptr<Obj> source, std::shared_ptr<NonLinearBook> currentNLB)
+ObjImpl::ObjImpl(Obj* source, NonLinearBook* currentNLB)
     : AbstractNodeItem(source, currentNLB) {
     m_varId = source->getVarId();
     m_constrId = source->getConstrId();
@@ -88,7 +88,7 @@ ObjImpl::ObjImpl(std::shared_ptr<Obj> source, std::shared_ptr<NonLinearBook> cur
     m_containerId = source->getContainerId();
 }
 
-ObjImpl::ObjImpl(std::shared_ptr<NonLinearBook> currentNLB) 
+ObjImpl::ObjImpl(NonLinearBook* currentNLB) 
     : AbstractNodeItem(currentNLB),
       m_varId(DEFAULT_VARID),
       m_constrId(DEFAULT_CONSTRID),
@@ -130,7 +130,7 @@ ObjImpl::ObjImpl(std::shared_ptr<NonLinearBook> currentNLB)
       m_containerId(DEFAULT_CONTAINER_ID) {
 }
 
-ObjImpl::ObjImpl(std::shared_ptr<NonLinearBook> currentNLB, float left, float top)
+ObjImpl::ObjImpl(NonLinearBook* currentNLB, float left, float top)
     : AbstractNodeItem(currentNLB, left, top),
       m_varId(DEFAULT_VARID),
       m_constrId(DEFAULT_CONSTRID),
@@ -221,14 +221,14 @@ void ObjImpl::setNouseTexts(const MultiLangString& nouseText) {
 }
 
 Theme ObjImpl::getEffectiveTheme() const {
-    std::shared_ptr<NonLinearBook> currentNLB = getCurrentNLB();
+    NonLinearBook* currentNLB = getCurrentNLB();
     std::string containerId = getContainerId();
     if (containerId.empty()) {
         return Theme::DEFAULT;
     }
-    std::shared_ptr<Page> containerPage = currentNLB->getPageById(containerId);
+    Page* containerPage = currentNLB->getPageById(containerId);
     if (!containerPage) {
-        std::shared_ptr<Obj> containerObj = currentNLB->getObjById(containerId);
+        Obj* containerObj = currentNLB->getObjById(containerId);
         if (containerObj) {
             return containerObj->getEffectiveTheme();
         }
@@ -238,8 +238,8 @@ Theme ObjImpl::getEffectiveTheme() const {
     return Theme::DEFAULT;
 }
 
-std::shared_ptr<SearchResult> ObjImpl::searchText(const SearchContract& contract) const {
-    std::shared_ptr<SearchResult> result = AbstractNodeItem::searchText(contract);
+SearchResult* ObjImpl::searchText(const SearchContract& contract) const {
+    SearchResult* result = AbstractNodeItem::searchText(contract);
     if (result) {
         return result;
     } else if (
@@ -254,7 +254,7 @@ std::shared_ptr<SearchResult> ObjImpl::searchText(const SearchContract& contract
         textMatches(m_constrId, contract) ||
         textMatches(m_commonToId, contract)
     ) {
-        result = std::make_shared<SearchResult>();
+        result = new SearchResult();
         result->setId(AbstractNodeItem::getId());
         result->setInformation(getName());
         return result;
@@ -262,9 +262,9 @@ std::shared_ptr<SearchResult> ObjImpl::searchText(const SearchContract& contract
     return nullptr;
 }
 
-std::shared_ptr<Obj> ObjImpl::getCommonToObj(std::shared_ptr<NonLinearBook> nonLinearBook) const {
+Obj* ObjImpl::getCommonToObj(NonLinearBook* nonLinearBook) const {
     if (!StringHelper::isEmpty(getCommonToId())) {
-        std::shared_ptr<Variable> commonTo = nonLinearBook->getVariableById(getCommonToId());
+        Variable* commonTo = nonLinearBook->getVariableById(getCommonToId());
         if (!commonTo->isDeleted()) {
             return nonLinearBook->getObjById(commonTo->getValue());
         }
@@ -273,8 +273,8 @@ std::shared_ptr<Obj> ObjImpl::getCommonToObj(std::shared_ptr<NonLinearBook> nonL
 }
 
 Coords& ObjImpl::getRelativeCoords(bool lookInMorphs) const {
-    std::shared_ptr<NonLinearBook> nlb = getCurrentNLB();
-    std::shared_ptr<NodeItem> node = nlb->getPageById(m_containerId);
+    NonLinearBook* nlb = getCurrentNLB();
+    NodeItem* node = nlb->getPageById(m_containerId);
     if (!node) {
         node = getCurrentNLB()->getObjById(m_containerId);
     }
@@ -282,9 +282,9 @@ Coords& ObjImpl::getRelativeCoords(bool lookInMorphs) const {
         return getRelativeCoordsByMorph(lookInMorphs);
     }
     
-    std::shared_ptr<Coords> coordsParent = node->getCoords();
-    std::shared_ptr<Coords> coordsThis = AbstractNodeItem::getCoords();
-    std::shared_ptr<CoordsLw> result = std::make_shared<CoordsLw>();
+    Coords* coordsParent = node->getCoords();
+    Coords* coordsThis = AbstractNodeItem::getCoords();
+    CoordsLw* result = new CoordsLw();
     result->setLeft(coordsThis->getLeft() - coordsParent->getLeft());
     result->setTop(coordsThis->getTop() - coordsParent->getTop());
     result->setWidth(coordsParent->getWidth());
@@ -296,11 +296,11 @@ Coords& ObjImpl::getRelativeCoordsByMorph(bool lookInMorphs) const {
     if (!lookInMorphs) {
         return CoordsLw::getZeroCoords();
     }
-    std::shared_ptr<Obj> morphOut = getMorphOutObj();
+    Obj* morphOut = getMorphOutObj();
     if (morphOut) {
         return morphOut->getRelativeCoords(false);
     }
-    std::shared_ptr<Obj> morphOver = getMorphOverObj();
+    Obj* morphOver = getMorphOverObj();
     if (morphOver) {
         return morphOver->getRelativeCoords(false);
     }
@@ -309,7 +309,7 @@ Coords& ObjImpl::getRelativeCoordsByMorph(bool lookInMorphs) const {
 
 std::string ObjImpl::getObjIdByMorphId(const std::string& morphId) const {
     if (!StringHelper::isEmpty(morphId)) {
-        std::shared_ptr<Variable> morphVar = getCurrentNLB()->getVariableById(morphId);
+        Variable* morphVar = getCurrentNLB()->getVariableById(morphId);
         if (!morphVar->isDeleted()) {
             return morphVar->getValue();
         }
@@ -325,7 +325,7 @@ std::string ObjImpl::getCumulativeText(
         ///result += StringHelper::replaceVariables(getText(), visitedVars);
         std::vector<std::string> containedObjIds = getContainedObjIds();
         for (const std::string& objId : containedObjIds) {
-            std::shared_ptr<Obj> obj = getCurrentNLB()->getObjById(objId);
+            Obj* obj = getCurrentNLB()->getObjById(objId);
             if (obj) {
                 result += obj->getCumulativeText(objIdsToBeExcluded, visitedVars);
             }
@@ -459,7 +459,7 @@ std::string ObjImpl::getMorphOverId() const {
     return m_morphOverId;
 }
 
-std::shared_ptr<Obj> ObjImpl::getMorphOverObj() const {
+Obj* ObjImpl::getMorphOverObj() const {
     return getCurrentNLB()->getObjById(getObjIdByMorphId(m_morphOverId));
 }
 
@@ -467,7 +467,7 @@ std::string ObjImpl::getMorphOutId() const {
     return m_morphOutId;
 }
 
-std::shared_ptr<Obj> ObjImpl::getMorphOutObj() const {
+Obj* ObjImpl::getMorphOutObj() const {
     return getCurrentNLB()->getObjById(getObjIdByMorphId(m_morphOutId));
 }
 
@@ -494,7 +494,7 @@ std::string ObjImpl::getContainerId() const {
 Obj::ContainerType ObjImpl::getContainerType() const {
     // If this object has a container ID, determine its type
     if (!m_containerId.empty()) {
-        std::shared_ptr<NonLinearBook> nlb = getCurrentNLB();
+        NonLinearBook* nlb = getCurrentNLB();
         if (nlb->getPageById(m_containerId)) {
             return Obj::ContainerType::Page;
         } else if (nlb->getObjById(m_containerId)) {
@@ -646,9 +646,9 @@ void ObjImpl::setContainerId(const std::string& containerId) {
 }
 
 void ObjImpl::writeObj(
-    const std::shared_ptr<FileManipulator>& fileManipulator,
+    const FileManipulator* fileManipulator,
     const std::string& objsDir,
-    std::shared_ptr<NonLinearBookImpl> nonLinearBook) {
+    NonLinearBookImpl* nonLinearBook) {
     
     writeToFile(fileManipulator, objsDir, getId(), nonLinearBook);
     
