@@ -249,25 +249,34 @@ private:
 class NLBExplorer {
 public:
     explicit NLBExplorer(NonLinearBook* book, const std::string &currentPageId)
-        : m_book(book), m_currentPageId(currentPageId)
+        : m_book(book)
     {
+        m_currentPage = m_book->getPageById(currentPageId);
     }
 
     /**
      * @brief Start interactive exploration
      */
-    void explore() {
-        try {
-            if (m_currentPageId.empty() || !m_book->getPageById(m_currentPageId)) {
+    Page* explore() {
+        try
+        {
+            if (!m_currentPage) {
                 std::cout << "No valid start point. Exiting." << std::endl;
-                return;
+                return nullptr;
             }
             
             // Interactive navigation loop
-            while (!m_currentPageId.empty()) {
-                m_currentPageId = showPageAndGetNextChoice(m_currentPageId);
+            while (m_currentPage)
+            {
+                m_currentPage = showPageAndGetNextChoice(m_currentPage);
+
+                NonLinearBook *parentBook = m_book->getParentNLB();
+                if (parentBook && m_currentPage && m_currentPage->isFinish()) {
+                    std::string returnPageId = m_currentPage->getReturnPageId();
+                    return returnPageId.empty() ? m_book->getParentPage() : parentBook->getPageById(returnPageId);
+                }
             }
-            
+            return nullptr;
         } catch (const NLBIOException& e) {
             std::cerr << "Error reading NLB: " << e.what() << std::endl;
         }
@@ -275,32 +284,22 @@ public:
 
 private:
     NonLinearBook* m_book;
-    std::string m_currentPageId;
+    Page* m_currentPage;
     
     /**
      * @brief Show current page and get user's choice for next page
      */
-    std::string showPageAndGetNextChoice(const std::string& pageId) {
-        auto page = m_book->getPageById(pageId);
-        if (!page) {
-            std::cout << "Page not found: " << pageId << std::endl;
-            return "";
-        }
-        
+    Page* showPageAndGetNextChoice(Page *page) {
         std::cout << "\n" << std::string(50, '=') << std::endl;
-        std::cout << "PAGE: " << page->getCaption() << " (" << pageId << ")" << std::endl;
+        std::cout << "PAGE: " << page->getCaption() << " (" << page->getFullId() << ")" << std::endl;
         std::cout << std::string(50, '=') << std::endl;
         
         // Show page text
         std::cout << page->getText() << std::endl;
-        
+
         // Show available links
         auto links = page->getLinks();
         auto module = page->getModule();
-        if (links.empty() || page->isFinish()) {
-            std::cout << "\n[THE END]" << std::endl;
-            return "";
-        }
         
         std::cout << "\nChoose your next action:" << std::endl;
         for (size_t i = 0; i < links.size(); ++i) {
@@ -317,20 +316,30 @@ private:
         std::cin >> choice;
         
         if (choice == 0) {
-            return "";
+            return nullptr;
         }
 
         if (module && !module->isEmpty() && choice == static_cast<int>(links.size()) + 1) {
             NLBExplorer explorer(module, module->getStartPoint());
-            explorer.explore();
+            return explorer.explore();
         }
-        
+
+        if (page->isFinish()) {
+            std::cout << "\n[THE END]" << std::endl;
+            return page;
+        }
+
         if (choice < 1 || choice > static_cast<int>(links.size())) {
             std::cout << "Invalid choice. Try again." << std::endl;
-            return pageId; // Stay on current page
+            return page; // Stay on current page
         }
         
-        return links[choice - 1]->getTarget();
+        std::string pageId = links[choice - 1]->getTarget();
+        auto next = m_book->getPageById(pageId);
+        if (!next) {
+            std::cout << "Page not found: " << pageId << std::endl;
+        }
+        return next;
     }
 };
 

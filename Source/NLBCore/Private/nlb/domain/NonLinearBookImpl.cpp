@@ -264,6 +264,7 @@ bool NonLinearBookImpl::isAutowired(const std::string& pageId) const {
 }
 
 Page* NonLinearBookImpl::getPageById(const std::string& id) const {
+    if (id.empty()) return nullptr;
     auto it = m_pages.find(id);
     return (it != m_pages.end()) ? it->second : nullptr;
 }
