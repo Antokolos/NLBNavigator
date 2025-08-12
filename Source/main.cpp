@@ -248,25 +248,24 @@ private:
  */
 class NLBExplorer {
 public:
+    explicit NLBExplorer(NonLinearBook* book, const std::string &currentPageId)
+        : m_book(book), m_currentPageId(currentPageId)
+    {
+    }
+
     /**
      * @brief Start interactive exploration
      */
-    void explore(const std::string& nlbPath) {
+    void explore() {
         try {
-            m_book = new NonLinearBookImpl();
-            m_book->load(nlbPath, DummyProgressData());
-            std::cout << "Loaded: " << m_book->getTitle() << " by " << m_book->getAuthor() << std::endl;
-            
-            // Start from the start point
-            std::string currentPageId = m_book->getStartPoint();
-            if (currentPageId.empty() || !m_book->getPageById(currentPageId)) {
+            if (m_currentPageId.empty() || !m_book->getPageById(m_currentPageId)) {
                 std::cout << "No valid start point. Exiting." << std::endl;
                 return;
             }
             
             // Interactive navigation loop
-            while (!currentPageId.empty()) {
-                currentPageId = showPageAndGetNextChoice(currentPageId);
+            while (!m_currentPageId.empty()) {
+                m_currentPageId = showPageAndGetNextChoice(m_currentPageId);
             }
             
         } catch (const NLBIOException& e) {
@@ -276,6 +275,7 @@ public:
 
 private:
     NonLinearBook* m_book;
+    std::string m_currentPageId;
     
     /**
      * @brief Show current page and get user's choice for next page
@@ -296,6 +296,7 @@ private:
         
         // Show available links
         auto links = page->getLinks();
+        auto module = page->getModule();
         if (links.empty() || page->isFinish()) {
             std::cout << "\n[THE END]" << std::endl;
             return "";
@@ -304,6 +305,9 @@ private:
         std::cout << "\nChoose your next action:" << std::endl;
         for (size_t i = 0; i < links.size(); ++i) {
             std::cout << (i + 1) << ". " << links[i]->getText() << std::endl;
+        }
+        if (module && !module->isEmpty()) {
+            std::cout << (links.size() + 1) << ". " << page->getTraverseText() << std::endl;
         }
         std::cout << "0. Exit" << std::endl;
         
@@ -314,6 +318,11 @@ private:
         
         if (choice == 0) {
             return "";
+        }
+
+        if (module && !module->isEmpty() && choice == static_cast<int>(links.size()) + 1) {
+            NLBExplorer explorer(module, module->getStartPoint());
+            explorer.explore();
         }
         
         if (choice < 1 || choice > static_cast<int>(links.size())) {
@@ -329,6 +338,7 @@ private:
  * @brief Main function demonstrating NLB Reader usage
  */
 int main(int argc, char* argv[]) {
+    system("chcp 65001");
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " <path_to_nlb_directory> [mode]" << std::endl;
         std::cout << "Modes: info (default) | explore" << std::endl;
@@ -339,8 +349,11 @@ int main(int argc, char* argv[]) {
     std::string mode = (argc > 2) ? argv[2] : "info";
     
     if (mode == "explore") {
-        NLBExplorer explorer;
-        explorer.explore(nlbPath);
+        auto book = new NonLinearBookImpl();
+        book->load(nlbPath, DummyProgressData());
+        std::cout << "Loaded: " << book->getTitle() << " by " << book->getAuthor() << std::endl;
+        NLBExplorer explorer(book, book->getStartPoint());
+        explorer.explore();
     } else {
         NLBReader reader;
         reader.readBook(nlbPath);
