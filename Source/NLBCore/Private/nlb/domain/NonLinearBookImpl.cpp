@@ -662,10 +662,10 @@ void NonLinearBookImpl::save(FileManipulator* fileManipulator,
     progressData->setNoteText("Save completed");
 }
 
-bool NonLinearBookImpl::load(const std::string& path, const ProgressData& progressData) {
+bool NonLinearBookImpl::load(const std::string& path, ProgressData& progressData) {
     try {
         m_rootDir = path;
-        readNLB(path);
+        readNLB(path, progressData);
         validateVariableReferences();
         resetVariableDataTypes();
         processAutowiredPages();
@@ -696,7 +696,8 @@ bool NonLinearBookImpl::loadAndSetParent(const std::string& path,
                                         Page* parentPage) {
     m_parentNLB = parentNLB;
     m_parentPage = parentPage;
-    return load(path, DummyProgressData());
+    DummyProgressData progressData;
+    return load(path, progressData);
 }
 
 void NonLinearBookImpl::append(const NonLinearBook* source,
@@ -1511,12 +1512,12 @@ void NonLinearBookImpl::writeNLB(FileManipulator* fileManipulator, const std::st
     writeMediaFiles(fileManipulator, nlbDir, m_soundFiles, SOUND_DIR_NAME);
 }
 
-void NonLinearBookImpl::readNLB(const std::string& nlbDir) {
+void NonLinearBookImpl::readNLB(const std::string& nlbDir, ProgressData& progressData) {
     // Читаем свойства книги
     readBookProperties(nlbDir);
     
     // Создаем заглушку для прогресса
-    auto partialProgress = new PartialProgressData(new DummyProgressData(), 0, 100, 1);
+    auto partialProgress = new PartialProgressData(&progressData, 0, 100, 1);
     
     // Читаем страницы
     loadPages(nlbDir, partialProgress);

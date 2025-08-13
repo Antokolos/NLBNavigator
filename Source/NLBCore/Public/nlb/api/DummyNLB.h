@@ -77,7 +77,7 @@ public:
 
     bool load(
         const std::string& path,
-        const ProgressData& progressData
+        ProgressData& progressData
     ) override;
 
     Variable* getVariableById(const std::string& varId) const override;

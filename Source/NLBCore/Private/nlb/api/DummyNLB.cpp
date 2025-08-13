@@ -135,7 +135,7 @@ Page* DummyNLB::createFilteredPage(
 
 bool DummyNLB::load(
     const std::string& path,
-    const ProgressData& progressData
+    ProgressData& progressData
 ) {
     throw std::runtime_error("This operation is unsupported!");
 }

@@ -9,7 +9,7 @@
 #include <memory>
 #include <iomanip>
 
-#include "nlb/api/PartialProgressData.h"
+#include "nlb/api/ConsoleProgressData.h"
 
 /**
  * @brief Simple NLB Reader application demonstrating read-only functionality
@@ -24,7 +24,8 @@ public:
         try {
             // Load the book
             auto book = new NonLinearBookImpl();
-            book->load(nlbPath, DummyProgressData());
+            ConsoleProgressData progressData;
+            book->load(nlbPath, progressData);
             
             // Display book information
             displayBookInfo(book);
@@ -359,7 +360,8 @@ int main(int argc, char* argv[]) {
     
     if (mode == "explore") {
         auto book = new NonLinearBookImpl();
-        book->load(nlbPath, DummyProgressData());
+        ConsoleProgressData progressData;
+        book->load(nlbPath, progressData);
         std::cout << "Loaded: " << book->getTitle() << " by " << book->getAuthor() << std::endl;
         NLBExplorer explorer(book, book->getStartPoint());
         explorer.explore();

@@ -30,11 +30,14 @@ set(NLB_API_HEADERS
         ${NLB_INCLUDE_DIR}/nlb/api/Coords.h
         ${NLB_INCLUDE_DIR}/nlb/api/CoordsLw.h
         ${NLB_INCLUDE_DIR}/nlb/api/DummyNLB.h
+        ${NLB_INCLUDE_DIR}/nlb/api/DummyProgressData.h
+        ${NLB_INCLUDE_DIR}/nlb/api/ConsoleProgressData.h
         ${NLB_INCLUDE_DIR}/nlb/api/IdentifiableItem.h
         ${NLB_INCLUDE_DIR}/nlb/api/Link.h
         ${NLB_INCLUDE_DIR}/nlb/api/MediaFile.h
         ${NLB_INCLUDE_DIR}/nlb/api/ModificationsTableModel.h
         ${NLB_INCLUDE_DIR}/nlb/api/Modification.h
+        ${NLB_INCLUDE_DIR}/nlb/api/ModifyingItem.h
         ${NLB_INCLUDE_DIR}/nlb/api/NLBCommand.h
         ${NLB_INCLUDE_DIR}/nlb/api/NLBObservable.h
         ${NLB_INCLUDE_DIR}/nlb/api/NLBObserver.h
@@ -99,6 +102,7 @@ set(NLB_API_SOURCES
         ${NLB_SOURCE_DIR}/nlb/api/Constants.cpp
         ${NLB_SOURCE_DIR}/nlb/api/CoordsLw.cpp
         ${NLB_SOURCE_DIR}/nlb/api/DummyNLB.cpp
+        ${NLB_SOURCE_DIR}/nlb/api/ConsoleProgressData.cpp
         ${NLB_SOURCE_DIR}/nlb/api/Modification.cpp
         ${NLB_SOURCE_DIR}/nlb/api/ModificationsTableModel.cpp
         ${NLB_SOURCE_DIR}/nlb/api/PartialProgressData.cpp

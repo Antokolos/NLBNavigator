@@ -155,7 +155,7 @@ public:
     Variable* getVariableById(const std::string& id) const override;
     void save(FileManipulator* fileManipulator, ProgressData* progressData,
               PartialProgressData* partialProgressData);
-    bool load(const std::string& path, const ProgressData& progressData) override;
+    bool load(const std::string& path, ProgressData &progressData) override;
 
     // Дополнительные методы
     void clear();
@@ -231,7 +231,7 @@ public:
 
     // Методы загрузки и сохранения
     void writeNLB(FileManipulator* fileManipulator, const std::string& nlbDir, PartialProgressData* partialProgressData);
-    void readNLB(const std::string& nlbDir);
+    void readNLB(const std::string& nlbDir, ProgressData &progressData);
     NLBCommand* createAddPageCommand(const PageImpl* pageImpl);
     NLBCommand* createAddObjCommand(const ObjImpl* objImpl);
     NLBCommand* createDeletePageCommand(PageImpl* page,

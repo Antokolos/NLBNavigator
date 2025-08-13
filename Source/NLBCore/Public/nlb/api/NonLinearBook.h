@@ -191,7 +191,7 @@ public:
     virtual std::map<std::string, Obj*> getObjs() const = 0;
     virtual Obj* getObjById(const std::string& objId) const = 0;
     virtual Page* createFilteredPage(const std::string& sourceId, const History& history) const = 0;
-    virtual bool load(const std::string& path, const ProgressData& progressData) = 0;
+    virtual bool load(const std::string& path, ProgressData& progressData) = 0;
     virtual Variable* getVariableById(const std::string& varId) const = 0;
     virtual std::vector<Variable*> getVariables() const = 0;
     virtual SearchResultTableModel getLeafs(const std::string& modulePageId) const = 0;
