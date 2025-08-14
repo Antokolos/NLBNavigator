@@ -18,11 +18,20 @@ else()
 endif()
 
 # Project structure
+set(CPARSE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/thirdparty/cparse")
 set(NLB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBCore/Public")
 set(NLB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBCore/Private")
 
 # Include directories
-include_directories(${NLB_INCLUDE_DIR})
+include_directories(${NLB_INCLUDE_DIR} ${CPARSE_DIR})
+
+set(CPARSE_HEADERS
+        ${CPARSE_DIR}/shunting-yard.h
+        ${CPARSE_DIR}/builtin-features.inc
+        ${CPARSE_DIR}/packToken.h
+        ${CPARSE_DIR}/functions.h
+        ${CPARSE_DIR}/containers.h
+)
 
 # API Interface Headers
 set(NLB_API_HEADERS
@@ -95,6 +104,13 @@ set(NLB_UTIL_HEADERS
 # Exception Headers
 set(NLB_EXCEPTION_HEADERS
         ${NLB_INCLUDE_DIR}/nlb/exception/NLBExceptions.h
+)
+
+set(CPARSE_SOURCES
+        ${CPARSE_DIR}/shunting-yard.cpp
+        ${CPARSE_DIR}/packToken.cpp
+        ${CPARSE_DIR}/functions.cpp
+        ${CPARSE_DIR}/containers.cpp
 )
 
 # API Sources
@@ -226,6 +242,15 @@ endif()
 # Main executable
 add_executable(nlb_main
         Source/main.cpp
+        ${CPARSE_HEADERS}
+        ${CPARSE_SOURCES}
+)
+target_include_directories(nlb_main
+        PUBLIC
+        $<BUILD_INTERFACE:${CPARSE_DIR}>
+        $<INSTALL_INTERFACE:include>
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 target_link_libraries(nlb_main PRIVATE NLBReader)
 

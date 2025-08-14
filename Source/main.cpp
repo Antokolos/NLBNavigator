@@ -11,6 +11,10 @@
 
 #include "nlb/api/ConsoleProgressData.h"
 
+#include "shunting-yard.h"
+#include "builtin-features.inc"
+#include "nlb/api/Variable.h"
+
 /**
  * @brief Simple NLB Reader application demonstrating read-only functionality
  */
@@ -253,6 +257,44 @@ public:
         : m_book(book)
     {
         m_currentPage = m_book->getPageById(currentPageId);
+        for (auto var : m_book->getVariables()) {
+            if (GlobalScope::default_global().find(var->getName())) continue;
+            switch (var->getType())
+            {
+                case Variable::Type::VAR:
+                    switch (var->getDataType())
+                    {
+                        case Variable::DataType::STRING:
+                            GlobalScope::default_global()[var->getName()] = "";
+                            break;
+                        case Variable::DataType::AUTO:
+                            GlobalScope::default_global()[var->getName()] = 0;
+                            break;
+                        case Variable::DataType::BOOLEAN:
+                            GlobalScope::default_global()[var->getName()] = false;
+                            break;
+                        case Variable::DataType::NUMBER:
+                            GlobalScope::default_global()[var->getName()] = 0;
+                            break;
+                    }
+                    break;
+                case Variable::Type::PAGE:
+                case Variable::Type::TIMER:
+                case Variable::Type::OBJ:
+                case Variable::Type::LINK:
+                    GlobalScope::default_global()[var->getName()] = false;
+                    break;
+                case Variable::Type::OBJCONSTRAINT:
+                case Variable::Type::OBJREF:
+                case Variable::Type::LINKCONSTRAINT:
+                case Variable::Type::EXPRESSION:
+                case Variable::Type::TAG:
+                case Variable::Type::MODCONSTRAINT:
+                case Variable::Type::AUTOWIRECONSTRAINT:
+                default:
+                    break;
+            }
+        }
     }
 
     /**
@@ -283,6 +325,9 @@ private:
      */
     bool showPageAndGetNextChoice(Page *page) {
         if (!page) return false;
+        if (!page->getVarId().empty()) {
+            GlobalScope::default_global()[m_book->getVariableById(page->getVarId())->getName()] = true;
+        }
         std::cout << "\n" << std::string(50, '=') << std::endl;
         std::cout << "PAGE: " << page->getCaption() << " (" << page->getFullId() << ")" << std::endl;
         std::cout << std::string(50, '=') << std::endl;
@@ -295,22 +340,36 @@ private:
         auto module = page->getModule();
         
         std::cout << "\nChoose your next action:" << std::endl;
+        size_t choiceIdx = 1;
+        std::map<size_t, size_t> linksMap;
         for (size_t i = 0; i < links.size(); ++i) {
-            std::cout << (i + 1) << ". " << links[i]->getText() << std::endl;
+            if (!links[i]->getConstrId().empty()) {
+                Variable *constraint = m_book->getVariableById(links[i]->getConstrId());
+                std::string exprString = constraint->getValue();
+                const char *expr = exprString.c_str();
+                if (!calculator::calculate(expr, GlobalScope::default_global()).asBool()) {
+                    continue;
+                }
+            }
+            linksMap[choiceIdx] = i;
+            std::cout << choiceIdx++ << ". " << links[i]->getText() << std::endl;
         }
         size_t traverseChoice = 0;
         size_t returnChoice = 0;
-        if (module && !module->isEmpty()) {
-            traverseChoice = (links.size() + 1);
+        bool hasModule = module && !module->isEmpty();
+        if (hasModule) {
+            traverseChoice = choiceIdx;
             std::cout << traverseChoice << ". " << page->getTraverseText() << std::endl;
-        } else if (page->isFinish() && !page->isAutoReturn()) {
-            returnChoice = traverseChoice > 0 ? traverseChoice + 1 : (links.size() + 1);
+        }
+        bool hasReturn = page->isFinish() && !page->isAutoReturn();
+        if (!hasModule && hasReturn) {
+            returnChoice = traverseChoice > 0 ? traverseChoice + 1 : choiceIdx;
             std::cout << returnChoice << ". " << page->getReturnText() << std::endl;
         }
         std::cout << "0. Exit" << std::endl;
         
         // Get user choice
-        int choice;
+        size_t choice;
         std::cout << "\nYour choice: ";
         std::cin >> choice;
         
@@ -318,26 +377,30 @@ private:
             return false;
         }
 
-        if (module && !module->isEmpty() && choice == traverseChoice) {
+        if (hasModule && choice == traverseChoice) {
             NLBExplorer explorer(module, module->getStartPoint());
             explorer.explore();
             m_currentPage = explorer.m_currentPage;
             return true;
         }
 
-        if (page->isFinish() && !page->isAutoReturn() && choice == returnChoice) {
+        if (hasReturn && choice == returnChoice) {
             return false;
         }
 
-        if (choice < 1 || choice > static_cast<int>(links.size())) {
+        if (choice < 1 || choice >= choiceIdx) {
             std::cout << "Invalid choice. Try again." << std::endl;
             return true; // Stay on current page
         }
-        
-        std::string pageId = links[choice - 1]->getTarget();
+
+        auto link = links[linksMap[choice]];
+        std::string pageId = link->getTarget();
         auto next = m_book->getPageById(pageId);
         if (!next) {
             std::cout << "Page not found: " << pageId << std::endl;
+        }
+        if (!link->getVarId().empty()) {
+            GlobalScope::default_global()[m_book->getVariableById(link->getVarId())->getName()] = true;
         }
         m_currentPage = next;
         return true;
@@ -348,6 +411,13 @@ private:
  * @brief Main function demonstrating NLB Reader usage
  */
 int main(int argc, char* argv[]) {
+
+    cparse_startup();
+
+    GlobalScope::default_global()["x"] = 10;
+    std::cout << calculator::calculate("'Hello ' + 'World'") << std::endl;
+    std::cout << calculator::calculate("x + 1", GlobalScope::default_global()) << std::endl;
+
     system("chcp 65001");
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " <path_to_nlb_directory> [mode]" << std::endl;
