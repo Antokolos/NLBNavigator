@@ -258,26 +258,17 @@ public:
     /**
      * @brief Start interactive exploration
      */
-    Page* explore() {
+    void explore() {
         try
         {
-            if (!m_currentPage) {
-                std::cout << "No valid start point. Exiting." << std::endl;
-                return nullptr;
-            }
-            
             // Interactive navigation loop
-            while (m_currentPage)
-            {
-                m_currentPage = showPageAndGetNextChoice(m_currentPage);
-
-                NonLinearBook *parentBook = m_book->getParentNLB();
-                if (parentBook && m_currentPage && m_currentPage->isFinish()) {
-                    std::string returnPageId = m_currentPage->getReturnPageId();
-                    return returnPageId.empty() ? m_book->getParentPage() : parentBook->getPageById(returnPageId);
-                }
+            while (showPageAndGetNextChoice(m_currentPage))
+            {}
+            NonLinearBook *parentBook = m_book->getParentNLB();
+            if (parentBook && m_currentPage->isFinish()) {
+                std::string returnPageId = m_currentPage->getReturnPageId();
+                m_currentPage = returnPageId.empty() ? m_book->getParentPage() : parentBook->getPageById(returnPageId);
             }
-            return nullptr;
         } catch (const NLBIOException& e) {
             std::cerr << "Error reading NLB: " << e.what() << std::endl;
         }
@@ -290,7 +281,8 @@ private:
     /**
      * @brief Show current page and get user's choice for next page
      */
-    Page* showPageAndGetNextChoice(Page *page) {
+    bool showPageAndGetNextChoice(Page *page) {
+        if (!page) return false;
         std::cout << "\n" << std::string(50, '=') << std::endl;
         std::cout << "PAGE: " << page->getCaption() << " (" << page->getFullId() << ")" << std::endl;
         std::cout << std::string(50, '=') << std::endl;
@@ -306,8 +298,15 @@ private:
         for (size_t i = 0; i < links.size(); ++i) {
             std::cout << (i + 1) << ". " << links[i]->getText() << std::endl;
         }
+        size_t traverseChoice = 0;
+        size_t returnChoice = 0;
         if (module && !module->isEmpty()) {
-            std::cout << (links.size() + 1) << ". " << page->getTraverseText() << std::endl;
+            traverseChoice = (links.size() + 1);
+            std::cout << traverseChoice << ". " << page->getTraverseText() << std::endl;
+        }
+        if (page->isFinish() && !page->isAutoReturn()) {
+            returnChoice = traverseChoice > 0 ? traverseChoice + 1 : (links.size() + 1);
+            std::cout << returnChoice << ". " << page->getReturnText() << std::endl;
         }
         std::cout << "0. Exit" << std::endl;
         
@@ -317,22 +316,23 @@ private:
         std::cin >> choice;
         
         if (choice == 0) {
-            return nullptr;
+            return false;
         }
 
-        if (module && !module->isEmpty() && choice == static_cast<int>(links.size()) + 1) {
+        if (module && !module->isEmpty() && choice == traverseChoice) {
             NLBExplorer explorer(module, module->getStartPoint());
-            return explorer.explore();
+            explorer.explore();
+            m_currentPage = explorer.m_currentPage;
+            return true;
         }
 
-        if (page->isFinish()) {
-            std::cout << "\n[THE END]" << std::endl;
-            return page;
+        if (page->isFinish() && !page->isAutoReturn() && choice == returnChoice) {
+            return false;
         }
 
         if (choice < 1 || choice > static_cast<int>(links.size())) {
             std::cout << "Invalid choice. Try again." << std::endl;
-            return page; // Stay on current page
+            return true; // Stay on current page
         }
         
         std::string pageId = links[choice - 1]->getTarget();
@@ -340,7 +340,8 @@ private:
         if (!next) {
             std::cout << "Page not found: " << pageId << std::endl;
         }
-        return next;
+        m_currentPage = next;
+        return true;
     }
 };
 
