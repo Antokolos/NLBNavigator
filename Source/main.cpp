@@ -303,8 +303,7 @@ private:
         if (module && !module->isEmpty()) {
             traverseChoice = (links.size() + 1);
             std::cout << traverseChoice << ". " << page->getTraverseText() << std::endl;
-        }
-        if (page->isFinish() && !page->isAutoReturn()) {
+        } else if (page->isFinish() && !page->isAutoReturn()) {
             returnChoice = traverseChoice > 0 ? traverseChoice + 1 : (links.size() + 1);
             std::cout << returnChoice << ". " << page->getReturnText() << std::endl;
         }
