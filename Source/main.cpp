@@ -253,15 +253,22 @@ private:
  */
 class NLBExplorer {
 public:
+    static const std::string INVENTORY;
+    static const std::string TRUE;
+    static const std::string FALSE;
+
     explicit NLBExplorer(NonLinearBook* book, const std::string &currentPageId)
         : m_book(book)
     {
         m_currentPage = m_book->getPageById(currentPageId);
-        if (!GlobalScope::default_global().find("true")) {
-            GlobalScope::default_global()["true"] = true;
+        if (!GlobalScope::default_global().find(TRUE)) {
+            GlobalScope::default_global()[TRUE] = true;
         }
-        if (!GlobalScope::default_global().find("false")) {
-            GlobalScope::default_global()["false"] = false;
+        if (!GlobalScope::default_global().find(FALSE)) {
+            GlobalScope::default_global()[FALSE] = false;
+        }
+        if (!GlobalScope::default_global().find(INVENTORY)) {
+            GlobalScope::default_global()[INVENTORY] = TokenList();
         }
         for (auto var : m_book->getVariables()) {
             if (GlobalScope::default_global().find(var->getName())) continue;
@@ -350,6 +357,9 @@ private:
                         break;
                 }
                 break;
+            case Modification::Type::ADDINV:
+                GlobalScope::default_global()[INVENTORY].asList().push(exprString);
+                break;
             case Modification::Type::TAG:
             case Modification::Type::GETTAG:
             case Modification::Type::WHILE:
@@ -365,7 +375,6 @@ private:
             case Modification::Type::ID:
             case Modification::Type::ADD:
             case Modification::Type::ADDU:
-            case Modification::Type::ADDINV:
             case Modification::Type::ADDALL:
             case Modification::Type::ADDALLU:
             case Modification::Type::REMOVE:
@@ -428,6 +437,16 @@ private:
         
         // Show page text
         std::cout << page->getText() << std::endl;
+
+        TokenList &inventory = GlobalScope::default_global()[INVENTORY].asList();
+        if (!inventory.list().empty()) {
+            std::cout << std::endl;
+            std::cout << INVENTORY << ":";
+            for (auto item : inventory.list()) {
+                std::cout << " " << item.asString();
+            }
+            std::cout << std::endl;
+        }
 
         // Show available links
         auto links = page->getLinks();
@@ -502,6 +521,10 @@ private:
         return true;
     }
 };
+
+const std::string NLBExplorer::INVENTORY = "inventory";
+const std::string NLBExplorer::TRUE = "true";
+const std::string NLBExplorer::FALSE = "false";
 
 /**
  * @brief Main function demonstrating NLB Reader usage
