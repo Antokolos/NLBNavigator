@@ -257,6 +257,12 @@ public:
         : m_book(book)
     {
         m_currentPage = m_book->getPageById(currentPageId);
+        if (!GlobalScope::default_global().find("true")) {
+            GlobalScope::default_global()["true"] = true;
+        }
+        if (!GlobalScope::default_global().find("false")) {
+            GlobalScope::default_global()["false"] = false;
+        }
         for (auto var : m_book->getVariables()) {
             if (GlobalScope::default_global().find(var->getName())) continue;
             switch (var->getType())
@@ -320,6 +326,93 @@ private:
     NonLinearBook* m_book;
     Page* m_currentPage;
     
+    void executeModifications(const ModifyingItem *item) {
+        for (auto modification : item->getModifications()) {
+            const Variable *var = m_book->getVariableById(modification->getVarId());
+            const Variable *expr = m_book->getVariableById(modification->getExprId());
+            std::string exprString = expr->getValue();
+            const char *exprSZ = exprString.c_str();
+            switch (modification->getType()) {
+            case Modification::Type::ASSIGN:
+                switch (var->getDataType())
+                {
+                    case Variable::DataType::STRING:
+                        GlobalScope::default_global()[var->getName()] = calculator::calculate(exprSZ, GlobalScope::default_global()).asString();
+                        break;
+                    case Variable::DataType::AUTO:
+                        GlobalScope::default_global()[var->getName()] = calculator::calculate(exprSZ, GlobalScope::default_global()).asInt();
+                        break;
+                    case Variable::DataType::BOOLEAN:
+                        GlobalScope::default_global()[var->getName()] = calculator::calculate(exprSZ, GlobalScope::default_global()).asBool();
+                        break;
+                    case Variable::DataType::NUMBER:
+                        GlobalScope::default_global()[var->getName()] = calculator::calculate(exprSZ, GlobalScope::default_global()).asInt();
+                        break;
+                }
+                break;
+            case Modification::Type::TAG:
+            case Modification::Type::GETTAG:
+            case Modification::Type::WHILE:
+            case Modification::Type::IF:
+            case Modification::Type::IFHAVE:
+            case Modification::Type::ELSE:
+            case Modification::Type::ELSEIF:
+            case Modification::Type::END:
+            case Modification::Type::RETURN:
+            case Modification::Type::HAVE:
+            case Modification::Type::CLONE:
+            case Modification::Type::CNTNR:
+            case Modification::Type::ID:
+            case Modification::Type::ADD:
+            case Modification::Type::ADDU:
+            case Modification::Type::ADDINV:
+            case Modification::Type::ADDALL:
+            case Modification::Type::ADDALLU:
+            case Modification::Type::REMOVE:
+            case Modification::Type::RMINV:
+            case Modification::Type::CLEAR:
+            case Modification::Type::CLRINV:
+            case Modification::Type::OBJS:
+            case Modification::Type::SSND:
+            case Modification::Type::WSND:
+            case Modification::Type::SND:
+            case Modification::Type::SPUSH:
+            case Modification::Type::WPUSH:
+            case Modification::Type::PUSH:
+            case Modification::Type::POP:
+            case Modification::Type::SINJECT:
+            case Modification::Type::INJECT:
+            case Modification::Type::EJECT:
+            case Modification::Type::SHUFFLE:
+            case Modification::Type::PRN:
+            case Modification::Type::DSC:
+            case Modification::Type::PDSC:
+            case Modification::Type::PDSCS:
+            case Modification::Type::ACT:
+            case Modification::Type::ACTT:
+            case Modification::Type::ACTF:
+            case Modification::Type::USE:
+            case Modification::Type::SIZE:
+            case Modification::Type::RND:
+            case Modification::Type::ACHMAX:
+            case Modification::Type::ACHIEVE:
+            case Modification::Type::ACHIEVED:
+            case Modification::Type::GOTO:
+            case Modification::Type::SNAPSHOT:
+            case Modification::Type::COUNTGET:
+            case Modification::Type::COUNTRST:
+            case Modification::Type::OPENURL:
+            case Modification::Type::WINGEOM:
+            case Modification::Type::INVGEOM:
+            case Modification::Type::WINCOLOR:
+            case Modification::Type::INVCOLOR:
+                std::cout << "!!! MODIFICATION TYPE NOT IMPLEMENTED: " << Modification::typeToString(modification->getType()) << std::endl;
+                break;
+
+            }
+        }
+    }
+
     /**
      * @brief Show current page and get user's choice for next page
      */
@@ -328,6 +421,7 @@ private:
         if (!page->getVarId().empty()) {
             GlobalScope::default_global()[m_book->getVariableById(page->getVarId())->getName()] = true;
         }
+        executeModifications(page);
         std::cout << "\n" << std::string(50, '=') << std::endl;
         std::cout << "PAGE: " << page->getCaption() << " (" << page->getFullId() << ")" << std::endl;
         std::cout << std::string(50, '=') << std::endl;
@@ -374,6 +468,7 @@ private:
         std::cin >> choice;
         
         if (choice == 0) {
+            m_currentPage = nullptr;
             return false;
         }
 
@@ -401,6 +496,7 @@ private:
         }
         if (!link->getVarId().empty()) {
             GlobalScope::default_global()[m_book->getVariableById(link->getVarId())->getName()] = true;
+            executeModifications(link);
         }
         m_currentPage = next;
         return true;

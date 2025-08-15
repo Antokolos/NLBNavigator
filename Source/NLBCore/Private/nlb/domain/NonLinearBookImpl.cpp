@@ -649,6 +649,7 @@ std::vector<Variable*> NonLinearBookImpl::getVariables() const {
 }
 
 Variable* NonLinearBookImpl::getVariableById(const std::string& id) const {
+    if (id.empty()) return nullptr;
     auto it = m_variables.find(id);
     return (it != m_variables.end()) ? it->second : nullptr;
 }
