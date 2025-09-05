@@ -21,6 +21,8 @@ endif()
 set(CPARSE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/thirdparty/cparse")
 set(NLB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBCore/Public")
 set(NLB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBCore/Private")
+set(NLB_READER_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBReader/Public")
+set(NLB_READER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBReader/Private")
 
 # Include directories
 include_directories(${NLB_INCLUDE_DIR} ${CPARSE_DIR})
@@ -88,6 +90,8 @@ set(NLB_DOMAIN_HEADERS
         ${NLB_INCLUDE_DIR}/nlb/domain/PageImpl.h
         ${NLB_INCLUDE_DIR}/nlb/domain/SearchResult.h
         ${NLB_INCLUDE_DIR}/nlb/domain/VariableImpl.h
+        ${NLB_READER_INCLUDE_DIR}/nlb/domain/NLBReader.h
+        ${NLB_READER_INCLUDE_DIR}/nlb/domain/NLBExplorer.h
 )
 
 # Utility Headers
@@ -155,6 +159,8 @@ set(NLB_DOMAIN_SOURCES
         ${NLB_SOURCE_DIR}/nlb/domain/PageImpl.cpp
         ${NLB_SOURCE_DIR}/nlb/domain/SearchResult.cpp
         ${NLB_SOURCE_DIR}/nlb/domain/VariableImpl.cpp
+        ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBReader.cpp
+        ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorer.cpp
 )
 
 # Utility Sources
@@ -197,6 +203,7 @@ set_target_properties(NLBReader
 target_include_directories(NLBReader
         PUBLIC
         $<BUILD_INTERFACE:${NLB_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${NLB_READER_INCLUDE_DIR}>
         $<INSTALL_INTERFACE:include>
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
