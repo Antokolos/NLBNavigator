@@ -282,64 +282,32 @@ Obj* NonLinearBookImpl::getObjById(const std::string& objId) const {
     return (it != m_objs.end()) ? it->second : nullptr;
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * 
+ * @param recursively 
+ * @param mediaDir 
+ * @param exportDir 
+ * @param mediaFiles 
+ * @param type 
+ */
 void NonLinearBookImpl::exportMedia(bool recursively, const std::string& mediaDir,
-                                  const std::string& exportDir,
-                                  const std::vector<MediaFile*>& mediaFiles,
-                                  MediaFile::Type type) const {
-    // Создаем директорию экспорта если не существует
-    if (!FileUtils::exists(exportDir)) {
-        FileUtils::createDirectory(exportDir);
-    }
-    
-    // Экспортируем медиафайлы
-    for (const auto& mediaFile : mediaFiles) {
-        std::string sourceFile = FileUtils::combinePath(mediaDir, mediaFile->getFileName());
-        std::string targetFile = FileUtils::combinePath(exportDir, mediaFile->getFileName());
-        
-        if (FileUtils::exists(sourceFile)) {
-            // Копируем файл
-            std::ifstream source(sourceFile, std::ios::binary);
-            std::ofstream target(targetFile, std::ios::binary);
-            target << source.rdbuf();
-        }
-    }
-    
-    // Рекурсивный экспорт из подмодулей
-    if (recursively) {
-        for (const auto& [pageId, page] : m_pages) {
-            if (page->isModuleExternal()) {
-                auto module = page->getModule();
-                if (module && !module->isDummy()) {
-                    module->exportMedia(true, mediaDir, exportDir, 
-                                      (type == MediaFile::Type::Image) ? module->getImageFiles() : module->getSoundFiles(),
-                                      type);
-                }
-            }
-        }
-    }
+                                    const std::string& exportDir,
+                                    const std::vector<MediaFile*>& mediaFiles,
+                                    MediaFile::Type type) const {
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");1
 }
 
+/**
+ * 
+ * @param pageId 
+ * @param history 
+ * @return 
+ */
 Page* NonLinearBookImpl::createFilteredPage(const std::string& pageId,
-                                                          const History& history) const {
-    auto page = getPageById(pageId);
-    if (!page) {
-        return nullptr;
-    }
-    
-    // Создаем фильтрованную копию страницы
-    auto pageImpl = (PageImpl*) (page);
-    
-    // Определяем исключаемые объекты и ссылки на основе истории
-    std::vector<std::string> objIdsToBeExcluded;
-    std::vector<std::string> linkIdsToBeExcluded;
-    std::vector<Link*> linksToBeAdded;
-    std::map<std::string, void*> visitedVars;
-    
-    // Логика фильтрации на основе истории решений
-    // Это упрощенная реализация - в оригинале более сложная логика
-    
-    return pageImpl->createFilteredCloneWithSubstitutions(
-        objIdsToBeExcluded, linkIdsToBeExcluded, linksToBeAdded, visitedVars);
+                                            const History& history) const {
+    // Не используется: плеер C++ реализует эту логику сам, спецификация — Java `NonLinearBookImpl.java:3200-3304`
+    return nullptr;
 }
 
 SearchResultTableModel NonLinearBookImpl::getVariables(const std::string& filter) const {
@@ -755,44 +723,84 @@ void NonLinearBookImpl::exportSound(bool isRoot, const std::string& exportDir) c
     exportMedia(isRoot, FileUtils::combinePath(m_rootDir, SOUND_DIR_NAME), exportDir, m_soundFiles, MediaFile::Type::Sound);
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToChoiceScript(const std::string& exportDir) const {
-    // Заглушка - экспорт в ChoiceScript формат
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToQSPTextFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в QSP формат
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToURQTextFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в URQ формат
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToPDFFile(const std::string& exportFile) const {
-    // Заглушка - экспорт в PDF
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToTXTFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в TXT
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToHTMLFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в HTML
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToJSIQFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в JSIQ
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToSTEADFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в STEAD
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToVNSTEADFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в VNSTEAD  
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
+/**
+ * NB: Export is not supported: NLBNavigator is a player-only port
+ * @param exportDir 
+ */
 void NonLinearBookImpl::exportToASMFile(const std::string& exportDir) const {
-    // Заглушка - экспорт в ASM
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
 // Методы работы с медиафайлами
