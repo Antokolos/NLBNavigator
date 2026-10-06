@@ -17,6 +17,7 @@
 
 #include "nlb/domain/MediaFileImpl.h"
 #include "nlb/api/DummyProgressData.h"
+#include "nlb/api/SpecialVariablesNameHelper.h"
 #include <iostream>
 #include <algorithm>
 
@@ -75,6 +76,8 @@ NonLinearBookImpl::NonLinearBookImpl()
       m_suppressMedia(DEFAULT_SUPPRESS_MEDIA),
       m_suppressSound(DEFAULT_SUPPRESS_SOUND) {
 }
+
+NonLinearBookImpl::~NonLinearBookImpl() = default;
 
 NonLinearBookImpl::NonLinearBookImpl(NonLinearBook* parentNLB, Page* parentPage)
     : m_parentNLB(parentNLB), m_parentPage(parentPage),
@@ -214,9 +217,10 @@ std::map<std::string, Page*> NonLinearBookImpl::getDownwardPagesHeirarchy() cons
     
     // Рекурсивно добавляем страницы из подмодулей
     for (const auto& [pageId, page] : m_pages) {
-        if (page->isModuleExternal()) {
+        // Java: рекурсия в ЛЮБОЙ непустой модуль (раньше — только во внешние)
+        {
             auto module = page->getModule();
-            if (module && !module->isDummy()) {
+            if (module && !module->isEmpty()) {
                 auto childPages = module->getDownwardPagesHeirarchy();
                 result.insert(childPages.begin(), childPages.end());
             }
@@ -609,10 +613,101 @@ std::vector<Variable*> NonLinearBookImpl::getVariables() const {
     return result;
 }
 
+// Java: NonLinearBookImpl.getVariableById(String varId)
+// Своя книга (включая синтез служебных переменных) -> родительская книга.
 Variable* NonLinearBookImpl::getVariableById(const std::string& id) const {
-    if (id.empty()) return nullptr;
-    auto it = m_variables.find(id);
-    return (it != m_variables.end()) ? it->second : nullptr;
+    Variable* result = getVariableImplById(id);
+    if (result) {
+        return result;
+    }
+    if (m_parentNLB) {
+        return m_parentNLB->getVariableById(id);
+    }
+    return getAutowiredVariable(id);
+}
+
+// Java: NonLinearBookImpl.getVariableImplById(String varId)
+VariableImpl* NonLinearBookImpl::getVariableImplById(const std::string& varId) const {
+    if (!varId.empty()) {
+        auto it = m_variables.find(varId);
+        if (it != m_variables.end()) {
+            return it->second;
+        }
+    }
+    return getAutowiredVariable(varId);
+}
+
+namespace {
+bool startsWith(const std::string& s, const std::string& prefix) {
+    return s.size() >= prefix.size() && s.compare(0, prefix.size(), prefix) == 0;
+}
+bool endsWith(const std::string& s, const std::string& suffix) {
+    return s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+}
+
+// Java: NonLinearBookImpl.getAutowiredVariable(String varId)
+// Синтезирует переменные, которых нет на диске:
+//  - TRUE / FALSE — булевы выражения-константы (используются модификациями LinkLw);
+//  - "<W>_<P>"      — флаг "пришли на autowired-страницу W со страницы P", имя vl_<W>_<P>;
+//  - "LC_<W>_OUT_<P>" — ограничение autowired-выхода из W на P: vl_<W>_<P> [&& outConstraint(W)].
+VariableImpl* NonLinearBookImpl::getAutowiredVariable(const std::string& varId) const {
+    if (varId.empty()) {
+        return nullptr;
+    }
+    auto cached = m_synthesizedVariables.find(varId);
+    if (cached != m_synthesizedVariables.end()) {
+        return cached->second.get();
+    }
+
+    std::unique_ptr<VariableImpl> variable;
+    if (varId == TRUE_VARID || varId == FALSE_VARID) {
+        variable = std::make_unique<VariableImpl>();
+        variable->setType(Variable::Type::EXPRESSION);
+        variable->setDataType(Variable::DataType::BOOLEAN);
+        variable->setValue(varId == TRUE_VARID ? "true" : "false");
+    } else {
+        // Java: parseIds(varId) = varId.split("_"); используется только ids[0]
+        const std::string firstId = varId.substr(0, varId.find('_'));
+        for (const auto& [pageId, page] : getDownwardPagesHeirarchy()) {
+            if (pageId.empty() || !endsWith(varId, pageId)) {
+                continue;
+            }
+            variable = std::make_unique<VariableImpl>();
+            const bool isLinkConstraint = startsWith(varId, LC_VARID_PREFIX);
+            variable->setType(isLinkConstraint ? Variable::Type::LINKCONSTRAINT : Variable::Type::VAR);
+            variable->setDataType(Variable::DataType::BOOLEAN);
+            if (isLinkConstraint) {
+                // Java: AUTOWIRED_OUT_PATTERN = "LC_(.*)_OUT_" (жадный) -> последнее вхождение "_OUT_"
+                Variable* autowiredOutConstraint = nullptr;
+                Page* autowiredPage = nullptr;
+                const size_t outPos = varId.rfind(LC_VARID_SEPARATOR_OUT);
+                if (outPos != std::string::npos && outPos >= LC_VARID_PREFIX.size()) {
+                    const std::string autowiredPageId =
+                        varId.substr(LC_VARID_PREFIX.size(), outPos - LC_VARID_PREFIX.size());
+                    autowiredPage = getPageById(autowiredPageId);  // Java: getPageImplById — только эта книга
+                    if (autowiredPage) {
+                        autowiredOutConstraint = getVariableImplById(autowiredPage->getAutowireOutConstrId());
+                    }
+                }
+                variable->setValue(
+                    SpecialVariablesNameHelper::decorateId(pageId, autowiredPage ? autowiredPage->getId() : firstId)
+                    + (autowiredOutConstraint ? " && " + autowiredOutConstraint->getValue() : std::string())
+                );
+            } else {
+                variable->setName(SpecialVariablesNameHelper::decorateId(pageId, firstId));
+            }
+            break;
+        }
+    }
+    if (!variable) {
+        return nullptr;
+    }
+    // Отклонение от Java (там id случайный): id = varId, чтобы переменную можно было опознать
+    variable->setId(varId);
+    VariableImpl* result = variable.get();
+    m_synthesizedVariables[varId] = std::move(variable);
+    return result;
 }
 
 void NonLinearBookImpl::save(FileManipulator* fileManipulator,
@@ -650,6 +745,7 @@ void NonLinearBookImpl::clear() {
     m_soundFiles.clear();
     m_autowiredPages.clear();
     m_externalModules.clear();
+    m_synthesizedVariables.clear();
     m_mediaToConstraintMap.clear();
     m_mediaRedirectsMap.clear();
     m_mediaExportParametersMap.clear();
@@ -1089,11 +1185,6 @@ PageImpl* NonLinearBookImpl::getPageImplById(const std::string& id) const {
 ObjImpl* NonLinearBookImpl::getObjImplById(const std::string& id) const {
     auto it = m_objs.find(id);
     return (it != m_objs.end()) ? it->second : nullptr;
-}
-
-VariableImpl* NonLinearBookImpl::getVariableImplById(const std::string& id) const {
-    auto it = m_variables.find(id);
-    return (it != m_variables.end()) ? it->second : nullptr;
 }
 
 std::vector<Link*> NonLinearBookImpl::getAssociatedLinks(NodeItem* nodeItem) {

@@ -88,7 +88,9 @@ public:
                      Page* parentPage);
 
     // Деструктор
-    virtual ~NonLinearBookImpl() = default;
+    // Определён в .cpp: члены unique_ptr<VariableImpl>/unique_ptr<NonLinearBookImpl>
+    // требуют полного типа в точке определения деструктора
+    ~NonLinearBookImpl() override;
 
     // Переопределения методов из NonLinearBook
     std::set<std::string> getAllAchievementNames(bool recursive) const override;
@@ -267,6 +269,8 @@ private:
     void resetVariableDataTypes();
     void readAutowiredPagesFile(const std::string& rootDir);
     void overwriteBookProperties(const NonLinearBook* source, bool overwriteTheme);
+    // Java: getVariableImplById / getAutowiredVariable — поиск в своей книге + синтез служебных переменных
+    VariableImpl* getAutowiredVariable(const std::string& varId) const;
     bool loadModules(const std::string& rootDir);
     std::unique_ptr<NonLinearBookImpl> loadModule(const std::string& modulesDir, const std::string& name);
     std::set<std::string> getUsedMediaFiles(MediaFile::Type mediaType) const;
@@ -308,6 +312,9 @@ private:
     // Внешние модули из каталога modules/, ключ — имя модуля (имя подкаталога).
     // Книга владеет ими; страницы получают копии через append(), а не указатели.
     std::map<std::string, std::unique_ptr<NonLinearBookImpl>> m_externalModules;
+    // Кэш служебных переменных (TRUE/FALSE, W_P, LC_W_OUT_P), которые Java создаёт на лету.
+    // Кэш нужен, чтобы возвращаемый указатель жил столько же, сколько книга.
+    mutable std::map<std::string, std::unique_ptr<VariableImpl>> m_synthesizedVariables;
     std::map<std::string, ObjImpl*> m_objs;
     std::map<std::string, VariableImpl*> m_variables;
     std::vector<MediaFile*> m_imageFiles;

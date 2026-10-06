@@ -124,6 +124,7 @@ set(NLB_API_SOURCES
         ${NLB_SOURCE_DIR}/nlb/api/DummyNLB.cpp
         ${NLB_SOURCE_DIR}/nlb/api/ConsoleProgressData.cpp
         ${NLB_SOURCE_DIR}/nlb/api/Modification.cpp
+        ${NLB_SOURCE_DIR}/nlb/api/SpecialVariablesNameHelper.cpp
         ${NLB_SOURCE_DIR}/nlb/api/ModificationsTableModel.cpp
         ${NLB_SOURCE_DIR}/nlb/api/PartialProgressData.cpp
         ${NLB_SOURCE_DIR}/nlb/api/PropertyManager.cpp

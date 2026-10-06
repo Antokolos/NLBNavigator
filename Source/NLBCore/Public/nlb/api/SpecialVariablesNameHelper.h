@@ -27,7 +27,8 @@ public:
      * @param autowiredId Optional autowired ID string
      * @return Decorated combined ID string
      */
-    static std::string decorateId(const std::string& id, const std::string& autowiredId = "");
+    // Без аргумента по умолчанию: иначе вызов decorateId(id) неоднозначен с перегрузкой выше
+    static std::string decorateId(const std::string& id, const std::string& autowiredId);
 
 private:
     // Utility class - prevent instantiation
