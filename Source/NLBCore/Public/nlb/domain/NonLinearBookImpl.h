@@ -57,6 +57,7 @@ public:
     static const std::string SUPPRESS_MEDIA_FILE_NAME;
     static const std::string SUPPRESS_SOUND_FILE_NAME;
     static const std::string AUTOWIRED_PAGES_FILE_NAME;
+    static const std::string MODULES_DIR_NAME;
     static const std::string PAGE_ORDER_FILE_NAME;
     static const std::string OBJ_ORDER_FILE_NAME;
     static const std::string VAR_ORDER_FILE_NAME;
@@ -260,7 +261,9 @@ private:
     std::vector<std::string> createSortedDirList(const std::vector<std::string>& dirs, const std::vector<std::string>& orderList, const std::string& entityName);
     void validateVariableReferences();
     void resetVariableDataTypes();
-    void processAutowiredPages();
+    void readAutowiredPagesFile(const std::string& rootDir);
+    bool loadModules(const std::string& rootDir);
+    std::unique_ptr<NonLinearBookImpl> loadModule(const std::string& modulesDir, const std::string& name);
     std::set<std::string> getUsedMediaFiles(MediaFile::Type mediaType) const;
     void addUsedImages(std::set<std::string>& usedImages, const std::string& imageFileName) const;
     void addUsedSounds(std::set<std::string>& usedSounds, const std::string& soundFileName) const;
@@ -297,6 +300,9 @@ private:
     
     std::map<std::string, PageImpl*> m_pages;
     std::vector<std::string> m_autowiredPages;
+    // Внешние модули из каталога modules/, ключ — имя модуля (имя подкаталога).
+    // Книга владеет ими; страницы получают копии через append(), а не указатели.
+    std::map<std::string, std::unique_ptr<NonLinearBookImpl>> m_externalModules;
     std::map<std::string, ObjImpl*> m_objs;
     std::map<std::string, VariableImpl*> m_variables;
     std::vector<MediaFile*> m_imageFiles;

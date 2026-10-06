@@ -1,3 +1,4 @@
+#include <iostream>
 #include "nlb/domain/PageImpl.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/util/StringHelper.h"
@@ -520,9 +521,9 @@ void PageImpl::writePage(
         fileManipulator->writeOptionalMultiLangString(pageDir + "/" + CAPTION_SUBDIR_NAME, m_caption, DEFAULT_CAPTION);
         
         // Write module properties
-        const std::string moduleDir = pageDir + "/" + MODULE_SUBDIR_NAME;
-        fileManipulator->writeOptionalString(moduleDir, MODNAME_FILE_NAME, m_moduleName, m_defaultModuleName);
-        fileManipulator->writeOptionalString(moduleDir, EXTMOD_FILE_NAME,
+        // Как в Java PageImpl.writePage: modname и extmod пишутся в каталог страницы
+        fileManipulator->writeOptionalString(pageDir, MODNAME_FILE_NAME, m_moduleName, m_defaultModuleName);
+        fileManipulator->writeOptionalString(pageDir, EXTMOD_FILE_NAME,
             m_moduleExternal ? "true" : "false", DEFAULT_MODULE_EXTERNAL ? "true" : "false");
         fileManipulator->writeOptionalString(pageDir, MODCNSID_FILE_NAME, m_moduleConstrId, DEFAULT_MODULE_CONSTR_ID);
         
@@ -546,6 +547,8 @@ void PageImpl::writePage(
 void PageImpl::readPage(const std::string& pageDir) {
     // Устанавливаем ID из имени директории
     setId(FileUtils::getFileName(pageDir));
+    // Java: resetDefaultModuleName() сразу после setId — имя модуля по умолчанию зависит от id
+    resetDefaultModuleName();
     
     // Читаем базовые свойства страницы
     m_imageFileName = FileManipulator::getOptionalFileAsString(
@@ -589,13 +592,14 @@ void PageImpl::readPage(const std::string& pageDir) {
     m_useMPL = FileManipulator::getOptionalFileAsString(
         pageDir, USE_MPL_FILE_NAME, DEFAULT_USE_MPL ? "true" : "false") == "true";
     
-    // Читаем модульные свойства
+    // Читаем модульные свойства.
+    // Как в Java PageImpl.readPage: modname и extmod лежат в каталоге СТРАНИЦЫ, а не в module/
     const std::string moduleDir = FileUtils::combinePath(pageDir, MODULE_SUBDIR_NAME);
     m_moduleName = FileManipulator::getOptionalFileAsString(
-        moduleDir, MODNAME_FILE_NAME, m_defaultModuleName);
+        pageDir, MODNAME_FILE_NAME, m_defaultModuleName);
     
     m_moduleExternal = FileManipulator::getOptionalFileAsString(
-        moduleDir, EXTMOD_FILE_NAME, DEFAULT_MODULE_EXTERNAL ? "true" : "false") == "true";
+        pageDir, EXTMOD_FILE_NAME, DEFAULT_MODULE_EXTERNAL ? "true" : "false") == "true";
     
     m_moduleConstrId = FileManipulator::getOptionalFileAsString(
         pageDir, MODCNSID_FILE_NAME, DEFAULT_MODULE_CONSTR_ID);
@@ -664,6 +668,11 @@ void PageImpl::readPage(const std::string& pageDir) {
         NonLinearBook* externalModule = getCurrentNLB()->findExternalModule(m_moduleName);
         if (externalModule) {
             m_module->append(externalModule, true, true);
+        } else {
+            // Java молча вызывает append(null) — модуль остаётся пустым. Поведение сохраняем,
+            // но сообщаем: это почти всегда ошибка в структуре книги (нет modules/<имя>)
+            std::cerr << "Warning: external module '" << m_moduleName
+                      << "' for page " << getId() << " not found" << std::endl;
         }
     } else {
         // Для локальных модулей

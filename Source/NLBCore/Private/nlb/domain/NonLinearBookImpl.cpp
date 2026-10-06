@@ -16,6 +16,8 @@
 #include "nlb/exception/NLBExceptions.h"
 
 #include "nlb/domain/MediaFileImpl.h"
+#include "nlb/api/DummyProgressData.h"
+#include <iostream>
 
 // Константы
 const std::string NonLinearBookImpl::PAGES_DIR_NAME = "pages";
@@ -32,7 +34,9 @@ const std::string NonLinearBookImpl::PERFECTGAMEACHIEVEMENTNAME_FILE_NAME = "per
 const std::string NonLinearBookImpl::FULL_AUTOWIRE_FILE_NAME = "fullautowire";
 const std::string NonLinearBookImpl::SUPPRESS_MEDIA_FILE_NAME = "suppressmedia";
 const std::string NonLinearBookImpl::SUPPRESS_SOUND_FILE_NAME = "suppresssound";
-const std::string NonLinearBookImpl::AUTOWIRED_PAGES_FILE_NAME = "autowiredpages";
+// Совпадает с Java: NonLinearBookImpl.AUTOWIRED_PAGES_FILE_NAME = "autopgs"
+const std::string NonLinearBookImpl::AUTOWIRED_PAGES_FILE_NAME = "autopgs";
+const std::string NonLinearBookImpl::MODULES_DIR_NAME = "modules";
 const std::string NonLinearBookImpl::PAGE_ORDER_FILE_NAME = "pageorder";
 const std::string NonLinearBookImpl::OBJ_ORDER_FILE_NAME = "objorder";
 const std::string NonLinearBookImpl::VAR_ORDER_FILE_NAME = "varorder";
@@ -295,7 +299,7 @@ void NonLinearBookImpl::exportMedia(bool recursively, const std::string& mediaDi
                                     const std::string& exportDir,
                                     const std::vector<MediaFile*>& mediaFiles,
                                     MediaFile::Type type) const {
-    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");1
+    throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
 /**
@@ -559,33 +563,20 @@ Page* NonLinearBookImpl::getParentPage() const {
 
 std::map<std::string, NonLinearBook*> NonLinearBookImpl::getExternalModules() const {
     std::map<std::string, NonLinearBook*> result;
-    
-    for (const auto& [pageId, page] : m_pages) {
-        if (!page->isDeleted() && page->isModuleExternal()) {
-            auto module = page->getModule();
-            if (module && !module->isDummy()) {
-                result[pageId] = module;
-            }
-        }
+    for (const auto& [name, module] : m_externalModules) {
+        result[name] = module.get();
     }
-    
     return result;
 }
 
-NonLinearBook* NonLinearBookImpl::findExternalModule(const std::string& moduleId) const {
-    // Ищем в текущем модуле
-    auto modules = getExternalModules();
-    auto it = modules.find(moduleId);
-    if (it != modules.end()) {
-        return it->second;
+// Java: NonLinearBookImpl.findExternalModule(String name)
+NonLinearBook* NonLinearBookImpl::findExternalModule(const std::string& name) const {
+    auto it = m_externalModules.find(name);
+    if (it != m_externalModules.end()) {
+        return it->second.get();
     }
-    
-    // Рекурсивно ищем в родительском модуле
-    if (m_parentNLB && !m_parentNLB->isDummy()) {
-        return m_parentNLB->findExternalModule(moduleId);
-    }
-    
-    return nullptr;
+    // В Java у корневой книги m_parentNLB — DummyNLB, возвращающий null
+    return m_parentNLB ? m_parentNLB->findExternalModule(name) : nullptr;
 }
 
 std::map<std::string, Variable::DataType> NonLinearBookImpl::getVariableDataTypes() const {
@@ -632,14 +623,18 @@ void NonLinearBookImpl::save(FileManipulator* fileManipulator,
 }
 
 bool NonLinearBookImpl::load(const std::string& path, ProgressData& progressData) {
+    // Java: if (!rootDir.exists()) return false;
+    if (!FileUtils::exists(path)) {
+        return false;
+    }
     try {
         m_rootDir = path;
         readNLB(path, progressData);
         validateVariableReferences();
         resetVariableDataTypes();
-        processAutowiredPages();
         return true;
     } catch (const std::exception& e) {
+        std::cerr << "Error loading book '" << path << "': " << e.what() << std::endl;
         clear();
         return false;
     }
@@ -652,6 +647,7 @@ void NonLinearBookImpl::clear() {
     m_imageFiles.clear();
     m_soundFiles.clear();
     m_autowiredPages.clear();
+    m_externalModules.clear();
     m_mediaToConstraintMap.clear();
     m_mediaRedirectsMap.clear();
     m_mediaExportParametersMap.clear();
@@ -1448,13 +1444,51 @@ void NonLinearBookImpl::resetVariableDataTypes() {
     }
 }
 
-void NonLinearBookImpl::processAutowiredPages() {
-    // Обрабатываем автопроводные страницы
-    std::string autowiredPagesString = FileManipulator::getOptionalFileAsString(m_rootDir, AUTOWIRED_PAGES_FILE_NAME, "");
-    
-    if (!autowiredPagesString.empty()) {
-        m_autowiredPages = StringHelper::tokenize(autowiredPagesString, AUTOWIRED_PAGES_SEPARATOR);
+// Java: NonLinearBookImpl.readAutowiredPagesFile(File rootDir)
+void NonLinearBookImpl::readAutowiredPagesFile(const std::string& rootDir) {
+    std::string autowiredPagesString =
+        FileManipulator::getOptionalFileAsString(rootDir, AUTOWIRED_PAGES_FILE_NAME, nlb::Constants::EMPTY_STRING);
+    if (autowiredPagesString.empty()) {
+        return;  // do nothing — как в Java
     }
+    m_autowiredPages.clear();
+    // tokenize трактует разделители как набор символов и пропускает пустые токены,
+    // поэтому "\r\n" корректно обрабатывает и LF, и CRLF (файлы, правленные на Windows)
+    m_autowiredPages = StringHelper::tokenize(autowiredPagesString, AUTOWIRED_PAGES_SEPARATOR + "\r");
+}
+
+// Java: NonLinearBookImpl.loadModules(File rootDir)
+bool NonLinearBookImpl::loadModules(const std::string& rootDir) {
+    const std::string modulesDir = FileUtils::combinePath(rootDir, MODULES_DIR_NAME);
+    if (!FileUtils::exists(modulesDir) || !FileUtils::isDirectory(modulesDir)) {
+        return false;
+    }
+    for (const std::string& moduleName : FileUtils::getDirectoryFiles(modulesDir)) {
+        // Отклонение от Java: файлы (не каталоги) в modules/ пропускаем,
+        // Java загрузила бы из них пустую книгу
+        if (!FileUtils::isDirectory(FileUtils::combinePath(modulesDir, moduleName))) {
+            continue;
+        }
+        auto moduleImpl = loadModule(modulesDir, moduleName);
+        if (!moduleImpl) {
+            return false;
+        }
+        m_externalModules[moduleName] = std::move(moduleImpl);
+    }
+    return true;
+}
+
+// Java: NonLinearBookImpl.loadModule(File modulesDir, String name)
+std::unique_ptr<NonLinearBookImpl> NonLinearBookImpl::loadModule(const std::string& modulesDir,
+                                                                const std::string& name) {
+    const std::string moduleDir = FileUtils::normalizePath(FileUtils::combinePath(modulesDir, name));
+    // Как в Java: внешний модуль — самостоятельная книга без родителя
+    auto moduleImpl = std::make_unique<NonLinearBookImpl>();
+    DummyProgressData progressData;
+    if (moduleImpl->load(moduleDir, progressData)) {
+        return moduleImpl;
+    }
+    return nullptr;
 }
 
 std::set<std::string> NonLinearBookImpl::getUsedMediaFiles(MediaFile::Type mediaType) const {
@@ -1521,21 +1555,30 @@ void NonLinearBookImpl::writeNLB(FileManipulator* fileManipulator, const std::st
     writeMediaFiles(fileManipulator, nlbDir, m_soundFiles, SOUND_DIR_NAME);
 }
 
+// Порядок шагов — как в Java NonLinearBookImpl.load():
+// modules -> autowired pages -> properties -> objs -> pages -> vars -> images -> sounds.
+// Модули обязаны загрузиться до страниц: PageImpl::readPage ищет внешний модуль по имени.
 void NonLinearBookImpl::readNLB(const std::string& nlbDir, ProgressData& progressData) {
-    // Читаем свойства книги
+    progressData.setNoteText("Reading external modules...");
+    // Результат игнорируется, как в Java
+    loadModules(nlbDir);
+    progressData.setProgressValue(18);
+    progressData.setNoteText("Reading autowired pages...");
+    readAutowiredPagesFile(nlbDir);
+    progressData.setProgressValue(20);
+    progressData.setNoteText("Reading book properties...");
     readBookProperties(nlbDir);
-    
-    // Создаем заглушку для прогресса
-    auto partialProgress = new PartialProgressData(&progressData, 0, 100, 1);
-    
-    // Читаем страницы
-    loadPages(nlbDir, partialProgress);
-    
-    // Читаем объекты
-    loadObjs(nlbDir, partialProgress);
-    
-    // Читаем переменные
-    loadVariables(nlbDir, partialProgress);
+
+    PartialProgressData partialProgress(&progressData, 25, 65, 1);
+
+    progressData.setNoteText("Reading objects...");
+    loadObjs(nlbDir, &partialProgress);
+
+    progressData.setNoteText("Reading pages and modules...");
+    loadPages(nlbDir, &partialProgress);
+
+    progressData.setNoteText("Reading variables...");
+    loadVariables(nlbDir, &partialProgress);
     
     // Читаем медиафайлы
     loadMediaFiles(nlbDir, IMAGES_DIR_NAME, m_imageFiles);
