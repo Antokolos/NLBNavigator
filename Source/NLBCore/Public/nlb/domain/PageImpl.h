@@ -282,18 +282,18 @@ private:
     std::string m_returnPageId;
     std::string m_moduleConstrId;
 
-    NonLinearBookImpl* m_module;
+    NonLinearBookImpl* m_module = nullptr;
 
     MultiLangString m_autowireInText;
     MultiLangString m_autowireOutText;
 
-    bool m_autoIn;
-    bool m_needsAction;
-    bool m_autoOut;
+    bool m_autoIn = DEFAULT_AUTO_IN;
+    bool m_needsAction = DEFAULT_NEEDS_ACTION;
+    bool m_autoOut = DEFAULT_AUTO_OUT;
     std::string m_autowireInConstrId;
     std::string m_autowireOutConstrId;
 
-    bool m_globalAutoWired;
-    bool m_noSave;
-    bool m_autosFirst;
+    bool m_globalAutoWired = DEFAULT_GLOBAL_AUTOWIRED;
+    bool m_noSave = DEFAULT_NOSAVE;
+    bool m_autosFirst = DEFAULT_AUTOS_FIRST;
 };

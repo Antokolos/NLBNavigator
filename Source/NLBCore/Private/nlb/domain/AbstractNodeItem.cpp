@@ -171,9 +171,10 @@ AbstractNodeItem::AbstractNodeItem(
     m_coords->setLeft(coords->getLeft());
     m_coords->setTop(coords->getTop());
     
+    // Java: m_links.add(new LinkImpl(this, link)) — глубокая копия с новым родителем
+    // и currentNLB. Раньше здесь разделялись указатели на ссылки исходного узла.
     for (const auto& link : nodeItem->getLinks()) {
-        auto linkImpl = (LinkImpl*) (link);
-        m_links.push_back(linkImpl);
+        m_links.push_back(new LinkImpl(this, link));
     }
     
     m_containedObjIds = nodeItem->getContainedObjIds();

@@ -18,6 +18,7 @@
 #include "nlb/domain/MediaFileImpl.h"
 #include "nlb/api/DummyProgressData.h"
 #include <iostream>
+#include <algorithm>
 
 // Константы
 const std::string NonLinearBookImpl::PAGES_DIR_NAME = "pages";
@@ -78,10 +79,11 @@ NonLinearBookImpl::NonLinearBookImpl()
 NonLinearBookImpl::NonLinearBookImpl(NonLinearBook* parentNLB, Page* parentPage)
     : m_parentNLB(parentNLB), m_parentPage(parentPage),
       m_startPoint(DEFAULT_STARTPOINT),
-      m_theme(parentNLB ? parentNLB->getTheme() : DEFAULT_THEME),
+      // Как в Java: тема модуля по умолчанию НЕ наследуется, а заголовок — наследуется
+      m_theme(DEFAULT_THEME),
       m_language(parentNLB ? parentNLB->getLanguage() : DEFAULT_LANGUAGE),
       m_license(parentNLB ? parentNLB->getLicense() : DEFAULT_LICENSE),
-      m_title(DEFAULT_TITLE),
+      m_title(parentNLB ? parentNLB->getTitle() : DEFAULT_TITLE),
       m_author(parentNLB ? parentNLB->getAuthor() : DEFAULT_AUTHOR),
       m_version(parentNLB ? parentNLB->getVersion() : DEFAULT_VERSION),
       m_perfectGameAchievementName(DEFAULT_PERFECT_GAME_ACHIEVEMENT_NAME),
@@ -665,48 +667,65 @@ bool NonLinearBookImpl::loadAndSetParent(const std::string& path,
     return load(path, progressData);
 }
 
+// Java: NonLinearBookImpl.append(NonLinearBook operand, boolean overwriteProperties, boolean overwriteTheme)
+// Как и в Java, копируется всё (включая элементы с флагом deleted), id сохраняются.
 void NonLinearBookImpl::append(const NonLinearBook* source,
-                              bool generateNewIds, bool overwriteTheme) {
+                              bool overwriteProperties, bool overwriteTheme) {
     if (!source || source->isDummy()) {
         return;
     }
-    
-    // Копируем страницы
-    auto sourcePages = source->getPages();
-    for (const auto& [pageId, page] : sourcePages) {
-        if (!page->isDeleted()) {
-            // Создаем копию страницы
-            auto newPage = new PageImpl(page, this, overwriteTheme);
-            if (generateNewIds) {
-                // Генерируем новый ID если нужно
-                // newPage->setId(UUID::randomUUID());
-            }
-            m_pages[newPage->getId()] = newPage;
+
+    for (const auto& [pageId, page] : source->getPages()) {
+        m_pages[pageId] = new PageImpl(page, this, overwriteTheme);
+        if (source->isAutowired(pageId)) {
+            addAutowiredPageId(pageId);
         }
     }
-    
-    // Копируем объекты
-    auto sourceObjs = source->getObjs();
-    for (const auto& [objId, obj] : sourceObjs) {
-        if (!obj->isDeleted()) {
-            auto newObj = new ObjImpl(obj, this);
-            if (generateNewIds) {
-                // newObj->setId(UUID::randomUUID());
-            }
-            m_objs[newObj->getId()] = newObj;
-        }
+
+    for (const auto& [objId, obj] : source->getObjs()) {
+        m_objs[objId] = new ObjImpl(obj, this);
     }
-    
-    // Копируем переменные
-    auto sourceVars = source->getVariables();
-    for (const auto& variable : sourceVars) {
-        if (!variable->isDeleted()) {
-            auto newVar = new VariableImpl(variable, this);
-            if (generateNewIds) {
-                // newVar->setId(UUID::randomUUID());
-            }
-            m_variables[newVar->getId()] = newVar;
-        }
+
+    // Java сначала удаляет переменные с совпадающими id, затем добавляет копии.
+    // m_variables — map по id, поэтому присваивание делает то же самое.
+    for (const auto& variable : source->getVariables()) {
+        m_variables[variable->getId()] = new VariableImpl(variable, this);
+    }
+
+    if (overwriteProperties) {
+        overwriteBookProperties(source, overwriteTheme);
+    }
+}
+
+// Java: NonLinearBookImpl.overwriteBookProperties(NonLinearBook operand, boolean overwriteTheme)
+void NonLinearBookImpl::overwriteBookProperties(const NonLinearBook* source, bool overwriteTheme) {
+    m_startPoint = source->getStartPoint();
+    m_language = source->getLanguage();
+    m_license = source->getLicense();
+    if (overwriteTheme) {
+        m_theme = source->getTheme();
+    }
+    m_fullAutowire = source->isFullAutowire();
+    m_suppressMedia = source->isSuppressMedia();
+    m_suppressSound = source->isSuppressSound();
+    m_title = source->getTitle();
+    m_author = source->getAuthor();
+    m_version = source->getVersion();
+    // m_perfectGameAchievementName не трогаем — как в Java
+}
+
+// Java: NonLinearBookImpl.addAutowiredPageId
+void NonLinearBookImpl::addAutowiredPageId(const std::string& pageId) {
+    if (std::find(m_autowiredPages.begin(), m_autowiredPages.end(), pageId) == m_autowiredPages.end()) {
+        m_autowiredPages.push_back(pageId);
+    }
+}
+
+// Java: NonLinearBookImpl.removeAutowiredPageId
+void NonLinearBookImpl::removeAutowiredPageId(const std::string& pageId) {
+    auto it = std::find(m_autowiredPages.begin(), m_autowiredPages.end(), pageId);
+    if (it != m_autowiredPages.end()) {
+        m_autowiredPages.erase(it);
     }
 }
 

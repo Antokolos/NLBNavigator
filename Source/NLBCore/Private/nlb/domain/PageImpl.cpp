@@ -105,15 +105,13 @@ PageImpl::PageImpl(NonLinearBook* currentNLB, float left, float top)
     init();
 }
 
-// Copy constructor
+// Copy constructor. Java: PageImpl(Page source, NonLinearBook currentNLB, boolean overwriteTheme)
+// NB: создаёт полную копию, включая id (как в Java).
 PageImpl::PageImpl(const Page* source,
                    NonLinearBook* currentNLB,
                    bool overwriteTheme)
     : AbstractNodeItem(source, currentNLB)
 {
-    init();
-    
-    // Copy all properties from source page
     m_imageFileName = source->getImageFileName();
     m_imageBackground = source->isImageBackground();
     m_imageAnimated = source->isImageAnimated();
@@ -121,38 +119,34 @@ PageImpl::PageImpl(const Page* source,
     m_soundSFX = source->isSoundSFX();
     m_varId = source->getVarId();
     m_timerVarId = source->getTimerVarId();
-    m_moduleConstrId = source->getModuleConstrId();
     m_caption = source->getCaptions();
     m_useCaption = source->isUseCaption();
     m_useMPL = source->isUseMPL();
     m_text = source->getTexts();
-    
-    if (overwriteTheme) {
-        m_theme = source->getTheme();
-    }
-    
+    // Тема копируется всегда; overwriteTheme влияет только на append() подмодуля
+    m_theme = source->getTheme();
     m_moduleName = source->getModuleName();
     m_moduleExternal = source->isModuleExternal();
+    resetDefaultModuleName();
     m_traverseText = source->getTraverseTexts();
     m_autoTraverse = source->isAutoTraverse();
     m_autoReturn = source->isAutoReturn();
     m_returnText = source->getReturnTexts();
     m_returnPageId = source->getReturnPageId();
+    m_moduleConstrId = source->getModuleConstrId();
+    m_module = new NonLinearBookImpl(currentNLB, this);
+    // Копируем СОДЕРЖИМОЕ подмодуля источника (раньше присоединялась пустая книга)
+    m_module->append(source->getModule(), true, overwriteTheme);
     m_autowireInText = source->getAutowireInTexts();
     m_autowireOutText = source->getAutowireOutTexts();
+    m_globalAutoWired = source->isGlobalAutowire();
+    m_noSave = source->isNoSave();
+    m_autosFirst = source->isAutosFirst();
     m_autoIn = source->isAutoIn();
     m_needsAction = source->isNeedsAction();
     m_autoOut = source->isAutoOut();
     m_autowireInConstrId = source->getAutowireInConstrId();
     m_autowireOutConstrId = source->getAutowireOutConstrId();
-    
-    // ... продолжение копирования атрибутов
-    
-    // Инициализация модуля
-    m_module = new NonLinearBookImpl(currentNLB, this);
-    m_module->append(
-        new NonLinearBookImpl(source->getModule(), this),
-        true, overwriteTheme);
 }
 
 void PageImpl::init() {

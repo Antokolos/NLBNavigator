@@ -161,7 +161,11 @@ public:
     // Дополнительные методы
     void clear();
     bool loadAndSetParent(const std::string& path, NonLinearBook* parentNLB, Page* parentPage);
-    void append(const NonLinearBook* source, bool generateNewIds, bool overwriteTheme);
+    // Java: append(NonLinearBook operand, boolean overwriteProperties, boolean overwriteTheme).
+    // Копирует страницы/объекты/переменные с СОХРАНЕНИЕМ id и autowired-метки страниц.
+    void append(const NonLinearBook* source, bool overwriteProperties, bool overwriteTheme);
+    void addAutowiredPageId(const std::string& pageId);
+    void removeAutowiredPageId(const std::string& pageId);
 
     // Методы экспорта
     void exportImages(bool isRoot, const std::string& exportDir) const;
@@ -262,6 +266,7 @@ private:
     void validateVariableReferences();
     void resetVariableDataTypes();
     void readAutowiredPagesFile(const std::string& rootDir);
+    void overwriteBookProperties(const NonLinearBook* source, bool overwriteTheme);
     bool loadModules(const std::string& rootDir);
     std::unique_ptr<NonLinearBookImpl> loadModule(const std::string& modulesDir, const std::string& name);
     std::set<std::string> getUsedMediaFiles(MediaFile::Type mediaType) const;
