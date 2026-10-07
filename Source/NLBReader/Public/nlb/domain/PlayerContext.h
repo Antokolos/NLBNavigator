@@ -48,8 +48,9 @@ public:
     cparse::TokenMap& scope() { return m_scope; }
     const cparse::TokenMap& scope() const { return m_scope; }
 
-    /// Инициализирует отсутствующие переменные книги значениями по умолчанию.
-    /// Идемпотентно; вызывается при первом входе в каждую книгу/модуль.
+    /// Инициализирует отсутствующие переменные книги и всех её модулей значениями по умолчанию
+    /// по типу данных, как initializeVariables() STEAD-экспорта (ExportManager.getDefaultValue):
+    /// NUMBER -> 0, STRING -> "", BOOLEAN/AUTO -> false. Уже существующие не трогает.
     void ensureBookVars(const NonLinearBook* book);
     bool hasVar(const std::string& name) const;
     void setVar(const std::string& name, const cparse::packToken& value);
@@ -112,6 +113,11 @@ public:
     int achievementCount(const std::string& name) const;
     bool isAchievementGranted(const std::string& name) const;
     const std::string& perfectGameAchievementName() const { return m_perfectGameName; }
+    /// Достижения переживают перезапуск игры, как prefs в INSTEAD. Задаёт файл хранения:
+    /// загружает из него сохранённый прогресс (без повторных объявлений) и далее
+    /// сохраняет после каждого изменения. Пустой путь — только в памяти.
+    /// Возвращает false, если существующий файл не удалось прочитать.
+    bool setAchievementsStorage(const std::string& path);
 
     // ------------------------------------------------------------------ счётчики (COUNTGET/COUNTRST)
     void countIncrement(CountType type);
@@ -164,6 +170,8 @@ private:
     void initContainers(NonLinearBook* book);
     void registerAchievements(NonLinearBook* rootBook);
     void announceAchievement(const std::string& name);
+    void saveAchievements() const;
+    bool loadAchievements();
     static std::string countKey(CountType type);
 
     NonLinearBook* m_rootBook;
@@ -180,6 +188,7 @@ private:
     std::map<std::string, int> m_achievementMax;
     std::set<std::string> m_grantedAchievements;
     std::string m_perfectGameName;
+    std::string m_achievementsPath;
 
     std::vector<OutputItem> m_output;
     std::optional<std::string> m_goto;

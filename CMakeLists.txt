@@ -93,6 +93,7 @@ set(NLB_DOMAIN_HEADERS
         ${NLB_READER_INCLUDE_DIR}/nlb/domain/NLBReader.h
         ${NLB_READER_INCLUDE_DIR}/nlb/domain/NLBExplorer.h
         ${NLB_READER_INCLUDE_DIR}/nlb/domain/PlayerContext.h
+        ${NLB_READER_INCLUDE_DIR}/nlb/domain/ModificationInterpreter.h
 )
 
 # Utility Headers
@@ -164,6 +165,7 @@ set(NLB_DOMAIN_SOURCES
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBReader.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorer.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerContext.cpp
+        ${NLB_READER_SOURCE_DIR}/nlb/domain/ModificationInterpreter.cpp
 )
 
 # Utility Sources

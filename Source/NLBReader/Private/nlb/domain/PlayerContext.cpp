@@ -6,6 +6,9 @@
 #include "nlb/api/Variable.h"
 
 #include <algorithm>
+#include <cstdio>
+#include <filesystem>
+#include <fstream>
 
 namespace {
 const std::string EMPTY;
@@ -40,28 +43,31 @@ void PlayerContext::ensureBookVars(const NonLinearBook* book) {
         if (!var || var->isDeleted() || var->getName().empty() || hasVar(var->getName())) {
             continue;
         }
-        const std::string& name = var->getName();
+        // Как Java getVariableDataTypes(): переменными состояния являются только эти типы
         switch (var->getType()) {
-            case Variable::Type::VAR:
-                switch (var->getDataType()) {
-                    case Variable::DataType::STRING:  m_scope[name] = std::string(); break;
-                    case Variable::DataType::BOOLEAN: m_scope[name] = false;         break;
-                    case Variable::DataType::NUMBER:
-                    case Variable::DataType::AUTO:
-                    default:                          m_scope[name] = 0;             break;
-                }
-                break;
-            case Variable::Type::TIMER:
-                m_scope[name] = 0;  // таймер — число (VariableImpl::readVariable: TIMER -> NUMBER)
-                break;
             case Variable::Type::PAGE:
+            case Variable::Type::TIMER:
             case Variable::Type::OBJ:
             case Variable::Type::LINK:
-                m_scope[name] = false;  // флаги "посещено/выбрано"
+            case Variable::Type::VAR:
                 break;
             default:
-                // Ограничения, выражения, теги, ссылки на объекты — это не переменные состояния
-                break;
+                continue;
+        }
+        const std::string& name = var->getName();
+        switch (var->getDataType()) {
+            case Variable::DataType::NUMBER: m_scope[name] = 0;             break;
+            case Variable::DataType::STRING: m_scope[name] = std::string(); break;
+            case Variable::DataType::BOOLEAN:
+            case Variable::DataType::AUTO:
+            default:                         m_scope[name] = false;         break;
+        }
+    }
+    // initializeVariables() в STEAD охватывает и модули (getVariableDataTypes рекурсивен)
+    for (const auto& [pageId, page] : book->getPages()) {
+        NonLinearBook* module = page->getModule();
+        if (module && !module->isEmpty()) {
+            ensureBookVars(module);
         }
     }
 }
@@ -280,6 +286,7 @@ void PlayerContext::registerAchievements(NonLinearBook* rootBook) {
 
 void PlayerContext::setAchievementMax(const std::string& name, int max) {
     m_achievementMax[name] = max;
+    saveAchievements();
 }
 
 void PlayerContext::achieve(const std::string& name, const std::string& modificationId) {
@@ -292,20 +299,120 @@ void PlayerContext::achieve(const std::string& name, const std::string& modifica
     }
 
     // nlb.lua setAchievement: perfect game — когда все прочие достижения набрали свой максимум
+    bool perfect = !m_perfectGameName.empty();
     for (const auto& [otherName, ids] : m_achievementIds) {
+        if (!perfect) {
+            break;
+        }
         if (otherName == m_perfectGameName) {
             continue;
         }
         auto otherMax = m_achievementMax.find(otherName);
         const int required = (otherMax == m_achievementMax.end()) ? 1 : otherMax->second;
-        if (static_cast<int>(ids.size()) < required) {
-            return;
-        }
+        perfect = static_cast<int>(ids.size()) >= required;
     }
-    if (!m_perfectGameName.empty()) {
+    if (perfect) {
         m_achievementIds[m_perfectGameName].insert(modificationId);
         announceAchievement(m_perfectGameName);
     }
+    saveAchievements();
+}
+
+// Формат файла: строки "<вид>\t<имя>[\t<значение>]", вид: max | id | granted.
+// Табуляции и переводы строк в именах экранируются.
+namespace {
+std::string escapeField(const std::string& s) {
+    std::string r;
+    for (char ch : s) {
+        if (ch == '\\') r += "\\\\";
+        else if (ch == '\t') r += "\\t";
+        else if (ch == '\n') r += "\\n";
+        else if (ch == '\r') r += "\\r";
+        else r += ch;
+    }
+    return r;
+}
+std::string unescapeField(const std::string& s) {
+    std::string r;
+    for (size_t i = 0; i < s.size(); ++i) {
+        if (s[i] == '\\' && i + 1 < s.size()) {
+            char n = s[++i];
+            r += (n == 't') ? '\t' : (n == 'n') ? '\n' : (n == 'r') ? '\r' : n;
+        } else {
+            r += s[i];
+        }
+    }
+    return r;
+}
+std::vector<std::string> splitTabs(const std::string& line) {
+    std::vector<std::string> parts;
+    std::string cur;
+    for (char ch : line) {
+        if (ch == '\t') { parts.push_back(unescapeField(cur)); cur.clear(); }
+        else cur += ch;
+    }
+    parts.push_back(unescapeField(cur));
+    return parts;
+}
+}
+
+bool PlayerContext::setAchievementsStorage(const std::string& path) {
+    m_achievementsPath = path;
+    if (path.empty()) {
+        return true;
+    }
+    return loadAchievements();
+}
+
+bool PlayerContext::loadAchievements() {
+    std::error_code ec;
+    if (!std::filesystem::exists(m_achievementsPath, ec)) {
+        return true;  // первый запуск — файла ещё нет
+    }
+    std::ifstream in(m_achievementsPath, std::ios::binary);
+    if (!in) {
+        return false;
+    }
+    std::string line;
+    while (std::getline(in, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        auto parts = splitTabs(line);
+        if (parts.size() == 3 && parts[0] == "max") {
+            try { m_achievementMax[parts[1]] = std::stoi(parts[2]); } catch (...) {}
+        } else if (parts.size() == 3 && parts[0] == "id") {
+            m_achievementIds[parts[1]].insert(parts[2]);
+        } else if (parts.size() == 2 && parts[0] == "granted") {
+            m_grantedAchievements.insert(parts[1]);
+        }
+    }
+    return true;
+}
+
+void PlayerContext::saveAchievements() const {
+    if (m_achievementsPath.empty()) {
+        return;
+    }
+    // Пишем во временный файл и переименовываем, чтобы сбой не испортил прогресс
+    const std::string tmp = m_achievementsPath + ".tmp";
+    {
+        std::ofstream out(tmp, std::ios::binary | std::ios::trunc);
+        if (!out) {
+            return;
+        }
+        for (const auto& [name, max] : m_achievementMax) {
+            out << "max\t" << escapeField(name) << "\t" << max << "\n";
+        }
+        for (const auto& [name, ids] : m_achievementIds) {
+            for (const auto& id : ids) {
+                out << "id\t" << escapeField(name) << "\t" << escapeField(id) << "\n";
+            }
+        }
+        for (const auto& name : m_grantedAchievements) {
+            out << "granted\t" << escapeField(name) << "\n";
+        }
+    }
+    std::remove(m_achievementsPath.c_str());
+    std::rename(tmp.c_str(), m_achievementsPath.c_str());
 }
 
 int PlayerContext::achievementCount(const std::string& name) const {
