@@ -271,6 +271,7 @@ private:
     void overwriteBookProperties(const NonLinearBook* source, bool overwriteTheme);
     // Java: getVariableImplById / getAutowiredVariable — поиск в своей книге + синтез служебных переменных
     VariableImpl* getAutowiredVariable(const std::string& varId) const;
+    void addAchievementsForModifyingItem(const ModifyingItem* item, std::set<std::string>& result) const;
     bool loadModules(const std::string& rootDir);
     std::unique_ptr<NonLinearBookImpl> loadModule(const std::string& modulesDir, const std::string& name);
     std::set<std::string> getUsedMediaFiles(MediaFile::Type mediaType) const;

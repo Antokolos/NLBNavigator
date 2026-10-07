@@ -103,33 +103,41 @@ NonLinearBookImpl::NonLinearBookImpl(const NonLinearBook* source,
 }
 
 // Реализация методов из NonLinearBook
+// Java: NonLinearBookImpl.getAllAchievementNames(boolean recursive)
 std::set<std::string> NonLinearBookImpl::getAllAchievementNames(bool recursive) const {
     std::set<std::string> result;
-    
-    // Собираем достижения из всех страниц
     for (const auto& [pageId, page] : m_pages) {
-        // Логика сбора достижений из модификаций страниц
-        auto modifications = page->getModifications();
-        for (const auto& mod : modifications) {
-            // Проверяем тип модификации на достижения
-            // Это упрощенная логика, в реальности нужно проверять конкретные типы
+        // Невиртуальный ромб: ModifyingItem неоднозначен, идём через интерфейс Page
+        addAchievementsForModifyingItem(static_cast<const Page*>(page), result);
+        for (const auto& link : page->getLinks()) {
+            addAchievementsForModifyingItem(link, result);
+        }
+        NonLinearBook* module = page->getModule();
+        if (recursive && module && !module->isEmpty()) {
+            auto moduleAchievements = module->getAllAchievementNames(true);
+            result.insert(moduleAchievements.begin(), moduleAchievements.end());
         }
     }
-    
-    // Рекурсивно собираем из подмодулей если нужно
-    if (recursive) {
-        for (const auto& [pageId, page] : m_pages) {
-            if (page->isModuleExternal()) {
-                auto module = page->getModule();
-                if (module && !module->isDummy()) {
-                    auto moduleAchievements = module->getAllAchievementNames(true);
-                    result.insert(moduleAchievements.begin(), moduleAchievements.end());
-                }
+    for (const auto& [objId, obj] : m_objs) {
+        addAchievementsForModifyingItem(static_cast<const Obj*>(obj), result);
+        for (const auto& link : obj->getLinks()) {
+            addAchievementsForModifyingItem(link, result);
+        }
+    }
+    return result;
+}
+
+// Java: NonLinearBookImpl.getAllAchievementsForModifyingItem(ModifyingItem item)
+void NonLinearBookImpl::addAchievementsForModifyingItem(const ModifyingItem* item,
+                                                       std::set<std::string>& result) const {
+    for (const auto& modification : item->getModifications()) {
+        if (modification->getType() == Modification::Type::ACHIEVE) {
+            Variable* variable = getVariableById(modification->getExprId());
+            if (variable) {
+                result.insert(variable->getValue());
             }
         }
     }
-    
-    return result;
 }
 
 std::string NonLinearBookImpl::getPerfectGameAchievementName() const {
