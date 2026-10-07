@@ -88,12 +88,24 @@ inline void NLBExplorer::explore()
 void NLBExplorer::executeModifications(const ModifyingItem* item)
 {
     for (auto modification : item->getModifications()) {
-        const Variable *var = m_book->getVariableById(modification->getVarId());
-        const Variable *expr = m_book->getVariableById(modification->getExprId());
-        std::string exprString = expr->getValue();
+        if (!modification || modification->isDeleted()) {
+            continue;
+        }
+        // varId и exprId бывают пустыми (SNAPSHOT, COUNTRST, CLRINV, ELSE, END, ...),
+        // а переменная может не найтись — тогда указатели равны nullptr
+        const Variable *var = modification->getVarId().empty()
+                              ? nullptr : m_book->getVariableById(modification->getVarId());
+        const Variable *expr = modification->getExprId().empty()
+                               ? nullptr : m_book->getVariableById(modification->getExprId());
+        const std::string exprString = expr ? expr->getValue() : std::string();
         const char *exprSZ = exprString.c_str();
         switch (modification->getType()) {
         case Modification::Type::ASSIGN:
+            if (!var || !expr) {
+                std::cout << "!!! ASSIGN " << modification->getId()
+                          << ": variable or expression not found, skipped" << std::endl;
+                break;
+            }
             switch (var->getDataType())
             {
             case Variable::DataType::STRING:
@@ -111,6 +123,11 @@ void NLBExplorer::executeModifications(const ModifyingItem* item)
             }
             break;
         case Modification::Type::ADDINV:
+            if (!expr) {
+                std::cout << "!!! ADDINV " << modification->getId()
+                          << ": expression not found, skipped" << std::endl;
+                break;
+            }
             cparse::GlobalScope::default_global()[INVENTORY].asList().push(exprString);
             break;
         case Modification::Type::TAG:
@@ -179,7 +196,9 @@ bool NLBExplorer::showPageAndGetNextChoice(Page* page)
 {
     if (!page) return false;
     if (!page->getVarId().empty()) {
-        cparse::GlobalScope::default_global()[m_book->getVariableById(page->getVarId())->getName()] = true;
+        if (const Variable *pageVar = m_book->getVariableById(page->getVarId())) {
+            cparse::GlobalScope::default_global()[pageVar->getName()] = true;
+        }
     }
     executeModifications(page);
     std::cout << "\n" << std::string(50, '=') << std::endl;
@@ -209,6 +228,12 @@ bool NLBExplorer::showPageAndGetNextChoice(Page* page)
     for (size_t i = 0; i < links.size(); ++i) {
         if (!links[i]->getConstrId().empty()) {
             Variable *constraint = m_book->getVariableById(links[i]->getConstrId());
+            if (!constraint) {
+                // Ограничение не найдено — ссылка считается неограниченной
+                linksMap[choiceIdx] = i;
+                std::cout << choiceIdx++ << ". " << links[i]->getText() << std::endl;
+                continue;
+            }
             std::string exprString = constraint->getValue();
             const char *expr = exprString.c_str();
             if (!cparse::calculator::calculate(expr, cparse::GlobalScope::default_global()).asBool()) {
@@ -265,7 +290,9 @@ bool NLBExplorer::showPageAndGetNextChoice(Page* page)
         std::cout << "Page not found: " << pageId << std::endl;
     }
     if (!link->getVarId().empty()) {
-        cparse::GlobalScope::default_global()[m_book->getVariableById(link->getVarId())->getName()] = true;
+        if (const Variable *linkVar = m_book->getVariableById(link->getVarId())) {
+            cparse::GlobalScope::default_global()[linkVar->getName()] = true;
+        }
         executeModifications(link);
     }
     m_currentPage = next;
