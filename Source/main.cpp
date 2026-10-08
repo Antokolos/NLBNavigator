@@ -44,7 +44,9 @@ int main(int argc, char* argv[]) {
 #endif
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " <path_to_nlb_directory> [mode]" << std::endl;
-        std::cout << "Modes: info (default) | explore" << std::endl;
+        std::cout << "Modes: info (default) | explore [vn|standard]" << std::endl;
+        std::cout << "  explore vn       - play as exported by exportToVNSTEADFile (default)" << std::endl;
+        std::cout << "  explore standard - play as exported by exportToSTEADFile" << std::endl;
         return 1;
     }
     
@@ -59,7 +61,12 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         std::cout << "Loaded: " << book->getTitle() << " by " << book->getAuthor() << std::endl;
-        NLBExplorer explorer(book.get(), book->getStartPoint(), achievementsFilePath(nlbPath));
+        PlayerEngine::Settings settings;
+        settings.achievementsPath = achievementsFilePath(nlbPath);
+        const std::string exportMode = (argc > 3) ? argv[3] : "vn";
+        settings.exportMode = (exportMode == "standard")
+            ? PlayerEngine::ExportMode::Standard : PlayerEngine::ExportMode::VN;
+        NLBExplorer explorer(book.get(), book->getStartPoint(), settings);
         explorer.explore();
     } else {
         NLBReader reader;

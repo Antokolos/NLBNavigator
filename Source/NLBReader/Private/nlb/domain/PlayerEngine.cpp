@@ -8,6 +8,8 @@
 #include "nlb/api/ModifyingItem.h"
 #include "nlb/api/Variable.h"
 #include "nlb/api/SpecialVariablesNameHelper.h"
+#include "nlb/api/Theme.h"
+#include "nlb/util/MultiLangString.h"
 #include "nlb/exception/NLBExceptions.h"
 
 #include <algorithm>
@@ -23,6 +25,11 @@ std::string trim(const std::string& s) {
     return s.substr(b, e - b + 1);
 }
 
+/// ExportManager.determineTrivialStatus(Link)
+bool isTrivial(const MultiLangString& texts, const MultiLangString& altTexts, bool autoFlag) {
+    return (texts == Link::DEFAULT_TEXT && altTexts == Link::DEFAULT_ALT_TEXT) || autoFlag;
+}
+
 /// LinkLw.getId(): parent_target_mplLinkId_Type
 std::string lwId(const std::string& parentId, const std::string& target,
                  const std::string& mplLinkId, const char* type) {
@@ -32,11 +39,7 @@ std::string lwId(const std::string& parentId, const std::string& target,
 
 PlayerEngine::PlayerEngine(NonLinearBook* rootBook, const Settings& settings)
     : m_rootBook(rootBook), m_settings(settings) {
-    m_context = std::make_unique<PlayerContext>(rootBook, settings.randomSeed);
-    if (!settings.achievementsPath.empty()) {
-        m_context->setAchievementsStorage(settings.achievementsPath);
-    }
-    m_interpreter = std::make_unique<ModificationInterpreter>(rootBook, *m_context);
+    createState();
     // Тексты по умолчанию — из config.xml NLB (export/texts)
     const bool ru = rootBook && rootBook->getLanguage() == "ru";
     if (m_settings.gameInvText.empty()) {
@@ -45,6 +48,31 @@ PlayerEngine::PlayerEngine(NonLinearBook* rootBook, const Settings& settings)
     if (m_settings.gameNouseText.empty()) {
         m_settings.gameNouseText = ru ? "Не сработает..." : "Does not work...";
     }
+}
+
+void PlayerEngine::createState() {
+    m_interpreter.reset();
+    m_context = std::make_unique<PlayerContext>(m_rootBook, m_settings.randomSeed);
+    if (!m_settings.achievementsPath.empty()) {
+        m_context->setAchievementsStorage(m_settings.achievementsPath);
+    }
+    m_interpreter = std::make_unique<ModificationInterpreter>(m_rootBook, *m_context);
+    m_page = nullptr;
+    m_book = nullptr;
+}
+
+void PlayerEngine::restart() {
+    createState();
+    start();
+}
+
+bool PlayerEngine::isVnPage(const Page* page) const {
+    if (!page) {
+        return false;
+    }
+    const Theme theme = page->getEffectiveTheme();
+    // VNSTEADExportManager.isVN: theme != STANDARD; STEADExportManager.isVN: theme == VN
+    return m_settings.exportMode == ExportMode::VN ? theme != Theme::STANDARD : theme == Theme::VN;
 }
 
 // ============================================================================ команды игрока
@@ -60,20 +88,15 @@ bool PlayerEngine::choose(size_t choiceIndex) {
     if (!m_page) {
         return false;
     }
-    size_t index = 0;
-    for (const PlayerLink& link : buildLinks()) {
-        if (link.autoFlag || !isLinkAvailable(link)) {
-            continue;
-        }
-        if (index++ == choiceIndex) {
-            m_transitions = 0;
-            // Клик по ссылке — xact в отдельную комнату ссылки: s = комната ссылки, f.autowired = nil
-            followLink(link, false);
-            settle();
-            return true;
-        }
+    const std::vector<PlayerLink> choices = availableChoices();
+    if (choiceIndex >= choices.size()) {
+        return false;
     }
-    return false;
+    m_transitions = 0;
+    // Клик по ссылке — xact в отдельную комнату ссылки: s = комната ссылки, f.autowired = nil
+    followLink(choices[choiceIndex], false);
+    settle();
+    return true;
 }
 
 bool PlayerEngine::actOnObject(const std::string& instanceId) {
@@ -182,12 +205,21 @@ std::string PlayerEngine::moduleConstraintText(NonLinearBook* book) const {
     return (v && !v->isDeleted()) ? trim(v->getValue()) : "";
 }
 
-std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks() const {
+std::vector<PlayerEngine::LinkInfo> PlayerEngine::linksOf(const std::string& pageId) const {
+    static const char* KINDS[] = {"Normal", "Traverse", "Return", "AutowiredIn", "AutowiredOut"};
+    std::vector<LinkInfo> result;
+    for (const PlayerLink& link : buildLinks(m_interpreter->findPage(pageId))) {
+        result.push_back({KINDS[static_cast<int>(link.kind)], link.target, link.text, link.autoFlag});
+    }
+    return result;
+}
+
+std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks(Page* page) const {
     std::vector<PlayerLink> result;
-    if (!m_page) {
+    if (!page) {
         return result;
     }
-    Page* page = m_page;
+    NonLinearBook* book = m_interpreter->bookOfPage(page->getId());
     const std::string& pageId = page->getId();
 
     // 1. Собственные ссылки страницы
@@ -207,6 +239,7 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks() const {
         pl.positive = link->isPositiveConstraint();
         pl.obeyModule = link->isObeyToModuleConstraint();
         pl.modifications = static_cast<const ModifyingItem*>(link)->getModifications();
+        pl.trivial = isTrivial(link->getTexts(), link->getAltTexts(), pl.autoFlag);
         result.push_back(pl);
     }
 
@@ -221,11 +254,12 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks() const {
         pl.constrId = page->getModuleConstrId();
         pl.autoFlag = page->isAutoTraverse();
         pl.needsAction = page->isNeedsAction();
+        pl.trivial = isTrivial(page->getTraverseTexts(), Link::DEFAULT_ALT_TEXT, pl.autoFlag);
         result.push_back(pl);
     }
 
     // 3. Return: выход из модуля
-    Page* modulePage = m_book ? m_book->getParentPage() : nullptr;
+    Page* modulePage = book ? book->getParentPage() : nullptr;
     if (modulePage && page->shouldReturn()) {
         if (page->isUseMPL()) {
             for (Link* link : modulePage->getLinks()) {
@@ -243,6 +277,7 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks() const {
                 pl.once = link->isOnce();
                 pl.positive = link->isPositiveConstraint();
                 pl.modifications = static_cast<const ModifyingItem*>(link)->getModifications();
+                pl.trivial = isTrivial(link->getTexts(), link->getAltTexts(), pl.autoFlag);
                 result.push_back(pl);
             }
         } else {
@@ -255,13 +290,14 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks() const {
             pl.autoFlag = page->isAutoReturn();
             pl.positive = modulePage->getModuleConstrId().empty();
             pl.obeyModule = !page->isLeaf();
+            pl.trivial = isTrivial(page->getReturnTexts(), Link::DEFAULT_ALT_TEXT, pl.autoFlag);
             result.push_back(pl);
         }
     }
 
     // 4. AutowiredOut: из autowired-страницы обратно на обычные страницы
     if (page->isAutowire()) {
-        const auto targets = page->isGlobalAutowire() ? m_book->getDownwardPagesHeirarchy() : m_book->getPages();
+        const auto targets = page->isGlobalAutowire() ? book->getDownwardPagesHeirarchy() : book->getPages();
         for (const auto& [targetId, target] : targets) {
             if (target->isDeleted() || target->isAutowire()) continue;
             PlayerLink pl;
@@ -274,14 +310,15 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks() const {
             // LinkLw: модификация "W_T := FALSE"
             pl.autowiredVarId = pageId + "_" + targetId;
             pl.autowiredValue = false;
+            pl.trivial = isTrivial(page->getAutowireOutTexts(), Link::DEFAULT_ALT_TEXT, pl.autoFlag);
             result.push_back(pl);
         }
     }
 
     // 5. AutowiredIn: на autowired-страницы (с autowired-страниц — только при fullAutowire)
-    if (m_book->isFullAutowire() || !page->isAutowire()) {
-        std::vector<std::string> autowiredIds = m_book->getAutowiredPagesIds();
-        for (const auto& id : m_book->getParentGlobalAutowiredPagesIds()) {
+    if (book->isFullAutowire() || !page->isAutowire()) {
+        std::vector<std::string> autowiredIds = book->getAutowiredPagesIds();
+        for (const auto& id : book->getParentGlobalAutowiredPagesIds()) {
             autowiredIds.push_back(id);
         }
         for (const auto& autowiredId : autowiredIds) {
@@ -301,6 +338,7 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks() const {
                 pl.autowiredVarId = autowiredId + "_" + pageId;
                 pl.autowiredValue = true;
             }
+            pl.trivial = isTrivial(autowired->getAutowireInTexts(), Link::DEFAULT_ALT_TEXT, pl.autoFlag);
             result.push_back(pl);
         }
     }
@@ -328,6 +366,25 @@ bool PlayerEngine::isLinkAvailable(const PlayerLink& link) const {
     }
     const bool value = ModificationInterpreter::isTruthy(m_interpreter->evaluate(body));
     return link.positive ? value : !value;
+}
+
+std::vector<PlayerEngine::PlayerLink> PlayerEngine::availableChoices() const {
+    std::vector<PlayerLink> result;
+    const std::vector<PlayerLink> links = buildLinks();
+    // VN: если все ссылки страницы тривиальны, экран выбора сам исполняет первую доступную
+    // (vn_choices.enter: if <ограничение> then ... return end) — игроку остаётся только «Далее»
+    const bool trivialPage = isVnPage(m_page) && !links.empty()
+        && std::all_of(links.begin(), links.end(), [](const PlayerLink& l) { return l.trivial; });
+    for (const PlayerLink& link : links) {
+        if (link.autoFlag || !isLinkAvailable(link)) {
+            continue;
+        }
+        result.push_back(link);
+        if (trivialPage) {
+            break;
+        }
+    }
+    return result;
 }
 
 bool PlayerEngine::hasAction() {
@@ -472,15 +529,32 @@ void PlayerEngine::renderPage() {
     }
     // Картинки и звуки — перед текстом страницы
     appendMediaEvents(output);
-    if (page->isUseCaption() && !page->getCaption().empty()) {
+    // Картинки объектов на странице (imageInScene), после картинки страницы
+    for (const auto& instanceId : m_context->containerContents(page->getId())) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+        if (!obj || !obj->isImageInScene() || !m_interpreter->isObjEnabled(instanceId)) {
+            continue;
+        }
+        m_interpreter->showImage(instanceId);
+        const size_t first = m_events.size();
+        appendMediaEvents(m_context->takeOutput());
+        for (size_t i = first; i < m_events.size(); ++i) {
+            m_events[i].subject = objDisp(instanceId);
+        }
+    }
+    const bool vn = isVnPage(page);
+    // VN: заголовок окна — название книги, подпись страницы не показывается
+    if (!vn && page->isUseCaption() && !page->getCaption().empty()) {
         m_events.push_back({Event::Kind::PageCaption, m_interpreter->expandText(page->getCaption())});
     }
     const std::string text = m_interpreter->expandText(page->getText());
     if (!text.empty()) {
         m_events.push_back({Event::Kind::PageText, text});
     }
-    // Описания объектов (dsc): неграфические и без suppress_dsc
+    // Описания объектов (dsc): неграфические и без suppress_dsc. В VN-экспорте комната
+    // не содержит объектов (generateObjsCollection пуст) и альтернативных текстов ссылок
     for (const auto& instanceId : m_context->containerContents(page->getId())) {
+        if (vn) break;
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
         if (!obj || obj->isGraphical() || obj->isSuppressDsc() || !m_interpreter->isObjEnabled(instanceId)) {
             continue;
@@ -490,6 +564,7 @@ void PlayerEngine::renderPage() {
     }
     // xdsc: альтернативные тексты недоступных ссылок
     for (const PlayerLink& link : buildLinks()) {
+        if (vn) break;
         if (!link.autoFlag && !link.altText.empty() && !isLinkAvailable(link)) {
             m_events.push_back({Event::Kind::AltText, m_interpreter->expandText(link.altText)});
         }
@@ -550,10 +625,8 @@ PlayerEngine::PageView PlayerEngine::view() const {
         return v;
     }
     v.pageId = m_page->getId();
-    for (const PlayerLink& link : buildLinks()) {
-        if (!link.autoFlag && isLinkAvailable(link)) {
-            v.choices.push_back({m_interpreter->expandText(link.text)});
-        }
+    for (const PlayerLink& link : availableChoices()) {
+        v.choices.push_back({m_interpreter->expandText(link.text)});
     }
     for (const auto& instanceId : m_context->containerContents(m_page->getId())) {
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
@@ -573,6 +646,11 @@ PlayerEngine::PageView PlayerEngine::view() const {
 bool PlayerEngine::isFinished() const {
     if (!m_page) {
         return true;
+    }
+    // VN-экспорт: страница без ссылок — конец игры (theEnd: экран выбора с _try_again),
+    // инвентарь и объекты при этом уже недоступны
+    if (isVnPage(m_page)) {
+        return buildLinks().empty();
     }
     // Ходов нет: ни доступных ссылок, ни auto-ссылок, которые могли бы сработать позже,
     // ни объектов для действий

@@ -20,7 +20,7 @@ class NonLinearBook;
 class NLBExplorer {
 public:
     NLBExplorer(NonLinearBook* book, const std::string& startPageId,
-                const std::string& achievementsPath = std::string(),
+                const PlayerEngine::Settings& settings = PlayerEngine::Settings(),
                 std::istream& in = std::cin, std::ostream& out = std::cout);
 
     /// Интерактивная игра до конца книги или команды выхода

@@ -25,7 +25,13 @@ class Modification;
  */
 class PlayerEngine {
 public:
+    /// Какой INSTEAD-экспорт эмулировать: от него зависит, какие страницы считаются VN.
+    /// VN (exportToVNSTEADFile): тема страницы DEFAULT трактуется как VN;
+    /// Standard (exportToSTEADFile): VN — только страницы с явной темой VN.
+    enum class ExportMode { VN, Standard };
+
     struct Settings {
+        ExportMode exportMode = ExportMode::VN;
         /// _needs_action_count (config.xml: export/needs-action-count)
         int needsActionCount = 3;
         /// Тексты game.inv / game.nouse; пустые — взять по языку книги (config.xml)
@@ -55,6 +61,8 @@ public:
         Kind kind;
         std::string text;
         int frames = 0;
+        /// Для картинок объектов — отображаемое имя объекта; пусто для картинки страницы
+        std::string subject;
     };
 
     struct Choice {
@@ -79,6 +87,10 @@ public:
 
     /// Вход на стартовую страницу книги (или на указанную страницу)
     void start(const std::string& pageId = std::string());
+    /// Новая игра с начала (_try_again в VN-экспорте); прогресс достижений сохраняется
+    void restart();
+    /// Страница показывается по правилам VN-экспорта
+    bool isVnPage(const Page* page) const;
 
     /// Переход по доступной ссылке с индексом из view().choices
     bool choose(size_t choiceIndex);
@@ -90,6 +102,16 @@ public:
     bool use(const std::string& sourceInstanceId, const std::string& targetInstanceId);
 
     PageView view() const;
+
+    /// Описание ссылки для диагностики и сверки с экспортом
+    struct LinkInfo {
+        std::string kind;    ///< Normal, Traverse, Return, AutowiredIn, AutowiredOut
+        std::string target;
+        std::string text;
+        bool autoFlag = false;
+    };
+    /// Все ссылки страницы (включая служебные) в том порядке, в каком их строит экспорт
+    std::vector<LinkInfo> linksOf(const std::string& pageId) const;
     std::vector<Event> takeEvents();
     bool isFinished() const;
 
@@ -114,14 +136,20 @@ private:
         bool once = false;
         bool positive = true;
         bool obeyModule = false;
+        /// determineTrivialStatus: текст и alt-текст по умолчанию либо auto
+        bool trivial = false;
         std::vector<Modification*> modifications;
         /// Для autowired: служебная переменная "W_P" и присваиваемое значение (модификация LinkLw)
         std::string autowiredVarId;
         bool autowiredValue = false;
     };
 
-    std::vector<PlayerLink> buildLinks() const;
+    std::vector<PlayerLink> buildLinks() const { return buildLinks(m_page); }
+    std::vector<PlayerLink> buildLinks(Page* page) const;
     bool isLinkAvailable(const PlayerLink& link) const;
+    /// Ссылки, которые игрок может выбрать на текущей странице (с учётом VN-тривиальных страниц)
+    std::vector<PlayerLink> availableChoices() const;
+    void createState();
     std::string moduleConstraintText(NonLinearBook* book) const;
     bool hasAction();
     /// Исполнение ссылки: модификации, переменные, переход. fromPageContext — auto-ссылка (s = страница)

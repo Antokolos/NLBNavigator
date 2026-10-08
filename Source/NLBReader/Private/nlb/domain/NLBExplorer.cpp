@@ -5,10 +5,8 @@
 #include <sstream>
 
 NLBExplorer::NLBExplorer(NonLinearBook* book, const std::string& startPageId,
-                         const std::string& achievementsPath, std::istream& in, std::ostream& out)
+                         const PlayerEngine::Settings& settings, std::istream& in, std::ostream& out)
     : m_book(book), m_startPageId(startPageId), m_in(in), m_out(out) {
-    PlayerEngine::Settings settings;
-    settings.achievementsPath = achievementsPath;
     m_engine = std::make_unique<PlayerEngine>(book, settings);
 }
 
@@ -19,7 +17,17 @@ void NLBExplorer::explore() {
             printEvents();
             const PlayerEngine::PageView view = m_engine->view();
             if (view.finished) {
-                break;
+                // VN-экспорт на последней странице предлагает начать заново (_try_again)
+                if (!m_engine->isVnPage(m_engine->currentPage())) {
+                    break;
+                }
+                m_out << "\n1. Начать заново\n0. Выход\n\nВаш выбор: " << std::flush;
+                std::string line;
+                if (!std::getline(m_in, line) || line != "1") {
+                    break;
+                }
+                m_engine->restart();
+                continue;
             }
             printView(view);
             m_out << "\nВаш выбор: " << std::flush;
@@ -46,7 +54,8 @@ void NLBExplorer::printEvents() {
             case Kind::ObjectText:  m_out << event.text << std::endl; break;
             case Kind::AltText:     m_out << event.text << std::endl; break;
             case Kind::Text:        m_out << event.text << std::endl; break;
-            case Kind::Image:       m_out << "[IMAGE: " << event.text << "]" << std::endl; break;
+            case Kind::Image:       m_out << "[IMAGE: " << event.text
+                                          << (event.subject.empty() ? "" : " — " + event.subject) << "]" << std::endl; break;
             case Kind::Animation: {
                 // В INSTEAD кадры меняются по таймеру; в консоли — только описание анимации
                 auto frame = [&](int n) {
@@ -56,7 +65,8 @@ void NLBExplorer::printEvents() {
                     return name;
                 };
                 m_out << "[ANIMATION: " << frame(1) << " ... " << frame(event.frames)
-                      << ", кадров: " << event.frames << ", смена по таймеру]" << std::endl;
+                      << ", кадров: " << event.frames << ", смена по таймеру"
+                      << (event.subject.empty() ? "" : " — " + event.subject) << "]" << std::endl;
                 break;
             }
             case Kind::Sound:       m_out << "[SOUND: " << event.text << "]" << std::endl; break;

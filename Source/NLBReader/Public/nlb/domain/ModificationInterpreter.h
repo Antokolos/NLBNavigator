@@ -91,6 +91,8 @@ public:
     std::string objIdByName(const std::string& name) const;
     /// Все объекты книги и модулей (id -> объект)
     const std::map<std::string, Obj*>& objects() const { return m_objs; }
+    /// Все страницы книги и модулей (id -> страница)
+    const std::map<std::string, Page*>& pages() const { return m_pages; }
 
     /// Текст, накопленный действиями на текущей странице (nlb:curloc().lasttext) — для $$-фрагментов
     const std::string& lastText() const { return m_lastText; }
