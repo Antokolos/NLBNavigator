@@ -58,6 +58,10 @@ public:
     static const std::string SUPPRESS_SOUND_FILE_NAME;
     static const std::string AUTOWIRED_PAGES_FILE_NAME;
     static const std::string MODULES_DIR_NAME;
+    static const std::string MEDIA_CONSTRID_EXT;
+    static const std::string MEDIA_FLAG_EXT;
+    static const std::string MEDIA_REDIRECT_EXT;
+    static const std::string MEDIA_PRESET_EXT;
     static const std::string PAGE_ORDER_FILE_NAME;
     static const std::string OBJ_ORDER_FILE_NAME;
     static const std::string VAR_ORDER_FILE_NAME;

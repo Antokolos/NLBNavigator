@@ -1,3 +1,4 @@
+#include "nlb/api/Constants.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/vcs/VCSAdapter.h"
 #include "nlb/util/StringHelper.h"
@@ -258,7 +259,7 @@ std::string FileManipulator::getRequiredFileAsString(
         throw NLBIOException(errorMessage);
     }
 
-    std::ifstream file(filePath);
+    std::ifstream file(filePath, std::ios::binary);
     if (!file.is_open()) {
         throw NLBIOException("Cannot open file: " + filePath);
     }
@@ -278,7 +279,7 @@ std::string FileManipulator::getOptionalFileAsString(
     }
 
     try {
-        std::ifstream file(filePath);
+        std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
             return defaultValue;
         }
@@ -307,7 +308,7 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
             for (const auto& langKey : langKeys) {
                 std::string filePath = FileUtils::combinePath(mlsRootDir, langKey);
                 if (!FileUtils::isDirectory(filePath)) {
-                    std::ifstream file(filePath);
+                    std::ifstream file(filePath, std::ios::binary);
                     if (file.is_open()) {
                         std::string content = getFileAsString(file);
                         result.put(langKey, content);
@@ -317,7 +318,7 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
             }
         } else {
             // Single file case - treat as default language
-            std::ifstream file(mlsRootDir);
+            std::ifstream file(mlsRootDir, std::ios::binary);
             if (file.is_open()) {
                 std::string content = getFileAsString(file);
                 result.put(NonLinearBook::DEFAULT_LANGUAGE, content);
@@ -344,11 +345,29 @@ void FileManipulator::writeFile(const std::string& filePath, std::istream& input
     }
 }
 
+// Java FileManipulator.getFileAsString: построчное чтение (readLine понимает \n, \r и \r\n),
+// строки склеиваются через EOL_STRING, завершающий перевод строки отбрасывается
 std::string FileManipulator::getFileAsString(std::ifstream& stream) {
     try {
         std::stringstream buffer;
         buffer << stream.rdbuf();
-        return buffer.str();
+        const std::string raw = buffer.str();
+        std::string result;
+        result.reserve(raw.size());
+        for (size_t i = 0; i < raw.size(); ++i) {
+            const char c = raw[i];
+            if (c == '\r' || c == '\n') {
+                if (c == '\r' && i + 1 < raw.size() && raw[i + 1] == '\n') {
+                    ++i;
+                }
+                if (i + 1 < raw.size()) {
+                    result += nlb::Constants::EOL_STRING;
+                }
+            } else {
+                result += c;
+            }
+        }
+        return result;
     } catch (const std::exception& e) {
         throw NLBIOException("Error reading from stream: " + std::string(e.what()));
     }

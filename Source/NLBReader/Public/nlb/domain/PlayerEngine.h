@@ -45,13 +45,16 @@ public:
             AltText,      ///< альтернативный текст недоступной ссылки
             Text,         ///< текст из модификаций и действий (PRN, ACT, USE, ...)
             Image,        ///< имя файла картинки
-            Sound,        ///< имя файла звука
+            Animation,    ///< анимированная картинка: text — шаблон кадра с %d, кадры 1..frames
+            Sound,        ///< звуковой эффект (SFX)
+            Music,        ///< фоновая музыка; пустой text — остановка музыки
             Achievement,  ///< "Получено достижение: ..."
             Info,         ///< служебное: URL, оформление окна, автопереходы
             Finish        ///< конец игры
         };
         Kind kind;
         std::string text;
+        int frames = 0;
     };
 
     struct Choice {
@@ -131,6 +134,7 @@ private:
     void settle();
     void renderPage();
     void flushOutput(bool afterPage);
+    void appendMediaEvents(const std::vector<PlayerContext::OutputItem>& output);
     void setVarTrue(NonLinearBook* book, const std::string& varId);
     std::string objDisp(const std::string& instanceId) const;
     std::string nouseText(const std::string& instanceId) const;

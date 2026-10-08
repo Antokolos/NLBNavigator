@@ -74,6 +74,10 @@ public:
                  const std::optional<std::string>& ww);
     /// s:snd() — звук страницы или объекта (с учётом suppressMedia/suppressSound)
     void playSound(const std::string& itemId);
+    /// s:pic() — картинка страницы или объекта (с учётом suppressMedia), в т.ч. анимированная
+    void showImage(const std::string& itemId);
+    /// s.tag: тег экземпляра, иначе значение переменной defaultTagId
+    std::string tagOf(const std::string& itemId) const;
     /// Ограничение объекта (alive); у клона — ограничение прототипа
     bool isObjEnabled(const std::string& instanceId) const;
 
@@ -117,6 +121,8 @@ private:
     static cparse::packToken parseListValue(const std::string& value);
     std::string valueToListItem(const std::string& name) const;
     void indexBook(NonLinearBook* book);
+    /// Ключ карт медиа с учётом внешней иерархии ("модуль/файл")
+    static std::string mediaKey(const std::string& externalHierarchy, const std::string& fileName);
 
     NonLinearBook* m_rootBook;
     PlayerContext& m_context;
@@ -126,5 +132,9 @@ private:
     std::map<std::string, NonLinearBook*> m_pageBooks;
     std::map<std::string, std::string> m_objIdsByName;
     std::string m_lastText;
+    // Карты медиа корневой книги (getMediaToConstraintMap/RedirectsMap/FlagsMap)
+    std::map<std::string, std::string> m_mediaConstraints;
+    std::map<std::string, std::string> m_mediaRedirects;
+    std::map<std::string, bool> m_mediaFlags;
     int m_depth = 0;
 };

@@ -8,12 +8,14 @@
 #include "nlb/api/Variable.h"
 #include "nlb/exception/NLBExceptions.h"
 #include "nlb/util/StringHelper.h"
+#include "nlb/api/Constants.h"
 #include "nlb/api/TextChunk.h"
 
 #include <cctype>
 #include <cmath>
 #include <cstdio>
 #include <iostream>
+#include <regex>
 #include <set>
 
 namespace {
@@ -86,6 +88,11 @@ const std::string EMPTY;
 ModificationInterpreter::ModificationInterpreter(NonLinearBook* rootBook, PlayerContext& context)
     : m_rootBook(rootBook), m_context(context) {
     indexBook(rootBook);
+    if (rootBook) {
+        m_mediaConstraints = rootBook->getMediaToConstraintMap();
+        m_mediaRedirects = rootBook->getMediaRedirectsMap();
+        m_mediaFlags = rootBook->getMediaFlagsMap();
+    }
 }
 
 void ModificationInterpreter::indexBook(NonLinearBook* book) {
@@ -393,18 +400,130 @@ void ModificationInterpreter::printText(const std::string& text) {
     m_lastText += text;
 }
 
+std::string ModificationInterpreter::tagOf(const std::string& itemId) const {
+    if (auto t = m_context.tag(itemId)) return *t;
+    // Тег по умолчанию: значение переменной defaultTagId (var { tag = '...' } в STEAD)
+    std::string defaultTagId;
+    NonLinearBook* book = m_rootBook;
+    if (Page* page = findPage(itemId)) {
+        defaultTagId = page->getDefaultTagId();
+        book = bookOfPage(itemId);
+    } else if (Obj* obj = findObj(m_context.protoOf(itemId))) {
+        defaultTagId = obj->getDefaultTagId();
+        book = bookOfObj(obj->getId());
+    }
+    Variable* tagVar = defaultTagId.empty() ? nullptr : book->getVariableById(defaultTagId);
+    return tagVar ? tagVar->getValue() : EMPTY;
+}
+
+std::string ModificationInterpreter::mediaKey(const std::string& externalHierarchy, const std::string& fileName) {
+    return externalHierarchy.empty() ? fileName : externalHierarchy + "/" + fileName;
+}
+
+namespace {
+std::vector<std::string> splitMediaNames(const std::string& names) {
+    std::vector<std::string> result;  // Constants.MEDIA_FILE_NAME_SEP = ";"
+    size_t start = 0;
+    while (start <= names.size()) {
+        size_t pos = names.find(';', start);
+        if (pos == std::string::npos) pos = names.size();
+        if (pos > start) result.push_back(names.substr(start, pos - start));
+        start = pos + 1;
+    }
+    return result;
+}
+}
+
 void ModificationInterpreter::playSound(const std::string& itemId) {
     if (m_rootBook && (m_rootBook->isSuppressMedia() || m_rootBook->isSuppressSound())) {
         return;
     }
-    std::string sound;
+    std::string names, hierarchy;
+    bool sfx = false;
     if (Page* page = findPage(itemId)) {
-        sound = page->getSoundFileName();
+        names = page->getSoundFileName();
+        hierarchy = page->getExternalHierarchy();
+        sfx = page->isSoundSFX();
     } else if (Obj* obj = findObj(m_context.protoOf(itemId))) {
-        sound = obj->getSoundFileName();
+        names = obj->getSoundFileName();
+        hierarchy = obj->getExternalHierarchy();
+        sfx = obj->isSoundSFX();
+    } else {
+        return;
     }
-    if (!sound.empty()) {
-        m_context.emit(PlayerContext::OutputKind::Sound, sound);
+    // decoratePageSound / decorateObjSound: звуки без ограничения играют всегда; подряд идущие
+    // звуки с ограничением образуют цепочку if/elseif по s.tag (срабатывает первый подходящий)
+    const std::string tag = tagOf(itemId);
+    bool chainMatched = false;
+    for (const std::string& name : splitMediaNames(names)) {
+        const std::string key = mediaKey(hierarchy, name);
+        auto constraint = m_mediaConstraints.find(key);
+        if (constraint != m_mediaConstraints.end() && !constraint->second.empty()) {
+            if (chainMatched || tag != constraint->second) {
+                continue;
+            }
+            chainMatched = true;
+        } else {
+            chainMatched = false;
+        }
+        auto redirect = m_mediaRedirects.find(name);
+        const std::string file = redirect != m_mediaRedirects.end() ? redirect->second : name;
+        if (name == nlb::Constants::VOID) {
+            m_context.emit(PlayerContext::OutputKind::Music, EMPTY);  // stop_music()
+            continue;
+        }
+        auto flag = m_mediaFlags.find(key);
+        const bool isSfx = sfx || (flag != m_mediaFlags.end() && flag->second);
+        m_context.emit(isSfx ? PlayerContext::OutputKind::Sound : PlayerContext::OutputKind::Music, file);
+    }
+}
+
+void ModificationInterpreter::showImage(const std::string& itemId) {
+    if (m_rootBook && m_rootBook->isSuppressMedia()) {
+        return;
+    }
+    std::string names, hierarchy;
+    bool animated = false;
+    bool removeFrameNumber = false;
+    if (Page* page = findPage(itemId)) {
+        names = page->getImageFileName();
+        hierarchy = page->getExternalHierarchy();
+        animated = page->isImageAnimated();
+    } else if (Obj* obj = findObj(m_context.protoOf(itemId))) {
+        names = obj->getImageFileName();
+        hierarchy = obj->getExternalHierarchy();
+        animated = obj->isAnimatedImage();
+        removeFrameNumber = animated && obj->isGraphical();
+    } else {
+        return;
+    }
+    // decoratePageImage: цепочка if/elseif по s.tag, без ограничения — "true"; первая подходящая
+    const std::string tag = tagOf(itemId);
+    for (const std::string& name : splitMediaNames(names)) {
+        auto constraint = m_mediaConstraints.find(mediaKey(hierarchy, name));
+        if (constraint != m_mediaConstraints.end() && !constraint->second.empty() && tag != constraint->second) {
+            continue;
+        }
+        auto redirect = m_mediaRedirects.find(name);
+        const std::string file = redirect != m_mediaRedirects.end() ? redirect->second : name;
+        // getImagePath: FILE_NAME_PATTERN = (^.*\D|^)(\d*)(\..*)$; у анимированной картинки
+        // число в имени — количество кадров, кадры подставляются по таймеру: prefix1.ext ... prefixN.ext
+        static const std::regex FILE_NAME_PATTERN("^(.*\\D|)(\\d*)(\\..*)$");
+        std::smatch match;
+        if (animated && std::regex_match(file, match, FILE_NAME_PATTERN) && match[2].length() > 0) {
+            std::string prefix = match[1].str();
+            if (removeFrameNumber && !prefix.empty() && prefix.back() == '.') {
+                prefix.pop_back();
+            }
+            int frames = 0;
+            try { frames = std::stoi(match[2].str()); } catch (...) { frames = 0; }
+            if (frames > 0) {
+                m_context.emit(PlayerContext::OutputKind::Animation, prefix + "%d" + match[3].str(), frames);
+                return;
+            }
+        }
+        m_context.emit(PlayerContext::OutputKind::Image, file);
+        return;
     }
 }
 
@@ -479,21 +598,6 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
                       << "' not found" << std::endl;
         }
         return obj;
-    };
-    auto tagOf = [&](const std::string& itemId) -> std::string {
-        if (auto t = m_context.tag(itemId)) return *t;
-        // Тег по умолчанию: значение переменной defaultTagId (var { tag = '...' } в STEAD)
-        std::string defaultTagId;
-        NonLinearBook* book = m_rootBook;
-        if (Page* page = findPage(itemId)) {
-            defaultTagId = page->getDefaultTagId();
-            book = bookOfPage(itemId);
-        } else if (Obj* obj = findObj(m_context.protoOf(itemId))) {
-            defaultTagId = obj->getDefaultTagId();
-            book = bookOfObj(obj->getId());
-        }
-        Variable* tagVar = defaultTagId.empty() ? nullptr : book->getVariableById(defaultTagId);
-        return tagVar ? tagVar->getValue() : EMPTY;
     };
 
     switch (type) {

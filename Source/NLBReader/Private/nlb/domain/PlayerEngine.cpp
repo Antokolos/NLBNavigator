@@ -464,15 +464,14 @@ void PlayerEngine::settle() {
 
 void PlayerEngine::renderPage() {
     Page* page = m_page;
+    // s:pic() — выбор картинки по тегу страницы; звук страницы уже выдан в enterPage
     std::vector<PlayerContext::OutputItem> output = m_context->takeOutput();
+    m_interpreter->showImage(page->getId());
+    for (const auto& item : m_context->takeOutput()) {
+        output.insert(output.begin(), item);
+    }
     // Картинки и звуки — перед текстом страницы
-    if (!m_rootBook->isSuppressMedia() && !page->getImageFileName().empty()) {
-        m_events.push_back({Event::Kind::Image, page->getImageFileName()});
-    }
-    for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Image) m_events.push_back({Event::Kind::Image, item.text});
-        if (item.kind == PlayerContext::OutputKind::Sound) m_events.push_back({Event::Kind::Sound, item.text});
-    }
+    appendMediaEvents(output);
     if (page->isUseCaption() && !page->getCaption().empty()) {
         m_events.push_back({Event::Kind::PageCaption, m_interpreter->expandText(page->getCaption())});
     }
@@ -508,16 +507,26 @@ void PlayerEngine::renderPage() {
 void PlayerEngine::flushOutput(bool) {
     std::vector<PlayerContext::OutputItem> output = m_context->takeOutput();
     // Звуки и картинки — первыми, достижения — последними
-    for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Image) m_events.push_back({Event::Kind::Image, item.text});
-        if (item.kind == PlayerContext::OutputKind::Sound) m_events.push_back({Event::Kind::Sound, item.text});
-    }
+    appendMediaEvents(output);
     for (const auto& item : output) {
         if (item.kind == PlayerContext::OutputKind::Text) m_events.push_back({Event::Kind::Text, item.text});
         if (item.kind == PlayerContext::OutputKind::Info) m_events.push_back({Event::Kind::Info, item.text});
     }
     for (const auto& item : output) {
         if (item.kind == PlayerContext::OutputKind::Achievement) m_events.push_back({Event::Kind::Achievement, item.text});
+    }
+}
+
+void PlayerEngine::appendMediaEvents(const std::vector<PlayerContext::OutputItem>& output) {
+    using OK = PlayerContext::OutputKind;
+    for (const auto& item : output) {
+        switch (item.kind) {
+            case OK::Image:     m_events.push_back({Event::Kind::Image, item.text}); break;
+            case OK::Animation: m_events.push_back({Event::Kind::Animation, item.text, item.frames}); break;
+            case OK::Sound:     m_events.push_back({Event::Kind::Sound, item.text}); break;
+            case OK::Music:     m_events.push_back({Event::Kind::Music, item.text}); break;
+            default: break;
+        }
     }
 }
 

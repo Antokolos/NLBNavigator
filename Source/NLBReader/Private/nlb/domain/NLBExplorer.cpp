@@ -47,7 +47,21 @@ void NLBExplorer::printEvents() {
             case Kind::AltText:     m_out << event.text << std::endl; break;
             case Kind::Text:        m_out << event.text << std::endl; break;
             case Kind::Image:       m_out << "[IMAGE: " << event.text << "]" << std::endl; break;
+            case Kind::Animation: {
+                // В INSTEAD кадры меняются по таймеру; в консоли — только описание анимации
+                auto frame = [&](int n) {
+                    std::string name = event.text;
+                    const auto pos = name.find("%d");
+                    if (pos != std::string::npos) name.replace(pos, 2, std::to_string(n));
+                    return name;
+                };
+                m_out << "[ANIMATION: " << frame(1) << " ... " << frame(event.frames)
+                      << ", кадров: " << event.frames << ", смена по таймеру]" << std::endl;
+                break;
+            }
             case Kind::Sound:       m_out << "[SOUND: " << event.text << "]" << std::endl; break;
+            case Kind::Music:       m_out << (event.text.empty() ? std::string("[MUSIC: стоп]")
+                                                                 : "[MUSIC: " + event.text + "]") << std::endl; break;
             case Kind::Achievement: m_out << "*** " << event.text << " ***" << std::endl; break;
             case Kind::Info:        m_out << event.text << std::endl; break;
             case Kind::Finish:      m_out << "\n=== КОНЕЦ ===" << std::endl; break;

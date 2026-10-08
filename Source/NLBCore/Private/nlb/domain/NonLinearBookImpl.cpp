@@ -32,10 +32,16 @@ const std::string NonLinearBookImpl::THEME_FILE_NAME = "theme";
 const std::string NonLinearBookImpl::TITLE_FILE_NAME = "title";
 const std::string NonLinearBookImpl::AUTHOR_FILE_NAME = "author";
 const std::string NonLinearBookImpl::VERSION_FILE_NAME = "version";
-const std::string NonLinearBookImpl::PERFECTGAMEACHIEVEMENTNAME_FILE_NAME = "perfectgameachievementname";
-const std::string NonLinearBookImpl::FULL_AUTOWIRE_FILE_NAME = "fullautowire";
-const std::string NonLinearBookImpl::SUPPRESS_MEDIA_FILE_NAME = "suppressmedia";
-const std::string NonLinearBookImpl::SUPPRESS_SOUND_FILE_NAME = "suppresssound";
+// Имена файлов — как в Java NonLinearBookImpl (раньше отличались, и свойства книг из NLBB не читались)
+const std::string NonLinearBookImpl::PERFECTGAMEACHIEVEMENTNAME_FILE_NAME = "perfgame";
+const std::string NonLinearBookImpl::FULL_AUTOWIRE_FILE_NAME = "fullauto";
+const std::string NonLinearBookImpl::SUPPRESS_MEDIA_FILE_NAME = "suppmed";
+const std::string NonLinearBookImpl::SUPPRESS_SOUND_FILE_NAME = "suppsou";
+// Метаданные медиафайла — файлы-спутники <имя файла><расширение> в каталогах images/ и sound/
+const std::string NonLinearBookImpl::MEDIA_CONSTRID_EXT = ".constrid";
+const std::string NonLinearBookImpl::MEDIA_FLAG_EXT = ".flag";
+const std::string NonLinearBookImpl::MEDIA_REDIRECT_EXT = ".redirect";
+const std::string NonLinearBookImpl::MEDIA_PRESET_EXT = ".preset";
 // Совпадает с Java: NonLinearBookImpl.AUTOWIRED_PAGES_FILE_NAME = "autopgs"
 const std::string NonLinearBookImpl::AUTOWIRED_PAGES_FILE_NAME = "autopgs";
 const std::string NonLinearBookImpl::MODULES_DIR_NAME = "modules";
@@ -597,21 +603,12 @@ std::map<std::string, Variable::DataType> NonLinearBookImpl::getVariableDataType
     return m_variableDataTypes;
 }
 
-std::map<std::string, std::string> NonLinearBookImpl::getMediaToConstraintMap() const {
-    return m_mediaToConstraintMap;
-}
 
-std::map<std::string, std::string> NonLinearBookImpl::getMediaRedirectsMap() const {
-    return m_mediaRedirectsMap;
-}
 
 std::map<std::string, MediaExportParameters> NonLinearBookImpl::getMediaExportParametersMap() const {
     return m_mediaExportParametersMap;
 }
 
-std::map<std::string, bool> NonLinearBookImpl::getMediaFlagsMap() const {
-    return m_mediaFlagsMap;
-}
 
 std::vector<Variable*> NonLinearBookImpl::getVariables() const {
     std::vector<Variable*> result;
@@ -922,7 +919,57 @@ void NonLinearBookImpl::exportToASMFile(const std::string& exportDir) const {
     throw NLBExportException("Export is not supported: NLBNavigator is a player-only port");
 }
 
-// Методы работы с медиафайлами
+// Java: getMediaToConstraintMap — ограничение (значение переменной) по имени файла;
+// для внешних модулей ключ "<имя модуля>/<файл>"
+std::map<std::string, std::string> NonLinearBookImpl::getMediaToConstraintMap() const {
+    std::map<std::string, std::string> result;
+    for (const auto* files : {&m_imageFiles, &m_soundFiles}) {
+        for (const MediaFile* mediaFile : *files) {
+            if (!mediaFile->getConstrId().empty()) {
+                if (Variable* v = getVariableById(mediaFile->getConstrId())) {
+                    result[mediaFile->getFileName()] = v->getValue();
+                }
+            }
+        }
+    }
+    for (const auto& [moduleName, module] : m_externalModules) {
+        for (const auto& [key, value] : module->getMediaToConstraintMap()) {
+            result[moduleName + "/" + key] = value;
+        }
+    }
+    return result;
+}
+
+// Java: getMediaRedirectsMap — только собственные файлы книги
+std::map<std::string, std::string> NonLinearBookImpl::getMediaRedirectsMap() const {
+    std::map<std::string, std::string> result;
+    for (const auto* files : {&m_imageFiles, &m_soundFiles}) {
+        for (const MediaFile* mediaFile : *files) {
+            if (!mediaFile->getRedirect().empty()) {
+                result[mediaFile->getFileName()] = mediaFile->getRedirect();
+            }
+        }
+    }
+    return result;
+}
+
+// Java: getMediaFlagsMap — флаг (для звука: SFX) по имени файла, с внешними модулями
+std::map<std::string, bool> NonLinearBookImpl::getMediaFlagsMap() const {
+    std::map<std::string, bool> result;
+    for (const auto* files : {&m_imageFiles, &m_soundFiles}) {
+        for (const MediaFile* mediaFile : *files) {
+            result[mediaFile->getFileName()] = mediaFile->isFlagged();
+        }
+    }
+    for (const auto& [moduleName, module] : m_externalModules) {
+        for (const auto& [key, value] : module->getMediaFlagsMap()) {
+            result[moduleName + "/" + key] = value;
+        }
+    }
+    return result;
+}
+
+// Методы работы с медиафайлами (редактор)
 void NonLinearBookImpl::setMediaFileConstrId(MediaFile::Type mediaType, const std::string& fileName, const std::string& constrId) {
     std::string key = (mediaType == MediaFile::Type::Image ? "img_" : "snd_") + fileName;
     m_mediaToConstraintMap[key] = constrId;
@@ -1346,19 +1393,31 @@ void NonLinearBookImpl::loadVariables(const std::string& rootDir, PartialProgres
     }
 }
 
+// Java: readImageFiles / readSoundFiles
 void NonLinearBookImpl::loadMediaFiles(const std::string& rootDir, const std::string& mediaDirName, std::vector<MediaFile*>& mediaFiles) {
     std::string mediaDir = FileUtils::combinePath(rootDir, mediaDirName);
     if (!FileUtils::exists(mediaDir)) {
         return;
     }
-    
+    auto endsWith = [](const std::string& s, const std::string& suffix) {
+        return s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+    };
     std::vector<std::string> files = FileUtils::getDirectoryFiles(mediaDir);
     for (const std::string& fileName : files) {
-        std::string fullPath = FileUtils::combinePath(mediaDir, fileName);
-        if (!FileUtils::isDirectory(fullPath)) {
-            auto mediaFile = new MediaFileImpl(fileName);
-            mediaFiles.push_back(mediaFile);
+        // NON_SPECIAL_FILTER: файлы метаданных — не медиафайлы
+        if (endsWith(fileName, MEDIA_CONSTRID_EXT) || endsWith(fileName, MEDIA_REDIRECT_EXT)
+            || endsWith(fileName, MEDIA_FLAG_EXT) || endsWith(fileName, MEDIA_PRESET_EXT)) {
+            continue;
         }
+        std::string fullPath = FileUtils::combinePath(mediaDir, fileName);
+        if (FileUtils::isDirectory(fullPath)) {
+            continue;
+        }
+        auto mediaFile = new MediaFileImpl(fileName);
+        mediaFile->setRedirect(FileManipulator::getOptionalFileAsString(mediaDir, fileName + MEDIA_REDIRECT_EXT, ""));
+        mediaFile->setConstrId(FileManipulator::getOptionalFileAsString(mediaDir, fileName + MEDIA_CONSTRID_EXT, ""));
+        mediaFile->setFlagged(FileManipulator::getOptionalFileAsString(mediaDir, fileName + MEDIA_FLAG_EXT, "false") == "true");
+        mediaFiles.push_back(mediaFile);
     }
 }
 

@@ -30,11 +30,15 @@ class PlayerContext {
 public:
     /// Вид элемента вывода. Плеер (этап D) решает, где его показать:
     /// Image/Sound — перед текстом страницы, Achievement — после.
-    enum class OutputKind { Text, Image, Sound, Achievement, Info };
+    /// Image/Animation — картинка; Sound — звуковой эффект (SFX); Music — фоновая музыка
+    /// (пустой text — остановка музыки, VOID в NLB)
+    enum class OutputKind { Text, Image, Animation, Sound, Music, Achievement, Info };
 
     struct OutputItem {
         OutputKind kind;
+        /// Для Animation — шаблон имени кадра с %d (string.format в STEAD), кадры 1..frames
         std::string text;
+        int frames = 0;
     };
 
     /// Типы статистики для COUNTGET — битовая маска как в nlb.lua count_get (0 = все).
@@ -131,7 +135,7 @@ public:
     bool restoreSnapshot();
 
     // ------------------------------------------------------------------ вывод
-    void emit(OutputKind kind, const std::string& text);
+    void emit(OutputKind kind, const std::string& text, int frames = 0);
     /// Забирает накопленный вывод (очередь очищается)
     std::vector<OutputItem> takeOutput();
 

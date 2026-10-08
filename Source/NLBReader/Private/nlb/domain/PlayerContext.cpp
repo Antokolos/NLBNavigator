@@ -494,8 +494,8 @@ bool PlayerContext::restoreSnapshot() {
 
 // ============================================================================ вывод и навигация
 
-void PlayerContext::emit(OutputKind kind, const std::string& text) {
-    m_output.push_back({kind, text});
+void PlayerContext::emit(OutputKind kind, const std::string& text, int frames) {
+    m_output.push_back({kind, text, frames});
 }
 
 std::vector<PlayerContext::OutputItem> PlayerContext::takeOutput() {
