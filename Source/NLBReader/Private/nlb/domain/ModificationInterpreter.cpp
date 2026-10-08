@@ -806,6 +806,18 @@ bool ModificationInterpreter::isObjEnabled(const std::string& instanceId) const 
 bool ModificationInterpreter::objUseA(const std::string& sourceInstanceId,
                                       const std::string& targetInstanceId,
                                       const std::optional<std::string>& ww) {
+    return objUse(sourceInstanceId, targetInstanceId, ww, true);
+}
+
+void ModificationInterpreter::objUseF(const std::string& sourceInstanceId,
+                                      const std::string& targetInstanceId,
+                                      const std::optional<std::string>& ww) {
+    objUse(sourceInstanceId, targetInstanceId, ww, false);
+}
+
+bool ModificationInterpreter::objUse(const std::string& sourceInstanceId,
+                                     const std::string& targetInstanceId,
+                                     const std::optional<std::string>& ww, bool printTexts) {
     const Obj* source = findObj(m_context.protoOf(sourceInstanceId));
     if (!source) {
         return false;
@@ -839,6 +851,9 @@ bool ModificationInterpreter::objUseA(const std::string& sourceInstanceId,
     // usep: тексты успеха/неудачи
     bool wasText = false;
     for (const Link* link : uses) {
+        if (!printTexts) {
+            break;
+        }
         const std::string success = expandText(link->getText());
         if (success.empty()) {
             continue;  // в STEAD-коде else-ветка вложена в проверку непустого текста успеха

@@ -302,7 +302,11 @@ bool PageImpl::isLeaf() const {
 }
 
 bool PageImpl::isFinish() const {
-    return isLeaf() && !isModuleExternal();
+    // Java: isLeaf() && getModule().isEmpty() && !isAutowire() && isEmpty(m_returnText)
+    return isLeaf()
+           && (!m_module || m_module->isEmpty())
+           && !isAutowire()
+           && StringHelper::isEmpty(m_returnText);
 }
 
 void PageImpl::setTraverseText(const std::string& traverseText) {
@@ -361,8 +365,9 @@ std::string PageImpl::getReturnPageId() const {
     return m_returnPageId;
 }
 
+// Java: !isEmpty(m_returnText) || m_autoReturn || m_useMPL
 bool PageImpl::shouldReturn() const {
-    return !m_returnPageId.empty();
+    return !StringHelper::isEmpty(m_returnText) || m_autoReturn || m_useMPL;
 }
 
 void PageImpl::setModuleName(const std::string& moduleName) {
@@ -405,8 +410,11 @@ void PageImpl::setAutowireOutConstrId(const std::string& autowireOutConstrId) {
     m_autowireOutConstrId = autowireOutConstrId;
 }
 
+// Java: getCurrentNLB().isAutowired(getId()) — признак хранится в книге (файл autopgs),
+// а не выводится из флагов autoIn/autoOut
 bool PageImpl::isAutowire() const {
-    return isAutoIn() || isAutoOut();
+    NonLinearBook* book = getCurrentNLB();
+    return book && book->isAutowired(getId());
 }
 
 void PageImpl::setGlobalAutowire(bool globalAutowire) {

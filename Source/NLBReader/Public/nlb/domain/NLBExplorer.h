@@ -1,33 +1,40 @@
 #pragma once
 
-#include "nlb/domain/NonLinearBookImpl.h"
-#include "nlb/api/Link.h"
-#include <iomanip>
+#include "nlb/domain/PlayerEngine.h"
+#include <iostream>
+#include <memory>
+#include <string>
+
+class NonLinearBook;
 
 /**
- * @brief Interactive NLB explorer
+ * @brief Консольный интерфейс проигрывателя NLB-книги.
+ *
+ * Вся игровая логика — в PlayerEngine; здесь только вывод событий и разбор команд:
+ *   N        — перейти по ссылке N
+ *   oN       — действие с объектом N на странице (переносимый объект берётся в инвентарь)
+ *   iN       — щелчок по предмету N в инвентаре
+ *   uN oM    — применить предмет инвентаря N к объекту страницы M (uN iM — к предмету инвентаря)
+ *   0        — выход
  */
 class NLBExplorer {
 public:
-    static const std::string INVENTORY;
-    static const std::string TRUE;
-    static const std::string FALSE;
+    NLBExplorer(NonLinearBook* book, const std::string& startPageId,
+                const std::string& achievementsPath = std::string(),
+                std::istream& in = std::cin, std::ostream& out = std::cout);
 
-    explicit NLBExplorer(NonLinearBook* book, const std::string &currentPageId);
-
-    /**
-     * @brief Start interactive exploration
-     */
+    /// Интерактивная игра до конца книги или команды выхода
     void explore();
 
 private:
+    void printEvents();
+    void printView(const PlayerEngine::PageView& view);
+    /// false — выход
+    bool handleCommand(const std::string& line, const PlayerEngine::PageView& view);
+
     NonLinearBook* m_book;
-    Page* m_currentPage;
-
-    void executeModifications(const ModifyingItem *item);
-
-    /**
-     * @brief Show current page and get user's choice for next page
-     */
-    bool showPageAndGetNextChoice(Page *page);
+    std::string m_startPageId;
+    std::unique_ptr<PlayerEngine> m_engine;
+    std::istream& m_in;
+    std::ostream& m_out;
 };

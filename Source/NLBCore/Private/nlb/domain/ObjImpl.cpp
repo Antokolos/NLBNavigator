@@ -814,6 +814,8 @@ void ObjImpl::readObj(const std::string& objDir) {
     m_actText = FileManipulator::readOptionalMultiLangString(objDir + "/" + ACT_TEXT_SUBDIR_NAME, DEFAULT_ACT_TEXT);
     m_nouseText = FileManipulator::readOptionalMultiLangString(objDir + "/" + NOUSE_TEXT_SUBDIR_NAME, DEFAULT_NOUSE_TEXT);
     m_disp = FileManipulator::readOptionalMultiLangString(objDir + "/" + DISP_SUBDIR_NAME, DEFAULT_DISP);
+    // Java ObjImpl.readObj: модификации объекта читаются последними (раньше не читались вовсе)
+    readModifications(objDir);
 }
 
 std::string ObjImpl::movementDirectionToString(MovementDirection direction) const {

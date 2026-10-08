@@ -69,6 +69,11 @@ public:
     /// obj:usea(target, ww) — usep (тексты) + usef (модификации use-ссылок). true, если был текст
     bool objUseA(const std::string& sourceInstanceId, const std::string& targetInstanceId,
                  const std::optional<std::string>& ww);
+    /// obj:usef(target, ww) — только модификации и переменные use-ссылок, без текстов
+    void objUseF(const std::string& sourceInstanceId, const std::string& targetInstanceId,
+                 const std::optional<std::string>& ww);
+    /// s:snd() — звук страницы или объекта (с учётом suppressMedia/suppressSound)
+    void playSound(const std::string& itemId);
     /// Ограничение объекта (alive); у клона — ограничение прототипа
     bool isObjEnabled(const std::string& instanceId) const;
 
@@ -80,6 +85,8 @@ public:
     NonLinearBook* bookOfPage(const std::string& pageId) const;
     /// id объекта по имени (exportData.getObjId); пусто, если нет
     std::string objIdByName(const std::string& name) const;
+    /// Все объекты книги и модулей (id -> объект)
+    const std::map<std::string, Obj*>& objects() const { return m_objs; }
 
     /// Текст, накопленный действиями на текущей странице (nlb:curloc().lasttext) — для $$-фрагментов
     const std::string& lastText() const { return m_lastText; }
@@ -101,8 +108,9 @@ private:
     std::optional<std::string> objByNameOnly(const std::string& name) const;
     void addf(const std::optional<std::string>& target, const std::string& instanceId, bool unique);
     void take(const std::string& instanceId);
-    void playSound(const std::string& itemId);
     void printText(const std::string& text);
+    bool objUse(const std::string& sourceInstanceId, const std::string& targetInstanceId,
+                const std::optional<std::string>& ww, bool printTexts);
     void pdscf(const std::string& instanceId);
     void pdscs(const std::string& ownerId);
     void runObjModifications(const Obj* obj, const std::string& selfInstance);
