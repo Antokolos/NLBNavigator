@@ -80,6 +80,8 @@ std::string translateExpression(const std::string& expr, std::vector<std::string
 }
 
 const std::string EMPTY;
+/// Значение переменной/элемента списка, ссылающееся на список (listobj в STEAD)
+const std::string LIST_REF_PREFIX = "@list:";
 
 }  // namespace
 
@@ -107,6 +109,9 @@ void ModificationInterpreter::indexBook(NonLinearBook* book) {
         m_objBooks.emplace(objId, book);
         if (!obj->getName().empty()) {
             m_objIdsByName.emplace(obj->getName(), objId);
+        }
+        for (const Link* link : obj->getLinks()) {
+            if (!link->isDeleted()) m_useTargets.insert(link->getTarget());
         }
     }
     for (const auto& [pageId, page] : book->getPages()) {
@@ -368,7 +373,8 @@ std::optional<std::string> ModificationInterpreter::objOperand(const std::string
     // Переменная, хранящая ссылку на экземпляр объекта
     if (m_context.hasVar(name)) {
         const cparse::packToken value = m_context.getVar(name);
-        if (value->type == cparse::STR && !value.asString().empty()) {
+        if (value->type == cparse::STR && !value.asString().empty()
+            && value.asString().compare(0, LIST_REF_PREFIX.size(), LIST_REF_PREFIX) != 0) {
             return value.asString();
         }
     }
@@ -388,9 +394,27 @@ cparse::packToken ModificationInterpreter::parseListValue(const std::string& val
     return cparse::packToken(value);
 }
 
+std::string ModificationInterpreter::resolveListName(const std::string& name) const {
+    if (!name.empty() && m_context.hasVar(name)) {
+        const cparse::packToken value = m_context.getVar(name);
+        if (value->type == cparse::STR) {
+            const std::string& s = value.asString();
+            if (s.compare(0, LIST_REF_PREFIX.size(), LIST_REF_PREFIX) == 0) {
+                return s.substr(LIST_REF_PREFIX.size());
+            }
+        }
+    }
+    return name;
+}
+
 std::string ModificationInterpreter::valueToListItem(const std::string& name) const {
     if (auto obj = objOperand(name)) {
         return *obj;
+    }
+    // Список как элемент другого списка (PUSH args | weakDeck): кладётся ссылка на список
+    const std::string listName = resolveListName(name);
+    if (listName != name || m_context.listExists(listName)) {
+        return LIST_REF_PREFIX + listName;
     }
     return toDisplayString(m_context.getVar(name));
 }
@@ -583,6 +607,9 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
     Variable* expr = variableOf(ctx, mod->getExprId());
     const std::string varName = var ? var->getName() : EMPTY;
     const std::string exprValue = expr ? expr->getValue() : EMPTY;
+    // Операнды-списки: переменная может хранить ссылку на другой список (listobj в STEAD)
+    const std::string varList = resolveListName(varName);
+    const std::string exprList = resolveListName(exprValue);
     const Type type = mod->getType();
 
     auto requireVar = [&]() {
@@ -664,11 +691,11 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
         case Type::ADDALLU: {
             const bool unique = type == Type::ADDALLU;
             auto destination = var ? objByNameOnly(varName) : std::nullopt;
-            for (const auto& item : m_context.listItems(exprValue)) {
+            for (const auto& item : m_context.listItems(exprList)) {
                 if (destination) {
                     addf(destination, item, unique);
                 } else if (var) {
-                    m_context.listPush(varName, item);  // получатель — список
+                    m_context.listPush(varList, item);  // получатель — список
                 } else {
                     addf(ctx.self, item, unique);
                 }
@@ -682,7 +709,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             if (destination) {
                 m_context.containerRemove(*destination, *obj);
             } else if (var) {
-                m_context.listRemove(varName, *obj);       // nlb:rmv(список, obj)
+                m_context.listRemove(varList, *obj);       // nlb:rmv(список, obj)
                 m_context.containerRemove(EMPTY, *obj);    // obj.container = nil
             } else {
                 m_context.containerRemove(m_context.currentPageId(), *obj);  // objs():del — текущая комната
@@ -699,7 +726,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             } else if (auto objId = objByNameOnly(exprValue)) {
                 m_context.containerClear(*objId);
             } else {
-                m_context.listClear(exprValue);  // nlb:clear(listobj)
+                m_context.listClear(exprList);  // nlb:clear(listobj)
             }
             break;
 
@@ -712,7 +739,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             auto source = objOrWarn(exprValue);
             if (source) {
                 for (const auto& item : m_context.containerContents(*source)) {
-                    m_context.listPush(varName, item);  // pushObjs: push каждого -> обратный порядок
+                    m_context.listPush(varList, item);  // pushObjs: push каждого -> обратный порядок
                 }
             }
             break;
@@ -729,36 +756,36 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             break;
 
         case Type::SPUSH:
-            m_context.listPush(exprValue, ctx.self);
+            m_context.listPush(exprList, ctx.self);
             break;
         case Type::WPUSH:
-            if (ctx.ww) m_context.listPush(exprValue, *ctx.ww);  // в Lua пушится nil
+            if (ctx.ww) m_context.listPush(exprList, *ctx.ww);  // в Lua пушится nil
             break;
         case Type::PUSH:
             requireVar();
-            m_context.listPush(varName, valueToListItem(exprValue));
+            m_context.listPush(varList, valueToListItem(exprValue));
             break;
         case Type::POP: {
             requireVar();
-            auto value = m_context.listPop(exprValue);
+            auto value = m_context.listPop(exprList);
             m_context.setVar(varName, value ? parseListValue(*value) : cparse::packToken(false));
             break;
         }
         case Type::SINJECT:
-            m_context.listInject(exprValue, ctx.self);
+            m_context.listInject(exprList, ctx.self);
             break;
         case Type::INJECT:
             requireVar();
-            m_context.listInject(varName, valueToListItem(exprValue));
+            m_context.listInject(varList, valueToListItem(exprValue));
             break;
         case Type::EJECT: {
             requireVar();
-            auto value = m_context.listEject(exprValue);
+            auto value = m_context.listEject(exprList);
             m_context.setVar(varName, value ? parseListValue(*value) : cparse::packToken(false));
             break;
         }
         case Type::SHUFFLE:
-            m_context.listShuffle(exprValue);
+            m_context.listShuffle(exprList);
             break;
 
         case Type::PRN:
@@ -779,7 +806,10 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             break;
         }
         case Type::ACT:
-            if (auto obj = objOrWarn(exprValue)) objActA(*obj);
+            // Операнд-список (listobj): act применяется к каждому элементу списка
+            if (auto obj = objOperand(exprValue)) objActA(*obj);
+            else if (m_context.listExists(exprList)) { for (const auto& item : m_context.listItems(exprList)) objActA(item); }
+            else objOrWarn(exprValue);
             break;
         case Type::ACTT: {
             requireVar();
@@ -788,19 +818,38 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             break;
         }
         case Type::ACTF:
-            if (auto obj = objOrWarn(exprValue)) objActF(*obj);
+            if (auto obj = objOperand(exprValue)) objActF(*obj);
+            else if (m_context.listExists(exprList)) { for (const auto& item : m_context.listItems(exprList)) objActF(item); }
+            else objOrWarn(exprValue);
             break;
         case Type::USE: {
+            // nlb:usea(source, target) -> source:usea(target), ww = nil. Списки (listobj):
+            //  источник-список: usef — каждый элемент применяется к цели;
+            //  цель-список: useda -> usedf — источник применяется к каждому элементу (w = ww = элемент)
             requireVar();
-            auto source = objOrWarn(varName);
-            auto target = objOrWarn(exprValue);
-            if (source && target) objUseA(*source, *target, std::nullopt);
+            auto source = objOperand(varName);
+            auto target = objOperand(exprValue);
+            const bool sourceIsList = !source && m_context.listExists(varList);
+            const bool targetIsList = !target && m_context.listExists(exprList);
+            if (!source && !sourceIsList) objOrWarn(varName);
+            if (!target && !targetIsList) objOrWarn(exprValue);
+            const std::vector<std::string> sources = source ? std::vector<std::string>{*source}
+                : sourceIsList ? m_context.listItems(varList) : std::vector<std::string>{};
+            for (const auto& s : sources) {
+                if (target) {
+                    objUseA(s, *target, sourceIsList ? std::optional<std::string>(*target) : std::nullopt);
+                } else if (targetIsList) {
+                    for (const auto& item : m_context.listItems(exprList)) {
+                        objUseA(s, item, item);
+                    }
+                }
+            }
             break;
         }
 
         case Type::SIZE:
             requireVar();
-            m_context.setVar(varName, static_cast<int64_t>(m_context.listSize(exprValue)));
+            m_context.setVar(varName, static_cast<int64_t>(m_context.listSize(exprList)));
             break;
         case Type::RND: {
             requireVar();

@@ -147,6 +147,8 @@ public:
     const std::string& currentPageId() const;
     /// Предыдущая страница ("ww" в STEAD-экспорте); пусто, если её нет
     const std::string& previousPageId() const;
+    /// История посещённых страниц (для отладки и инструментов)
+    const std::vector<std::string>& pageHistory() const { return m_state.pageHistory; }
     void recordLinkFollowed(const std::string& linkId);
     bool wasLinkFollowed(const std::string& linkId) const;
 

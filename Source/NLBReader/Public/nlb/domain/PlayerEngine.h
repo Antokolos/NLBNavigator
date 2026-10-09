@@ -100,6 +100,10 @@ public:
     bool clickInventory(const std::string& instanceId);
     /// Применить объект инвентаря к объекту страницы или инвентаря
     bool use(const std::string& sourceInstanceId, const std::string& targetInstanceId);
+    /// Подождать: один тик таймера страницы (в INSTEAD — раз в 200 мс) и проверка auto-ссылок
+    bool wait();
+    /// На странице есть таймер — ожидание имеет смысл
+    bool hasTimer() const;
 
     PageView view() const;
 
@@ -159,12 +163,26 @@ private:
     void enterPage(Page* page, bool fromAutowired);
     /// life()/autos(): счётчики, callback-объекты, auto-ссылки. true — был переход
     bool runAutos();
+    /// Страница ждёт только таймера: ссылок для выбора и объектов нет, но есть auto-ссылки
+    bool isWaitingForTimer() const;
     void settle();
     void renderPage();
     void flushOutput(bool afterPage);
     void appendMediaEvents(const std::vector<PlayerContext::OutputItem>& output);
     void setVarTrue(NonLinearBook* book, const std::string& varId);
     std::string objDisp(const std::string& instanceId) const;
+    /// Подпись объекта на странице: текст метки {…} из dsc, иначе disp, иначе имя
+    std::string sceneLabel(const std::string& instanceId) const;
+    bool isVisibleInInventory(const std::string& instanceId) const;
+    /// ExportManager.getObjType: MENU — щелчок в инвентаре вызывает act; STAT — ничего не делает;
+    /// OBJ — inv = use(s, s)
+    enum class ObjKind { Obj, Menu, Stat };
+    ObjKind objKind(const Obj* obj) const;
+    /// Объекты, видимые на странице: содержимое комнаты и, рекурсивно, содержимое видимых
+    /// объектов (INSTEAD показывает вложенные объекты после их контейнера)
+    std::vector<std::string> sceneObjects() const;
+    void collectSceneObjects(const std::string& ownerId, std::vector<std::string>& result, int depth) const;
+    bool isOnScene(const std::string& instanceId) const;
     std::string nouseText(const std::string& instanceId) const;
 
     NonLinearBook* m_rootBook;
@@ -178,4 +196,6 @@ private:
     std::optional<std::string> m_pendingWalk;
     bool m_pendingFromAutowired = false;
     std::vector<Event> m_events;
+    /// Начало событий последней показанной страницы — чтобы убрать «пустые» промежуточные страницы
+    size_t m_lastRenderStart = 0;
 };

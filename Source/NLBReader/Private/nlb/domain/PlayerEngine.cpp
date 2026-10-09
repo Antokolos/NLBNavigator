@@ -13,6 +13,7 @@
 #include "nlb/exception/NLBExceptions.h"
 
 #include <algorithm>
+#include <sstream>
 
 namespace {
 /// Защита от бесконечной цепочки автоматических переходов за одну команду игрока
@@ -23,6 +24,21 @@ std::string trim(const std::string& s) {
     if (b == std::string::npos) return "";
     const auto e = s.find_last_not_of(" \t\r\n");
     return s.substr(b, e - b + 1);
+}
+
+/// Текст для показа: '^' — перевод строки INSTEAD; хвостовые пробелы и переводы строк убираются
+std::string displayText(const std::string& s) {
+    std::string r = s;
+    std::replace(r.begin(), r.end(), '^', '\n');
+    const auto e = r.find_last_not_of(" \t\r\n");
+    return e == std::string::npos ? std::string() : r.substr(0, e + 1);
+}
+
+/// STEAD_OBJ_PATTERN = \{(.*)\} (жадный): в dsc объекта ссылка-метка {текст} — то, по чему щёлкают
+bool findInteractionMark(const std::string& s, size_t& open, size_t& close) {
+    open = s.find('{');
+    close = s.rfind('}');
+    return open != std::string::npos && close != std::string::npos && close > open;
 }
 
 /// ExportManager.determineTrivialStatus(Link)
@@ -100,8 +116,7 @@ bool PlayerEngine::choose(size_t choiceIndex) {
 }
 
 bool PlayerEngine::actOnObject(const std::string& instanceId) {
-    if (!m_page || !m_context->containerHas(m_page->getId(), instanceId)
-        || !m_interpreter->isObjEnabled(instanceId)) {
+    if (!m_page || !isOnScene(instanceId)) {
         return false;
     }
     const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
@@ -115,8 +130,10 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
         m_interpreter->objActA(instanceId);
         const Obj* common = m_interpreter->findObj(obj->getCommonToId());
         const std::string toTake = (common && common->isTakable()) ? common->getId() : instanceId;
-        if (m_context->containerHas(m_page->getId(), toTake)) {
-            m_context->containerRemove(m_page->getId(), toTake);
+        // take(): объект исчезает с того места страницы, где лежит (в т.ч. из вложенного контейнера)
+        const std::string owner = m_context->containerOf(toTake);
+        if (!owner.empty() && m_context->containerHas(owner, toTake)) {
+            m_context->containerRemove(owner, toTake);
         }
         m_context->inventoryAdd(toTake);
     } else {
@@ -133,9 +150,18 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
     }
     m_transitions = 0;
     m_context->countIncrement(PlayerContext::CountInv);
+    const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+    // decorateObjInv (MENU): menu = act(s) — действие объекта; STAT — только показ значения
+    if (obj && objKind(obj) != ObjKind::Obj) {
+        if (objKind(obj) == ObjKind::Menu) {
+            m_interpreter->objActA(instanceId);
+        }
+        flushOutput(false);
+        settle();
+        return true;
+    }
     // decorateObjInv (OBJ): inv = use(s, s); без текста INSTEAD показывает game.inv
     bool printed = false;
-    const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
     if (obj) {
         printed = m_interpreter->objUseA(instanceId, instanceId, instanceId);
         const Obj* common = m_interpreter->findObj(obj->getCommonToId());
@@ -160,8 +186,7 @@ bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& t
         return false;
     }
     const bool targetVisible = m_context->inInventory(targetInstanceId)
-        || (m_context->containerHas(m_page->getId(), targetInstanceId)
-            && m_interpreter->isObjEnabled(targetInstanceId));
+        || isOnScene(targetInstanceId);
     const Obj* source = m_interpreter->findObj(m_context->protoOf(sourceInstanceId));
     const Obj* target = m_interpreter->findObj(m_context->protoOf(targetInstanceId));
     if (!targetVisible || !source || !target) {
@@ -406,6 +431,28 @@ void PlayerEngine::setVarTrue(NonLinearBook* book, const std::string& varId) {
 
 void PlayerEngine::followLink(const PlayerLink& link, bool fromPageContext) {
     Page* page = m_page;
+    // Страница, покинутая по auto-ссылке сразу после показа, без текста — служебная:
+    // её заголовок и картинки не показываем (музыку и звуки оставляем — они продолжают играть)
+    if (fromPageContext && m_lastRenderStart <= m_events.size()) {
+        bool hasContent = false;
+        for (size_t i = m_lastRenderStart; i < m_events.size(); ++i) {
+            const auto k = m_events[i].kind;
+            if (k == Event::Kind::PageText || k == Event::Kind::ObjectText || k == Event::Kind::Text
+                || k == Event::Kind::Achievement || k == Event::Kind::Info) {
+                hasContent = true;
+                break;
+            }
+        }
+        if (!hasContent) {
+            std::vector<Event> kept(m_events.begin(), m_events.begin() + m_lastRenderStart);
+            for (size_t i = m_lastRenderStart; i < m_events.size(); ++i) {
+                const auto k = m_events[i].kind;
+                if (k == Event::Kind::Music || k == Event::Kind::Sound) kept.push_back(m_events[i]);
+            }
+            m_events.swap(kept);
+        }
+        m_lastRenderStart = m_events.size() + 1;  // проверка — только один раз для этой страницы
+    }
     NonLinearBook* book = m_book;
     // Модификации ссылки; s — страница (auto-ссылка в autos) или комната ссылки (клик)
     if (!link.modifications.empty()) {
@@ -509,8 +556,37 @@ bool PlayerEngine::runAutos() {
     return false;
 }
 
+bool PlayerEngine::hasTimer() const {
+    return m_page && !m_page->getTimerVarId().empty();
+}
+
+bool PlayerEngine::isWaitingForTimer() const {
+    if (!hasTimer() || !availableChoices().empty() || !sceneObjects().empty()) {
+        return false;
+    }
+    const auto links = buildLinks();
+    return std::any_of(links.begin(), links.end(), [](const PlayerLink& l) { return l.autoFlag; });
+}
+
+bool PlayerEngine::wait() {
+    if (!m_page) {
+        return false;
+    }
+    m_transitions = 0;
+    runAutos() ? settle() : settle();
+    return true;
+}
+
 void PlayerEngine::settle() {
-    while (runAutos()) {
+    // В INSTEAD таймер тикает сам; если странице больше нечего ждать, кроме таймера
+    // (анимация гиперперехода и т.п.), время "проматывается" до срабатывания auto-ссылки
+    const int MAX_TIMER_TICKS = 100000;
+    for (int ticks = 0; ; ) {
+        while (runAutos()) {
+        }
+        if (!isWaitingForTimer() || ++ticks > MAX_TIMER_TICKS) {
+            break;
+        }
     }
     if (isFinished()) {
         m_events.push_back({Event::Kind::Finish, ""});
@@ -521,6 +597,7 @@ void PlayerEngine::settle() {
 
 void PlayerEngine::renderPage() {
     Page* page = m_page;
+    m_lastRenderStart = m_events.size();
     // s:pic() — выбор картинки по тегу страницы; звук страницы уже выдан в enterPage
     std::vector<PlayerContext::OutputItem> output = m_context->takeOutput();
     m_interpreter->showImage(page->getId());
@@ -530,9 +607,10 @@ void PlayerEngine::renderPage() {
     // Картинки и звуки — перед текстом страницы
     appendMediaEvents(output);
     // Картинки объектов на странице (imageInScene), после картинки страницы
-    for (const auto& instanceId : m_context->containerContents(page->getId())) {
+    const std::vector<std::string> visible = sceneObjects();
+    for (const auto& instanceId : visible) {
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
-        if (!obj || !obj->isImageInScene() || !m_interpreter->isObjEnabled(instanceId)) {
+        if (!obj || !obj->isImageInScene()) {
             continue;
         }
         m_interpreter->showImage(instanceId);
@@ -545,33 +623,42 @@ void PlayerEngine::renderPage() {
     const bool vn = isVnPage(page);
     // VN: заголовок окна — название книги, подпись страницы не показывается
     if (!vn && page->isUseCaption() && !page->getCaption().empty()) {
-        m_events.push_back({Event::Kind::PageCaption, m_interpreter->expandText(page->getCaption())});
+        const std::string caption = displayText(m_interpreter->expandText(page->getCaption()));
+        if (!trim(caption).empty()) m_events.push_back({Event::Kind::PageCaption, caption});
     }
-    const std::string text = m_interpreter->expandText(page->getText());
+    const std::string text = displayText(m_interpreter->expandText(page->getText()));
     if (!text.empty()) {
         m_events.push_back({Event::Kind::PageText, text});
     }
     // Описания объектов (dsc): неграфические и без suppress_dsc. В VN-экспорте комната
     // не содержит объектов (generateObjsCollection пуст) и альтернативных текстов ссылок
-    for (const auto& instanceId : m_context->containerContents(page->getId())) {
+    // decorateObjText: dsc печатает dscf (у графических объектов — возвращает его), кроме suppress_dsc
+    for (const auto& instanceId : visible) {
         if (vn) break;
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
-        if (!obj || obj->isGraphical() || obj->isSuppressDsc() || !m_interpreter->isObjEnabled(instanceId)) {
+        if (!obj || obj->isSuppressDsc()) {
             continue;
         }
-        const std::string dsc = m_interpreter->objDscF(instanceId);
-        if (!dsc.empty()) m_events.push_back({Event::Kind::ObjectText, dsc});
+        // {метка} -> [метка]; пустая метка — щёлкают по картинке, она уже выведена отдельно
+        std::string dsc = m_interpreter->objDscF(instanceId);
+        size_t open, close;
+        if (findInteractionMark(dsc, open, close)) {
+            const std::string label = trim(dsc.substr(open + 1, close - open - 1));
+            dsc = dsc.substr(0, open) + (label.empty() ? "" : "[" + label + "]") + dsc.substr(close + 1);
+        }
+        dsc = displayText(dsc);
+        if (!trim(dsc).empty()) m_events.push_back({Event::Kind::ObjectText, dsc});
     }
     // xdsc: альтернативные тексты недоступных ссылок
     for (const PlayerLink& link : buildLinks()) {
         if (vn) break;
         if (!link.autoFlag && !link.altText.empty() && !isLinkAvailable(link)) {
-            m_events.push_back({Event::Kind::AltText, m_interpreter->expandText(link.altText)});
+            m_events.push_back({Event::Kind::AltText, displayText(m_interpreter->expandText(link.altText))});
         }
     }
     // Текст из модификаций страницы, затем достижения — после текста страницы
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Text) m_events.push_back({Event::Kind::Text, item.text});
+        if (item.kind == PlayerContext::OutputKind::Text) m_events.push_back({Event::Kind::Text, displayText(item.text)});
         if (item.kind == PlayerContext::OutputKind::Info) m_events.push_back({Event::Kind::Info, item.text});
     }
     for (const auto& item : output) {
@@ -584,7 +671,7 @@ void PlayerEngine::flushOutput(bool) {
     // Звуки и картинки — первыми, достижения — последними
     appendMediaEvents(output);
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Text) m_events.push_back({Event::Kind::Text, item.text});
+        if (item.kind == PlayerContext::OutputKind::Text) m_events.push_back({Event::Kind::Text, displayText(item.text)});
         if (item.kind == PlayerContext::OutputKind::Info) m_events.push_back({Event::Kind::Info, item.text});
     }
     for (const auto& item : output) {
@@ -608,8 +695,76 @@ void PlayerEngine::appendMediaEvents(const std::vector<PlayerContext::OutputItem
 std::string PlayerEngine::objDisp(const std::string& instanceId) const {
     const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
     if (!obj) return instanceId;
-    const std::string disp = m_interpreter->expandText(obj->getDisp());
+    const std::string disp = trim(displayText(m_interpreter->expandText(obj->getDisp())));
     return disp.empty() ? obj->getName() : disp;
+}
+
+std::vector<std::string> PlayerEngine::sceneObjects() const {
+    std::vector<std::string> result;
+    if (m_page) {
+        collectSceneObjects(m_page->getId(), result, 0);
+    }
+    return result;
+}
+
+void PlayerEngine::collectSceneObjects(const std::string& ownerId, std::vector<std::string>& result,
+                                       int depth) const {
+    if (depth > 32) return;  // защита от циклической вложенности
+    for (const auto& instanceId : m_context->containerContents(ownerId)) {
+        if (!m_interpreter->isObjEnabled(instanceId)
+            || std::find(result.begin(), result.end(), instanceId) != result.end()) {
+            continue;  // выключенный объект скрывает и своё содержимое
+        }
+        result.push_back(instanceId);
+        collectSceneObjects(instanceId, result, depth + 1);
+    }
+}
+
+bool PlayerEngine::isOnScene(const std::string& instanceId) const {
+    const auto objs = sceneObjects();
+    return std::find(objs.begin(), objs.end(), instanceId) != objs.end();
+}
+
+PlayerEngine::ObjKind PlayerEngine::objKind(const Obj* obj) const {
+    bool hasLinks = false;
+    for (const Link* link : obj->getLinks()) {
+        if (!link->isDeleted()) { hasLinks = true; break; }
+    }
+    if (!obj->isTakable() || hasLinks || m_interpreter->hasInwardUseLinks(obj->getId())) {
+        return ObjKind::Obj;
+    }
+    if (!obj->isGraphical()
+        && !obj->getDisps().isEmpty() && obj->getTexts().isEmpty() && obj->getActTexts().isEmpty()
+        && obj->getNouseTexts().isEmpty()
+        && static_cast<const ModifyingItem*>(obj)->getModifications().empty()
+        && obj->getCommonToId().empty()) {
+        return ObjKind::Stat;
+    }
+    return ObjKind::Menu;
+}
+
+std::string PlayerEngine::sceneLabel(const std::string& instanceId) const {
+    std::string dsc = m_interpreter->objDscF(instanceId);
+    size_t open, close;
+    if (findInteractionMark(dsc, open, close)) {
+        const std::string label = trim(displayText(dsc.substr(open + 1, close - open - 1)));
+        if (!label.empty()) return label;
+        // {} — щёлкают по картинке; подписью служит текст рядом с ней (первая непустая строка)
+        std::istringstream rest(displayText(dsc.substr(0, open) + dsc.substr(close + 1)));
+        std::string line;
+        while (std::getline(rest, line)) {
+            if (!trim(line).empty()) return trim(line);
+        }
+    }
+    return objDisp(instanceId);
+}
+
+bool PlayerEngine::isVisibleInInventory(const std::string& instanceId) const {
+    const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+    if (!obj) return false;
+    if (!trim(m_interpreter->expandText(obj->getDisp())).empty()) return true;
+    return !m_rootBook->isSuppressMedia() && !obj->getImageFileName().empty()
+           && obj->isImageInInventory() && !obj->isGraphical();
 }
 
 std::string PlayerEngine::nouseText(const std::string& instanceId) const {
@@ -626,16 +781,19 @@ PlayerEngine::PageView PlayerEngine::view() const {
     }
     v.pageId = m_page->getId();
     for (const PlayerLink& link : availableChoices()) {
-        v.choices.push_back({m_interpreter->expandText(link.text)});
+        v.choices.push_back({displayText(m_interpreter->expandText(link.text))});
     }
-    for (const auto& instanceId : m_context->containerContents(m_page->getId())) {
+    for (const auto& instanceId : sceneObjects()) {
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
-        if (obj && m_interpreter->isObjEnabled(instanceId)) {
-            v.sceneObjects.push_back({instanceId, objDisp(instanceId), obj->isTakable()});
+        // Щёлкнуть можно только по метке {…} в описании или по графическому объекту
+        size_t open, close;
+        if (obj && (obj->isGraphical() || findInteractionMark(m_interpreter->objDscF(instanceId), open, close))) {
+            v.sceneObjects.push_back({instanceId, sceneLabel(instanceId), obj->isTakable()});
         }
     }
     for (const auto& instanceId : m_context->inventory()) {
-        if (m_interpreter->isObjEnabled(instanceId)) {
+        // decorateObjDisp: пустой disp без картинки -> disp = false, предмет в инвентаре не виден
+        if (m_interpreter->isObjEnabled(instanceId) && isVisibleInInventory(instanceId)) {
             v.inventory.push_back({instanceId, objDisp(instanceId), false});
         }
     }
@@ -652,15 +810,20 @@ bool PlayerEngine::isFinished() const {
     if (isVnPage(m_page)) {
         return buildLinks().empty();
     }
-    // Ходов нет: ни доступных ссылок, ни auto-ссылок, которые могли бы сработать позже,
-    // ни объектов для действий
+    // Есть что выбрать или с чем действовать на странице — игра продолжается
+    if (!availableChoices().empty() || !sceneObjects().empty()) {
+        return false;
+    }
+    // Финальная страница книги (Page.isFinish: лист без модуля, не autowired, без возврата):
+    // служебные auto-ссылки (карта, настройки по флагам) и предметы инвентаря ход уже не продолжают
+    if (m_page->isFinish()) {
+        return true;
+    }
+    // Иначе ходов нет, если нет auto-ссылок, которые могут сработать позже, и инвентарь пуст
     for (const PlayerLink& link : buildLinks()) {
-        if (link.autoFlag || isLinkAvailable(link)) {
+        if (link.autoFlag) {
             return false;
         }
-    }
-    for (const auto& instanceId : m_context->containerContents(m_page->getId())) {
-        if (m_interpreter->isObjEnabled(instanceId)) return false;
     }
     return m_context->inventory().empty();
 }
@@ -668,5 +831,6 @@ bool PlayerEngine::isFinished() const {
 std::vector<PlayerEngine::Event> PlayerEngine::takeEvents() {
     std::vector<Event> result;
     result.swap(m_events);
+    m_lastRenderStart = 1;  // события уже отданы интерфейсу
     return result;
 }

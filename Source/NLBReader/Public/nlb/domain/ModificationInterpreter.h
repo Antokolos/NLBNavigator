@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <set>
 #include <optional>
 #include <string>
 #include <vector>
@@ -91,6 +92,8 @@ public:
     std::string objIdByName(const std::string& name) const;
     /// Все объекты книги и модулей (id -> объект)
     const std::map<std::string, Obj*>& objects() const { return m_objs; }
+    /// На объект ведут use-ссылки других объектов (ExportData.hasInwardLinks)
+    bool hasInwardUseLinks(const std::string& objId) const { return m_useTargets.count(objId) > 0; }
     /// Все страницы книги и модулей (id -> страница)
     const std::map<std::string, Page*>& pages() const { return m_pages; }
 
@@ -122,6 +125,8 @@ private:
     void runObjModifications(const Obj* obj, const std::string& selfInstance);
     static cparse::packToken parseListValue(const std::string& value);
     std::string valueToListItem(const std::string& name) const;
+    /// Имя списка по операнду: переменная может хранить ссылку на список (listobj) — "@list:<имя>"
+    std::string resolveListName(const std::string& name) const;
     void indexBook(NonLinearBook* book);
     /// Ключ карт медиа с учётом внешней иерархии ("модуль/файл")
     static std::string mediaKey(const std::string& externalHierarchy, const std::string& fileName);
@@ -133,6 +138,7 @@ private:
     std::map<std::string, Page*> m_pages;
     std::map<std::string, NonLinearBook*> m_pageBooks;
     std::map<std::string, std::string> m_objIdsByName;
+    std::set<std::string> m_useTargets;
     std::string m_lastText;
     // Карты медиа корневой книги (getMediaToConstraintMap/RedirectsMap/FlagsMap)
     std::map<std::string, std::string> m_mediaConstraints;

@@ -99,6 +99,9 @@ void NLBExplorer::printView(const PlayerEngine::PageView& view) {
     for (size_t i = 0; i < view.choices.size(); ++i) {
         m_out << (i + 1) << ". " << view.choices[i].text << std::endl;
     }
+    if (m_engine->hasTimer()) {
+        m_out << "w. Подождать" << std::endl;
+    }
     m_out << "0. Выход" << std::endl;
 }
 
@@ -127,6 +130,10 @@ bool NLBExplorer::handleCommand(const std::string& line, const PlayerEngine::Pag
     if (first == "0") {
         return false;
     }
+    if (first == "w") {
+        m_engine->wait();
+        return true;
+    }
     auto refId = [&](std::pair<char, size_t> ref) -> std::string {
         const auto& list = (ref.first == 'o') ? view.sceneObjects : view.inventory;
         return (ref.first != '\0' && ref.second < list.size()) ? list[ref.second].instanceId : std::string();
@@ -152,7 +159,7 @@ bool NLBExplorer::handleCommand(const std::string& line, const PlayerEngine::Pag
         }
     }
     if (!ok) {
-        m_out << "Неверный выбор. Команды: N, oN, iN, uN oM | uN iM, 0 — выход." << std::endl;
+        m_out << "Неверный выбор. Команды: N, oN, iN, uN oM | uN iM, w — подождать, 0 — выход." << std::endl;
     }
     return true;
 }
