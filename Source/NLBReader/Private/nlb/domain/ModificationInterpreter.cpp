@@ -808,7 +808,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
         case Type::ACT:
             // Операнд-список (listobj): act применяется к каждому элементу списка
             if (auto obj = objOperand(exprValue)) objActA(*obj);
-            else if (m_context.listExists(exprList)) { for (const auto& item : m_context.listItems(exprList)) objActA(item); }
+            else if (m_context.listExists(exprList) || m_context.hasVar(exprValue)) { for (const auto& item : m_context.listItems(exprList)) objActA(item); }
             else objOrWarn(exprValue);
             break;
         case Type::ACTT: {
@@ -819,7 +819,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
         }
         case Type::ACTF:
             if (auto obj = objOperand(exprValue)) objActF(*obj);
-            else if (m_context.listExists(exprList)) { for (const auto& item : m_context.listItems(exprList)) objActF(item); }
+            else if (m_context.listExists(exprList) || m_context.hasVar(exprValue)) { for (const auto& item : m_context.listItems(exprList)) objActF(item); }
             else objOrWarn(exprValue);
             break;
         case Type::USE: {
@@ -829,8 +829,10 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             requireVar();
             auto source = objOperand(varName);
             auto target = objOperand(exprValue);
-            const bool sourceIsList = !source && m_context.listExists(varList);
-            const bool targetIsList = !target && m_context.listExists(exprList);
+            // Пустой список в STEAD — по-прежнему listobj; у нас он не хранится, поэтому список —
+            // это и объявленная переменная без ссылки на объект (иначе ложные предупреждения)
+            const bool sourceIsList = !source && (m_context.listExists(varList) || m_context.hasVar(varName));
+            const bool targetIsList = !target && (m_context.listExists(exprList) || m_context.hasVar(exprValue));
             if (!source && !sourceIsList) objOrWarn(varName);
             if (!target && !targetIsList) objOrWarn(exprValue);
             const std::vector<std::string> sources = source ? std::vector<std::string>{*source}

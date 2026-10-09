@@ -163,8 +163,11 @@ private:
     void enterPage(Page* page, bool fromAutowired);
     /// life()/autos(): счётчики, callback-объекты, auto-ссылки. true — был переход
     bool runAutos();
-    /// Страница ждёт только таймера: ссылок для выбора и объектов нет, но есть auto-ссылки
-    bool isWaitingForTimer() const;
+    /// Сколько тиков таймера проматывать автоматически на текущей странице (0 — не ждать)
+    int autoWaitTicks() const;
+    static constexpr int MAX_TIMER_TICKS = 100000;
+    /// ~10 с при тике 200 мс: пауза хода противника, короткие анимации
+    static constexpr int SHORT_WAIT_TICKS = 50;
     void settle();
     void renderPage();
     void flushOutput(bool afterPage);
@@ -183,6 +186,10 @@ private:
     std::vector<std::string> sceneObjects() const;
     void collectSceneObjects(const std::string& ownerId, std::vector<std::string>& result, int depth) const;
     bool isOnScene(const std::string& instanceId) const;
+    /// Предметы инвентаря вместе с содержимым предметов-контейнеров: INSTEAD показывает
+    /// вложенные объекты инвентаря в панели (так в Frontier устроены кнопки действий боя)
+    std::vector<std::string> inventoryObjects() const;
+    bool isInInventoryTree(const std::string& instanceId) const;
     std::string nouseText(const std::string& instanceId) const;
 
     NonLinearBook* m_rootBook;

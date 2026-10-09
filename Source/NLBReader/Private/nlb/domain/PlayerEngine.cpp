@@ -41,6 +41,17 @@ bool findInteractionMark(const std::string& s, size_t& open, size_t& close) {
     return open != std::string::npos && close != std::string::npos && close > open;
 }
 
+/// Метки взаимодействия в выводимом тексте (dsc, напечатанный PDSC и т.п.): {метка} -> [метка],
+/// пустая {} (щелчок по картинке) убирается
+std::string replaceInteractionMarks(const std::string& s) {
+    size_t open, close;
+    if (!findInteractionMark(s, open, close)) {
+        return s;
+    }
+    const std::string label = trim(s.substr(open + 1, close - open - 1));
+    return s.substr(0, open) + (label.empty() ? "" : "[" + label + "]") + s.substr(close + 1);
+}
+
 /// ExportManager.determineTrivialStatus(Link)
 bool isTrivial(const MultiLangString& texts, const MultiLangString& altTexts, bool autoFlag) {
     return (texts == Link::DEFAULT_TEXT && altTexts == Link::DEFAULT_ALT_TEXT) || autoFlag;
@@ -145,7 +156,7 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
 }
 
 bool PlayerEngine::clickInventory(const std::string& instanceId) {
-    if (!m_page || !m_context->inInventory(instanceId)) {
+    if (!m_page || !isInInventoryTree(instanceId)) {
         return false;
     }
     m_transitions = 0;
@@ -182,10 +193,10 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
 }
 
 bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& targetInstanceId) {
-    if (!m_page || !m_context->inInventory(sourceInstanceId)) {
+    if (!m_page || !isInInventoryTree(sourceInstanceId)) {
         return false;
     }
-    const bool targetVisible = m_context->inInventory(targetInstanceId)
+    const bool targetVisible = isInInventoryTree(targetInstanceId)
         || isOnScene(targetInstanceId);
     const Obj* source = m_interpreter->findObj(m_context->protoOf(sourceInstanceId));
     const Obj* target = m_interpreter->findObj(m_context->protoOf(targetInstanceId));
@@ -560,12 +571,18 @@ bool PlayerEngine::hasTimer() const {
     return m_page && !m_page->getTimerVarId().empty();
 }
 
-bool PlayerEngine::isWaitingForTimer() const {
-    if (!hasTimer() || !availableChoices().empty() || !sceneObjects().empty()) {
-        return false;
+int PlayerEngine::autoWaitTicks() const {
+    if (!hasTimer() || !availableChoices().empty()) {
+        return 0;
     }
     const auto links = buildLinks();
-    return std::any_of(links.begin(), links.end(), [](const PlayerLink& l) { return l.autoFlag; });
+    if (std::none_of(links.begin(), links.end(), [](const PlayerLink& l) { return l.autoFlag; })) {
+        return 0;
+    }
+    // Ждать больше нечего — проматываем сколько потребуется (анимация гиперперехода).
+    // На странице есть объекты — игрок мог бы щёлкнуть, пока идёт время, поэтому сами
+    // проматываем только короткую паузу (ход противника в бою); длинную (заставка) — командой w
+    return sceneObjects().empty() ? MAX_TIMER_TICKS : SHORT_WAIT_TICKS;
 }
 
 bool PlayerEngine::wait() {
@@ -578,13 +595,17 @@ bool PlayerEngine::wait() {
 }
 
 void PlayerEngine::settle() {
-    // В INSTEAD таймер тикает сам; если странице больше нечего ждать, кроме таймера
-    // (анимация гиперперехода и т.п.), время "проматывается" до срабатывания auto-ссылки
-    const int MAX_TIMER_TICKS = 100000;
+    // В INSTEAD таймер тикает сам (обычно раз в 200 мс). Если выбирать на странице нечего,
+    // а auto-ссылки ждут таймера, время "проматывается" (см. autoWaitTicks)
+    const Page* page = m_page;
     for (int ticks = 0; ; ) {
         while (runAutos()) {
         }
-        if (!isWaitingForTimer() || ++ticks > MAX_TIMER_TICKS) {
+        if (m_page != page) {
+            page = m_page;
+            ticks = 0;
+        }
+        if (++ticks > autoWaitTicks()) {
             break;
         }
     }
@@ -640,13 +661,7 @@ void PlayerEngine::renderPage() {
             continue;
         }
         // {метка} -> [метка]; пустая метка — щёлкают по картинке, она уже выведена отдельно
-        std::string dsc = m_interpreter->objDscF(instanceId);
-        size_t open, close;
-        if (findInteractionMark(dsc, open, close)) {
-            const std::string label = trim(dsc.substr(open + 1, close - open - 1));
-            dsc = dsc.substr(0, open) + (label.empty() ? "" : "[" + label + "]") + dsc.substr(close + 1);
-        }
-        dsc = displayText(dsc);
+        const std::string dsc = displayText(replaceInteractionMarks(m_interpreter->objDscF(instanceId)));
         if (!trim(dsc).empty()) m_events.push_back({Event::Kind::ObjectText, dsc});
     }
     // xdsc: альтернативные тексты недоступных ссылок
@@ -658,7 +673,10 @@ void PlayerEngine::renderPage() {
     }
     // Текст из модификаций страницы, затем достижения — после текста страницы
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Text) m_events.push_back({Event::Kind::Text, displayText(item.text)});
+        if (item.kind == PlayerContext::OutputKind::Text) {
+            const std::string text = displayText(replaceInteractionMarks(item.text));
+            if (!trim(text).empty()) m_events.push_back({Event::Kind::Text, text});
+        }
         if (item.kind == PlayerContext::OutputKind::Info) m_events.push_back({Event::Kind::Info, item.text});
     }
     for (const auto& item : output) {
@@ -671,7 +689,10 @@ void PlayerEngine::flushOutput(bool) {
     // Звуки и картинки — первыми, достижения — последними
     appendMediaEvents(output);
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Text) m_events.push_back({Event::Kind::Text, displayText(item.text)});
+        if (item.kind == PlayerContext::OutputKind::Text) {
+            const std::string text = displayText(replaceInteractionMarks(item.text));
+            if (!trim(text).empty()) m_events.push_back({Event::Kind::Text, text});
+        }
         if (item.kind == PlayerContext::OutputKind::Info) m_events.push_back({Event::Kind::Info, item.text});
     }
     for (const auto& item : output) {
@@ -720,6 +741,24 @@ void PlayerEngine::collectSceneObjects(const std::string& ownerId, std::vector<s
     }
 }
 
+std::vector<std::string> PlayerEngine::inventoryObjects() const {
+    std::vector<std::string> result;
+    for (const auto& instanceId : m_context->inventory()) {
+        if (!m_interpreter->isObjEnabled(instanceId)
+            || std::find(result.begin(), result.end(), instanceId) != result.end()) {
+            continue;
+        }
+        result.push_back(instanceId);
+        collectSceneObjects(instanceId, result, 1);
+    }
+    return result;
+}
+
+bool PlayerEngine::isInInventoryTree(const std::string& instanceId) const {
+    const auto objs = inventoryObjects();
+    return std::find(objs.begin(), objs.end(), instanceId) != objs.end();
+}
+
 bool PlayerEngine::isOnScene(const std::string& instanceId) const {
     const auto objs = sceneObjects();
     return std::find(objs.begin(), objs.end(), instanceId) != objs.end();
@@ -756,6 +795,15 @@ std::string PlayerEngine::sceneLabel(const std::string& instanceId) const {
             if (!trim(line).empty()) return trim(line);
         }
     }
+    const std::string disp = trim(displayText(m_interpreter->expandText(
+        m_interpreter->findObj(m_context->protoOf(instanceId)) ? m_interpreter->findObj(m_context->protoOf(instanceId))->getDisp() : "")));
+    if (!disp.empty()) return disp;
+    // Объект-картинка без подписи (карта в Frontier): подписью служит текст действия
+    std::istringstream act(displayText(m_interpreter->objActT(instanceId)));
+    std::string line;
+    while (std::getline(act, line)) {
+        if (!trim(line).empty()) return trim(line);
+    }
     return objDisp(instanceId);
 }
 
@@ -791,7 +839,7 @@ PlayerEngine::PageView PlayerEngine::view() const {
             v.sceneObjects.push_back({instanceId, sceneLabel(instanceId), obj->isTakable()});
         }
     }
-    for (const auto& instanceId : m_context->inventory()) {
+    for (const auto& instanceId : inventoryObjects()) {
         // decorateObjDisp: пустой disp без картинки -> disp = false, предмет в инвентаре не виден
         if (m_interpreter->isObjEnabled(instanceId) && isVisibleInInventory(instanceId)) {
             v.inventory.push_back({instanceId, objDisp(instanceId), false});
