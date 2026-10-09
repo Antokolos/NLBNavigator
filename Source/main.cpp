@@ -4,28 +4,38 @@
 #include "nlb/domain/NLBReader.h"
 #include "nlb/domain/NLBExplorer.h"
 #include "nlb/api/ConsoleProgressData.h"
+#include "PlatformPaths.h"
 
 #include <cstdlib>
 #include <filesystem>
+#include <iostream>
 #include <memory>
 
 /**
  * @brief Файл прогресса достижений (аналог prefs INSTEAD): ~/.nlbnavigator/<имя каталога книги>.achievements.
- * Если домашний каталог не определить — рядом с книгой.
+ * Если домашний каталог недоступен — рядом с книгой. Возвращается путь в UTF-8 (так его ждёт
+ * PlayerContext); при любой ошибке — пустая строка, и достижения хранятся только в памяти.
  */
-static std::string achievementsFilePath(const std::string& nlbPath) {
+static std::string achievementsFilePath(const std::filesystem::path& bookPath) {
     namespace fs = std::filesystem;
-    const char* home = std::getenv("USERPROFILE");
-    if (!home) home = std::getenv("HOME");
-    std::string bookName = fs::path(nlbPath).lexically_normal().filename().string();
-    if (bookName.empty()) bookName = fs::path(nlbPath).lexically_normal().parent_path().filename().string();
-    std::error_code ec;
-    if (home) {
-        fs::path dir = fs::path(home) / ".nlbnavigator";
-        fs::create_directories(dir, ec);
-        if (!ec) return (dir / (bookName + ".achievements")).string();
+    try {
+        const fs::path book = bookPath.lexically_normal();
+        fs::path bookName = book.filename();
+        if (bookName.empty()) bookName = book.parent_path().filename();
+        fs::path achievementsName = bookName;
+        achievementsName += ".achievements";
+        std::error_code ec;
+        const fs::path home = homeDir();
+        if (!home.empty()) {
+            const fs::path dir = home / ".nlbnavigator";
+            fs::create_directories(dir, ec);
+            if (!ec) return (dir / achievementsName).u8string();
+        }
+        return (book / ".achievements").u8string();
+    } catch (const std::exception& e) {
+        std::cerr << "Warning: achievements will not be saved: " << e.what() << std::endl;
+        return std::string();
     }
-    return (fs::path(nlbPath) / ".achievements").string();
 }
 
 /**
@@ -62,7 +72,7 @@ int main(int argc, char* argv[]) {
         }
         std::cout << "Loaded: " << book->getTitle() << " by " << book->getAuthor() << std::endl;
         PlayerEngine::Settings settings;
-        settings.achievementsPath = achievementsFilePath(nlbPath);
+        settings.achievementsPath = achievementsFilePath(bookPathArg(argv[1]));
         const std::string exportMode = (argc > 3) ? argv[3] : "vn";
         settings.exportMode = (exportMode == "standard")
             ? PlayerEngine::ExportMode::Standard : PlayerEngine::ExportMode::VN;

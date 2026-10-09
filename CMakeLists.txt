@@ -256,6 +256,8 @@ endif()
 # Main executable
 add_executable(nlb_main
         Source/main.cpp
+        Source/PlatformPaths.h
+        Source/PlatformPaths.cpp
         ${CPARSE_HEADERS}
         ${CPARSE_SOURCES}
 )
@@ -267,6 +269,10 @@ target_include_directories(nlb_main
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 target_link_libraries(nlb_main PRIVATE NLBReader)
+if(WIN32)
+    # CommandLineToArgvW — путь к книге из UTF-16 командной строки
+    target_link_libraries(nlb_main PRIVATE shell32)
+endif()
 
 # Configuration summary
 message(STATUS "")
