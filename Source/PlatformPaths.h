@@ -8,9 +8,12 @@
  * вносит в глобальное пространство через using namespace cparse.
  */
 
-/// Путь к каталогу книги (argv[1]). В Windows argv приходит в ANSI-кодировке (CP1251 и т.п.),
-/// поэтому аргумент берётся из UTF-16 командной строки — иначе кириллица в пути ломается.
-std::filesystem::path bookPathArg(const char* narrowArg);
+#include <string>
+#include <vector>
+
+/// Аргументы командной строки в UTF-8. В Windows argv приходит в ANSI-кодировке (CP1251 и т.п.),
+/// поэтому аргументы берутся из UTF-16 командной строки — иначе кириллица в путях ломается.
+std::vector<std::string> utf8Args(int argc, char** argv);
 
 /// Домашний каталог пользователя; пустой путь, если не определён. В Windows — через _wgetenv:
 /// getenv вернул бы USERPROFILE в ANSI-кодировке, и для имени пользователя на кириллице

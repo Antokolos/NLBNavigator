@@ -1,3 +1,4 @@
+#include "nlb/util/FileUtils.h"
 #include "nlb/util/ResourceManager.h"
 
 const std::string ResourceManager::VNSTEAD = "vnstead";
@@ -122,7 +123,7 @@ void ResourceManager::exportBundledFile(
         if (resourceExists(resourceFile)) {
             is = getResourceAsStream(resourceFile);
         } else {
-            is.open(resourceFile, std::ios::binary);
+            is.open(FileUtils::nativePath(resourceFile), std::ios::binary);
         }
         
         if (!is.is_open()) {
@@ -130,7 +131,7 @@ void ResourceManager::exportBundledFile(
         }
         
         // Создаем целевой файл
-        std::ofstream os(targetFile, std::ios::binary);
+        std::ofstream os(FileUtils::nativePath(targetFile), std::ios::binary);
         if (!os.is_open()) {
             throw NLBIOException("Could not create output file: " + targetFile);
         }
@@ -170,7 +171,7 @@ bool ResourceManager::resourceExists(const std::string& resourcePath) {
 }
 
 std::ifstream ResourceManager::getResourceAsStream(const std::string& resourcePath) {
-    std::ifstream stream(resourcePath, std::ios::binary);
+    std::ifstream stream(FileUtils::nativePath(resourcePath), std::ios::binary);
     if (!stream.is_open()) {
         throw NLBIOException("Could not open resource: " + resourcePath);
     }

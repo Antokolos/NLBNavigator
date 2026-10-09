@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nlb/domain/PlayerEngine.h"
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -26,6 +27,8 @@ public:
 
     /// Интерактивная игра до конца книги или команды выхода
     void explore();
+    /// Вызывается для каждой введённой строки (журнал сессии)
+    void setInputListener(std::function<void(const std::string&)> listener) { m_inputListener = std::move(listener); }
 
 private:
     void printEvents();
@@ -38,4 +41,6 @@ private:
     std::unique_ptr<PlayerEngine> m_engine;
     std::istream& m_in;
     std::ostream& m_out;
+    std::function<void(const std::string&)> m_inputListener;
+    bool readLine(std::string& line);
 };

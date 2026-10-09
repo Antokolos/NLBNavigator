@@ -1,3 +1,4 @@
+#include "nlb/util/FileUtils.h"
 #include "nlb/api/Constants.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/vcs/VCSAdapter.h"
@@ -201,7 +202,7 @@ void FileManipulator::copyFile(
             throw NLBIOException("Source file does not exist: " + source);
         }
 
-        std::ifstream sourceFile(source, std::ios::binary);
+        std::ifstream sourceFile(FileUtils::nativePath(source), std::ios::binary);
         if (!sourceFile.is_open()) {
             throw NLBIOException("Cannot open source file: " + source);
         }
@@ -219,7 +220,7 @@ void FileManipulator::createFile(
     const std::string& errorMessage) const {
     try {
         if (!FileUtils::exists(filePath)) {
-            std::ofstream file(filePath);
+            std::ofstream file(FileUtils::nativePath(filePath));
             if (!file.is_open()) {
                 throw NLBIOException(errorMessage);
             }
@@ -259,7 +260,7 @@ std::string FileManipulator::getRequiredFileAsString(
         throw NLBIOException(errorMessage);
     }
 
-    std::ifstream file(filePath, std::ios::binary);
+    std::ifstream file(FileUtils::nativePath(filePath), std::ios::binary);
     if (!file.is_open()) {
         throw NLBIOException("Cannot open file: " + filePath);
     }
@@ -279,7 +280,7 @@ std::string FileManipulator::getOptionalFileAsString(
     }
 
     try {
-        std::ifstream file(filePath, std::ios::binary);
+        std::ifstream file(FileUtils::nativePath(filePath), std::ios::binary);
         if (!file.is_open()) {
             return defaultValue;
         }
@@ -308,7 +309,7 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
             for (const auto& langKey : langKeys) {
                 std::string filePath = FileUtils::combinePath(mlsRootDir, langKey);
                 if (!FileUtils::isDirectory(filePath)) {
-                    std::ifstream file(filePath, std::ios::binary);
+                    std::ifstream file(FileUtils::nativePath(filePath), std::ios::binary);
                     if (file.is_open()) {
                         std::string content = getFileAsString(file);
                         result.put(langKey, content);
@@ -318,7 +319,7 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
             }
         } else {
             // Single file case - treat as default language
-            std::ifstream file(mlsRootDir, std::ios::binary);
+            std::ifstream file(FileUtils::nativePath(mlsRootDir), std::ios::binary);
             if (file.is_open()) {
                 std::string content = getFileAsString(file);
                 result.put(NonLinearBook::DEFAULT_LANGUAGE, content);
@@ -334,7 +335,7 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
 
 void FileManipulator::writeFile(const std::string& filePath, std::istream& input) {
     try {
-        std::ofstream output(filePath, std::ios::binary);
+        std::ofstream output(FileUtils::nativePath(filePath), std::ios::binary);
         if (!output.is_open()) {
             throw NLBIOException("Cannot open file for writing: " + filePath);
         }

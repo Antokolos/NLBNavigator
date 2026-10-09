@@ -1,3 +1,4 @@
+#include "nlb/util/FileUtils.h"
 #include "nlb/domain/VariableImpl.h"
 #include "nlb/util/EnumUtils.h"
 #include "nlb/api/Constants.h"
@@ -15,7 +16,7 @@ const std::string VariableImpl::VALUE_FILE_NAME = "value";
 
 // Helper function to read file contents
 std::string readFileContents(const std::string& filePath) {
-    std::ifstream file(filePath);
+    std::ifstream file(FileUtils::nativePath(filePath));
     if (!file.is_open()) {
         throw NLBIOException("Cannot open file: " + filePath);
     }
@@ -27,7 +28,7 @@ std::string readFileContents(const std::string& filePath) {
 
 // Helper function to write file contents
 void writeFileContents(const std::string& filePath, const std::string& content) {
-    std::ofstream file(filePath);
+    std::ofstream file(FileUtils::nativePath(filePath));
     if (!file.is_open()) {
         throw NLBIOException("Cannot open file for writing: " + filePath);
     }

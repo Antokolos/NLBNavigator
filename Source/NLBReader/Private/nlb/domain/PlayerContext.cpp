@@ -1,6 +1,7 @@
 #include "nlb/domain/PlayerContext.h"
 
 #include "nlb/api/NonLinearBook.h"
+#include "nlb/util/FileUtils.h"
 #include "nlb/api/Page.h"
 #include "nlb/api/Obj.h"
 #include "nlb/api/Variable.h"
@@ -371,8 +372,8 @@ bool PlayerContext::setAchievementsStorage(const std::string& path) {
 }
 
 bool PlayerContext::loadAchievements() {
-    // Путь хранится в UTF-8; u8path корректно передаёт кириллицу в Windows API (через wchar_t)
-    const std::filesystem::path file = std::filesystem::u8path(m_achievementsPath);
+    // Путь хранится в UTF-8; nativePath передаёт его в WinAPI как UTF-16 (кириллица, длинные пути)
+    const std::filesystem::path file = FileUtils::nativePath(m_achievementsPath);
     std::error_code ec;
     if (!std::filesystem::exists(file, ec)) {
         return true;  // первый запуск — файла ещё нет
@@ -401,8 +402,8 @@ void PlayerContext::saveAchievements() const {
         return;
     }
     // Пишем во временный файл и переименовываем, чтобы сбой не испортил прогресс
-    const std::filesystem::path file = std::filesystem::u8path(m_achievementsPath);
-    const std::filesystem::path tmp = std::filesystem::u8path(m_achievementsPath + ".tmp");
+    const std::filesystem::path file = FileUtils::nativePath(m_achievementsPath);
+    const std::filesystem::path tmp = FileUtils::nativePath(m_achievementsPath + ".tmp");
     {
         std::ofstream out(tmp, std::ios::binary | std::ios::trunc);
         if (!out) {

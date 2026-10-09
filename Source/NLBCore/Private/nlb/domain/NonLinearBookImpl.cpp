@@ -1746,20 +1746,31 @@ void NonLinearBookImpl::readNLB(const std::string& nlbDir, ProgressData& progres
     progressData.setNoteText("Reading book properties...");
     readBookProperties(nlbDir);
 
-    PartialProgressData partialProgress(&progressData, 25, 65, 1);
-
+    // Этапы и проценты — как в Java NonLinearBookImpl.load(); в конце — 100 %, чтобы индикатор
+    // завершался (раньше он останавливался на 65 %: дальше прогресс не сообщался)
+    progressData.setProgressValue(25);
     progressData.setNoteText("Reading objects...");
-    loadObjs(nlbDir, &partialProgress);
+    PartialProgressData objsProgress(&progressData, 25, 35, 1);
+    loadObjs(nlbDir, &objsProgress);
 
+    progressData.setProgressValue(35);
     progressData.setNoteText("Reading pages and modules...");
-    loadPages(nlbDir, &partialProgress);
+    PartialProgressData pagesProgress(&progressData, 35, 60, 1);
+    loadPages(nlbDir, &pagesProgress);
 
+    progressData.setProgressValue(60);
     progressData.setNoteText("Reading variables...");
-    loadVariables(nlbDir, &partialProgress);
-    
-    // Читаем медиафайлы
+    PartialProgressData varsProgress(&progressData, 60, 65, 1);
+    loadVariables(nlbDir, &varsProgress);
+
+    progressData.setProgressValue(65);
+    progressData.setNoteText("Reading image files...");
     loadMediaFiles(nlbDir, IMAGES_DIR_NAME, m_imageFiles);
+    progressData.setProgressValue(80);
+    progressData.setNoteText("Reading sound files...");
     loadMediaFiles(nlbDir, SOUND_DIR_NAME, m_soundFiles);
+    progressData.setProgressValue(100);
+    progressData.setNoteText("Book loaded");
 }
 
 NonLinearBookImpl::AddPageCommand::AddPageCommand(NonLinearBookImpl* nlb, PageImpl* page)

@@ -9,17 +9,23 @@
 #include <shellapi.h>  // CommandLineToArgvW
 #endif
 
-std::filesystem::path bookPathArg(const char* narrowArg) {
+std::vector<std::string> utf8Args(int argc, char** argv) {
+    std::vector<std::string> result;
 #ifdef _WIN32
     int count = 0;
     LPWSTR* wargv = CommandLineToArgvW(GetCommandLineW(), &count);
     if (wargv) {
-        std::filesystem::path result = count > 1 ? std::filesystem::path(wargv[1]) : std::filesystem::path();
+        for (int i = 0; i < count; ++i) {
+            result.push_back(std::filesystem::path(wargv[i]).u8string());
+        }
         LocalFree(wargv);
-        if (!result.empty()) return result;
+        return result;
     }
 #endif
-    return std::filesystem::path(narrowArg ? narrowArg : "");
+    for (int i = 0; i < argc; ++i) {
+        result.push_back(argv[i] ? argv[i] : "");
+    }
+    return result;
 }
 
 std::filesystem::path homeDir() {

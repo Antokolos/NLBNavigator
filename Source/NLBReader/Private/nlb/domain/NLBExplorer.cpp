@@ -23,7 +23,7 @@ void NLBExplorer::explore() {
                 }
                 m_out << "\n1. Начать заново\n0. Выход\n\nВаш выбор: " << std::flush;
                 std::string line;
-                if (!std::getline(m_in, line) || line != "1") {
+                if (!readLine(line) || line != "1") {
                     break;
                 }
                 m_engine->restart();
@@ -32,7 +32,7 @@ void NLBExplorer::explore() {
             printView(view);
             m_out << "\nВаш выбор: " << std::flush;
             std::string line;
-            if (!std::getline(m_in, line)) {
+            if (!readLine(line)) {
                 break;
             }
             if (!handleCommand(line, view)) {
@@ -42,6 +42,15 @@ void NLBExplorer::explore() {
     } catch (const std::exception& e) {
         m_out << "\n!!! Ошибка исполнения книги: " << e.what() << std::endl;
     }
+}
+
+bool NLBExplorer::readLine(std::string& line) {
+    if (!std::getline(m_in, line)) {
+        return false;
+    }
+    if (!line.empty() && line.back() == '\r') line.pop_back();
+    if (m_inputListener) m_inputListener(line);
+    return true;
 }
 
 void NLBExplorer::printEvents() {

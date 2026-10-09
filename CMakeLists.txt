@@ -258,6 +258,8 @@ add_executable(nlb_main
         Source/main.cpp
         Source/PlatformPaths.h
         Source/PlatformPaths.cpp
+        Source/SessionLog.h
+        Source/SessionLog.cpp
         ${CPARSE_HEADERS}
         ${CPARSE_SOURCES}
 )

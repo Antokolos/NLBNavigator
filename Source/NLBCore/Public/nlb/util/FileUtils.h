@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -84,4 +85,18 @@ public:
     
     // Normalize path separators for current platform
     static std::string normalizePath(const std::string& path);
+
+    /*!
+     * \brief Путь для обращения к файловой системе.
+     *
+     * Внутри библиотеки пути хранятся в UTF-8. В Windows путь переводится в UTF-16, делается
+     * абсолютным и получает префикс \\?\ — без него WinAPI и CRT не открывают файлы длиннее
+     * MAX_PATH (260 символов), а у книг с вложенными модулями (Frontier) пути бывают длиннее.
+     * В остальных системах — просто std::filesystem::u8path.
+     */
+    static std::filesystem::path nativePath(const std::string& utf8Path);
+
+    /// UTF-8 <-> UTF-16 (Windows). Строка, не являющаяся UTF-8, читается в кодировке ANSI.
+    static std::wstring toWide(const std::string& utf8);
+    static std::string fromWide(const std::wstring& wide);
 };
