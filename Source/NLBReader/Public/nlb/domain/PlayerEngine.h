@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <memory>
 #include <optional>
 #include <random>
@@ -106,6 +107,9 @@ public:
     bool use(const std::string& sourceInstanceId, const std::string& targetInstanceId);
     /// Подождать: один тик таймера страницы (в INSTEAD — раз в 200 мс) и проверка auto-ссылок
     bool wait();
+    /// «Осмотреться» (look в INSTEAD): заново показать текущую страницу — картинки, текст,
+    /// описания объектов — без исполнения её модификаций
+    bool look();
     /// На странице есть таймер — ожидание имеет смысл
     bool hasTimer() const;
 
@@ -174,6 +178,13 @@ private:
     static constexpr int SHORT_WAIT_TICKS = 50;
     void settle();
     void renderPage();
+    /// После действия на той же странице: показать картинки, которые сменились (например,
+    /// флажок «Показывать эту страницу») или появились (новые карты на столе)
+    void refreshSceneImages();
+    /// Действие игрока выполнено: auto-ссылки, затем обновление картинок, если страница не сменилась
+    void finishAction();
+    void emitObjectImage(const std::string& instanceId, const PlayerContext::OutputItem& image);
+    static std::string imageKey(const PlayerContext::OutputItem& image);
     void flushOutput(bool afterPage);
     void appendMediaEvents(const std::vector<PlayerContext::OutputItem>& output);
     void setVarTrue(NonLinearBook* book, const std::string& varId);
@@ -207,6 +218,9 @@ private:
     std::optional<std::string> m_pendingWalk;
     bool m_pendingFromAutowired = false;
     std::vector<Event> m_events;
+    /// Показанные картинки: страницы (ключ — id страницы) и объектов на ней
+    std::map<std::string, std::string> m_shownImages;
+    int m_renderCount = 0;
     /// Начало событий последней показанной страницы — чтобы убрать «пустые» промежуточные страницы
     size_t m_lastRenderStart = 0;
 };

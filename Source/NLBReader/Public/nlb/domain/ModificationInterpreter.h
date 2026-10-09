@@ -77,6 +77,8 @@ public:
     void playSound(const std::string& itemId);
     /// s:pic() — картинка страницы или объекта (с учётом suppressMedia), в т.ч. анимированная
     void showImage(const std::string& itemId);
+    /// Какую картинку показал бы s:pic() сейчас (без вывода); пусто — картинки нет
+    std::optional<PlayerContext::OutputItem> selectImage(const std::string& itemId) const;
     /// s.tag: тег экземпляра, иначе значение переменной defaultTagId
     std::string tagOf(const std::string& itemId) const;
     /// Ограничение объекта (alive); у клона — ограничение прототипа

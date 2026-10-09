@@ -502,9 +502,9 @@ void ModificationInterpreter::playSound(const std::string& itemId) {
     }
 }
 
-void ModificationInterpreter::showImage(const std::string& itemId) {
+std::optional<PlayerContext::OutputItem> ModificationInterpreter::selectImage(const std::string& itemId) const {
     if (m_rootBook && m_rootBook->isSuppressMedia()) {
-        return;
+        return std::nullopt;
     }
     std::string names, hierarchy;
     bool animated = false;
@@ -519,7 +519,7 @@ void ModificationInterpreter::showImage(const std::string& itemId) {
         animated = obj->isAnimatedImage();
         removeFrameNumber = animated && obj->isGraphical();
     } else {
-        return;
+        return std::nullopt;
     }
     // decoratePageImage: цепочка if/elseif по s.tag, без ограничения — "true"; первая подходящая
     const std::string tag = tagOf(itemId);
@@ -542,12 +542,17 @@ void ModificationInterpreter::showImage(const std::string& itemId) {
             int frames = 0;
             try { frames = std::stoi(match[2].str()); } catch (...) { frames = 0; }
             if (frames > 0) {
-                m_context.emit(PlayerContext::OutputKind::Animation, prefix + "%d" + match[3].str(), frames);
-                return;
+                return PlayerContext::OutputItem{PlayerContext::OutputKind::Animation, prefix + "%d" + match[3].str(), frames};
             }
         }
-        m_context.emit(PlayerContext::OutputKind::Image, file);
-        return;
+        return PlayerContext::OutputItem{PlayerContext::OutputKind::Image, file, 0};
+    }
+    return std::nullopt;
+}
+
+void ModificationInterpreter::showImage(const std::string& itemId) {
+    if (auto image = selectImage(itemId)) {
+        m_context.emit(image->kind, image->text, image->frames);
     }
 }
 

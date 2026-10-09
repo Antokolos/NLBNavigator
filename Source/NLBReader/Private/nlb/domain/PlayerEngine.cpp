@@ -152,7 +152,7 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
         m_interpreter->objActA(instanceId);
     }
     flushOutput(false);
-    settle();
+    finishAction();
     return true;
 }
 
@@ -169,7 +169,7 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
             m_interpreter->objActA(instanceId);
         }
         flushOutput(false);
-        settle();
+        finishAction();
         return true;
     }
     // decorateObjInv (OBJ): inv = use(s, s); без текста INSTEAD показывает game.inv
@@ -189,7 +189,7 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
         m_context->emit(PlayerContext::OutputKind::Text, m_settings.gameInvText);
     }
     flushOutput(false);
-    settle();
+    finishAction();
     return true;
 }
 
@@ -226,7 +226,7 @@ bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& t
         m_context->emit(PlayerContext::OutputKind::Text, nouseText(sourceInstanceId));
     }
     flushOutput(false);
-    settle();
+    finishAction();
     return true;
 }
 
@@ -591,8 +591,63 @@ bool PlayerEngine::wait() {
         return false;
     }
     m_transitions = 0;
-    runAutos() ? settle() : settle();
+    runAutos();
+    finishAction();
     return true;
+}
+
+bool PlayerEngine::look() {
+    if (!m_page) {
+        return false;
+    }
+    m_shownImages.clear();
+    renderPage();
+    return true;
+}
+
+void PlayerEngine::finishAction() {
+    const int renders = m_renderCount;
+    settle();
+    if (m_renderCount == renders) {
+        refreshSceneImages();
+    }
+}
+
+std::string PlayerEngine::imageKey(const PlayerContext::OutputItem& image) {
+    return std::to_string(static_cast<int>(image.kind)) + "|" + image.text + "|" + std::to_string(image.frames);
+}
+
+void PlayerEngine::emitObjectImage(const std::string& instanceId, const PlayerContext::OutputItem& image) {
+    const Event::Kind kind = image.kind == PlayerContext::OutputKind::Animation ? Event::Kind::Animation : Event::Kind::Image;
+    m_events.push_back({kind, image.text, image.frames, sceneLabel(instanceId)});
+    m_shownImages[instanceId] = imageKey(image);
+}
+
+void PlayerEngine::refreshSceneImages() {
+    if (!m_page || m_rootBook->isSuppressMedia()) {
+        return;
+    }
+    // Картинка страницы (выбор по тегу мог измениться)
+    if (auto image = m_interpreter->selectImage(m_page->getId())) {
+        const std::string key = imageKey(*image);
+        if (m_shownImages[m_page->getId()] != key) {
+            const Event::Kind kind = image->kind == PlayerContext::OutputKind::Animation ? Event::Kind::Animation : Event::Kind::Image;
+            m_events.push_back({kind, image->text, image->frames, ""});
+            m_shownImages[m_page->getId()] = key;
+        }
+    }
+    for (const auto& instanceId : sceneObjects()) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+        if (!obj || !obj->isImageInScene()) {
+            continue;
+        }
+        if (auto image = m_interpreter->selectImage(instanceId)) {
+            auto shown = m_shownImages.find(instanceId);
+            if (shown == m_shownImages.end() || shown->second != imageKey(*image)) {
+                emitObjectImage(instanceId, *image);
+            }
+        }
+    }
 }
 
 void PlayerEngine::settle() {
@@ -619,12 +674,16 @@ void PlayerEngine::settle() {
 
 void PlayerEngine::renderPage() {
     Page* page = m_page;
+    ++m_renderCount;
+    m_shownImages.clear();
     m_lastRenderStart = m_events.size();
     // s:pic() — выбор картинки по тегу страницы; звук страницы уже выдан в enterPage
     std::vector<PlayerContext::OutputItem> output = m_context->takeOutput();
-    m_interpreter->showImage(page->getId());
-    for (const auto& item : m_context->takeOutput()) {
-        output.insert(output.begin(), item);
+    if (!m_rootBook->isSuppressMedia()) {
+        if (auto image = m_interpreter->selectImage(page->getId())) {
+            output.insert(output.begin(), *image);
+            m_shownImages[page->getId()] = imageKey(*image);
+        }
     }
     // Картинки и звуки — перед текстом страницы
     appendMediaEvents(output);
@@ -635,11 +694,8 @@ void PlayerEngine::renderPage() {
         if (!obj || !obj->isImageInScene()) {
             continue;
         }
-        m_interpreter->showImage(instanceId);
-        const size_t first = m_events.size();
-        appendMediaEvents(m_context->takeOutput());
-        for (size_t i = first; i < m_events.size(); ++i) {
-            m_events[i].subject = objDisp(instanceId);
+        if (auto image = m_interpreter->selectImage(instanceId)) {
+            emitObjectImage(instanceId, *image);
         }
     }
     const bool vn = isVnPage(page);
