@@ -40,6 +40,10 @@ public:
         /// Файл прогресса достижений (prefs INSTEAD); пусто — только в памяти
         std::string achievementsPath;
         unsigned randomSeed = std::random_device{}();
+        /// Детерминированная случайность для сверки с INSTEAD (см. PlayerContext::setDeterministic)
+        bool deterministic = false;
+        /// Начальное значение счётчика детерминированной последовательности rnd
+        int64_t deterministicStart = 0;
     };
 
     /// Элемент вывода для интерфейса, в порядке показа

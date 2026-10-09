@@ -80,6 +80,7 @@ PlayerEngine::PlayerEngine(NonLinearBook* rootBook, const Settings& settings)
 void PlayerEngine::createState() {
     m_interpreter.reset();
     m_context = std::make_unique<PlayerContext>(m_rootBook, m_settings.randomSeed);
+    m_context->setDeterministic(m_settings.deterministic, m_settings.deterministicStart);
     if (!m_settings.achievementsPath.empty()) {
         m_context->setAchievementsStorage(m_settings.achievementsPath);
     }

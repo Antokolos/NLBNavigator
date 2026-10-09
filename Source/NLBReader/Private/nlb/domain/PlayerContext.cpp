@@ -6,6 +6,8 @@
 #include "nlb/api/Variable.h"
 
 #include <algorithm>
+#include <iostream>
+#include <cstdlib>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -142,7 +144,11 @@ void PlayerContext::listRemove(const std::string& list, const std::string& value
 void PlayerContext::listShuffle(const std::string& list) {
     auto it = m_state.lists.find(list);
     if (it != m_state.lists.end()) {
-        std::shuffle(it->second.begin(), it->second.end(), m_rng);
+        if (m_deterministic) {
+            std::reverse(it->second.begin(), it->second.end());
+        } else {
+            std::shuffle(it->second.begin(), it->second.end(), m_rng);
+        }
     }
 }
 
@@ -543,6 +549,14 @@ bool PlayerContext::wasLinkFollowed(const std::string& linkId) const {
 }
 
 int64_t PlayerContext::random(int64_t max) {
+    if (m_deterministic) {
+        const int64_t n = std::max<int64_t>(1, max);
+        const int64_t v = (m_deterministicCounter++ % n) + 1;
+        if (std::getenv("NLBNAV_RNDLOG")) {
+            std::cerr << "NLBRND " << n << ">" << v << "@" << currentPageId() << std::endl;
+        }
+        return v;
+    }
     std::uniform_int_distribution<int64_t> dist(1, std::max<int64_t>(1, max));
     return dist(m_rng);
 }

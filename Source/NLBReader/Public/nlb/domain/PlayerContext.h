@@ -155,6 +155,13 @@ public:
     // ------------------------------------------------------------------ случайные числа
     /// Равномерно на [1, max] (INSTEAD rnd); max < 1 -> 1
     int64_t random(int64_t max);
+    /// Режим сверки с INSTEAD: rnd(n) — общая для обоих движков последовательность
+    /// (k-й вызов даёт (k mod n) + 1), SHUFFLE переставляет как nlb.shuffle при
+    /// shuffled = тождество (toArray + push — список разворачивается). Только для тестов.
+    void setDeterministic(bool deterministic, int64_t start = 0) {
+        m_deterministic = deterministic;
+        m_deterministicCounter = start;
+    }
 
 private:
     /// Игровое состояние, которое сохраняет SNAPSHOT
@@ -199,4 +206,6 @@ private:
     std::vector<OutputItem> m_output;
     std::optional<std::string> m_goto;
     std::mt19937_64 m_rng;
+    bool m_deterministic = false;
+    int64_t m_deterministicCounter = 0;
 };
