@@ -655,7 +655,7 @@ std::string PlayerEngine::imageKey(const PlayerContext::OutputItem& image) {
 
 void PlayerEngine::emitObjectImage(const std::string& instanceId, const PlayerContext::OutputItem& image) {
     const Event::Kind kind = image.kind == PlayerContext::OutputKind::Animation ? Event::Kind::Animation : Event::Kind::Image;
-    m_events.push_back({kind, image.text, image.frames, sceneLabel(instanceId)});
+    m_events.push_back({kind, image.text, image.frames, sceneLabel(instanceId), objPosition(instanceId)});
     m_shownImages[instanceId] = imageKey(image);
 }
 
@@ -857,6 +857,31 @@ bool PlayerEngine::isOnScene(const std::string& instanceId) const {
     return std::find(objs.begin(), objs.end(), instanceId) != objs.end();
 }
 
+bool PlayerEngine::hasBehaviour(const Obj* obj) const {
+    if (!obj) return false;
+    const std::vector<Link*> links = obj->getLinks();  // getLinks() возвращает копию
+    return obj->isTakable()
+        || !static_cast<const ModifyingItem*>(obj)->getModifications().empty()
+        || !obj->getVarId().empty() || !obj->getMorphOverId().empty()
+        || !trim(m_interpreter->expandText(obj->getActText())).empty()
+        || m_interpreter->commonOf(obj) != nullptr
+        || m_interpreter->hasInwardUseLinks(obj->getId())
+        || std::any_of(links.begin(), links.end(), [](const Link* l) { return !l->isDeleted(); });
+}
+
+std::string PlayerEngine::objPosition(const std::string& instanceId) const {
+    const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+    if (!obj || !obj->isGraphical()) return "";
+    static const char* ORIGINS[] = {"left-top", "middle-top", "right-top", "left-middle", "middle-middle",
+                                    "right-middle", "left-bottom", "middle-bottom", "right-bottom"};
+    const int origin = static_cast<int>(obj->getCoordsOrigin());
+    // decorateObjEffect: смещение задано и объект не вложен в другой — оно, иначе 0,0
+    const std::string container = m_context->containerOf(instanceId);
+    const bool nested = !container.empty() && m_interpreter->findObj(m_context->protoOf(container)) != nullptr;
+    const std::string offset = (!obj->getOffset().empty() && !nested) ? obj->getOffset() : "0,0";
+    return std::string(origin >= 0 && origin < 9 ? ORIGINS[origin] : "left-top") + "@" + offset;
+}
+
 PlayerEngine::ObjKind PlayerEngine::objKind(const Obj* obj) const {
     bool hasLinks = false;
     for (const Link* link : obj->getLinks()) {
@@ -930,28 +955,25 @@ PlayerEngine::PageView PlayerEngine::view() const {
         size_t open, close;
         if (obj && (obj->isGraphical() || findInteractionMark(m_interpreter->objDscF(instanceId), open, close))) {
             std::string label = trim(sceneLabel(instanceId));
+            const bool active = hasBehaviour(obj);
             if (label.empty()) {
-                // Безымянный графический объект: фон, подложка подсказки. Если щелчок по нему
-                // ничего не делает — это декорация, в списке для действий она не нужна
-                const std::vector<Link*> links = obj->getLinks();  // getLinks() возвращает копию
-                const bool hasBehaviour = obj->isTakable()
-                    || !static_cast<const ModifyingItem*>(obj)->getModifications().empty()
-                    || !obj->getVarId().empty() || !obj->getMorphOverId().empty()
-                    || m_interpreter->commonOf(obj) != nullptr
-                    || std::any_of(links.begin(), links.end(),
-                                   [](const Link* l) { return !l->isDeleted(); });
-                if (!hasBehaviour) {
+                // Безымянный графический объект без реакции (фон, подложка) — декорация, не показываем
+                if (!active) {
                     continue;
                 }
                 label = obj->getImageFileName().empty() ? instanceId : obj->getImageFileName();
             }
-            v.sceneObjects.push_back({instanceId, label, obj->isTakable()});
+            v.sceneObjects.push_back({instanceId, label, obj->isTakable(), active, objPosition(instanceId)});
         }
     }
     for (const auto& instanceId : inventoryObjects()) {
         // decorateObjDisp: пустой disp без картинки -> disp = false, предмет в инвентаре не виден
         if (m_interpreter->isObjEnabled(instanceId) && isVisibleInInventory(instanceId)) {
-            v.inventory.push_back({instanceId, objDisp(instanceId), false});
+            const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+            // OBJ всегда отвечает (use(s, s) или game.inv); MENU — если щелчок что-то делает; STAT — никогда
+            const ObjKind kind = obj ? objKind(obj) : ObjKind::Stat;
+            const bool active = kind == ObjKind::Obj || (kind == ObjKind::Menu && hasBehaviour(obj));
+            v.inventory.push_back({instanceId, objDisp(instanceId), false, active, objPosition(instanceId)});
         }
     }
     v.finished = isFinished();

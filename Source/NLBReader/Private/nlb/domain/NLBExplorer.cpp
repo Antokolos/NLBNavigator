@@ -64,7 +64,8 @@ void NLBExplorer::printEvents() {
             case Kind::AltText:     m_out << event.text << std::endl; break;
             case Kind::Text:        m_out << event.text << std::endl; break;
             case Kind::Image:       m_out << "[IMAGE: " << event.text
-                                          << (event.subject.empty() ? "" : " — " + event.subject) << "]" << std::endl; break;
+                                          << (event.subject.empty() ? "" : " — " + event.subject)
+                                          << (event.position.empty() ? "" : " @ " + event.position) << "]" << std::endl; break;
             case Kind::Animation: {
                 // В INSTEAD кадры меняются по таймеру; в консоли — только описание анимации
                 auto frame = [&](int n) {
@@ -75,7 +76,8 @@ void NLBExplorer::printEvents() {
                 };
                 m_out << "[ANIMATION: " << frame(1) << " ... " << frame(event.frames)
                       << ", кадров: " << event.frames << ", смена по таймеру"
-                      << (event.subject.empty() ? "" : " — " + event.subject) << "]" << std::endl;
+                      << (event.subject.empty() ? "" : " — " + event.subject)
+                      << (event.position.empty() ? "" : " @ " + event.position) << "]" << std::endl;
                 break;
             }
             case Kind::Sound:       m_out << "[SOUND: " << event.text << "]" << std::endl; break;
@@ -88,22 +90,38 @@ void NLBExplorer::printEvents() {
     }
 }
 
+namespace {
+/// Подпись объекта в списке: многострочную (панель HP и т.п.) сводим в одну строку
+std::string oneLine(const std::string& s) {
+    std::string r;
+    for (char c : s) r += (c == '\n') ? ' ' : c;
+    return r;
+}
+std::string withPosition(const PlayerEngine::ObjectView& o) {
+    return o.position.empty() ? oneLine(o.disp) : oneLine(o.disp) + " [" + o.position + "]";
+}
+}
+
 void NLBExplorer::printView(const PlayerEngine::PageView& view) {
-    if (!view.sceneObjects.empty()) {
-        m_out << "\nЗдесь:";
-        for (size_t i = 0; i < view.sceneObjects.size(); ++i) {
-            m_out << "  o" << (i + 1) << ". " << view.sceneObjects[i].disp
-                  << (view.sceneObjects[i].takable ? " (можно взять)" : "");
+    // Активные объекты получают номера oN/iN; неактивные (надписи, STAT) — только для чтения, «· »
+    auto printList = [&](const char* title, const std::vector<PlayerEngine::ObjectView>& list, char prefix) {
+        if (list.empty()) return;
+        m_out << title;
+        size_t n = 0;
+        for (const auto& o : list) {
+            if (!o.active) continue;
+            m_out << "  " << prefix << ++n << ". " << withPosition(o) << (o.takable ? " (можно взять)" : "");
         }
         m_out << std::endl;
-    }
-    if (!view.inventory.empty()) {
-        m_out << "Инвентарь:";
-        for (size_t i = 0; i < view.inventory.size(); ++i) {
-            m_out << "  i" << (i + 1) << ". " << view.inventory[i].disp;
+        for (const auto& o : list) {
+            if (!o.active) m_out << "   · " << withPosition(o) << std::endl;
         }
+    };
+    if (!view.sceneObjects.empty() || !view.inventory.empty()) {
         m_out << std::endl;
     }
+    printList("Здесь:", view.sceneObjects, 'o');
+    printList("Инвентарь:", view.inventory, 'i');
     m_out << std::endl;
     for (size_t i = 0; i < view.choices.size(); ++i) {
         m_out << (i + 1) << ". " << view.choices[i].text << std::endl;
@@ -138,7 +156,13 @@ bool NLBExplorer::handleCommand(const std::string& line, const PlayerEngine::Pag
         return true;
     }
     if (first == "0") {
-        return false;
+        // Подтверждение — чтобы не завершить игру случайно
+        m_out << "Выйти из игры? 1 — да, любой другой ввод — продолжить: " << std::flush;
+        std::string answer;
+        if (!readLine(answer)) {
+            return false;
+        }
+        return answer != "1";
     }
     if (first == "w") {
         m_engine->wait();
@@ -148,9 +172,17 @@ bool NLBExplorer::handleCommand(const std::string& line, const PlayerEngine::Pag
         m_engine->look();
         return true;
     }
+    // Номера oN/iN — только у активных объектов
+    auto activeOnly = [](const std::vector<PlayerEngine::ObjectView>& list) {
+        std::vector<std::string> ids;
+        for (const auto& o : list) if (o.active) ids.push_back(o.instanceId);
+        return ids;
+    };
+    const std::vector<std::string> sceneIds = activeOnly(view.sceneObjects);
+    const std::vector<std::string> invIds = activeOnly(view.inventory);
     auto refId = [&](std::pair<char, size_t> ref) -> std::string {
-        const auto& list = (ref.first == 'o') ? view.sceneObjects : view.inventory;
-        return (ref.first != '\0' && ref.second < list.size()) ? list[ref.second].instanceId : std::string();
+        const auto& list = (ref.first == 'o') ? sceneIds : invIds;
+        return (ref.first != '\0' && ref.second < list.size()) ? list[ref.second] : std::string();
     };
     bool ok = false;
     if (first[0] == 'u') {

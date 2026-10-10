@@ -68,6 +68,8 @@ public:
         int frames = 0;
         /// Для картинок объектов — отображаемое имя объекта; пусто для картинки страницы
         std::string subject;
+        /// Для картинок графических объектов — положение на экране ("right-top@-103,680")
+        std::string position;
     };
 
     struct Choice {
@@ -78,6 +80,10 @@ public:
         std::string instanceId;
         std::string disp;
         bool takable = false;
+        /// false — щелчок ничего не делает (STAT, надпись, подсказка): объект только для информации
+        bool active = true;
+        /// Положение графического объекта на экране: "<угол>@<смещение>", как eff в экспорте
+        std::string position;
     };
 
     struct PageView {
@@ -192,6 +198,10 @@ private:
     /// Подпись объекта на странице: текст метки {…} из dsc, иначе disp, иначе имя
     std::string sceneLabel(const std::string& instanceId) const;
     bool isVisibleInInventory(const std::string& instanceId) const;
+    /// У объекта есть реакция на щелчок или он участвует в применении предметов
+    bool hasBehaviour(const Obj* obj) const;
+    /// "<угол>@<смещение>" для графического объекта (decorateObjEffect), иначе пусто
+    std::string objPosition(const std::string& instanceId) const;
     /// ExportManager.getObjType: MENU — щелчок в инвентаре вызывает act; STAT — ничего не делает;
     /// OBJ — inv = use(s, s)
     enum class ObjKind { Obj, Menu, Stat };
