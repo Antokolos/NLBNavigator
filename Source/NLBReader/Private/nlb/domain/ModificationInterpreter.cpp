@@ -80,6 +80,12 @@ std::string translateExpression(const std::string& expr, std::vector<std::string
 }
 
 const std::string EMPTY;
+
+std::string trimmed(const std::string& s) {
+    const auto b = s.find_first_not_of(" \t\r\n");
+    if (b == std::string::npos) return "";
+    return s.substr(b, s.find_last_not_of(" \t\r\n") - b + 1);
+}
 /// Значение переменной/элемента списка, ссылающееся на список (listobj в STEAD)
 const std::string LIST_REF_PREFIX = "@list:";
 
@@ -239,6 +245,7 @@ std::string ModificationInterpreter::expandText(const std::string& text) const {
 
 bool ModificationInterpreter::execute(const std::vector<Modification*>& modifications,
                                       const ExecContext& ctx) {
+    m_lastReturnValue.reset();
     if (m_depth >= MAX_CALL_DEPTH) {
         throw NLBConsistencyException("Modification call depth exceeded (recursive ACT/USE?)");
     }
@@ -336,6 +343,10 @@ ModificationInterpreter::Flow ModificationInterpreter::executeRange(
         } else if (type == Type::ELSE || type == Type::ELSEIF || type == Type::END) {
             throw NLBConsistencyException("Unbalanced modifications: unexpected block marker " + mod->getId());
         } else if (type == Type::RETURN) {
+            // decorateReturn: "return <выражение>" из enter/actf — значение решает, отменяется ли переход
+            Variable* expr = variableOf(ctx, mod->getExprId());
+            m_lastReturnValue = (expr && !trimmed(expr->getValue()).empty())
+                ? evaluate(expr->getValue()) : cparse::packToken::None();
             return Flow::Return;
         } else {
             if (executeOne(mod, ctx) == Flow::Return) {
@@ -943,16 +954,30 @@ void ModificationInterpreter::objActA(const std::string& instanceId) {
     // decorateObjActStart: acta = actp(); actf(); [cmn.actp()]; cmn.actf(s)
     const std::string actText = objActT(instanceId);
     if (!actText.empty()) {
-        printText(actText);
+        // actp: nlb:curloc().lasttext = s.actt(s) — текст действия ЗАМЕНЯЕТ lasttext
+        m_context.emit(PlayerContext::OutputKind::Text, actText);
+        m_lastText = actText;
     }
     runObjModifications(obj, instanceId);
-    if (const Obj* common = findObj(obj->getCommonToId())) {
+    if (const Obj* common = commonOf(obj)) {
         if (actText.empty()) {
             const std::string commonActText = expandText(common->getActText());
             if (!commonActText.empty()) printText(commonActText);
         }
         runObjModifications(common, instanceId);  // аргумент s подменён текущим объектом
     }
+}
+
+Obj* ModificationInterpreter::commonOf(const Obj* obj) const {
+    const std::string& id = obj ? obj->getCommonToId() : EMPTY;
+    if (id.empty()) {
+        return nullptr;
+    }
+    if (Obj* direct = findObj(id)) {
+        return direct;
+    }
+    Variable* var = bookOfObj(obj->getId())->getVariableById(id);
+    return (var && !var->isDeleted()) ? findObj(var->getValue()) : nullptr;
 }
 
 bool ModificationInterpreter::isObjEnabled(const std::string& instanceId) const {
@@ -1010,6 +1035,11 @@ bool ModificationInterpreter::objUse(const std::string& sourceInstanceId,
 
     // usep: тексты успеха/неудачи
     bool wasText = false;
+    // usep: lasttext очищается, тексты применения дописываются; если текста не было — восстанавливается
+    const std::string previousLastText = m_lastText;
+    if (printTexts) {
+        m_lastText.clear();
+    }
     for (const Link* link : uses) {
         if (!printTexts) {
             break;
@@ -1029,6 +1059,9 @@ bool ModificationInterpreter::objUse(const std::string& sourceInstanceId,
                 wasText = true;
             }
         }
+    }
+    if (printTexts && !wasText) {
+        m_lastText = previousLastText;
     }
     // usef: модификации и переменные use-ссылок (ограничение проверяется заново)
     for (const Link* link : uses) {

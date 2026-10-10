@@ -144,6 +144,8 @@ public:
     /// Забирает запрошенный GOTO (не более одного)
     std::optional<std::string> takeGoto();
     void recordPageVisit(const std::string& pageId);
+    /// Отмена последнего входа на страницу (enter вернул false)
+    void cancelPageVisit();
     const std::string& currentPageId() const;
     /// Предыдущая страница ("ww" в STEAD-экспорте); пусто, если её нет
     const std::string& previousPageId() const;

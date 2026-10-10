@@ -131,17 +131,28 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
     if (!m_page || !isOnScene(instanceId)) {
         return false;
     }
+    std::string target = instanceId;
     const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
     if (!obj) {
         return false;
     }
+    // morphover (графические кнопки VN): под курсором объект заменяется своим «наведённым»
+    // вариантом, и щёлкают уже по нему. В консоли наведения нет — щелчок сразу уходит ему
+    // morphover хранит id переменной с именем объекта (ObjImpl.getMorphOverObj)
+    if (const Obj* over = obj->getMorphOverId().empty() ? nullptr : obj->getMorphOverObj()) {
+        if (m_interpreter->isObjEnabled(over->getId())) {
+            obj = over;
+            target = over->getId();
+        }
+    }
     m_transitions = 0;
     m_context->countIncrement(PlayerContext::CountAct);
+    const std::string& instance = target;
     if (obj->isTakable()) {
         // decorateObjTak: tak = act(); затем либо взять общий объект, либо этот (return true -> take)
-        m_interpreter->objActA(instanceId);
-        const Obj* common = m_interpreter->findObj(obj->getCommonToId());
-        const std::string toTake = (common && common->isTakable()) ? common->getId() : instanceId;
+        m_interpreter->objActA(instance);
+        const Obj* common = m_interpreter->commonOf(obj);
+        const std::string toTake = (common && common->isTakable()) ? common->getId() : instance;
         // take(): объект исчезает с того места страницы, где лежит (в т.ч. из вложенного контейнера)
         const std::string owner = m_context->containerOf(toTake);
         if (!owner.empty() && m_context->containerHas(owner, toTake)) {
@@ -149,7 +160,7 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
         }
         m_context->inventoryAdd(toTake);
     } else {
-        m_interpreter->objActA(instanceId);
+        m_interpreter->objActA(instance);
     }
     flushOutput(false);
     finishAction();
@@ -176,7 +187,7 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
     bool printed = false;
     if (obj) {
         printed = m_interpreter->objUseA(instanceId, instanceId, instanceId);
-        const Obj* common = m_interpreter->findObj(obj->getCommonToId());
+        const Obj* common = m_interpreter->commonOf(obj);
         if (common) {
             if (printed) {
                 m_interpreter->objUseF(common->getId(), instanceId, instanceId);
@@ -208,7 +219,7 @@ bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& t
     m_context->countIncrement(PlayerContext::CountUse);
     // decorateObjUseStart: use(s, w) = s:usea(w, w) + общий объект (usef, если текст уже был)
     bool printed = m_interpreter->objUseA(sourceInstanceId, targetInstanceId, targetInstanceId);
-    if (const Obj* common = m_interpreter->findObj(source->getCommonToId())) {
+    if (const Obj* common = m_interpreter->commonOf(source)) {
         if (printed) {
             m_interpreter->objUseF(common->getId(), targetInstanceId, targetInstanceId);
         } else {
@@ -217,7 +228,7 @@ bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& t
     }
     // used(s, w) цели: если у цели есть общий объект — w:usea(common, s)
     if (!printed) {
-        if (const Obj* targetCommon = m_interpreter->findObj(target->getCommonToId())) {
+        if (const Obj* targetCommon = m_interpreter->commonOf(target)) {
             printed = m_interpreter->objUseA(sourceInstanceId, targetCommon->getId(), targetInstanceId);
         }
     }
@@ -469,7 +480,14 @@ void PlayerEngine::followLink(const PlayerLink& link, bool fromPageContext) {
     // Модификации ссылки; s — страница (auto-ссылка в autos) или комната ссылки (клик)
     if (!link.modifications.empty()) {
         ModificationInterpreter::ExecContext ctx{book, fromPageContext ? page->getId() : link.id, std::nullopt};
-        m_interpreter->execute(link.modifications, ctx);
+        if (!m_interpreter->execute(link.modifications, ctx)) {
+            // RETURN в модификациях ссылки: в экспорте это return из enter комнаты ссылки (или из
+            // autos) — код перехода дальше не выполняется: ни переменные ссылки, ни nlbwalk.
+            // Так делают «запрещённые» переходы: текст причины и остаться на месте
+            flushOutput(false);
+            m_context->takeGoto();
+            return;
+        }
     }
     if (!link.autowiredVarId.empty()) {
         Variable* v = book->getVariableById(link.autowiredVarId);
@@ -504,6 +522,8 @@ void PlayerEngine::walkTo(const std::string& pageId, bool fromAutowired) {
 }
 
 void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
+    Page* previousPage = m_page;
+    NonLinearBook* previousBook = m_book;
     m_page = page;
     m_book = m_interpreter->bookOfPage(page->getId());
     m_context->recordPageVisit(page->getId());
@@ -512,7 +532,23 @@ void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
     // STEAD enter(s, f): модификации и переменная страницы, если пришли не из autowired-страницы
     if (!fromAutowired) {
         ModificationInterpreter::ExecContext ctx{m_book, page->getId(), std::nullopt};
-        m_interpreter->execute(static_cast<const ModifyingItem*>(page)->getModifications(), ctx);
+        if (!m_interpreter->execute(static_cast<const ModifyingItem*>(page)->getModifications(), ctx)) {
+            // RETURN в модификациях страницы — return из enter: остаток enter не выполняется
+            // (переменная страницы, initf). Ложное значение (false/nil) отменяет вход на страницу
+            const auto& value = m_interpreter->lastReturnValue();
+            if (!value || !ModificationInterpreter::isTruthy(*value)) {
+                if (previousPage) {
+                    m_context->cancelPageVisit();
+                    m_page = previousPage;
+                    m_book = previousBook;
+                    flushOutput(false);
+                    m_context->takeGoto();
+                    return;
+                }
+            }
+            renderPage();
+            return;
+        }
         setVarTrue(m_book, page->getVarId());
     }
     // initf(): таймер страницы и звук
@@ -893,7 +929,23 @@ PlayerEngine::PageView PlayerEngine::view() const {
         // Щёлкнуть можно только по метке {…} в описании или по графическому объекту
         size_t open, close;
         if (obj && (obj->isGraphical() || findInteractionMark(m_interpreter->objDscF(instanceId), open, close))) {
-            v.sceneObjects.push_back({instanceId, sceneLabel(instanceId), obj->isTakable()});
+            std::string label = trim(sceneLabel(instanceId));
+            if (label.empty()) {
+                // Безымянный графический объект: фон, подложка подсказки. Если щелчок по нему
+                // ничего не делает — это декорация, в списке для действий она не нужна
+                const std::vector<Link*> links = obj->getLinks();  // getLinks() возвращает копию
+                const bool hasBehaviour = obj->isTakable()
+                    || !static_cast<const ModifyingItem*>(obj)->getModifications().empty()
+                    || !obj->getVarId().empty() || !obj->getMorphOverId().empty()
+                    || m_interpreter->commonOf(obj) != nullptr
+                    || std::any_of(links.begin(), links.end(),
+                                   [](const Link* l) { return !l->isDeleted(); });
+                if (!hasBehaviour) {
+                    continue;
+                }
+                label = obj->getImageFileName().empty() ? instanceId : obj->getImageFileName();
+            }
+            v.sceneObjects.push_back({instanceId, label, obj->isTakable()});
         }
     }
     for (const auto& instanceId : inventoryObjects()) {

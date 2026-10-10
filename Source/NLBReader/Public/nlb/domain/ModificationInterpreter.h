@@ -44,6 +44,8 @@ public:
 
     /// Исполняет модификации элемента. Возвращает false, если сработал RETURN.
     bool execute(const std::vector<Modification*>& modifications, const ExecContext& ctx);
+    /// Значение последнего сработавшего RETURN (None — RETURN без выражения)
+    const std::optional<cparse::packToken>& lastReturnValue() const { return m_lastReturnValue; }
 
     // ------------------------------------------------------------------ выражения
     /// Значение выражения NLB (синтаксис как у ограничений: ==, !=, &&, ||, !).
@@ -81,6 +83,9 @@ public:
     std::optional<PlayerContext::OutputItem> selectImage(const std::string& itemId) const;
     /// s.tag: тег экземпляра, иначе значение переменной defaultTagId
     std::string tagOf(const std::string& itemId) const;
+    /// Общий объект (commonTo). В книге хранится id переменной, значение которой — id объекта
+    /// (ObjImpl.getCommonToObj)
+    Obj* commonOf(const Obj* obj) const;
     /// Ограничение объекта (alive); у клона — ограничение прототипа
     bool isObjEnabled(const std::string& instanceId) const;
 
@@ -142,6 +147,7 @@ private:
     std::map<std::string, std::string> m_objIdsByName;
     std::set<std::string> m_useTargets;
     std::string m_lastText;
+    std::optional<cparse::packToken> m_lastReturnValue;
     // Карты медиа корневой книги (getMediaToConstraintMap/RedirectsMap/FlagsMap)
     std::map<std::string, std::string> m_mediaConstraints;
     std::map<std::string, std::string> m_mediaRedirects;

@@ -27,6 +27,11 @@ PlayerContext::PlayerContext(NonLinearBook* rootBook, unsigned randomSeed)
     // Литералы true/false в выражениях книги
     m_scope["true"] = true;
     m_scope["false"] = false;
+    // generateVarsInitBlock в STEAD-экспорте: _export_lang = '<язык экспорта>'. Игры
+    // выбирают по нему языковые варианты (например, теги LangRu/LangEn для картинок)
+    if (rootBook) {
+        m_scope["export_lang"] = rootBook->getLanguage();
+    }
     if (m_rootBook) {
         m_perfectGameName = m_rootBook->getPerfectGameAchievementName();
         registerAchievements(m_rootBook);
@@ -530,6 +535,12 @@ std::optional<std::string> PlayerContext::takeGoto() {
 
 void PlayerContext::recordPageVisit(const std::string& pageId) {
     m_state.pageHistory.push_back(pageId);
+}
+
+void PlayerContext::cancelPageVisit() {
+    if (!m_state.pageHistory.empty()) {
+        m_state.pageHistory.pop_back();
+    }
 }
 
 const std::string& PlayerContext::currentPageId() const {
