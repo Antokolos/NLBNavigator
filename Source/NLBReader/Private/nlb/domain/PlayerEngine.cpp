@@ -13,6 +13,10 @@
 #include "nlb/exception/NLBExceptions.h"
 
 #include <algorithm>
+#include <ctime>
+#include <filesystem>
+#include <fstream>
+#include "nlb/util/FileUtils.h"
 #include <sstream>
 
 namespace {
@@ -87,6 +91,7 @@ void PlayerEngine::createState() {
     m_interpreter = std::make_unique<ModificationInterpreter>(m_rootBook, *m_context);
     m_page = nullptr;
     m_book = nullptr;
+    m_currentMusic.clear();
 }
 
 void PlayerEngine::restart() {
@@ -641,6 +646,151 @@ bool PlayerEngine::look() {
     return true;
 }
 
+namespace {
+const char* const SAVE_MAGIC = "NLBNAVIGATOR-SAVE";
+const char* const SAVE_VERSION = "1";
+
+std::string nowString() {
+    const std::time_t t = std::time(nullptr);
+    char buf[32];
+    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M", std::localtime(&t));
+    return buf;
+}
+}
+
+bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
+    if (!m_page) {
+        error = "игра не начата";
+        return false;
+    }
+    // Подпись слота: заголовок страницы, если он показывается игроку, иначе начало текста
+    std::string label = m_page->isUseCaption() ? trim(displayText(m_interpreter->expandText(m_page->getCaption()))) : "";
+    if (label.empty()) {
+        label = trim(displayText(m_interpreter->expandText(m_page->getText())));
+        const size_t eol = label.find('\n');
+        if (eol != std::string::npos) label = label.substr(0, eol);
+        if (label.size() > 80) {
+            size_t cut = 80;
+            while (cut > 0 && (static_cast<unsigned char>(label[cut]) & 0xC0) == 0x80) --cut;  // не рвать UTF-8
+            label = label.substr(0, cut) + "…";
+        }
+    }
+    const std::string tmp = path + ".tmp";
+    {
+        std::ofstream out(FileUtils::nativePath(tmp), std::ios::binary | std::ios::trunc);
+        if (!out) {
+            error = "не удалось создать файл " + path;
+            return false;
+        }
+        PlayerContext::writeSaveRecord(out, {SAVE_MAGIC, SAVE_VERSION});
+        PlayerContext::writeSaveRecord(out, {"book", m_rootBook->getTitle(), m_rootBook->getStartPoint()});
+        PlayerContext::writeSaveRecord(out, {"time", nowString()});
+        PlayerContext::writeSaveRecord(out, {"label", label});
+        PlayerContext::writeSaveRecord(out, {"page", m_page->getId()});
+        PlayerContext::writeSaveRecord(out, {"lasttext", m_interpreter->lastText()});
+        PlayerContext::writeSaveRecord(out, {"actionprev", std::to_string(m_actionCountDiffPrev)});
+        PlayerContext::writeSaveRecord(out, {"music", m_currentMusic});
+        m_context->saveState(out);
+        if (!out) {
+            error = "ошибка записи в файл " + path;
+            return false;
+        }
+    }
+    std::error_code ec;
+    std::filesystem::rename(FileUtils::nativePath(tmp), FileUtils::nativePath(path), ec);
+    if (ec) {
+        std::filesystem::remove(FileUtils::nativePath(path), ec);
+        std::filesystem::rename(FileUtils::nativePath(tmp), FileUtils::nativePath(path), ec);
+    }
+    if (ec) {
+        error = "не удалось записать файл " + path;
+        return false;
+    }
+    return true;
+}
+
+PlayerEngine::SaveInfo PlayerEngine::readSaveInfo(const std::string& path) const {
+    SaveInfo info;
+    std::ifstream in(FileUtils::nativePath(path), std::ios::binary);
+    if (!in) {
+        return info;
+    }
+    const auto records = PlayerContext::readSaveRecords(in);
+    if (records.empty() || records[0].empty() || records[0][0] != SAVE_MAGIC) {
+        return info;
+    }
+    info.exists = true;
+    for (const auto& r : records) {
+        if (r.size() >= 3 && r[0] == "book") {
+            info.compatible = r[2] == m_rootBook->getStartPoint() && r[1] == m_rootBook->getTitle();
+        } else if (r.size() >= 2 && r[0] == "time") {
+            info.time = r[1];
+        } else if (r.size() >= 2 && r[0] == "label") {
+            info.label = r[1];
+        } else if (!r.empty() && r[0] == "page") {
+            break;
+        }
+    }
+    return info;
+}
+
+bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
+    std::ifstream in(FileUtils::nativePath(path), std::ios::binary);
+    if (!in) {
+        error = "файл сохранения не найден";
+        return false;
+    }
+    const auto records = PlayerContext::readSaveRecords(in);
+    if (records.empty() || records[0].size() < 2 || records[0][0] != SAVE_MAGIC) {
+        error = "это не файл сохранения NLBNavigator";
+        return false;
+    }
+    if (records[0][1] != SAVE_VERSION) {
+        error = "неподдерживаемая версия сохранения: " + records[0][1];
+        return false;
+    }
+    std::string pageId, lastText, music;
+    int64_t actionPrev = 0;
+    for (const auto& r : records) {
+        if (r.size() >= 3 && r[0] == "book"
+            && (r[2] != m_rootBook->getStartPoint() || r[1] != m_rootBook->getTitle())) {
+            error = "сохранение сделано для другой книги («" + r[1] + "»)";
+            return false;
+        }
+        if (r.size() >= 2 && r[0] == "page") pageId = r[1];
+        if (r.size() >= 2 && r[0] == "lasttext") lastText = r[1];
+        if (r.size() >= 2 && r[0] == "music") music = r[1];
+        if (r.size() >= 2 && r[0] == "actionprev") {
+            try { actionPrev = std::stoll(r[1]); } catch (...) {}
+        }
+    }
+    Page* page = m_interpreter->findPage(pageId);
+    if (!page) {
+        error = "в книге нет страницы из сохранения (" + pageId + ")";
+        return false;
+    }
+    // Состояние мира целиком из файла; страница — без повторного исполнения её модификаций
+    m_context->loadState(records);
+    m_events.clear();
+    m_page = page;
+    m_book = m_interpreter->bookOfPage(pageId);
+    m_actionCountDiffPrev = actionPrev;
+    m_transitions = 0;
+    m_interpreter->resetLastText();
+    m_interpreter->setLastText(lastText);
+    m_shownImages.clear();
+    // Музыка, звучавшая в момент сохранения (INSTEAD тоже восстанавливает её при загрузке)
+    m_currentMusic = music;
+    if (!music.empty()) {
+        m_events.push_back({Event::Kind::Music, music});
+    }
+    renderPage();
+    if (isFinished()) {
+        m_events.push_back({Event::Kind::Finish, ""});
+    }
+    return true;
+}
+
 void PlayerEngine::finishAction() {
     const int renders = m_renderCount;
     settle();
@@ -800,7 +950,7 @@ void PlayerEngine::appendMediaEvents(const std::vector<PlayerContext::OutputItem
             case OK::Image:     m_events.push_back({Event::Kind::Image, item.text}); break;
             case OK::Animation: m_events.push_back({Event::Kind::Animation, item.text, item.frames}); break;
             case OK::Sound:     m_events.push_back({Event::Kind::Sound, item.text}); break;
-            case OK::Music:     m_events.push_back({Event::Kind::Music, item.text}); break;
+            case OK::Music:     m_events.push_back({Event::Kind::Music, item.text}); m_currentMusic = item.text; break;
             default: break;
         }
     }

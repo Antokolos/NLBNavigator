@@ -130,7 +130,7 @@ void NLBExplorer::printView(const PlayerEngine::PageView& view) {
         m_out << "w. Подождать" << std::endl;
     }
     m_out << "l. Осмотреться" << std::endl;
-    m_out << "0. Выход" << std::endl;
+    m_out << "m. Меню" << std::endl;
 }
 
 namespace {
@@ -157,12 +157,10 @@ bool NLBExplorer::handleCommand(const std::string& line, const PlayerEngine::Pag
     }
     if (first == "0") {
         // Подтверждение — чтобы не завершить игру случайно
-        m_out << "Выйти из игры? 1 — да, любой другой ввод — продолжить: " << std::flush;
-        std::string answer;
-        if (!readLine(answer)) {
-            return false;
-        }
-        return answer != "1";
+        return !confirm("Выйти из игры?");
+    }
+    if (first == "m") {
+        return runMenu();
     }
     if (first == "w") {
         m_engine->wait();
@@ -205,7 +203,114 @@ bool NLBExplorer::handleCommand(const std::string& line, const PlayerEngine::Pag
         }
     }
     if (!ok) {
-        m_out << "Неверный выбор. Команды: N, oN, iN, uN oM | uN iM, w — подождать, l — осмотреться, 0 — выход." << std::endl;
+        m_out << "Неверный выбор. Команды: N, oN, iN, uN oM | uN iM, w — подождать, l — осмотреться, m — меню." << std::endl;
     }
     return true;
+}
+
+// ============================================================================ меню
+
+bool NLBExplorer::confirm(const std::string& question) {
+    m_out << question << " 1 — да, любой другой ввод — нет: " << std::flush;
+    std::string answer;
+    if (!readLine(answer)) {
+        return true;  // ввод закончился — считаем согласием (выход)
+    }
+    return answer == "1";
+}
+
+std::string NLBExplorer::slotPath(int slot) const {
+    return m_savesDir + "/slot" + std::to_string(slot) + ".sav";
+}
+
+bool NLBExplorer::runMenu() {
+    while (true) {
+        m_out << "\n=== Меню ===\n";
+        if (!m_savesDir.empty()) {
+            m_out << "1. Сохранить игру\n2. Загрузить игру\n";
+        }
+        m_out << "3. Начать заново\n4. Выйти из игры\n0. Вернуться в игру\n\nВаш выбор: " << std::flush;
+        std::string line;
+        if (!readLine(line)) {
+            return false;
+        }
+        if (line == "0" || line.empty()) {
+            m_engine->look();  // как после закрытия меню в INSTEAD: снова видна текущая сцена
+            return true;
+        }
+        if (line == "1" && !m_savesDir.empty()) {
+            saveMenu();
+        } else if (line == "2" && !m_savesDir.empty()) {
+            loadMenu();
+            return true;
+        } else if (line == "3") {
+            if (confirm("Начать игру заново? Несохранённый прогресс будет потерян.")) {
+                m_engine->restart();
+                return true;
+            }
+        } else if (line == "4") {
+            if (confirm("Выйти из игры?")) {
+                return false;
+            }
+        } else {
+            m_out << "Неверный выбор." << std::endl;
+        }
+    }
+}
+
+void NLBExplorer::saveMenu() {
+    m_out << "\nСохранить в слот:\n";
+    for (int slot = 1; slot <= SAVE_SLOTS; ++slot) {
+        const auto info = m_engine->readSaveInfo(slotPath(slot));
+        m_out << slot << ". " << (info.exists ? info.time + " — " + info.label : "<пусто>")
+              << (info.exists && !info.compatible ? " (другая книга)" : "") << "\n";
+    }
+    m_out << "0. Отмена\n\nВаш выбор: " << std::flush;
+    std::string line;
+    if (!readLine(line)) return;
+    int slot = 0;
+    try { slot = std::stoi(line); } catch (...) { slot = 0; }
+    if (slot < 1 || slot > SAVE_SLOTS) return;
+    if (m_engine->readSaveInfo(slotPath(slot)).exists && !confirm("Слот занят. Перезаписать?")) {
+        return;
+    }
+    std::string error;
+    if (m_engine->saveGame(slotPath(slot), error)) {
+        m_out << "Игра сохранена в слот " << slot << "." << std::endl;
+    } else {
+        m_out << "Не удалось сохранить игру: " << error << std::endl;
+    }
+}
+
+void NLBExplorer::loadMenu() {
+    m_out << "\nЗагрузить из слота:\n";
+    bool any = false;
+    for (int slot = 1; slot <= SAVE_SLOTS; ++slot) {
+        const auto info = m_engine->readSaveInfo(slotPath(slot));
+        if (!info.exists) continue;
+        any = true;
+        m_out << slot << ". " << info.time << " — " << info.label
+              << (info.compatible ? "" : " (другая книга)") << "\n";
+    }
+    if (!any) {
+        m_out << "Сохранений нет." << std::endl;
+        m_engine->look();
+        return;
+    }
+    m_out << "0. Отмена\n\nВаш выбор: " << std::flush;
+    std::string line;
+    if (!readLine(line)) return;
+    int slot = 0;
+    try { slot = std::stoi(line); } catch (...) { slot = 0; }
+    if (slot < 1 || slot > SAVE_SLOTS) {
+        m_engine->look();
+        return;
+    }
+    std::string error;
+    if (m_engine->loadGame(slotPath(slot), error)) {
+        m_out << "Игра загружена из слота " << slot << "." << std::endl;
+    } else {
+        m_out << "Не удалось загрузить игру: " << error << std::endl;
+        m_engine->look();
+    }
 }

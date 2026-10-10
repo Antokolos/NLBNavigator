@@ -107,6 +107,7 @@ public:
     /// Текст, накопленный действиями на текущей странице (nlb:curloc().lasttext) — для $$-фрагментов
     const std::string& lastText() const { return m_lastText; }
     void resetLastText() { m_lastText.clear(); }
+    void setLastText(const std::string& text) { m_lastText = text; }
 
 private:
     enum class Flow { Normal, Return };

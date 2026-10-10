@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 
 namespace {
 const std::string EMPTY;
@@ -598,4 +599,150 @@ void PlayerContext::initContainers(NonLinearBook* book) {
             containerAdd(containerId, objId);
         }
     }
+}
+
+
+// ============================================================================ сохранение игры
+//
+// Формат: одна запись на строку, поля через табуляцию (экранирование как в файле достижений).
+// Значения переменных типизированы: b:<0|1>, i:<целое>, r:<вещественное>, s:<строка>, n: (nil).
+// Записи снимка SNAPSHOT отличаются префиксом "S" у вида записи.
+
+namespace {
+std::string encodeValue(const cparse::packToken& value) {
+    switch (value->type) {
+        case cparse::BOOL: return value.asBool() ? "b:1" : "b:0";
+        case cparse::INT:  return "i:" + std::to_string(value.asInt());
+        case cparse::REAL: {
+            char buf[64];
+            std::snprintf(buf, sizeof(buf), "%.17g", value.asDouble());
+            return std::string("r:") + buf;
+        }
+        case cparse::STR:  return "s:" + value.asString();
+        case cparse::NONE: return "n:";
+        default:           return "s:" + value.str();
+    }
+}
+
+cparse::packToken decodeValue(const std::string& encoded) {
+    const std::string tag = encoded.substr(0, 2);
+    const std::string body = encoded.size() > 2 ? encoded.substr(2) : std::string();
+    try {
+        if (tag == "b:") return cparse::packToken(body == "1");
+        if (tag == "i:") return cparse::packToken(static_cast<int64_t>(std::stoll(body)));
+        if (tag == "r:") return cparse::packToken(std::stod(body));
+        if (tag == "n:") return cparse::packToken::None();
+    } catch (...) {
+    }
+    return cparse::packToken(body);
+}
+
+void writeRecord(std::ostream& out, const std::vector<std::string>& fields) {
+    for (size_t i = 0; i < fields.size(); ++i) {
+        if (i) out << '\t';
+        out << escapeField(fields[i]);
+    }
+    out << '\n';
+}
+
+template <typename Container>
+std::vector<std::string> withHead(const std::string& kind, const std::string& key, const Container& items) {
+    std::vector<std::string> fields{kind, key};
+    fields.insert(fields.end(), items.begin(), items.end());
+    return fields;
+}
+
+template <typename State>
+void writeGameState(std::ostream& out, const std::string& p, const std::map<std::string, cparse::packToken>& vars,
+                    const State& st) {
+    for (const auto& [name, value] : vars) writeRecord(out, {p + "var", name, encodeValue(value)});
+    for (const auto& [name, items] : st.lists) writeRecord(out, withHead(p + "list", name, items));
+    writeRecord(out, withHead(p + "inv", "", st.inventory));
+    for (const auto& [owner, items] : st.containers) writeRecord(out, withHead(p + "cont", owner, items));
+    for (const auto& [inst, owner] : st.containerOf) writeRecord(out, {p + "contof", inst, owner});
+    for (const auto& [clone, proto] : st.cloneProto) writeRecord(out, {p + "clone", clone, proto});
+    for (const auto& [proto, n] : st.cloneCounters) writeRecord(out, {p + "clonecnt", proto, std::to_string(n)});
+    for (const auto& [inst, tag] : st.tags) writeRecord(out, {p + "tag", inst, tag});
+    for (const auto& [key, n] : st.counts) writeRecord(out, {p + "count", key, std::to_string(n)});
+    for (const auto& [key, n] : st.countsAtReset) writeRecord(out, {p + "countrst", key, std::to_string(n)});
+    writeRecord(out, withHead(p + "history", "", st.pageHistory));
+    writeRecord(out, withHead(p + "followed", "", st.followedLinks));
+}
+}
+
+void PlayerContext::saveState(std::ostream& out) const {
+    std::map<std::string, cparse::packToken> vars;
+    for (const auto& [name, value] : m_scope.map()) {
+        if (name != "true" && name != "false") vars.emplace(name, value);
+    }
+    writeGameState(out, "", vars, m_state);
+    if (m_hasSnapshot) {
+        writeRecord(out, {"Shas", "1"});
+        writeGameState(out, "S", m_snapshotVars, m_snapshotState);
+    }
+    std::ostringstream rng;
+    rng << m_rng;
+    writeRecord(out, {"rng", rng.str()});
+    writeRecord(out, {"detcnt", std::to_string(m_deterministicCounter)});
+}
+
+void PlayerContext::loadState(const std::vector<std::vector<std::string>>& records) {
+    // Новое состояние с нуля: всё, что не сохранено, — как в начале игры
+    GameState state, snapState;
+    std::map<std::string, cparse::packToken> vars, snapVars;
+    bool hasSnapshot = false;
+    for (const auto& r : records) {
+        if (r.empty()) continue;
+        std::string kind = r[0];
+        const bool snap = kind.size() > 1 && kind[0] == 'S' && kind != "Shas";
+        if (kind == "Shas") { hasSnapshot = true; continue; }
+        if (snap) kind = kind.substr(1);
+        GameState& st = snap ? snapState : state;
+        auto& vs = snap ? snapVars : vars;
+        const std::string key = r.size() > 1 ? r[1] : std::string();
+        const std::vector<std::string> rest(r.size() > 2 ? r.begin() + 2 : r.end(), r.end());
+        auto toInt = [](const std::string& v) -> int64_t { try { return std::stoll(v); } catch (...) { return 0; } };
+        if (kind == "var" && !rest.empty()) vs[key] = decodeValue(rest[0]);
+        else if (kind == "list") st.lists[key] = std::deque<std::string>(rest.begin(), rest.end());
+        else if (kind == "inv") st.inventory = rest;
+        else if (kind == "cont") st.containers[key] = rest;
+        else if (kind == "contof" && !rest.empty()) st.containerOf[key] = rest[0];
+        else if (kind == "clone" && !rest.empty()) st.cloneProto[key] = rest[0];
+        else if (kind == "clonecnt" && !rest.empty()) st.cloneCounters[key] = static_cast<int>(toInt(rest[0]));
+        else if (kind == "tag" && !rest.empty()) st.tags[key] = rest[0];
+        else if (kind == "count" && !rest.empty()) st.counts[key] = toInt(rest[0]);
+        else if (kind == "countrst" && !rest.empty()) st.countsAtReset[key] = toInt(rest[0]);
+        else if (kind == "history") st.pageHistory = rest;
+        else if (kind == "followed") st.followedLinks = std::set<std::string>(rest.begin(), rest.end());
+        else if (kind == "rng") { std::istringstream in(key); in >> m_rng; }
+        else if (kind == "detcnt") m_deterministicCounter = toInt(key);
+    }
+    m_scope.map().clear();
+    m_scope["true"] = true;
+    m_scope["false"] = false;
+    for (const auto& [name, value] : vars) m_scope.map().emplace(name, value);
+    m_state = state;
+    m_snapshotVars = snapVars;
+    m_snapshotState = snapState;
+    m_hasSnapshot = hasSnapshot;
+    m_goto.reset();
+    m_output.clear();
+    // Переменные, появившиеся в книге после сохранения, — значения по умолчанию
+    if (m_rootBook) {
+        ensureBookVars(m_rootBook);
+    }
+}
+
+void PlayerContext::writeSaveRecord(std::ostream& out, const std::vector<std::string>& fields) {
+    writeRecord(out, fields);
+}
+
+std::vector<std::vector<std::string>> PlayerContext::readSaveRecords(std::istream& in) {
+    std::vector<std::vector<std::string>> records;
+    std::string line;
+    while (std::getline(in, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (!line.empty()) records.push_back(splitTabs(line));
+    }
+    return records;
 }
