@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <iosfwd>
 #include <map>
 #include <memory>
 #include <optional>
@@ -153,6 +154,18 @@ public:
     const std::vector<std::string>& pageHistory() const { return m_state.pageHistory; }
     void recordLinkFollowed(const std::string& linkId);
     bool wasLinkFollowed(const std::string& linkId) const;
+
+    // ------------------------------------------------------------------ сохранение игры
+    /// Записывает игровое состояние (переменные, списки, инвентарь, контейнеры, клоны, теги,
+    /// счётчики, историю, снимок SNAPSHOT, состояние генератора случайных чисел) построчно в
+    /// текстовом формате. Достижения не входят: как и в INSTEAD, они живут отдельно (prefs)
+    void saveState(std::ostream& out) const;
+    /// Читает строки, записанные saveState (остальные строки пропускает). Текущее состояние
+    /// заменяется целиком; переменные книги, которых нет в сохранении, получают значения по умолчанию
+    void loadState(const std::vector<std::vector<std::string>>& records);
+    /// Запись/чтение строк формата сохранения (поля через табуляцию, с экранированием)
+    static void writeSaveRecord(std::ostream& out, const std::vector<std::string>& fields);
+    static std::vector<std::vector<std::string>> readSaveRecords(std::istream& in);
 
     // ------------------------------------------------------------------ случайные числа
     /// Равномерно на [1, max] (INSTEAD rnd); max < 1 -> 1

@@ -42,6 +42,27 @@ static std::string achievementsFilePath(const std::filesystem::path& bookPath) {
 }
 
 /**
+ * @brief Каталог сохранений: ~/.nlbnavigator/<имя каталога книги>.saves (UTF-8); пусто — недоступен
+ */
+static std::string savesDirectory(const std::filesystem::path& bookPath) {
+    namespace fs = std::filesystem;
+    try {
+        const fs::path book = bookPath.lexically_normal();
+        fs::path bookName = book.filename();
+        if (bookName.empty()) bookName = book.parent_path().filename();
+        const fs::path home = homeDir();
+        fs::path dir = home.empty() ? book / ".saves" : home / ".nlbnavigator" / bookName;
+        if (!home.empty()) dir += ".saves";
+        std::error_code ec;
+        fs::create_directories(dir, ec);
+        return ec ? std::string() : dir.u8string();
+    } catch (const std::exception& e) {
+        std::cerr << "Warning: saves are not available: " << e.what() << std::endl;
+        return std::string();
+    }
+}
+
+/**
  * @brief Main function demonstrating NLB Reader usage
  */
 int main(int argc, char* argv[]) {
@@ -101,6 +122,7 @@ int main(int argc, char* argv[]) {
         settings.exportMode = (exportMode == "standard")
             ? PlayerEngine::ExportMode::Standard : PlayerEngine::ExportMode::VN;
         NLBExplorer explorer(book.get(), book->getStartPoint(), settings);
+        explorer.setSavesDirectory(savesDirectory(std::filesystem::u8path(nlbPath)));
         if (sessionLog.isOpen()) {
             explorer.setInputListener([&sessionLog](const std::string& line) { sessionLog.recordInput(line); });
         }

@@ -18,7 +18,8 @@ class NonLinearBook;
  *   uN oM    — применить предмет инвентаря N к объекту страницы M (uN iM — к предмету инвентаря)
  *   w        — подождать (тик таймера страницы)
  *   l        — осмотреться: заново показать текущую страницу
- *   0        — выход
+ *   m        — меню: сохранить, загрузить, начать заново, выйти
+ *   0        — выход (с подтверждением)
  */
 class NLBExplorer {
 public:
@@ -28,6 +29,8 @@ public:
 
     /// Интерактивная игра до конца книги или команды выхода
     void explore();
+    /// Каталог файлов сохранения (UTF-8); пусто — сохранения недоступны
+    void setSavesDirectory(const std::string& utf8Dir) { m_savesDir = utf8Dir; }
     /// Вызывается для каждой введённой строки (журнал сессии)
     void setInputListener(std::function<void(const std::string&)> listener) { m_inputListener = std::move(listener); }
 
@@ -44,4 +47,12 @@ private:
     std::ostream& m_out;
     std::function<void(const std::string&)> m_inputListener;
     bool readLine(std::string& line);
+    /// Меню; false — выход из игры
+    bool runMenu();
+    bool confirm(const std::string& question);
+    void saveMenu();
+    void loadMenu();
+    std::string slotPath(int slot) const;
+    std::string m_savesDir;
+    static constexpr int SAVE_SLOTS = 9;
 };

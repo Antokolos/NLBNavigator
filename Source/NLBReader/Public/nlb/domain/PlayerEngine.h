@@ -116,6 +116,19 @@ public:
     /// «Осмотреться» (look в INSTEAD): заново показать текущую страницу — картинки, текст,
     /// описания объектов — без исполнения её модификаций
     bool look();
+
+    /// Сведения о файле сохранения (для списка слотов)
+    struct SaveInfo {
+        bool exists = false;
+        bool compatible = false;  ///< сохранение сделано для этой книги
+        std::string time;         ///< время сохранения, "ГГГГ-ММ-ДД ЧЧ:ММ"
+        std::string label;        ///< где находился игрок (заголовок или начало текста страницы)
+    };
+    /// Сохранить игру (путь в UTF-8). Как и в INSTEAD, сохраняется состояние мира, а не история:
+    /// после загрузки страница показывается заново, без исполнения её модификаций
+    bool saveGame(const std::string& path, std::string& error) const;
+    bool loadGame(const std::string& path, std::string& error);
+    SaveInfo readSaveInfo(const std::string& path) const;
     /// На странице есть таймер — ожидание имеет смысл
     bool hasTimer() const;
 
@@ -231,6 +244,8 @@ private:
     /// Показанные картинки: страницы (ключ — id страницы) и объектов на ней
     std::map<std::string, std::string> m_shownImages;
     int m_renderCount = 0;
+    /// Фоновая музыка, которая сейчас играет (последнее событие Music) — сохраняется в игре
+    std::string m_currentMusic;
     /// Начало событий последней показанной страницы — чтобы убрать «пустые» промежуточные страницы
     size_t m_lastRenderStart = 0;
 };
