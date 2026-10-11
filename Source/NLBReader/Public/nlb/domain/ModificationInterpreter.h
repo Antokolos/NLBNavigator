@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <set>
 #include <optional>
@@ -13,7 +14,7 @@ class NonLinearBook;
 class Page;
 class Obj;
 class Link;
-class Modification;
+#include "nlb/api/Modification.h"
 class ModifyingItem;
 class Variable;
 
@@ -44,6 +45,11 @@ public:
 
     /// Исполняет модификации элемента. Возвращает false, если сработал RETURN.
     bool execute(const std::vector<Modification*>& modifications, const ExecContext& ctx);
+    /// Обработчик обращения ACT/ACTF к объекту, которого нет в книге: в INSTEAD-экспорте такие
+    /// объекты задаются Lua-модулями (мини-игра «Большая свинья» — _play_bp_two_ais).
+    /// Возвращает true, если имя обработано (например, это внешняя игра), иначе — предупреждение
+    using ExternalCallHandler = std::function<bool(const std::string& name, Modification::Type command)>;
+    void setExternalCallHandler(ExternalCallHandler handler) { m_externalCallHandler = std::move(handler); }
     /// Значение последнего сработавшего RETURN (None — RETURN без выражения)
     const std::optional<cparse::packToken>& lastReturnValue() const { return m_lastReturnValue; }
 
@@ -149,6 +155,7 @@ private:
     std::set<std::string> m_useTargets;
     std::string m_lastText;
     std::optional<cparse::packToken> m_lastReturnValue;
+    ExternalCallHandler m_externalCallHandler;
     // Карты медиа корневой книги (getMediaToConstraintMap/RedirectsMap/FlagsMap)
     std::map<std::string, std::string> m_mediaConstraints;
     std::map<std::string, std::string> m_mediaRedirects;

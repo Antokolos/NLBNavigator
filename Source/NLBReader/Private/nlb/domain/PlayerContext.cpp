@@ -667,6 +667,7 @@ void writeGameState(std::ostream& out, const std::string& p, const std::map<std:
     for (const auto& [key, n] : st.countsAtReset) writeRecord(out, {p + "countrst", key, std::to_string(n)});
     writeRecord(out, withHead(p + "history", "", st.pageHistory));
     writeRecord(out, withHead(p + "followed", "", st.followedLinks));
+    writeRecord(out, withHead(p + "collapsed", "", st.collapsed));
 }
 }
 
@@ -714,6 +715,7 @@ void PlayerContext::loadState(const std::vector<std::vector<std::string>>& recor
         else if (kind == "countrst" && !rest.empty()) st.countsAtReset[key] = toInt(rest[0]);
         else if (kind == "history") st.pageHistory = rest;
         else if (kind == "followed") st.followedLinks = std::set<std::string>(rest.begin(), rest.end());
+        else if (kind == "collapsed") st.collapsed = std::set<std::string>(rest.begin(), rest.end());
         else if (kind == "rng") { std::istringstream in(key); in >> m_rng; }
         else if (kind == "detcnt") m_deterministicCounter = toInt(key);
     }

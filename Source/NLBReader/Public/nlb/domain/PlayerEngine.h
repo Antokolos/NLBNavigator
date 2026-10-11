@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <random>
@@ -61,7 +62,8 @@ public:
             Music,        ///< фоновая музыка; пустой text — остановка музыки
             Achievement,  ///< "Получено достижение: ..."
             Info,         ///< служебное: URL, оформление окна, автопереходы
-            Finish        ///< конец игры
+            Finish,       ///< конец игры
+            ExternalGame  ///< новелла передала управление внешней игре (text — её имя)
         };
         Kind kind;
         std::string text;
@@ -76,14 +78,31 @@ public:
         std::string text;
     };
 
+    /// Расположение графического объекта — как его задаёт INSTEAD-экспорт (decorateObjEffect):
+    /// корневой объект привязан к углу экрана (origin) со смещением (offset или arm); вложенный —
+    /// к своему родителю (arm 0,0, дальше раскладывает графический движок). Экран 1920×1080
+    struct Placement {
+        bool graphical = false;
+        std::string origin;        ///< left-top, middle-middle, right-bottom, ...
+        std::string offset;        ///< смещение из книги ("1520,40"); пусто — используется arm
+        int armX = 0, armY = 0;    ///< arm: координаты в редакторе, пересчитанные в экранные
+        std::string parentId;      ///< экземпляр-родитель для вложенных объектов, иначе пусто
+        std::string toString() const;  ///< "left-top@1520,40" / "left-top +160,153" / "+0,0"
+    };
+
     struct ObjectView {
         std::string instanceId;
         std::string disp;
         bool takable = false;
         /// false — щелчок ничего не делает (STAT, надпись, подсказка): объект только для информации
         bool active = true;
-        /// Положение графического объекта на экране: "<угол>@<смещение>", как eff в экспорте
+        /// Положение графического объекта на экране (текстом; подробно — placement)
         std::string position;
+        Placement placement;
+        /// Уровень вложенности: 0 — лежит прямо на странице/в инвентаре, 1 — в объекте и т.д.
+        int depth = 0;
+        /// Свёрнут (collapsable): сам объект и его содержимое сейчас не видны
+        bool collapsed = false;
     };
 
     struct PageView {
@@ -95,6 +114,37 @@ public:
     };
 
     PlayerEngine(NonLinearBook* rootBook, const Settings& settings);
+
+    // ------------------------------------------------------------------ внешние игры
+    /// Внешняя (нетекстовая) игра: мини-игра, 3D-сцена и т.п. Новелла передаёт ей управление
+    /// командой ACT/ACTF с именем, которого нет среди объектов книги (play_bp_two_ais), и ждёт,
+    /// пока интерфейс не вызовет finishExternalGame(). Пока игра идёт, обычные команды недоступны,
+    /// а сама игра читает и меняет состояние новеллы через getVariable/setVariable и т.п.
+    struct ExternalGame {
+        std::string name;          ///< имя внешней игры (play_bp_two_ais)
+        std::string returnPageId;  ///< страница, на которую вернётся новелла
+    };
+    /// Какие имена считаются внешними играми; по умолчанию — никакие (будет предупреждение)
+    void setExternalGameFilter(std::function<bool(const std::string&)> isExternalGame);
+    const std::optional<ExternalGame>& externalGame() const { return m_externalGame; }
+    /// Завершить внешнюю игру: как walk(_returnto) в INSTEAD — возврат на страницу вызова
+    /// с исполнением её модификаций (страница видит изменённые игрой переменные)
+    bool finishExternalGame();
+
+    // ------------------------------------------------------------------ доступ к состоянию
+    /// Значение переменной; false, если такой нет
+    cparse::packToken getVariable(const std::string& name) const;
+    void setVariable(const std::string& name, const cparse::packToken& value);
+    bool hasVariable(const std::string& name) const;
+    /// Имена переменных книги и служебных (отсортированы)
+    std::vector<std::string> variableNames() const;
+    /// Предметы инвентаря: id экземпляров и имена объектов
+    std::vector<std::pair<std::string, std::string>> inventoryItems() const;
+    /// Положить объект (по имени) в инвентарь / убрать из инвентаря
+    bool giveItem(const std::string& objName);
+    bool takeItem(const std::string& objName);
+    /// Выражение на языке условий книги (например, "money >= 100")
+    cparse::packToken evaluate(const std::string& expression) const;
 
     /// Вход на стартовую страницу книги (или на указанную страницу)
     void start(const std::string& pageId = std::string());
@@ -243,6 +293,18 @@ private:
     std::optional<std::string> m_pendingWalk;
     bool m_pendingFromAutowired = false;
     std::vector<Event> m_events;
+    std::optional<ExternalGame> m_externalGame;
+    /// Сохраняемые (preserved) графические объекты, которые VN-движок INSTEAD оставляет на экране
+    /// при смене страниц: кнопки «Навыки»/«Инвентарь», свитки. Корни, в порядке появления
+    std::vector<std::string> m_preservedRoots;
+    void rememberPreservedObjects();
+    /// Картинки preserved-объектов, уже показанные игроку: на новой странице они остаются на
+    /// экране, поэтому повторно выводятся только при изменении
+    std::map<std::string, std::string> m_preservedImagesShown;
+    std::optional<std::string> m_pendingExternalGame;
+    std::function<bool(const std::string&)> m_isExternalGame;
+    void startPendingExternalGame();
+    Placement objPlacement(const std::string& instanceId) const;
     /// Показанные картинки: страницы (ключ — id страницы) и объектов на ней
     std::map<std::string, std::string> m_shownImages;
     int m_renderCount = 0;

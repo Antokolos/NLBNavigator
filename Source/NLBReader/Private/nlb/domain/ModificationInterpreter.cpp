@@ -825,7 +825,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             // Операнд-список (listobj): act применяется к каждому элементу списка
             if (auto obj = objOperand(exprValue)) objActA(*obj);
             else if (m_context.listExists(exprList) || m_context.hasVar(exprValue)) { for (const auto& item : m_context.listItems(exprList)) objActA(item); }
-            else objOrWarn(exprValue);
+            else if (!(m_externalCallHandler && m_externalCallHandler(exprValue, type))) objOrWarn(exprValue);
             break;
         case Type::ACTT: {
             requireVar();
@@ -836,7 +836,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
         case Type::ACTF:
             if (auto obj = objOperand(exprValue)) objActF(*obj);
             else if (m_context.listExists(exprList) || m_context.hasVar(exprValue)) { for (const auto& item : m_context.listItems(exprList)) objActF(item); }
-            else objOrWarn(exprValue);
+            else if (!(m_externalCallHandler && m_externalCallHandler(exprValue, type))) objOrWarn(exprValue);
             break;
         case Type::USE: {
             // nlb:usea(source, target) -> source:usea(target), ww = nil. Списки (listobj):
@@ -943,6 +943,10 @@ std::string ModificationInterpreter::objDscF(const std::string& instanceId) cons
 void ModificationInterpreter::objActF(const std::string& instanceId) {
     if (const Obj* obj = findObj(m_context.protoOf(instanceId))) {
         runObjModifications(obj, instanceId);
+        // decorateObjActEnd(collapseOnAct): в конце actf сворачиваемый объект переключается
+        if (obj->isCollapsable() && obj->isGraphical()) {
+            m_context.toggleCollapsed(instanceId);
+        }
     }
 }
 

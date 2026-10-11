@@ -109,6 +109,15 @@ public:
     std::optional<std::string> tag(const std::string& instanceId) const;
     void setTag(const std::string& instanceId, const std::string& tag);
 
+    // ------------------------------------------------------------------ свёрнутые объекты
+    /// Сворачиваемые (collapsable) графические объекты: свиток навыков/инвентаря. Щелчок
+    /// (actf) прокручивает их анимацию появления в обратную сторону — объект с содержимым
+    /// скрывается или снова появляется (vn:set_step(v, nil, not v.forward) в экспорте)
+    bool isCollapsed(const std::string& instanceId) const { return m_state.collapsed.count(instanceId) > 0; }
+    void toggleCollapsed(const std::string& instanceId) {
+        if (!m_state.collapsed.erase(instanceId)) m_state.collapsed.insert(instanceId);
+    }
+
     // ------------------------------------------------------------------ достижения
     /// Достижения переживают SNAPSHOT/restore (в INSTEAD они в prefs, а не в сохранении игры).
     void setAchievementMax(const std::string& name, int max);
@@ -193,6 +202,7 @@ private:
         std::vector<std::string> pageHistory;
         std::set<std::string> followedLinks;
         std::set<const NonLinearBook*> initializedBooks;
+        std::set<std::string> collapsed;
     };
 
     void initContainers(NonLinearBook* book);

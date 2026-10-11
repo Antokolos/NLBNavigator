@@ -13,6 +13,8 @@
 #include "nlb/exception/NLBExceptions.h"
 
 #include <algorithm>
+#include <cmath>
+#include "nlb/api/Coords.h"
 #include <ctime>
 #include <filesystem>
 #include <fstream>
@@ -89,9 +91,22 @@ void PlayerEngine::createState() {
         m_context->setAchievementsStorage(m_settings.achievementsPath);
     }
     m_interpreter = std::make_unique<ModificationInterpreter>(m_rootBook, *m_context);
+    m_interpreter->setExternalCallHandler([this](const std::string& name, Modification::Type) {
+        if (!m_isExternalGame || !m_isExternalGame(name)) {
+            return false;
+        }
+        // Как walk(game_room) внутри enter: остальные модификации выполняются, а управление
+        // уходит игре, когда текущая команда игрока закончится
+        m_pendingExternalGame = name;
+        return true;
+    });
+    m_externalGame.reset();
+    m_pendingExternalGame.reset();
     m_page = nullptr;
     m_book = nullptr;
     m_currentMusic.clear();
+    m_preservedRoots.clear();
+    m_preservedImagesShown.clear();
 }
 
 void PlayerEngine::restart() {
@@ -118,7 +133,7 @@ void PlayerEngine::start(const std::string& pageId) {
 }
 
 bool PlayerEngine::choose(size_t choiceIndex) {
-    if (!m_page) {
+    if (m_externalGame || !m_page) {
         return false;
     }
     const std::vector<PlayerLink> choices = availableChoices();
@@ -133,7 +148,7 @@ bool PlayerEngine::choose(size_t choiceIndex) {
 }
 
 bool PlayerEngine::actOnObject(const std::string& instanceId) {
-    if (!m_page || !isOnScene(instanceId)) {
+    if (m_externalGame || !m_page || !isOnScene(instanceId)) {
         return false;
     }
     std::string target = instanceId;
@@ -173,7 +188,7 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
 }
 
 bool PlayerEngine::clickInventory(const std::string& instanceId) {
-    if (!m_page || !isInInventoryTree(instanceId)) {
+    if (m_externalGame || !m_page || !isInInventoryTree(instanceId)) {
         return false;
     }
     m_transitions = 0;
@@ -210,7 +225,7 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
 }
 
 bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& targetInstanceId) {
-    if (!m_page || !isInInventoryTree(sourceInstanceId)) {
+    if (m_externalGame || !m_page || !isInInventoryTree(sourceInstanceId)) {
         return false;
     }
     const bool targetVisible = isInInventoryTree(targetInstanceId)
@@ -527,6 +542,7 @@ void PlayerEngine::walkTo(const std::string& pageId, bool fromAutowired) {
 }
 
 void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
+    rememberPreservedObjects();
     Page* previousPage = m_page;
     NonLinearBook* previousBook = m_book;
     m_page = page;
@@ -539,9 +555,10 @@ void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
         ModificationInterpreter::ExecContext ctx{m_book, page->getId(), std::nullopt};
         if (!m_interpreter->execute(static_cast<const ModifyingItem*>(page)->getModifications(), ctx)) {
             // RETURN в модификациях страницы — return из enter: остаток enter не выполняется
-            // (переменная страницы, initf). Ложное значение (false/nil) отменяет вход на страницу
+            // (переменная страницы, initf). Вход отменяет только return false; return без
+            // значения (nil) в INSTEAD переход не отменяет
             const auto& value = m_interpreter->lastReturnValue();
-            if (!value || !ModificationInterpreter::isTruthy(*value)) {
+            if (value && (*value)->type == cparse::BOOL && !value->asBool()) {
                 if (previousPage) {
                     m_context->cancelPageVisit();
                     m_page = previousPage;
@@ -550,6 +567,10 @@ void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
                     m_context->takeGoto();
                     return;
                 }
+            }
+            if (m_pendingExternalGame) {
+                startPendingExternalGame();
+                return;
             }
             renderPage();
             return;
@@ -564,6 +585,12 @@ void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
     }
     m_interpreter->playSound(page->getId());
 
+    // Вызов внешней игры из модификаций страницы — walk(game_room) внутри enter: управление
+    // уходит игре сразу, страница покажется, когда игра вернёт ход (повторный вход на неё)
+    if (m_pendingExternalGame) {
+        startPendingExternalGame();
+        return;
+    }
     // GOTO из модификаций страницы: walk внутри enter — страница не показывается
     if (auto gotoTarget = m_context->takeGoto()) {
         flushOutput(false);
@@ -574,7 +601,7 @@ void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
 }
 
 bool PlayerEngine::runAutos(bool tick) {
-    if (!m_page) {
+    if (!m_page || m_externalGame) {
         return false;
     }
     Page* page = m_page;
@@ -630,7 +657,7 @@ int PlayerEngine::autoWaitTicks() const {
 }
 
 bool PlayerEngine::wait() {
-    if (!m_page) {
+    if (m_externalGame || !m_page) {
         return false;
     }
     m_transitions = 0;
@@ -643,6 +670,7 @@ bool PlayerEngine::look() {
         return false;
     }
     m_shownImages.clear();
+    m_preservedImagesShown.clear();  // «осмотреться» показывает экран целиком
     renderPage();
     return true;
 }
@@ -691,6 +719,12 @@ bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
         PlayerContext::writeSaveRecord(out, {"lasttext", m_interpreter->lastText()});
         PlayerContext::writeSaveRecord(out, {"actionprev", std::to_string(m_actionCountDiffPrev)});
         PlayerContext::writeSaveRecord(out, {"music", m_currentMusic});
+        if (m_externalGame) {
+            PlayerContext::writeSaveRecord(out, {"external", m_externalGame->name, m_externalGame->returnPageId});
+        }
+        std::vector<std::string> preserved{"preserved", ""};
+        preserved.insert(preserved.end(), m_preservedRoots.begin(), m_preservedRoots.end());
+        PlayerContext::writeSaveRecord(out, preserved);
         m_context->saveState(out);
         if (!out) {
             error = "ошибка записи в файл " + path;
@@ -751,6 +785,8 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
         return false;
     }
     std::string pageId, lastText, music;
+    std::optional<ExternalGame> external;
+    std::vector<std::string> preservedRoots;
     int64_t actionPrev = 0;
     for (const auto& r : records) {
         if (r.size() >= 3 && r[0] == "book"
@@ -761,6 +797,8 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
         if (r.size() >= 2 && r[0] == "page") pageId = r[1];
         if (r.size() >= 2 && r[0] == "lasttext") lastText = r[1];
         if (r.size() >= 2 && r[0] == "music") music = r[1];
+        if (r.size() >= 3 && r[0] == "external") external = ExternalGame{r[1], r[2]};
+        if (!r.empty() && r[0] == "preserved") preservedRoots.assign(r.size() > 2 ? r.begin() + 2 : r.end(), r.end());
         if (r.size() >= 2 && r[0] == "actionprev") {
             try { actionPrev = std::stoll(r[1]); } catch (...) {}
         }
@@ -782,11 +820,18 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
     m_shownImages.clear();
     // Музыка, звучавшая в момент сохранения (INSTEAD тоже восстанавливает её при загрузке)
     m_currentMusic = music;
+    m_preservedRoots = preservedRoots;
+    m_preservedImagesShown.clear();  // после загрузки экран рисуется заново
     if (!music.empty()) {
         m_events.push_back({Event::Kind::Music, music});
     }
     renderPage();
-    if (isFinished()) {
+    // Сохранено во время внешней игры — продолжаем её
+    m_externalGame = external;
+    m_pendingExternalGame.reset();
+    if (m_externalGame) {
+        m_events.push_back({Event::Kind::ExternalGame, m_externalGame->name});
+    } else if (isFinished()) {
         m_events.push_back({Event::Kind::Finish, ""});
     }
     return true;
@@ -808,6 +853,7 @@ void PlayerEngine::emitObjectImage(const std::string& instanceId, const PlayerCo
     const Event::Kind kind = image.kind == PlayerContext::OutputKind::Animation ? Event::Kind::Animation : Event::Kind::Image;
     m_events.push_back({kind, image.text, image.frames, sceneLabel(instanceId), objPosition(instanceId)});
     m_shownImages[instanceId] = imageKey(image);
+    m_preservedImagesShown[instanceId] = imageKey(image);
 }
 
 void PlayerEngine::refreshSceneImages() {
@@ -825,7 +871,7 @@ void PlayerEngine::refreshSceneImages() {
     }
     for (const auto& instanceId : sceneObjects()) {
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
-        if (!obj || !obj->isImageInScene()) {
+        if (!obj || !obj->isImageInScene() || m_context->isCollapsed(instanceId)) {
             continue;
         }
         if (auto image = m_interpreter->selectImage(instanceId)) {
@@ -852,14 +898,87 @@ void PlayerEngine::settle(bool playerTurn) {
             page = m_page;
             ticks = 0;
         }
-        if (++ticks > autoWaitTicks()) {
+        if (m_externalGame || ++ticks > autoWaitTicks()) {
             break;
         }
         tick = true;  // следующая итерация — прошёл ещё один тик
     }
-    if (isFinished()) {
+    startPendingExternalGame();
+    if (!m_externalGame && isFinished()) {
         m_events.push_back({Event::Kind::Finish, ""});
     }
+}
+
+void PlayerEngine::setExternalGameFilter(std::function<bool(const std::string&)> isExternalGame) {
+    m_isExternalGame = std::move(isExternalGame);
+}
+
+void PlayerEngine::startPendingExternalGame() {
+    if (!m_pendingExternalGame || !m_page) {
+        return;
+    }
+    m_externalGame = ExternalGame{*m_pendingExternalGame, m_page->getId()};
+    m_pendingExternalGame.reset();
+    m_events.push_back({Event::Kind::ExternalGame, m_externalGame->name});
+}
+
+bool PlayerEngine::finishExternalGame() {
+    if (!m_externalGame) {
+        return false;
+    }
+    const std::string returnTo = m_externalGame->returnPageId;
+    m_externalGame.reset();
+    m_transitions = 0;
+    walkTo(returnTo, false);
+    settle(false);
+    return true;
+}
+
+cparse::packToken PlayerEngine::getVariable(const std::string& name) const {
+    return m_context->getVar(name);
+}
+
+void PlayerEngine::setVariable(const std::string& name, const cparse::packToken& value) {
+    m_context->setVar(name, value);
+}
+
+bool PlayerEngine::hasVariable(const std::string& name) const {
+    return m_context->hasVar(name);
+}
+
+std::vector<std::string> PlayerEngine::variableNames() const {
+    std::vector<std::string> names;
+    for (const auto& [name, value] : m_context->scope().map()) {
+        if (name != "true" && name != "false") names.push_back(name);
+    }
+    return names;  // map уже отсортирован
+}
+
+std::vector<std::pair<std::string, std::string>> PlayerEngine::inventoryItems() const {
+    std::vector<std::pair<std::string, std::string>> items;
+    for (const auto& instanceId : m_context->inventory()) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+        items.emplace_back(instanceId, obj ? obj->getName() : std::string());
+    }
+    return items;
+}
+
+bool PlayerEngine::giveItem(const std::string& objName) {
+    const std::string id = m_interpreter->objIdByName(objName);
+    if (id.empty()) return false;
+    m_context->inventoryAdd(id);
+    return true;
+}
+
+bool PlayerEngine::takeItem(const std::string& objName) {
+    const std::string id = m_interpreter->objIdByName(objName);
+    if (id.empty() || !m_context->inInventory(id)) return false;
+    m_context->inventoryRemove(id);
+    return true;
+}
+
+cparse::packToken PlayerEngine::evaluate(const std::string& expression) const {
+    return m_interpreter->evaluate(expression);
 }
 
 // ============================================================================ отображение
@@ -881,12 +1000,25 @@ void PlayerEngine::renderPage() {
     appendMediaEvents(output);
     // Картинки объектов на странице (imageInScene), после картинки страницы
     const std::vector<std::string> visible = sceneObjects();
+    // preserved-объект, исчезнувший с экрана, при следующем появлении показывается заново
+    for (auto it = m_preservedImagesShown.begin(); it != m_preservedImagesShown.end();) {
+        const bool onScreen = std::find(visible.begin(), visible.end(), it->first) != visible.end()
+                              && !m_context->isCollapsed(it->first);
+        it = onScreen ? std::next(it) : m_preservedImagesShown.erase(it);
+    }
     for (const auto& instanceId : visible) {
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
-        if (!obj || !obj->isImageInScene()) {
+        if (!obj || !obj->isImageInScene() || m_context->isCollapsed(instanceId)) {
             continue;
         }
         if (auto image = m_interpreter->selectImage(instanceId)) {
+            if (obj->isPreserved()) {
+                auto shown = m_preservedImagesShown.find(instanceId);
+                if (shown != m_preservedImagesShown.end() && shown->second == imageKey(*image)) {
+                    m_shownImages[instanceId] = shown->second;  // уже на экране с прошлой страницы
+                    continue;
+                }
+            }
             emitObjectImage(instanceId, *image);
         }
     }
@@ -973,8 +1105,35 @@ std::vector<std::string> PlayerEngine::sceneObjects() const {
     std::vector<std::string> result;
     if (m_page) {
         collectSceneObjects(m_page->getId(), result, 0);
+        // preserved-объекты с прошлых страниц остаются на экране, пока они где-то лежат
+        // (REMOVE убирает их) и включены (скрытый свиток вернётся, когда его покажут снова)
+        for (const auto& root : m_preservedRoots) {
+            if (std::find(result.begin(), result.end(), root) != result.end()
+                || m_context->containerOf(root).empty() || !m_interpreter->isObjEnabled(root)) {
+                continue;
+            }
+            result.push_back(root);
+            if (!m_context->isCollapsed(root)) {
+                collectSceneObjects(root, result, 1);
+            }
+        }
     }
     return result;
+}
+
+void PlayerEngine::rememberPreservedObjects() {
+    if (!m_page) {
+        return;
+    }
+    // vn.lua: при смене сцены объекты с preserved остаются. Запоминаем видимые корни
+    // (объекты, лежащие прямо на странице); вложенные идут вместе с ними
+    for (const auto& instanceId : m_context->containerContents(m_page->getId())) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+        if (obj && obj->isGraphical() && obj->isPreserved()
+            && std::find(m_preservedRoots.begin(), m_preservedRoots.end(), instanceId) == m_preservedRoots.end()) {
+            m_preservedRoots.push_back(instanceId);
+        }
+    }
 }
 
 void PlayerEngine::collectSceneObjects(const std::string& ownerId, std::vector<std::string>& result,
@@ -986,7 +1145,9 @@ void PlayerEngine::collectSceneObjects(const std::string& ownerId, std::vector<s
             continue;  // выключенный объект скрывает и своё содержимое
         }
         result.push_back(instanceId);
-        collectSceneObjects(instanceId, result, depth + 1);
+        if (!m_context->isCollapsed(instanceId)) {  // у свёрнутого свитка содержимое не видно
+            collectSceneObjects(instanceId, result, depth + 1);
+        }
     }
 }
 
@@ -1025,17 +1186,66 @@ bool PlayerEngine::hasBehaviour(const Obj* obj) const {
         || std::any_of(links.begin(), links.end(), [](const Link* l) { return !l->isDeleted(); });
 }
 
-std::string PlayerEngine::objPosition(const std::string& instanceId) const {
+std::string PlayerEngine::Placement::toString() const {
+    if (!graphical) return "";
+    if (!parentId.empty()) {
+        return "+" + std::to_string(armX) + "," + std::to_string(armY);  // внутри родителя
+    }
+    if (!offset.empty()) {
+        return origin + "@" + offset;
+    }
+    return origin + " +" + std::to_string(armX) + "," + std::to_string(armY);
+}
+
+PlayerEngine::Placement PlayerEngine::objPlacement(const std::string& instanceId) const {
+    Placement p;
     const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
-    if (!obj || !obj->isGraphical()) return "";
+    if (!obj || !obj->isGraphical()) return p;
+    p.graphical = true;
     static const char* ORIGINS[] = {"left-top", "middle-top", "right-top", "left-middle", "middle-middle",
                                     "right-middle", "left-bottom", "middle-bottom", "right-bottom"};
     const int origin = static_cast<int>(obj->getCoordsOrigin());
-    // decorateObjEffect: смещение задано и объект не вложен в другой — оно, иначе 0,0
-    const std::string container = m_context->containerOf(instanceId);
-    const bool nested = !container.empty() && m_interpreter->findObj(m_context->protoOf(container)) != nullptr;
-    const std::string offset = (!obj->getOffset().empty() && !nested) ? obj->getOffset() : "0,0";
-    return std::string(origin >= 0 && origin < 9 ? ORIGINS[origin] : "left-top") + "@" + offset;
+    p.origin = origin >= 0 && origin < 9 ? ORIGINS[origin] : "left-top";
+    // decorateObjEffect: у вложенного объекта (контейнер — объект) смещение 0,0 и arm 0,0
+    // Объект, положенный в другой объект во время игры (иконка навыка на свитке), тоже
+    // раскладывается внутри родителя
+    const std::string owner = m_context->containerOf(instanceId);
+    const bool runtimeParentObj = !owner.empty() && m_interpreter->findObj(m_context->protoOf(owner)) != nullptr;
+    const bool hasParentObj = obj->getContainerType() == Obj::ContainerType::Obj || runtimeParentObj;
+    if (hasParentObj) {
+        p.parentId = runtimeParentObj ? owner : obj->getContainerId();
+        return p;
+    }
+    if (!obj->getOffset().empty()) {
+        p.offset = obj->getOffset();
+        return p;
+    }
+    // ExportManager.getRelativeCoords: координаты относительно страницы, пересчитанные на экран
+    // 1920×1080, и getTransformedCoords — отсчёт от выбранного угла
+    const double screenW = 1920.0, screenH = 1080.0;
+    Coords& rel = obj->getRelativeCoords(true);
+    const double w = rel.getWidth(), h = rel.getHeight();
+    const double left = w != 0 ? std::floor(rel.getLeft() * screenW / w) : 0.0;
+    const double top = h != 0 ? std::floor(rel.getTop() * screenH / h) : 0.0;
+    double x = left, y = top;
+    switch (origin) {
+        case 1: x = left - screenW / 2; break;                                 // MiddleTop
+        case 2: x = screenW - left; y = 0; break;                              // RightTop (как в экспорте)
+        case 3: y = screenH / 2 - top; break;                                  // LeftMiddle
+        case 4: x = left - screenW / 2; y = screenH / 2 - top; break;          // MiddleMiddle
+        case 5: x = screenW - left; y = screenH / 2 - top; break;              // RightMiddle
+        case 6: y = screenH - top; break;                                      // LeftBottom
+        case 7: x = left - screenW / 2; y = screenH - top; break;              // MiddleBottom
+        case 8: x = screenW - left; y = screenH - top; break;                  // RightBottom
+        default: break;                                                        // LeftTop
+    }
+    p.armX = static_cast<int>(x);
+    p.armY = static_cast<int>(y);
+    return p;
+}
+
+std::string PlayerEngine::objPosition(const std::string& instanceId) const {
+    return objPlacement(instanceId).toString();
 }
 
 PlayerEngine::ObjKind PlayerEngine::objKind(const Obj* obj) const {
@@ -1119,7 +1329,15 @@ PlayerEngine::PageView PlayerEngine::view() const {
                 }
                 label = obj->getImageFileName().empty() ? instanceId : obj->getImageFileName();
             }
-            v.sceneObjects.push_back({instanceId, label, obj->isTakable(), active, objPosition(instanceId)});
+            ObjectView view{instanceId, label, obj->isTakable(), active, objPosition(instanceId)};
+            view.placement = objPlacement(instanceId);
+            view.collapsed = m_context->isCollapsed(instanceId);
+            for (std::string owner = m_context->containerOf(instanceId);
+                 !owner.empty() && m_interpreter->findObj(m_context->protoOf(owner)) && view.depth < 32;
+                 owner = m_context->containerOf(owner)) {
+                ++view.depth;
+            }
+            v.sceneObjects.push_back(view);
         }
     }
     for (const auto& instanceId : inventoryObjects()) {

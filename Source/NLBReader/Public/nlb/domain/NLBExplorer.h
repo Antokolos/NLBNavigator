@@ -2,6 +2,8 @@
 
 #include "nlb/domain/PlayerEngine.h"
 #include <functional>
+#include <utility>
+#include <vector>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -29,6 +31,12 @@ public:
 
     /// Интерактивная игра до конца книги или команды выхода
     void explore();
+    /// Обработчик внешней (нетекстовой) игры в консоли. Получает движок (полный доступ к
+    /// переменным и инвентарю) и потоки ввода-вывода; по возврату управление уходит новелле
+    using LineReader = std::function<bool(std::string& line)>;
+    using ExternalGameHandler = std::function<void(PlayerEngine& engine, const LineReader& readLine, std::ostream& out)>;
+    /// name — имя игры; "префикс*" — все игры с таким префиксом
+    void registerExternalGame(const std::string& name, ExternalGameHandler handler);
     /// Каталог файлов сохранения (UTF-8); пусто — сохранения недоступны
     void setSavesDirectory(const std::string& utf8Dir) { m_savesDir = utf8Dir; }
     /// Вызывается для каждой введённой строки (журнал сессии)
@@ -54,5 +62,9 @@ private:
     void loadMenu();
     std::string slotPath(int slot) const;
     std::string m_savesDir;
+    std::vector<std::pair<std::string, ExternalGameHandler>> m_externalGames;
+    const ExternalGameHandler* findExternalGame(const std::string& name) const;
+    void runExternalGame();
+    void registerDefaultExternalGames();
     static constexpr int SAVE_SLOTS = 9;
 };

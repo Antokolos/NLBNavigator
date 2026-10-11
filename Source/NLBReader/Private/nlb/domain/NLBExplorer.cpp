@@ -2,12 +2,15 @@
 
 #include "nlb/api/NonLinearBook.h"
 
+#include <algorithm>
 #include <sstream>
 
 NLBExplorer::NLBExplorer(NonLinearBook* book, const std::string& startPageId,
                          const PlayerEngine::Settings& settings, std::istream& in, std::ostream& out)
     : m_book(book), m_startPageId(startPageId), m_in(in), m_out(out) {
     m_engine = std::make_unique<PlayerEngine>(book, settings);
+    m_engine->setExternalGameFilter([this](const std::string& name) { return findExternalGame(name) != nullptr; });
+    registerDefaultExternalGames();
 }
 
 void NLBExplorer::explore() {
@@ -15,6 +18,10 @@ void NLBExplorer::explore() {
         m_engine->start(m_startPageId);
         while (true) {
             printEvents();
+            if (m_engine->externalGame()) {
+                runExternalGame();
+                continue;
+            }
             const PlayerEngine::PageView view = m_engine->view();
             if (view.finished) {
                 // VN-экспорт на последней странице предлагает начать заново (_try_again)
@@ -86,6 +93,7 @@ void NLBExplorer::printEvents() {
             case Kind::Achievement: m_out << "*** " << event.text << " ***" << std::endl; break;
             case Kind::Info:        m_out << event.text << std::endl; break;
             case Kind::Finish:      m_out << "\n=== КОНЕЦ ===" << std::endl; break;
+            case Kind::ExternalGame: break;  // обрабатывается в runExternalGame
         }
     }
 }
@@ -106,8 +114,23 @@ void NLBExplorer::printView(const PlayerEngine::PageView& view) {
     // Активные объекты получают номера oN/iN; неактивные (надписи, STAT) — только для чтения, «· »
     auto printList = [&](const char* title, const std::vector<PlayerEngine::ObjectView>& list, char prefix) {
         if (list.empty()) return;
-        m_out << title;
+        // Графические объекты (иконки на свитках, кнопки) выводятся деревом: по строке на объект,
+        // с отступом по вложенности и положением на экране — как их потом разложит графический UI
+        const bool tree = std::any_of(list.begin(), list.end(), [](const PlayerEngine::ObjectView& o) {
+            return o.placement.graphical || o.depth > 0;
+        });
         size_t n = 0;
+        if (tree) {
+            m_out << title << std::endl;
+            for (const auto& o : list) {
+                m_out << std::string(2 + 4 * static_cast<size_t>(o.depth), ' ');
+                if (o.active) m_out << prefix << ++n << ". ";
+                else m_out << "· ";
+                m_out << withPosition(o) << (o.collapsed ? " (свёрнут)" : "") << (o.takable ? " (можно взять)" : "") << std::endl;
+            }
+            return;
+        }
+        m_out << title;
         for (const auto& o : list) {
             if (!o.active) continue;
             m_out << "  " << prefix << ++n << ". " << withPosition(o) << (o.takable ? " (можно взять)" : "");
@@ -313,4 +336,85 @@ void NLBExplorer::loadMenu() {
         m_out << "Не удалось загрузить игру: " << error << std::endl;
         m_engine->look();
     }
+}
+
+// ============================================================================ внешние игры
+
+void NLBExplorer::registerExternalGame(const std::string& name, ExternalGameHandler handler) {
+    m_externalGames.emplace_back(name, std::move(handler));
+}
+
+const NLBExplorer::ExternalGameHandler* NLBExplorer::findExternalGame(const std::string& name) const {
+    for (const auto& [pattern, handler] : m_externalGames) {
+        const bool prefix = !pattern.empty() && pattern.back() == '*';
+        if (prefix ? name.compare(0, pattern.size() - 1, pattern, 0, pattern.size() - 1) == 0 : name == pattern) {
+            return &handler;
+        }
+    }
+    return nullptr;
+}
+
+void NLBExplorer::runExternalGame() {
+    const auto game = m_engine->externalGame();
+    m_out << "\n=== Внешняя игра: " << game->name << " ===" << std::endl;
+    if (const ExternalGameHandler* handler = findExternalGame(game->name)) {
+        (*handler)(*m_engine, [this](std::string& line) { return readLine(line); }, m_out);
+    }
+    m_out << "=== Возврат в новеллу ===" << std::endl;
+    m_engine->finishExternalGame();
+}
+
+namespace {
+/// Консольная заглушка мини-игры. Настоящая игра (кости «Большая свинья», 3D-сцена в Unreal)
+/// подключается так же: обработчик получает PlayerEngine и через getVariable/setVariable,
+/// giveItem/takeItem и evaluate читает и меняет состояние новеллы, а вернувшись, отдаёт ход ей
+void demoDiceGame(PlayerEngine& engine, const NLBExplorer::LineReader& readLine, std::ostream& out) {
+    const std::string money = "money";  // в «Большой свинье» выигрыш — переменная money (_money)
+    auto show = [&] {
+        out << "Деньги (" << money << "): "
+            << ModificationInterpreter::toDisplayString(engine.getVariable(money)) << std::endl;
+    };
+    out << "Здесь могла бы быть мини-игра (кости, 3D-сцена). В консольном плеере — заглушка." << std::endl;
+    while (true) {
+        show();
+        out << "1. Бросить кубик: +100 монет и вернуться в новеллу\n"
+               "2. Переменные: показать все (v) или изменить (v имя=выражение)\n"
+               "0. Закончить игру и вернуться в новеллу\n\nВаш выбор: " << std::flush;
+        std::string line;
+        if (!readLine(line)) return;
+        if (line == "1") {
+            const cparse::packToken value = engine.getVariable(money);
+            const double current = (value->type & cparse::NUM) ? value.asDouble() : 0.0;
+            engine.setVariable(money, static_cast<int64_t>(current + 100));
+            out << "Кубик брошен — вы получили 100 монет." << std::endl;
+            show();
+            return;
+        }
+        if (line == "0" || line.empty()) return;
+        if (line == "2" || line == "v") {
+            for (const auto& name : engine.variableNames()) {
+                out << "  " << name << " = " << ModificationInterpreter::toDisplayString(engine.getVariable(name)) << "\n";
+            }
+            continue;
+        }
+        if (line.rfind("v ", 0) == 0) {
+            const auto eq = line.find('=');
+            if (eq == std::string::npos) { out << "Формат: v имя=выражение" << std::endl; continue; }
+            const std::string name = line.substr(2, eq - 2);
+            try {
+                engine.setVariable(name, engine.evaluate(line.substr(eq + 1)));
+                out << name << " = " << ModificationInterpreter::toDisplayString(engine.getVariable(name)) << std::endl;
+            } catch (const std::exception& e) {
+                out << "Ошибка: " << e.what() << std::endl;
+            }
+            continue;
+        }
+        out << "Неверный выбор." << std::endl;
+    }
+}
+}
+
+void NLBExplorer::registerDefaultExternalGames() {
+    // Мини-игры «Большая свинья» из INSTEAD-модуля big_pig.lua (play_bp_two_ais, play_bp_one_ai, ...)
+    registerExternalGame("play_bp_*", demoDiceGame);
 }
