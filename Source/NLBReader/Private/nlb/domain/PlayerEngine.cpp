@@ -114,7 +114,7 @@ void PlayerEngine::start(const std::string& pageId) {
     m_transitions = 0;
     m_actionCountDiffPrev = 0;
     walkTo(pageId.empty() ? m_rootBook->getStartPoint() : pageId, false);
-    settle();
+    settle(false);
 }
 
 bool PlayerEngine::choose(size_t choiceIndex) {
@@ -128,7 +128,7 @@ bool PlayerEngine::choose(size_t choiceIndex) {
     m_transitions = 0;
     // Клик по ссылке — xact в отдельную комнату ссылки: s = комната ссылки, f.autowired = nil
     followLink(choices[choiceIndex], false);
-    settle();
+    settle(false);
     return true;
 }
 
@@ -573,13 +573,15 @@ void PlayerEngine::enterPage(Page* page, bool fromAutowired) {
     renderPage();
 }
 
-bool PlayerEngine::runAutos() {
+bool PlayerEngine::runAutos(bool tick) {
     if (!m_page) {
         return false;
     }
     Page* page = m_page;
-    // Таймер: в INSTEAD тикает раз в 200 мс; в пошаговом плеере — раз за ход
-    if (!page->getTimerVarId().empty()) {
+    // Таймер (переменная tvarid): обнуляется при входе на страницу (initf) и растёт на 1 за тик.
+    // В INSTEAD тик — раз в 200 мс; в пошаговом плеере — ход игрока на странице, команда w
+    // или автоматическое ожидание. Переход на новую страницу тиком не считается
+    if (tick && !page->getTimerVarId().empty()) {
         if (Variable* timer = m_book->getVariableById(page->getTimerVarId())) {
             const std::string& name = timer->getName();
             if (!name.empty()) {
@@ -632,8 +634,7 @@ bool PlayerEngine::wait() {
         return false;
     }
     m_transitions = 0;
-    runAutos();
-    finishAction();
+    finishAction(true);  // ровно один тик таймера (плюс автоматическое ожидание, если ходов нет)
     return true;
 }
 
@@ -791,9 +792,9 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
     return true;
 }
 
-void PlayerEngine::finishAction() {
+void PlayerEngine::finishAction(bool playerTurn) {
     const int renders = m_renderCount;
-    settle();
+    settle(playerTurn);
     if (m_renderCount == renders) {
         refreshSceneImages();
     }
@@ -836,12 +837,16 @@ void PlayerEngine::refreshSceneImages() {
     }
 }
 
-void PlayerEngine::settle() {
+void PlayerEngine::settle(bool playerTurn) {
     // В INSTEAD таймер тикает сам (обычно раз в 200 мс). Если выбирать на странице нечего,
     // а auto-ссылки ждут таймера, время "проматывается" (см. autoWaitTicks)
     const Page* page = m_page;
+    bool tick = playerTurn;
     for (int ticks = 0; ; ) {
-        while (runAutos()) {
+        // Первый вызов — с тиком (если он положен), после перехода — без: у новой страницы таймер 0
+        if (runAutos(tick)) {
+            while (runAutos(false)) {
+            }
         }
         if (m_page != page) {
             page = m_page;
@@ -850,6 +855,7 @@ void PlayerEngine::settle() {
         if (++ticks > autoWaitTicks()) {
             break;
         }
+        tick = true;  // следующая итерация — прошёл ещё один тик
     }
     if (isFinished()) {
         m_events.push_back({Event::Kind::Finish, ""});

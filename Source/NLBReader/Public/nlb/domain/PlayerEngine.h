@@ -189,19 +189,21 @@ private:
     void walkTo(const std::string& pageId, bool fromAutowired);
     void enterPage(Page* page, bool fromAutowired);
     /// life()/autos(): счётчики, callback-объекты, auto-ссылки. true — был переход
-    bool runAutos();
+    /// tick — прошёл один тик таймера страницы (переменная таймера +1)
+    bool runAutos(bool tick);
     /// Сколько тиков таймера проматывать автоматически на текущей странице (0 — не ждать)
     int autoWaitTicks() const;
     static constexpr int MAX_TIMER_TICKS = 100000;
     /// ~10 с при тике 200 мс: пауза хода противника, короткие анимации
     static constexpr int SHORT_WAIT_TICKS = 50;
-    void settle();
+    /// playerTurn — ход игрока на текущей странице: сначала проходит один тик таймера
+    void settle(bool playerTurn);
     void renderPage();
     /// После действия на той же странице: показать картинки, которые сменились (например,
     /// флажок «Показывать эту страницу») или появились (новые карты на столе)
     void refreshSceneImages();
     /// Действие игрока выполнено: auto-ссылки, затем обновление картинок, если страница не сменилась
-    void finishAction();
+    void finishAction(bool playerTurn = true);
     void emitObjectImage(const std::string& instanceId, const PlayerContext::OutputItem& image);
     static std::string imageKey(const PlayerContext::OutputItem& image);
     void flushOutput(bool afterPage);
