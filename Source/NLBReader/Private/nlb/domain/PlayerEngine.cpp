@@ -474,6 +474,15 @@ void PlayerEngine::setVarTrue(NonLinearBook* book, const std::string& varId) {
 
 void PlayerEngine::followLink(const PlayerLink& link, bool fromPageContext) {
     Page* page = m_page;
+    // Счётчик переходов (COUNTGET, бит 8 — walk_count в INSTEAD, counters.lua: game.onwalk).
+    // Щелчок по ссылке — walk в комнату ссылки: он засчитывается сразу, ещё до модификаций
+    // ссылки, поэтому и запрещённый переход (RETURN в ссылке) тратит действие. Технические
+    // переходы не считаются (nlb.lua вычитает _technical_walk_count): auto-ссылки, autowired-
+    // ссылки (LinkLw.isTechnical), GOTO и второй walk — из комнаты ссылки на цель
+    if (!fromPageContext && !link.autoFlag
+        && link.kind != LinkKind::AutowiredIn && link.kind != LinkKind::AutowiredOut) {
+        m_context->countIncrement(PlayerContext::CountWalk);
+    }
     // Страница, покинутая по auto-ссылке сразу после показа, без текста — служебная:
     // её заголовок и картинки не показываем (музыку и звуки оставляем — они продолжают играть)
     if (fromPageContext && m_lastRenderStart <= m_events.size()) {

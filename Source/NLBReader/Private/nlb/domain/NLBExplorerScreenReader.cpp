@@ -246,6 +246,25 @@ void NLBExplorer::srPrintChanges(const PlayerEngine::PageView& before, const Pla
             m_out << "Пропало отсюда: " << sentence(spoken(label)) << std::endl;
         }
     }
+    srPrintInventoryChanges(before, after);
+    std::vector<std::string> choicesBefore, choicesAfter;
+    for (const auto& c : before.choices) choicesBefore.push_back(c.text);
+    for (const auto& c : after.choices) choicesAfter.push_back(c.text);
+    if (choicesBefore != choicesAfter) {
+        m_out << "Варианты изменились." << std::endl;
+        srPrintChoices(after);
+    }
+}
+
+void NLBExplorer::srPrintInventoryChanges(const PlayerEngine::PageView& before, const PlayerEngine::PageView& after) {
+    auto labels = [](const std::vector<PlayerEngine::ObjectView>& list) {
+        std::map<std::string, std::string> m;
+        for (const auto& o : list) if (!o.collapsed) m[o.instanceId] = oneLine(o.disp);
+        return m;
+    };
+    const auto invBefore = labels(before.inventory), invAfter = labels(after.inventory);
+    std::set<std::string> readOnly;
+    for (const auto& o : before.inventory) if (!o.active) readOnly.insert(o.instanceId);
     for (const auto& o : after.inventory) {
         const std::string label = spoken(oneLine(o.disp));
         auto was = invBefore.find(o.instanceId);
@@ -258,13 +277,6 @@ void NLBExplorer::srPrintChanges(const PlayerEngine::PageView& before, const Pla
     }
     for (const auto& [id, label] : invBefore) {
         if (!invAfter.count(id) && !readOnly.count(id)) m_out << "Из инвентаря пропало: " << sentence(spoken(label)) << std::endl;
-    }
-    std::vector<std::string> choicesBefore, choicesAfter;
-    for (const auto& c : before.choices) choicesBefore.push_back(c.text);
-    for (const auto& c : after.choices) choicesAfter.push_back(c.text);
-    if (choicesBefore != choicesAfter) {
-        m_out << "Варианты изменились." << std::endl;
-        srPrintChoices(after);
     }
 }
 
@@ -369,6 +381,10 @@ void NLBExplorer::exploreScreenReader() {
                 continue;
             }
             if (newPage || fullPage) {
+                // Показатели в инвентаре (жизнь, энергия) могли измениться и при переходе
+                if (havePrevious) {
+                    srPrintInventoryChanges(previous, view);
+                }
                 // Новая страница или «осмотреться»: варианты и что здесь
                 if (std::any_of(view.sceneObjects.begin(), view.sceneObjects.end(),
                                 [](const PlayerEngine::ObjectView& o) { return !o.collapsed && (o.active || !isNoise(oneLine(o.disp))); })) {

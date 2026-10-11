@@ -81,6 +81,8 @@ private:
     void srPrintScene(const PlayerEngine::PageView& view, bool withReadOnly);
     void srPrintInventory(const PlayerEngine::PageView& view);
     void srPrintChanges(const PlayerEngine::PageView& before, const PlayerEngine::PageView& after);
+    /// Изменения инвентаря (показатели «Жизнь», «Энергия» и т.п.) — и при смене страницы
+    void srPrintInventoryChanges(const PlayerEngine::PageView& before, const PlayerEngine::PageView& after);
     void srPrintHelp();
     bool srHandleCommand(const std::string& line, const PlayerEngine::PageView& view);
     bool srApply(const PlayerEngine::PageView& view, const std::string& args);
