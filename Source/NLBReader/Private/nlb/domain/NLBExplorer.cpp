@@ -14,6 +14,10 @@ NLBExplorer::NLBExplorer(NonLinearBook* book, const std::string& startPageId,
 }
 
 void NLBExplorer::explore() {
+    if (m_screenReader) {
+        exploreScreenReader();
+        return;
+    }
     try {
         m_engine->start(m_startPageId);
         while (true) {
@@ -248,7 +252,7 @@ std::string NLBExplorer::slotPath(int slot) const {
 
 bool NLBExplorer::runMenu() {
     while (true) {
-        m_out << "\n=== Меню ===\n";
+        m_out << (m_screenReader ? "\nМеню.\n" : "\n=== Меню ===\n");
         if (!m_savesDir.empty()) {
             m_out << "1. Сохранить игру\n2. Загрузить игру\n";
         }
@@ -356,11 +360,11 @@ const NLBExplorer::ExternalGameHandler* NLBExplorer::findExternalGame(const std:
 
 void NLBExplorer::runExternalGame() {
     const auto game = m_engine->externalGame();
-    m_out << "\n=== Внешняя игра: " << game->name << " ===" << std::endl;
+    m_out << (m_screenReader ? "\nВнешняя игра: " + game->name + "." : "\n=== Внешняя игра: " + game->name + " ===") << std::endl;
     if (const ExternalGameHandler* handler = findExternalGame(game->name)) {
         (*handler)(*m_engine, [this](std::string& line) { return readLine(line); }, m_out);
     }
-    m_out << "=== Возврат в новеллу ===" << std::endl;
+    m_out << (m_screenReader ? "Возврат в новеллу." : "=== Возврат в новеллу ===") << std::endl;
     m_engine->finishExternalGame();
 }
 

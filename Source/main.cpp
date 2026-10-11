@@ -4,6 +4,7 @@
 #include "nlb/domain/NLBReader.h"
 #include "nlb/domain/NLBExplorer.h"
 #include "nlb/api/ConsoleProgressData.h"
+#include "nlb/api/DummyProgressData.h"
 #include "PlatformPaths.h"
 #include "SessionLog.h"
 
@@ -73,19 +74,21 @@ int main(int argc, char* argv[]) {
     std::cout << calculator::calculate("'Hello ' + 'World'") << std::endl;
     std::cout << calculator::calculate("x + 1", GlobalScope::default_global()) << std::endl;
 
-#ifdef _WIN32
-    system("chcp 65001");
-#endif
+    // Консоль в UTF-8 (в Windows — без вывода "Active code page", который читал бы диктор)
+    setupConsoleUtf8();
     // Аргументы — в UTF-8 (в Windows из UTF-16 командной строки)
     const std::vector<std::string> args = utf8Args(argc, argv);
     std::vector<std::string> positional;
     std::string logPath;
+    bool screenReader = false;
     for (size_t i = 1; i < args.size(); ++i) {
         const std::string& arg = args[i];
         if (arg == "--log" && i + 1 < args.size()) {
             logPath = args[++i];
         } else if (arg.rfind("--log=", 0) == 0) {
             logPath = arg.substr(6);
+        } else if (arg == "--screen-reader") {
+            screenReader = true;
         } else {
             positional.push_back(arg);
         }
@@ -96,6 +99,7 @@ int main(int argc, char* argv[]) {
         std::cout << "  explore vn       - play as exported by exportToVNSTEADFile (default)" << std::endl;
         std::cout << "  explore standard - play as exported by exportToSTEADFile" << std::endl;
         std::cout << "  --log <file>     - save the session (output and input) to the file" << std::endl;
+        std::cout << "  --screen-reader  - mode for screen readers (NVDA, JAWS, Orca)" << std::endl;
         return 1;
     }
 
@@ -110,18 +114,33 @@ int main(int argc, char* argv[]) {
 
     if (mode == "explore") {
         auto book = std::make_unique<NonLinearBookImpl>();
-        ConsoleProgressData progressData;
-        if (!book->load(nlbPath, progressData)) {
-            std::cout << "Cannot load book: " << nlbPath << std::endl;
+        bool loaded;
+        if (screenReader) {
+            // Индикатор, переписывающий строку, диктор зачитал бы десятки раз
+            std::cout << "Загрузка книги..." << std::endl;
+            DummyProgressData progressData;
+            loaded = book->load(nlbPath, progressData);
+        } else {
+            ConsoleProgressData progressData;
+            loaded = book->load(nlbPath, progressData);
+        }
+        if (!loaded) {
+            std::cout << (screenReader ? "Не удалось загрузить книгу: " : "Cannot load book: ") << nlbPath << std::endl;
             return 1;
         }
-        std::cout << "Loaded: " << book->getTitle() << " by " << book->getAuthor() << std::endl;
+        if (screenReader) {
+            std::cout << "Книга загружена: " << book->getTitle()
+                      << (book->getAuthor().empty() ? "" : ", автор: " + book->getAuthor()) << "." << std::endl;
+        } else {
+            std::cout << "Loaded: " << book->getTitle() << " by " << book->getAuthor() << std::endl;
+        }
         PlayerEngine::Settings settings;
         settings.achievementsPath = achievementsFilePath(std::filesystem::u8path(nlbPath));
         const std::string exportMode = positional.size() > 2 ? positional[2] : "vn";
         settings.exportMode = (exportMode == "standard")
             ? PlayerEngine::ExportMode::Standard : PlayerEngine::ExportMode::VN;
         NLBExplorer explorer(book.get(), book->getStartPoint(), settings);
+        explorer.setScreenReaderMode(screenReader);
         explorer.setSavesDirectory(savesDirectory(std::filesystem::u8path(nlbPath)));
         if (sessionLog.isOpen()) {
             explorer.setInputListener([&sessionLog](const std::string& line) { sessionLog.recordInput(line); });

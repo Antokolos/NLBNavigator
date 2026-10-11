@@ -19,3 +19,7 @@ std::vector<std::string> utf8Args(int argc, char** argv);
 /// getenv вернул бы USERPROFILE в ANSI-кодировке, и для имени пользователя на кириллице
 /// std::filesystem::path бросал бы исключение (падение при старте).
 std::filesystem::path homeDir();
+
+/// Консоль в UTF-8. В Windows — SetConsoleOutputCP/SetConsoleCP вместо system("chcp 65001"),
+/// который печатал "Active code page: 65001"
+void setupConsoleUtf8();

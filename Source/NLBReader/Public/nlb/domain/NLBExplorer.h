@@ -2,6 +2,7 @@
 
 #include "nlb/domain/PlayerEngine.h"
 #include <functional>
+#include <map>
 #include <utility>
 #include <vector>
 #include <iostream>
@@ -37,6 +38,9 @@ public:
     using ExternalGameHandler = std::function<void(PlayerEngine& engine, const LineReader& readLine, std::ostream& out)>;
     /// name — имя игры; "префикс*" — все игры с таким префиксом
     void registerExternalGame(const std::string& name, ExternalGameHandler handler);
+    /// Режим для экранного диктора (NVDA, JAWS, Orca): без картинок, координат и имён файлов,
+    /// списки по строке на пункт, после действия — только изменения, команды для навигации на слух
+    void setScreenReaderMode(bool enabled) { m_screenReader = enabled; }
     /// Каталог файлов сохранения (UTF-8); пусто — сохранения недоступны
     void setSavesDirectory(const std::string& utf8Dir) { m_savesDir = utf8Dir; }
     /// Вызывается для каждой введённой строки (журнал сессии)
@@ -66,5 +70,25 @@ private:
     const ExternalGameHandler* findExternalGame(const std::string& name) const;
     void runExternalGame();
     void registerDefaultExternalGames();
+
+    // ------------------------------------------------------------- режим экранного диктора
+    bool m_screenReader = false;
+    void exploreScreenReader();
+    /// Печатает события; true — была выведена страница целиком (переход, «осмотреться»)
+    bool srPrintEvents();
+    void srAssignNumbers(const PlayerEngine::PageView& view);
+    void srPrintChoices(const PlayerEngine::PageView& view);
+    void srPrintScene(const PlayerEngine::PageView& view, bool withReadOnly);
+    void srPrintInventory(const PlayerEngine::PageView& view);
+    void srPrintChanges(const PlayerEngine::PageView& before, const PlayerEngine::PageView& after);
+    void srPrintHelp();
+    bool srHandleCommand(const std::string& line, const PlayerEngine::PageView& view);
+    bool srApply(const PlayerEngine::PageView& view, const std::string& args);
+    std::string srObjectId(const PlayerEngine::PageView& view, bool inventory, int number) const;
+    /// Номера объектов и предметов постоянны в пределах страницы: взятый предмет не сдвигает
+    /// нумерацию остальных
+    std::string m_srPageId;
+    std::map<std::string, int> m_srSceneNumbers, m_srInventoryNumbers;
+    int m_srNextScene = 1, m_srNextInventory = 1;
     static constexpr int SAVE_SLOTS = 9;
 };

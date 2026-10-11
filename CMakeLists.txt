@@ -165,6 +165,7 @@ set(NLB_DOMAIN_SOURCES
         ${NLB_SOURCE_DIR}/nlb/domain/VariableImpl.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBReader.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorer.cpp
+        ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorerScreenReader.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerContext.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/ModificationInterpreter.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerEngine.cpp
