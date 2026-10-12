@@ -177,6 +177,9 @@ public:
     /// Сохранить игру (путь в UTF-8). Как и в INSTEAD, сохраняется состояние мира, а не история:
     /// после загрузки страница показывается заново, без исполнения её модификаций
     bool saveGame(const std::string& path, std::string& error) const;
+    /// Можно ли сохраниться сейчас. Страница с флагом «не сохранять» (nosave) запрещает
+    /// сохранение, как game.enable_save в nlb.lua (here().nosave -> false); загружаться можно
+    bool canSave() const;
     bool loadGame(const std::string& path, std::string& error);
     SaveInfo readSaveInfo(const std::string& path) const;
     /// На странице есть таймер — ожидание имеет смысл

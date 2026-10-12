@@ -696,9 +696,17 @@ std::string nowString() {
 }
 }
 
+bool PlayerEngine::canSave() const {
+    return m_page && !m_page->isNoSave();
+}
+
 bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
     if (!m_page) {
         error = "игра не начата";
+        return false;
+    }
+    if (!canSave()) {
+        error = "здесь сохраняться нельзя";
         return false;
     }
     // Подпись слота: заголовок страницы, если он показывается игроку, иначе начало текста

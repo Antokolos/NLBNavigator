@@ -254,7 +254,9 @@ bool NLBExplorer::runMenu() {
     while (true) {
         m_out << (m_screenReader ? "\nМеню.\n" : "\n=== Меню ===\n");
         if (!m_savesDir.empty()) {
-            m_out << "1. Сохранить игру\n2. Загрузить игру\n";
+            // На странице «не сохранять» пункт виден, но недоступен — как серый пункт меню INSTEAD
+            m_out << (m_engine->canSave() ? "1. Сохранить игру\n" : "1. Сохранить игру — здесь сохраняться нельзя\n")
+                  << "2. Загрузить игру\n";
         }
         m_out << "3. Начать заново\n4. Выйти из игры\n0. Вернуться в игру\n\nВаш выбор: " << std::flush;
         std::string line;
@@ -266,7 +268,11 @@ bool NLBExplorer::runMenu() {
             return true;
         }
         if (line == "1" && !m_savesDir.empty()) {
-            saveMenu();
+            if (m_engine->canSave()) {
+                saveMenu();
+            } else {
+                m_out << "Здесь сохраняться нельзя." << std::endl;
+            }
         } else if (line == "2" && !m_savesDir.empty()) {
             loadMenu();
             return true;
