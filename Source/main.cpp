@@ -36,9 +36,9 @@ static std::string achievementsFilePath(const std::filesystem::path& bookPath) {
         if (!home.empty()) {
             const fs::path dir = home / ".nlbnavigator";
             fs::create_directories(dir, ec);
-            if (!ec) return (dir / achievementsName).u8string();
+            if (!ec) return FileUtils::pathToUtf8(dir / achievementsName);
         }
-        return (book / ".achievements").u8string();
+        return FileUtils::pathToUtf8(book / ".achievements");
     } catch (const std::exception& e) {
         std::cerr << "Warning: achievements will not be saved: " << e.what() << std::endl;
         return std::string();
@@ -60,7 +60,7 @@ static std::string savesDirectory(const std::filesystem::path& bookPath) {
         if (!home.empty()) dir += ".saves";
         std::error_code ec;
         fs::create_directories(dir, ec);
-        return ec ? std::string() : dir.u8string();
+        return ec ? std::string() : FileUtils::pathToUtf8(dir);
     } catch (const std::exception& e) {
         std::cerr << "Warning: saves are not available: " << e.what() << std::endl;
         return std::string();
@@ -76,7 +76,7 @@ static std::string savesDirectory(const std::filesystem::path& bookPath) {
 static void prepareBookSource(const std::string& nlbPath, bool useCache) {
     namespace fs = std::filesystem;
     std::string error;
-    const fs::path path = fs::u8path(nlbPath);
+    const fs::path path = FileUtils::pathFromUtf8(nlbPath);
     std::error_code ec;
     if (FileUtils::exists(nlbPath) && !FileUtils::isDirectory(nlbPath)) {
         auto pack = BookPack::read(nlbPath, error);
@@ -95,7 +95,7 @@ static void prepareBookSource(const std::string& nlbPath, bool useCache) {
         if (home.empty()) return;
         const fs::path dir = home / ".nlbnavigator";
         fs::create_directories(dir, ec);
-        const std::string cachePath = (dir / bookName).u8string() + ".nlbpack";
+        const std::string cachePath = FileUtils::pathToUtf8(dir / bookName) + ".nlbpack";
         auto cached = BookPack::read(cachePath, error);
         if (cached && cached->matches(nlbPath)) {
             BookPack::mount(std::shared_ptr<BookPack>(std::move(cached)), nlbPath);
@@ -173,7 +173,7 @@ int main(int argc, char* argv[]) {
     if (mode == "pack") {
         // Упаковать каталог книги в один файл: для поставки игры и быстрой загрузки
         const std::string out = positional.size() > 2 ? positional[2]
-            : std::filesystem::u8path(nlbPath).lexically_normal().u8string() + ".nlbpack";
+            : FileUtils::pathToUtf8(FileUtils::pathFromUtf8(nlbPath).lexically_normal()) + ".nlbpack";
         std::string error;
         auto pack = BookPack::build(nlbPath, error);
         if (!pack || !pack->write(out, error)) {
@@ -208,13 +208,13 @@ int main(int argc, char* argv[]) {
             std::cout << "Loaded: " << book->getTitle() << " by " << book->getAuthor() << std::endl;
         }
         PlayerEngine::Settings settings;
-        settings.achievementsPath = achievementsFilePath(std::filesystem::u8path(nlbPath));
+        settings.achievementsPath = achievementsFilePath(FileUtils::pathFromUtf8(nlbPath));
         const std::string exportMode = positional.size() > 2 ? positional[2] : "vn";
         settings.exportMode = (exportMode == "standard")
             ? PlayerEngine::ExportMode::Standard : PlayerEngine::ExportMode::VN;
         NLBExplorer explorer(book.get(), book->getStartPoint(), settings);
         explorer.setScreenReaderMode(screenReader);
-        explorer.setSavesDirectory(savesDirectory(std::filesystem::u8path(nlbPath)));
+        explorer.setSavesDirectory(savesDirectory(FileUtils::pathFromUtf8(nlbPath)));
         if (sessionLog.isOpen()) {
             explorer.setInputListener([&sessionLog](const std::string& line) { sessionLog.recordInput(line); });
         }

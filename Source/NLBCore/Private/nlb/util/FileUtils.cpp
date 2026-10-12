@@ -7,6 +7,13 @@
 #include <sstream>
 
 #ifdef _WIN32
+    // Без NOMINMAX макросы min/max из windows.h ломают std::min/std::max (MSVC)
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
     #include <windows.h>
     #include <direct.h>
     #define PATH_SEPARATOR '\\'
@@ -60,15 +67,15 @@ std::filesystem::path FileUtils::nativePath(const std::string& utf8Path) {
 }
 #else
 std::wstring FileUtils::toWide(const std::string& utf8) {
-    return std::filesystem::u8path(utf8).wstring();
+    return pathFromUtf8(utf8).wstring();
 }
 
 std::string FileUtils::fromWide(const std::wstring& wide) {
-    return std::filesystem::path(wide).u8string();
+    return pathToUtf8(std::filesystem::path(wide));
 }
 
 std::filesystem::path FileUtils::nativePath(const std::string& utf8Path) {
-    return std::filesystem::u8path(utf8Path);
+    return pathFromUtf8(utf8Path);
 }
 #endif
 
@@ -119,6 +126,23 @@ bool FileUtils::renameReplace(const std::string& from, const std::string& to) {
                        MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != 0;
 #else
     return std::rename(from.c_str(), to.c_str()) == 0;
+#endif
+}
+
+std::filesystem::path FileUtils::pathFromUtf8(const std::string& utf8) {
+#if defined(__cpp_char8_t)
+    return std::filesystem::path(std::u8string(utf8.begin(), utf8.end()));
+#else
+    return std::filesystem::u8path(utf8);
+#endif
+}
+
+std::string FileUtils::pathToUtf8(const std::filesystem::path& path) {
+#if defined(__cpp_char8_t)
+    const std::u8string s = path.u8string();
+    return std::string(s.begin(), s.end());
+#else
+    return path.u8string();
 #endif
 }
 

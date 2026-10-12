@@ -2,15 +2,21 @@ cmake_minimum_required(VERSION 3.16)
 project(NLBReader VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
+# C++17 по умолчанию; проект собирается и в C++20 (стандарт модулей Unreal Engine 5):
+# cmake -DCMAKE_CXX_STANDARD=20
+if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Compiler flags
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT /O2")
+    # /utf-8 — исходники и строковые литералы в UTF-8 (русские сообщения); /EHsc — исключения.
+    # Библиотека времени выполнения — по умолчанию CMake (/MD, /MDd): так же собирается Unreal,
+    # а статическая (/MT) дала бы конфликт при линковке с ним
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /utf-8 /EHsc")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")

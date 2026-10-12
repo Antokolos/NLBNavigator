@@ -93,7 +93,7 @@ public:
      * Внутри библиотеки пути хранятся в UTF-8. В Windows путь переводится в UTF-16, делается
      * абсолютным и получает префикс \\?\ — без него WinAPI и CRT не открывают файлы длиннее
      * MAX_PATH (260 символов), а у книг с вложенными модулями (Frontier) пути бывают длиннее.
-     * В остальных системах — просто std::filesystem::u8path.
+     * В остальных системах — путь из UTF-8 (pathFromUtf8).
      */
     static std::filesystem::path nativePath(const std::string& utf8Path);
 
@@ -106,6 +106,11 @@ public:
     static bool fileInfo(const std::string& path, bool& isDirectory, uint64_t& size, int64_t& mtime);
     /// Переименовать файл с заменой существующего (атомарная запись: сначала во временный)
     static bool renameReplace(const std::string& from, const std::string& to);
+
+    /// UTF-8 <-> std::filesystem::path. В C++17 это u8path/u8string; в C++20 u8path объявлен
+    /// устаревшим, а u8string() возвращает std::u8string — эти функции работают в обоих стандартах
+    static std::filesystem::path pathFromUtf8(const std::string& utf8);
+    static std::string pathToUtf8(const std::filesystem::path& path);
 
     /// UTF-8 <-> UTF-16 (Windows). Строка, не являющаяся UTF-8, читается в кодировке ANSI.
     static std::wstring toWide(const std::string& utf8);

@@ -1,4 +1,5 @@
 #include "PlatformPaths.h"
+#include "nlb/util/FileUtils.h"
 
 #include <cstdlib>
 
@@ -16,7 +17,7 @@ std::vector<std::string> utf8Args(int argc, char** argv) {
     LPWSTR* wargv = CommandLineToArgvW(GetCommandLineW(), &count);
     if (wargv) {
         for (int i = 0; i < count; ++i) {
-            result.push_back(std::filesystem::path(wargv[i]).u8string());
+            result.push_back(FileUtils::pathToUtf8(std::filesystem::path(wargv[i])));
         }
         LocalFree(wargv);
         return result;
