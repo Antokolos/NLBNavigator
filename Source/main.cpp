@@ -7,6 +7,7 @@
 #include "nlb/api/DummyProgressData.h"
 #include "PlatformPaths.h"
 #include "nlb/util/BookPack.h"
+#include "nlb/util/FileUtils.h"
 #include "SessionLog.h"
 
 #include <cstdlib>
@@ -77,7 +78,7 @@ static void prepareBookSource(const std::string& nlbPath, bool useCache) {
     std::string error;
     const fs::path path = fs::u8path(nlbPath);
     std::error_code ec;
-    if (fs::is_regular_file(path, ec)) {
+    if (FileUtils::exists(nlbPath) && !FileUtils::isDirectory(nlbPath)) {
         auto pack = BookPack::read(nlbPath, error);
         if (!pack) {
             std::cerr << "Warning: " << error << std::endl;
