@@ -6,6 +6,7 @@
 #include "nlb/api/ConsoleProgressData.h"
 #include "nlb/api/DummyProgressData.h"
 #include "PlatformPaths.h"
+#include "nlb/util/BookPack.h"
 #include "SessionLog.h"
 
 #include <cstdlib>
@@ -26,6 +27,7 @@ static std::string achievementsFilePath(const std::filesystem::path& bookPath) {
         const fs::path book = bookPath.lexically_normal();
         fs::path bookName = book.filename();
         if (bookName.empty()) bookName = book.parent_path().filename();
+        if (bookName.extension() == ".nlbpack") bookName = bookName.stem();
         fs::path achievementsName = bookName;
         achievementsName += ".achievements";
         std::error_code ec;
@@ -51,6 +53,7 @@ static std::string savesDirectory(const std::filesystem::path& bookPath) {
         const fs::path book = bookPath.lexically_normal();
         fs::path bookName = book.filename();
         if (bookName.empty()) bookName = book.parent_path().filename();
+        if (bookName.extension() == ".nlbpack") bookName = bookName.stem();
         const fs::path home = homeDir();
         fs::path dir = home.empty() ? book / ".saves" : home / ".nlbnavigator" / bookName;
         if (!home.empty()) dir += ".saves";
@@ -60,6 +63,50 @@ static std::string savesDirectory(const std::filesystem::path& bookPath) {
     } catch (const std::exception& e) {
         std::cerr << "Warning: saves are not available: " << e.what() << std::endl;
         return std::string();
+    }
+}
+
+/**
+ * @brief Источник данных книги перед загрузкой. Файл .nlbpack монтируется как каталог книги.
+ * Для каталога используется кэш ~/.nlbnavigator/<книга>.nlbpack: если он совпадает с каталогом
+ * (те же файлы, размеры и времена изменения — сверяются только метаданные), книга читается из
+ * него; иначе кэш пересобирается. Ошибки кэша не мешают загрузке: читается сам каталог.
+ */
+static void prepareBookSource(const std::string& nlbPath, bool useCache) {
+    namespace fs = std::filesystem;
+    std::string error;
+    const fs::path path = fs::u8path(nlbPath);
+    std::error_code ec;
+    if (fs::is_regular_file(path, ec)) {
+        auto pack = BookPack::read(nlbPath, error);
+        if (!pack) {
+            std::cerr << "Warning: " << error << std::endl;
+            return;
+        }
+        BookPack::mount(std::shared_ptr<BookPack>(std::move(pack)), nlbPath);
+        return;
+    }
+    if (!useCache) return;
+    try {
+        fs::path bookName = path.lexically_normal().filename();
+        if (bookName.empty()) bookName = path.lexically_normal().parent_path().filename();
+        const fs::path home = homeDir();
+        if (home.empty()) return;
+        const fs::path dir = home / ".nlbnavigator";
+        fs::create_directories(dir, ec);
+        const std::string cachePath = (dir / bookName).u8string() + ".nlbpack";
+        auto cached = BookPack::read(cachePath, error);
+        if (cached && cached->matches(nlbPath)) {
+            BookPack::mount(std::shared_ptr<BookPack>(std::move(cached)), nlbPath);
+            return;
+        }
+        // Кэша нет или книга изменилась: один проход по каталогу — и в пакет, и в память
+        auto fresh = BookPack::build(nlbPath, error);
+        if (!fresh) return;
+        fresh->write(cachePath, error);
+        BookPack::mount(std::shared_ptr<BookPack>(std::move(fresh)), nlbPath);
+    } catch (const std::exception&) {
+        BookPack::unmount();  // кэш — только ускорение: при сбое читаем каталог как обычно
     }
 }
 
@@ -81,6 +128,9 @@ int main(int argc, char* argv[]) {
     std::vector<std::string> positional;
     std::string logPath;
     bool screenReader = false;
+    // Кэш каталога выключен по умолчанию: проверка его свежести обходит весь каталог, и на
+    // Linux это не быстрее самой загрузки. Для поставки игры — упакованный файл (pack)
+    bool useCache = false;
     for (size_t i = 1; i < args.size(); ++i) {
         const std::string& arg = args[i];
         if (arg == "--log" && i + 1 < args.size()) {
@@ -89,6 +139,10 @@ int main(int argc, char* argv[]) {
             logPath = arg.substr(6);
         } else if (arg == "--screen-reader") {
             screenReader = true;
+        } else if (arg == "--cache") {
+            useCache = true;
+        } else if (arg == "--no-cache") {
+            useCache = false;
         } else {
             positional.push_back(arg);
         }
@@ -100,6 +154,9 @@ int main(int argc, char* argv[]) {
         std::cout << "  explore standard - play as exported by exportToSTEADFile" << std::endl;
         std::cout << "  --log <file>     - save the session (output and input) to the file" << std::endl;
         std::cout << "  --screen-reader  - mode for screen readers (NVDA, JAWS, Orca)" << std::endl;
+        std::cout << "  pack [<file>]    - pack the book directory into a single .nlbpack file" << std::endl;
+        std::cout << "  <file.nlbpack>   - a packed book can be played instead of a directory" << std::endl;
+        std::cout << "  --cache          - keep a packed copy of the book directory in ~/.nlbnavigator" << std::endl;
         return 1;
     }
 
@@ -111,6 +168,21 @@ int main(int argc, char* argv[]) {
 
     const std::string nlbPath = positional[0];
     const std::string mode = positional.size() > 1 ? positional[1] : "info";
+
+    if (mode == "pack") {
+        // Упаковать каталог книги в один файл: для поставки игры и быстрой загрузки
+        const std::string out = positional.size() > 2 ? positional[2]
+            : std::filesystem::u8path(nlbPath).lexically_normal().u8string() + ".nlbpack";
+        std::string error;
+        auto pack = BookPack::build(nlbPath, error);
+        if (!pack || !pack->write(out, error)) {
+            std::cerr << "Cannot pack the book: " << error << std::endl;
+            return 1;
+        }
+        std::cout << "Packed " << pack->fileCount() << " files into " << out << std::endl;
+        return 0;
+    }
+    prepareBookSource(nlbPath, useCache);
 
     if (mode == "explore") {
         auto book = std::make_unique<NonLinearBookImpl>();

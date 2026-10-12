@@ -152,6 +152,8 @@ public:
      * \throws NLBIOException if read operation fails
      */
     static std::string getFileAsString(std::ifstream& stream);
+    /// Переводы строк как в Java (CR/CRLF -> \n, без завершающего перевода строки)
+    static std::string normalizeText(const std::string& raw);
 
     /*!
      * \brief Transfers data between streams

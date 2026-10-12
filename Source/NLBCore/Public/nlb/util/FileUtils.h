@@ -96,6 +96,9 @@ public:
      */
     static std::filesystem::path nativePath(const std::string& utf8Path);
 
+    /// Прочитать файл целиком (с учётом смонтированного пакета книги BookPack); false — нет файла
+    static bool readFile(const std::string& path, std::string& content);
+
     /// UTF-8 <-> UTF-16 (Windows). Строка, не являющаяся UTF-8, читается в кодировке ANSI.
     static std::wstring toWide(const std::string& utf8);
     static std::string fromWide(const std::wstring& wide);

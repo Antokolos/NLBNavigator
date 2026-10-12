@@ -101,6 +101,7 @@ set(NLB_DOMAIN_HEADERS
 set(NLB_UTIL_HEADERS
         ${NLB_INCLUDE_DIR}/nlb/util/FileManipulator.h
         ${NLB_INCLUDE_DIR}/nlb/util/FileUtils.h
+        ${NLB_INCLUDE_DIR}/nlb/util/BookPack.h
         ${NLB_INCLUDE_DIR}/nlb/util/MultiLangString.h
         ${NLB_INCLUDE_DIR}/nlb/util/QuotationHelper.h
         ${NLB_INCLUDE_DIR}/nlb/util/ResourceManager.h
@@ -175,6 +176,7 @@ set(NLB_DOMAIN_SOURCES
 set(NLB_UTIL_SOURCES
         ${NLB_SOURCE_DIR}/nlb/util/FileManipulator.cpp
         ${NLB_SOURCE_DIR}/nlb/util/FileUtils.cpp
+        ${NLB_SOURCE_DIR}/nlb/util/BookPack.cpp
         ${NLB_SOURCE_DIR}/nlb/util/MultiLangString.cpp
         ${NLB_SOURCE_DIR}/nlb/util/QuotationHelper.cpp
         ${NLB_SOURCE_DIR}/nlb/util/ResourceManager.cpp

@@ -260,14 +260,11 @@ std::string FileManipulator::getRequiredFileAsString(
         throw NLBIOException(errorMessage);
     }
 
-    std::ifstream file(FileUtils::nativePath(filePath), std::ios::binary);
-    if (!file.is_open()) {
+    std::string raw;
+    if (!FileUtils::readFile(filePath, raw)) {
         throw NLBIOException("Cannot open file: " + filePath);
     }
-
-    std::string content = getFileAsString(file);
-    file.close();
-    return content;
+    return normalizeText(raw);
 }
 
 std::string FileManipulator::getOptionalFileAsString(
@@ -279,18 +276,8 @@ std::string FileManipulator::getOptionalFileAsString(
         return defaultValue;
     }
 
-    try {
-        std::ifstream file(FileUtils::nativePath(filePath), std::ios::binary);
-        if (!file.is_open()) {
-            return defaultValue;
-        }
-
-        std::string content = getFileAsString(file);
-        file.close();
-        return content;
-    } catch (const std::exception&) {
-        return defaultValue;
-    }
+    std::string raw;
+    return FileUtils::readFile(filePath, raw) ? normalizeText(raw) : defaultValue;
 }
 
 MultiLangString FileManipulator::readOptionalMultiLangString(
@@ -308,22 +295,16 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
             
             for (const auto& langKey : langKeys) {
                 std::string filePath = FileUtils::combinePath(mlsRootDir, langKey);
-                if (!FileUtils::isDirectory(filePath)) {
-                    std::ifstream file(FileUtils::nativePath(filePath), std::ios::binary);
-                    if (file.is_open()) {
-                        std::string content = getFileAsString(file);
-                        result.put(langKey, content);
-                        file.close();
-                    }
+                std::string raw;
+                if (!FileUtils::isDirectory(filePath) && FileUtils::readFile(filePath, raw)) {
+                    result.put(langKey, normalizeText(raw));
                 }
             }
         } else {
             // Single file case - treat as default language
-            std::ifstream file(FileUtils::nativePath(mlsRootDir), std::ios::binary);
-            if (file.is_open()) {
-                std::string content = getFileAsString(file);
-                result.put(NonLinearBook::DEFAULT_LANGUAGE, content);
-                file.close();
+            std::string raw;
+            if (FileUtils::readFile(mlsRootDir, raw)) {
+                result.put(NonLinearBook::DEFAULT_LANGUAGE, normalizeText(raw));
             }
         }
     } catch (const std::exception& e) {
@@ -349,10 +330,13 @@ void FileManipulator::writeFile(const std::string& filePath, std::istream& input
 // Java FileManipulator.getFileAsString: построчное чтение (readLine понимает \n, \r и \r\n),
 // строки склеиваются через EOL_STRING, завершающий перевод строки отбрасывается
 std::string FileManipulator::getFileAsString(std::ifstream& stream) {
+    std::stringstream buffer;
+    buffer << stream.rdbuf();
+    return normalizeText(buffer.str());
+}
+
+std::string FileManipulator::normalizeText(const std::string& raw) {
     try {
-        std::stringstream buffer;
-        buffer << stream.rdbuf();
-        const std::string raw = buffer.str();
         std::string result;
         result.reserve(raw.size());
         for (size_t i = 0; i < raw.size(); ++i) {

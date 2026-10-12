@@ -16,14 +16,11 @@ const std::string VariableImpl::VALUE_FILE_NAME = "value";
 
 // Helper function to read file contents
 std::string readFileContents(const std::string& filePath) {
-    std::ifstream file(FileUtils::nativePath(filePath));
-    if (!file.is_open()) {
+    std::string content;
+    if (!FileUtils::readFile(filePath, content)) {
         throw NLBIOException("Cannot open file: " + filePath);
     }
-    
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
+    return content;
 }
 
 // Helper function to write file contents

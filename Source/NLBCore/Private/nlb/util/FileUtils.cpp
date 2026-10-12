@@ -1,4 +1,7 @@
 #include "nlb/util/FileUtils.h"
+#include "nlb/util/BookPack.h"
+#include <fstream>
+#include <iterator>
 #include <cstdio>
 #include <algorithm>
 #include <sstream>
@@ -69,6 +72,20 @@ std::filesystem::path FileUtils::nativePath(const std::string& utf8Path) {
 }
 #endif
 
+bool FileUtils::readFile(const std::string& path, std::string& content) {
+    std::string rel;
+    if (BookPack::resolve(path, rel)) {
+        const BookPack::Entry* e = BookPack::mounted()->find(rel);
+        if (!e || e->type != BookPack::Entry::Type::File) return false;
+        content = e->content;
+        return true;
+    }
+    std::ifstream in(nativePath(path), std::ios::binary);
+    if (!in) return false;
+    content.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+    return true;
+}
+
 char FileUtils::getPathSeparator() {
     return PATH_SEPARATOR;
 }
@@ -112,6 +129,8 @@ std::string FileUtils::combinePath(const std::string& path1, const std::string& 
 }
 
 bool FileUtils::exists(const std::string& path) {
+    std::string rel;
+    if (BookPack::resolve(path, rel)) return BookPack::mounted()->find(rel) != nullptr;
 #ifdef _WIN32
     DWORD attrs = GetFileAttributesW(nativePath(path).c_str());
     return (attrs != INVALID_FILE_ATTRIBUTES);
@@ -122,6 +141,11 @@ bool FileUtils::exists(const std::string& path) {
 }
 
 bool FileUtils::isDirectory(const std::string& path) {
+    std::string rel;
+    if (BookPack::resolve(path, rel)) {
+        const BookPack::Entry* e = BookPack::mounted()->find(rel);
+        return e && e->type == BookPack::Entry::Type::Directory;
+    }
 #ifdef _WIN32
     DWORD attrs = GetFileAttributesW(nativePath(path).c_str());
     return (attrs != INVALID_FILE_ATTRIBUTES && (attrs & FILE_ATTRIBUTE_DIRECTORY));
@@ -133,6 +157,8 @@ bool FileUtils::isDirectory(const std::string& path) {
 
 std::vector<std::string> FileUtils::getDirectoryFiles(const std::string& path) {
     std::vector<std::string> files;
+    std::string rel;
+    if (BookPack::resolve(path, rel)) return BookPack::mounted()->children(rel);
 
 #ifdef _WIN32
     WIN32_FIND_DATAW findData;
