@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -98,6 +99,13 @@ public:
 
     /// Прочитать файл целиком (с учётом смонтированного пакета книги BookPack); false — нет файла
     static bool readFile(const std::string& path, std::string& content);
+
+    /// Тип, размер и время изменения файла. В Windows — через WinAPI: функции std::filesystem
+    /// в MinGW (stat из msvcrt) не принимают пути с префиксом \\?\, без которого не открыть
+    /// длинные пути; поэтому с путями nativePath() std::filesystem использовать нельзя
+    static bool fileInfo(const std::string& path, bool& isDirectory, uint64_t& size, int64_t& mtime);
+    /// Переименовать файл с заменой существующего (атомарная запись: сначала во временный)
+    static bool renameReplace(const std::string& from, const std::string& to);
 
     /// UTF-8 <-> UTF-16 (Windows). Строка, не являющаяся UTF-8, читается в кодировке ANSI.
     static std::wstring toWide(const std::string& utf8);

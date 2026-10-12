@@ -381,7 +381,7 @@ bool PlayerContext::loadAchievements() {
     // Путь хранится в UTF-8; nativePath передаёт его в WinAPI как UTF-16 (кириллица, длинные пути)
     const std::filesystem::path file = FileUtils::nativePath(m_achievementsPath);
     std::error_code ec;
-    if (!std::filesystem::exists(file, ec)) {
+    if (!FileUtils::exists(m_achievementsPath)) {
         return true;  // первый запуск — файла ещё нет
     }
     std::ifstream in(file, std::ios::binary);
@@ -428,11 +428,8 @@ void PlayerContext::saveAchievements() const {
         }
     }
     std::error_code ec;
-    std::filesystem::rename(tmp, file, ec);  // заменяет существующий файл
-    if (ec) {
-        std::filesystem::remove(file, ec);
-        std::filesystem::rename(tmp, file, ec);
-    }
+    // Через WinAPI: std::filesystem в MinGW не понимает пути с префиксом \\?\ (nativePath)
+    FileUtils::renameReplace(m_achievementsPath + ".tmp", m_achievementsPath);
 }
 
 int PlayerContext::achievementCount(const std::string& name) const {

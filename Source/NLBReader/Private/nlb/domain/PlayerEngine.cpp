@@ -748,13 +748,8 @@ bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
             return false;
         }
     }
-    std::error_code ec;
-    std::filesystem::rename(FileUtils::nativePath(tmp), FileUtils::nativePath(path), ec);
-    if (ec) {
-        std::filesystem::remove(FileUtils::nativePath(path), ec);
-        std::filesystem::rename(FileUtils::nativePath(tmp), FileUtils::nativePath(path), ec);
-    }
-    if (ec) {
+    // Через WinAPI: std::filesystem в MinGW не понимает пути с префиксом \\?\ (nativePath)
+    if (!FileUtils::renameReplace(tmp, path)) {
         error = "не удалось записать файл " + path;
         return false;
     }

@@ -3,14 +3,12 @@
 #include "nlb/util/FileUtils.h"
 
 #include <algorithm>
-#include <filesystem>
 #include <fstream>
 
-namespace fs = std::filesystem;
 
 namespace {
 const char MAGIC[8] = {'N', 'L', 'B', 'P', 'A', 'C', 'K', '\n'};
-const uint32_t VERSION = 1;
+const uint32_t VERSION = 2;  // 2: времена изменения из WinAPI/stat вместо std::filesystem
 
 struct Mount {
     std::shared_ptr<BookPack> pack;
@@ -39,15 +37,26 @@ bool isMediaPath(const std::string& rel) {
 }
 
 /// Скрытые каталоги и файлы (.git, .idea и т.п.) к книге не относятся и в пакет не попадают
-bool isHidden(const fs::directory_entry& e) {
-    const std::string name = e.path().filename().u8string();
+bool isHidden(const std::string& name) {
     return !name.empty() && name[0] == '.';
 }
 
-int64_t mtimeOf(const fs::directory_entry& e) {
-    std::error_code ec;
-    const auto t = e.last_write_time(ec);
-    return ec ? 0 : static_cast<int64_t>(t.time_since_epoch().count());
+/// Обход каталога книги: для каждого элемента — относительный путь и метаданные.
+/// Только через FileUtils (WinAPI в Windows): std::filesystem не понимает префикс «\\?\».
+template <typename Visit>
+bool walk(const std::string& root, const std::string& rel, Visit&& visit) {
+    const std::string dir = rel.empty() ? root : FileUtils::combinePath(root, rel);
+    for (const std::string& name : FileUtils::getDirectoryFiles(dir)) {
+        if (isHidden(name)) continue;
+        const std::string childRel = rel.empty() ? name : rel + "/" + name;
+        bool isDir = false;
+        uint64_t size = 0;
+        int64_t mtime = 0;
+        if (!FileUtils::fileInfo(FileUtils::combinePath(root, childRel), isDir, size, mtime)) return false;
+        if (!visit(childRel, isDir, size, mtime)) return false;
+        if (isDir && !walk(root, childRel, visit)) return false;
+    }
+    return true;
 }
 
 void putU32(std::string& out, uint32_t v) { for (int i = 0; i < 4; ++i) out += static_cast<char>((v >> (8 * i)) & 0xFF); }
@@ -78,40 +87,31 @@ struct Reader {
 std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::string& error) {
     auto pack = std::make_unique<BookPack>();
     pack->m_sourceDir = bookDir;
-    const fs::path root = FileUtils::nativePath(bookDir);
-    std::error_code ec;
-    if (!fs::is_directory(root, ec)) {
+    if (!FileUtils::isDirectory(bookDir)) {
         error = "нет каталога книги " + bookDir;
         return nullptr;
     }
     pack->m_entries[""] = Entry{Entry::Type::Directory, 0, 0, {}};
-    for (auto it = fs::recursive_directory_iterator(root, ec); !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
-        const fs::directory_entry& e = *it;
-        if (isHidden(e)) {
-            if (e.is_directory(ec)) it.disable_recursion_pending();
-            continue;
-        }
-        const std::string rel = normalized(fs::relative(e.path(), root, ec).u8string());
-        if (ec) break;
+    const bool ok = walk(bookDir, "", [&](const std::string& rel, bool isDir, uint64_t size, int64_t mtime) {
         Entry entry;
-        entry.mtime = mtimeOf(e);
-        if (e.is_directory(ec)) {
+        entry.mtime = mtime;
+        entry.size = isDir ? 0 : size;
+        if (isDir) {
             entry.type = Entry::Type::Directory;
+        } else if (isMediaPath(rel)) {
+            entry.type = Entry::Type::MediaFile;
         } else {
-            entry.size = e.file_size(ec);
-            if (isMediaPath(rel)) {
-                entry.type = Entry::Type::MediaFile;
-            } else {
-                entry.type = Entry::Type::File;
-                std::ifstream in(e.path(), std::ios::binary);
-                if (!in) { error = "не удалось прочитать " + rel; return nullptr; }
-                entry.content.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+            entry.type = Entry::Type::File;
+            if (!FileUtils::readFile(FileUtils::combinePath(bookDir, rel), entry.content)) {
+                error = "не удалось прочитать " + rel;
+                return false;
             }
         }
         pack->m_entries[rel] = std::move(entry);
-    }
-    if (ec) {
-        error = "ошибка обхода каталога книги: " + ec.message();
+        return true;
+    });
+    if (!ok) {
+        if (error.empty()) error = "ошибка обхода каталога книги " + bookDir;
         return nullptr;
     }
     pack->index();
@@ -138,13 +138,10 @@ bool BookPack::write(const std::string& packPath, std::string& error) const {
             return false;
         }
     }
-    std::error_code ec;
-    fs::rename(FileUtils::nativePath(tmp), FileUtils::nativePath(packPath), ec);
-    if (ec) {
-        fs::remove(FileUtils::nativePath(packPath), ec);
-        fs::rename(FileUtils::nativePath(tmp), FileUtils::nativePath(packPath), ec);
+    if (!FileUtils::renameReplace(tmp, packPath)) {
+        error = "не удалось записать " + packPath;
+        return false;
     }
-    if (ec) { error = "не удалось записать " + packPath; return false; }
     return true;
 }
 
@@ -186,22 +183,15 @@ void BookPack::index() {
 }
 
 bool BookPack::matches(const std::string& bookDir) const {
-    const fs::path root = FileUtils::nativePath(bookDir);
-    std::error_code ec;
     size_t seen = 1;  // корень
-    for (auto it = fs::recursive_directory_iterator(root, ec); !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
-        const fs::directory_entry& e = *it;
-        if (isHidden(e)) {
-            if (e.is_directory(ec)) it.disable_recursion_pending();
-            continue;
-        }
-        const std::string rel = normalized(fs::relative(e.path(), root, ec).u8string());
+    const bool ok = walk(bookDir, "", [&](const std::string& rel, bool isDir, uint64_t size, int64_t mtime) {
         auto found = m_entries.find(rel);
-        if (ec || found == m_entries.end() || found->second.mtime != mtimeOf(e)) return false;
-        if (found->second.type != Entry::Type::Directory && found->second.size != e.file_size(ec)) return false;
+        if (found == m_entries.end() || found->second.mtime != mtime) return false;
+        if (!isDir && found->second.size != size) return false;
         ++seen;
-    }
-    return !ec && seen == m_entries.size();
+        return true;
+    });
+    return ok && seen == m_entries.size();
 }
 
 void BookPack::mount(std::shared_ptr<BookPack> pack, const std::string& virtualRoot) {

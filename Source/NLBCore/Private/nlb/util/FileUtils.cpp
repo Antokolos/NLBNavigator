@@ -86,6 +86,42 @@ bool FileUtils::readFile(const std::string& path, std::string& content) {
     return true;
 }
 
+bool FileUtils::fileInfo(const std::string& path, bool& isDirectory, uint64_t& size, int64_t& mtime) {
+#ifdef _WIN32
+    WIN32_FILE_ATTRIBUTE_DATA data;
+    if (!GetFileAttributesExW(nativePath(path).c_str(), GetFileExInfoStandard, &data)) {
+        return false;
+    }
+    isDirectory = (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    size = (static_cast<uint64_t>(data.nFileSizeHigh) << 32) | data.nFileSizeLow;
+    mtime = static_cast<int64_t>((static_cast<uint64_t>(data.ftLastWriteTime.dwHighDateTime) << 32)
+                                 | data.ftLastWriteTime.dwLowDateTime);
+    return true;
+#else
+    struct stat st;
+    if (stat(path.c_str(), &st) != 0) {
+        return false;
+    }
+    isDirectory = S_ISDIR(st.st_mode);
+    size = static_cast<uint64_t>(st.st_size);
+    mtime = static_cast<int64_t>(st.st_mtime) * 1000000000LL
+#if defined(__linux__)
+        + st.st_mtim.tv_nsec
+#endif
+        ;
+    return true;
+#endif
+}
+
+bool FileUtils::renameReplace(const std::string& from, const std::string& to) {
+#ifdef _WIN32
+    return MoveFileExW(nativePath(from).c_str(), nativePath(to).c_str(),
+                       MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != 0;
+#else
+    return std::rename(from.c_str(), to.c_str()) == 0;
+#endif
+}
+
 char FileUtils::getPathSeparator() {
     return PATH_SEPARATOR;
 }
