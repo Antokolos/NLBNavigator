@@ -66,7 +66,7 @@ bool NLBExplorer::readLine(std::string& line) {
 
 void NLBExplorer::printEvents() {
     using Kind = PlayerEngine::Event::Kind;
-    for (const auto& event : m_engine->takeEvents()) {
+    for (const auto& event : takeEvents()) {
         switch (event.kind) {
             case Kind::PageCaption: m_out << "\n" << std::string(50, '=') << "\n" << event.text << "\n"
                                           << std::string(50, '=') << std::endl; break;
@@ -258,7 +258,9 @@ bool NLBExplorer::runMenu() {
             m_out << (m_engine->canSave() ? "1. Сохранить игру\n" : "1. Сохранить игру — здесь сохраняться нельзя\n")
                   << "2. Загрузить игру\n";
         }
-        m_out << "3. Начать заново\n4. Выйти из игры\n0. Вернуться в игру\n\nВаш выбор: " << std::flush;
+        m_out << "3. Начать заново\n4. Выйти из игры\n";
+        if (m_soundSwitch) m_out << (m_soundOn ? "5. Выключить звук\n" : "5. Включить звук\n");
+        m_out << "0. Вернуться в игру\n\nВаш выбор: " << std::flush;
         std::string line;
         if (!readLine(line)) {
             return false;
@@ -281,6 +283,9 @@ bool NLBExplorer::runMenu() {
                 m_engine->restart();
                 return true;
             }
+        } else if (line == "5" && m_soundSwitch) {
+            m_soundOn = m_soundSwitch(!m_soundOn);
+            m_out << (m_soundOn ? "Звук включён." : "Звук выключен.") << std::endl;
         } else if (line == "4") {
             if (confirm("Выйти из игры?")) {
                 return false;
@@ -427,4 +432,10 @@ void demoDiceGame(PlayerEngine& engine, const NLBExplorer::LineReader& readLine,
 void NLBExplorer::registerDefaultExternalGames() {
     // Мини-игры «Большая свинья» из INSTEAD-модуля big_pig.lua (play_bp_two_ais, play_bp_one_ai, ...)
     registerExternalGame("play_bp_*", demoDiceGame);
+}
+
+std::vector<PlayerEngine::Event> NLBExplorer::takeEvents() {
+    std::vector<PlayerEngine::Event> events = m_engine->takeEvents();
+    if (m_eventListener) m_eventListener(events);
+    return events;
 }

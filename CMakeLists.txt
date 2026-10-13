@@ -107,6 +107,7 @@ set(NLB_DOMAIN_HEADERS
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/MediaSource.h
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/AudioBackend.h
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/AudioDirector.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/BookMediaSource.h
 )
 
 # Utility Headers
@@ -180,6 +181,7 @@ set(NLB_DOMAIN_SOURCES
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorer.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorerScreenReader.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/AudioDirector.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/BookMediaSource.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerContext.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/ModificationInterpreter.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerEngine.cpp
@@ -289,7 +291,30 @@ target_include_directories(nlb_main
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
+# Звук через SDL3 + SDL3_mixer (необязательно): консоль и будущий nlb_sdl.
+# Ищется автоматически; -DNLB_WITH_SDL3=OFF — собрать без звука
+option(NLB_WITH_SDL3 "Build SDL3 audio backend" ON)
+if(NLB_WITH_SDL3)
+    find_package(SDL3 CONFIG QUIET)
+    find_package(SDL3_mixer CONFIG QUIET)
+    if(SDL3_FOUND AND SDL3_mixer_FOUND)
+        add_library(NLBAudioSDL STATIC
+                Source/NLBAudioSDL/Public/nlb/audio/SdlAudioBackend.h
+                Source/NLBAudioSDL/Private/nlb/audio/SdlAudioBackend.cpp)
+        target_include_directories(NLBAudioSDL PUBLIC Source/NLBAudioSDL/Public)
+        target_link_libraries(NLBAudioSDL PUBLIC NLBReader SDL3::SDL3 SDL3_mixer::SDL3_mixer)
+        message(STATUS "NLBNavigator: SDL3 audio backend enabled")
+    else()
+        message(STATUS "NLBNavigator: SDL3/SDL3_mixer not found — building without sound")
+        set(NLB_WITH_SDL3 OFF)
+    endif()
+endif()
+
 target_link_libraries(nlb_main PRIVATE NLBReader)
+if(NLB_WITH_SDL3)
+    target_link_libraries(nlb_main PRIVATE NLBAudioSDL)
+    target_compile_definitions(nlb_main PRIVATE NLB_WITH_SDL3)
+endif()
 if(WIN32)
     # CommandLineToArgvW — путь к книге из UTF-16 командной строки
     target_link_libraries(nlb_main PRIVATE shell32)

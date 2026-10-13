@@ -38,6 +38,13 @@ public:
     using ExternalGameHandler = std::function<void(PlayerEngine& engine, const LineReader& readLine, std::ostream& out)>;
     /// name — имя игры; "префикс*" — все игры с таким префиксом
     void registerExternalGame(const std::string& name, ExternalGameHandler handler);
+    /// События движка (картинки, музыка, звуки...) до их вывода в консоль — например, для звука
+    using EventListener = std::function<void(const std::vector<PlayerEngine::Event>&)>;
+    void setEventListener(EventListener listener) { m_eventListener = std::move(listener); }
+    /// Переключатель звука для меню: получает «включить?» и возвращает, включён ли звук теперь.
+    /// Не задан — в меню нет пункта о звуке (плеер без звука)
+    using SoundSwitch = std::function<bool(bool enable)>;
+    void setSoundSwitch(SoundSwitch soundSwitch, bool enabled) { m_soundSwitch = std::move(soundSwitch); m_soundOn = enabled; }
     /// Режим для экранного диктора (NVDA, JAWS, Orca): без картинок, координат и имён файлов,
     /// списки по строке на пункт, после действия — только изменения, команды для навигации на слух
     void setScreenReaderMode(bool enabled) { m_screenReader = enabled; }
@@ -66,6 +73,10 @@ private:
     void loadMenu();
     std::string slotPath(int slot) const;
     std::string m_savesDir;
+    EventListener m_eventListener;
+    SoundSwitch m_soundSwitch;
+    bool m_soundOn = false;
+    std::vector<PlayerEngine::Event> takeEvents();
     std::vector<std::pair<std::string, ExternalGameHandler>> m_externalGames;
     const ExternalGameHandler* findExternalGame(const std::string& name) const;
     void runExternalGame();

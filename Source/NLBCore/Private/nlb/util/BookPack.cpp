@@ -84,7 +84,7 @@ struct Reader {
 };
 }
 
-std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::string& error) {
+std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::string& error, bool withMedia) {
     auto pack = std::make_unique<BookPack>();
     pack->m_sourceDir = bookDir;
     if (!FileUtils::isDirectory(bookDir)) {
@@ -98,7 +98,7 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
         entry.size = isDir ? 0 : size;
         if (isDir) {
             entry.type = Entry::Type::Directory;
-        } else if (isMediaPath(rel)) {
+        } else if (isMediaPath(rel) && !withMedia) {
             entry.type = Entry::Type::MediaFile;
         } else {
             entry.type = Entry::Type::File;

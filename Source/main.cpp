@@ -7,6 +7,11 @@
 #include "nlb/api/DummyProgressData.h"
 #include "PlatformPaths.h"
 #include "nlb/util/BookPack.h"
+#ifdef NLB_WITH_SDL3
+#include "nlb/audio/SdlAudioBackend.h"
+#include "nlb/presentation/AudioDirector.h"
+#include "nlb/presentation/BookMediaSource.h"
+#endif
 #include "nlb/util/FileUtils.h"
 #include "SessionLog.h"
 
@@ -132,6 +137,8 @@ int main(int argc, char* argv[]) {
     // Кэш каталога выключен по умолчанию: проверка его свежести обходит весь каталог, и на
     // Linux это не быстрее самой загрузки. Для поставки игры — упакованный файл (pack)
     bool useCache = false;
+    bool withMedia = false;  // pack: класть в пакет и картинки со звуками
+    bool sound = true;       // звук через SDL3, если плеер собран с ним
     for (size_t i = 1; i < args.size(); ++i) {
         const std::string& arg = args[i];
         if (arg == "--log" && i + 1 < args.size()) {
@@ -140,6 +147,10 @@ int main(int argc, char* argv[]) {
             logPath = arg.substr(6);
         } else if (arg == "--screen-reader") {
             screenReader = true;
+        } else if (arg == "--with-media") {
+            withMedia = true;
+        } else if (arg == "--no-sound") {
+            sound = false;
         } else if (arg == "--cache") {
             useCache = true;
         } else if (arg == "--no-cache") {
@@ -158,6 +169,8 @@ int main(int argc, char* argv[]) {
         std::cout << "  pack [<file>]    - pack the book directory into a single .nlbpack file" << std::endl;
         std::cout << "  <file.nlbpack>   - a packed book can be played instead of a directory" << std::endl;
         std::cout << "  --cache          - keep a packed copy of the book directory in ~/.nlbnavigator" << std::endl;
+        std::cout << "  --with-media     - pack: include images and sounds into the .nlbpack file" << std::endl;
+        std::cout << "  --no-sound       - do not play music and sounds" << std::endl;
         return 1;
     }
 
@@ -175,7 +188,7 @@ int main(int argc, char* argv[]) {
         const std::string out = positional.size() > 2 ? positional[2]
             : FileUtils::pathToUtf8(FileUtils::pathFromUtf8(nlbPath).lexically_normal()) + ".nlbpack";
         std::string error;
-        auto pack = BookPack::build(nlbPath, error);
+        auto pack = BookPack::build(nlbPath, error, withMedia);
         if (!pack || !pack->write(out, error)) {
             std::cerr << "Cannot pack the book: " << error << std::endl;
             return 1;
@@ -215,6 +228,30 @@ int main(int argc, char* argv[]) {
         NLBExplorer explorer(book.get(), book->getStartPoint(), settings);
         explorer.setScreenReaderMode(screenReader);
         explorer.setSavesDirectory(savesDirectory(FileUtils::pathFromUtf8(nlbPath)));
+#ifdef NLB_WITH_SDL3
+        // Звук: SDL3_mixer через AudioDirector — та же логика, что у графических фронтендов
+        std::unique_ptr<nlb::presentation::BookMediaSource> media;
+        std::unique_ptr<nlb::audio::SdlAudioBackend> audio;
+        std::unique_ptr<nlb::presentation::AudioDirector> director;
+        if (sound && !book->isSuppressSound()) {
+            media = std::make_unique<nlb::presentation::BookMediaSource>(nlbPath);
+            audio = std::make_unique<nlb::audio::SdlAudioBackend>(*media);
+            if (audio->isAvailable()) {
+                director = std::make_unique<nlb::presentation::AudioDirector>(*audio);
+                explorer.setEventListener([&director](const std::vector<PlayerEngine::Event>& events) {
+                    director->apply(events);
+                });
+                explorer.setSoundSwitch([&director](bool enable) {
+                    director->setMuted(!enable);
+                    return enable;
+                }, true);
+            } else {
+                std::cerr << "Warning: sound is not available: " << audio->lastError() << std::endl;
+            }
+        }
+#else
+        (void)sound;
+#endif
         if (sessionLog.isOpen()) {
             explorer.setInputListener([&sessionLog](const std::string& line) { sessionLog.recordInput(line); });
         }

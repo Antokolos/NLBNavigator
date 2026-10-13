@@ -117,7 +117,7 @@ void NLBExplorer::srPrintHelp() {
 bool NLBExplorer::srPrintEvents() {
     using Kind = PlayerEngine::Event::Kind;
     bool fullPage = false;
-    for (const auto& event : m_engine->takeEvents()) {
+    for (const auto& event : takeEvents()) {
         switch (event.kind) {
             case Kind::PageCaption: m_out << "\n" << sentence(oneLine(event.text)) << std::endl; fullPage = true; break;
             case Kind::PageText:    m_out << "\n" << event.text << std::endl; fullPage = true; break;

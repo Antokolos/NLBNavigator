@@ -28,8 +28,9 @@ public:
         std::string content;        ///< содержимое (только для Type::File)
     };
 
-    /// Упаковать каталог книги (путь в UTF-8). Медиафайлы — без содержимого
-    static std::unique_ptr<BookPack> build(const std::string& bookDir, std::string& error);
+    /// Упаковать каталог книги (путь в UTF-8). Медиафайлы — без содержимого, если не withMedia
+    /// (с медиа пакет самодостаточен: картинки и звук берутся прямо из него)
+    static std::unique_ptr<BookPack> build(const std::string& bookDir, std::string& error, bool withMedia = false);
     /// Прочитать пакет из файла
     static std::unique_ptr<BookPack> read(const std::string& packPath, std::string& error);
     bool write(const std::string& packPath, std::string& error) const;
