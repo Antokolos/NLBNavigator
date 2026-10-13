@@ -173,8 +173,18 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
         m_interpreter->objActA(instance);
         const Obj* common = m_interpreter->commonOf(obj);
         const std::string toTake = (common && common->isTakable()) ? common->getId() : instance;
-        // take(): объект исчезает с того места страницы, где лежит (в т.ч. из вложенного контейнера)
-        const std::string owner = m_context->containerOf(toTake);
+        // take() в STEAD: remove(obj, here()) — объект ищется в текущей комнате (here():srch,
+        // в том числе во вложенных объектах) и убирается оттуда, где найден. Объект может лежать
+        // и в других контейнерах (ADD не убирает из прежнего места) — там он остаётся
+        std::string owner;
+        if (m_context->containerHas(m_page->getId(), toTake)) {
+            owner = m_page->getId();
+        } else {
+            for (const auto& visible : sceneObjects()) {
+                if (m_context->containerHas(visible, toTake)) { owner = visible; break; }
+            }
+        }
+        if (owner.empty()) owner = m_context->containerOf(toTake);
         if (!owner.empty() && m_context->containerHas(owner, toTake)) {
             m_context->containerRemove(owner, toTake);
         }
@@ -1115,6 +1125,7 @@ std::string PlayerEngine::objDisp(const std::string& instanceId) const {
 
 std::vector<std::string> PlayerEngine::sceneObjects() const {
     std::vector<std::string> result;
+    m_sceneDepth.clear();
     if (m_page) {
         collectSceneObjects(m_page->getId(), result, 0);
         // preserved-объекты с прошлых страниц остаются на экране, пока они где-то лежат
@@ -1125,6 +1136,7 @@ std::vector<std::string> PlayerEngine::sceneObjects() const {
                 continue;
             }
             result.push_back(root);
+            m_sceneDepth[root] = 0;
             if (!m_context->isCollapsed(root)) {
                 collectSceneObjects(root, result, 1);
             }
@@ -1157,6 +1169,7 @@ void PlayerEngine::collectSceneObjects(const std::string& ownerId, std::vector<s
             continue;  // выключенный объект скрывает и своё содержимое
         }
         result.push_back(instanceId);
+        m_sceneDepth[instanceId] = depth;
         if (!m_context->isCollapsed(instanceId)) {  // у свёрнутого свитка содержимое не видно
             collectSceneObjects(instanceId, result, depth + 1);
         }
@@ -1344,11 +1357,8 @@ PlayerEngine::PageView PlayerEngine::view() const {
             ObjectView view{instanceId, label, obj->isTakable(), active, objPosition(instanceId)};
             view.placement = objPlacement(instanceId);
             view.collapsed = m_context->isCollapsed(instanceId);
-            for (std::string owner = m_context->containerOf(instanceId);
-                 !owner.empty() && m_interpreter->findObj(m_context->protoOf(owner)) && view.depth < 32;
-                 owner = m_context->containerOf(owner)) {
-                ++view.depth;
-            }
+            auto depth = m_sceneDepth.find(instanceId);
+            view.depth = depth == m_sceneDepth.end() ? 0 : depth->second;
             v.sceneObjects.push_back(view);
         }
     }
