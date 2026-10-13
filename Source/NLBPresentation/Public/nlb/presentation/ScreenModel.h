@@ -15,6 +15,8 @@
  * переход во внешнюю игру) приходят отдельно — событиями (PlayerEngine::Event).
  *
  * Источник истины для всех полей — поведение INSTEAD-экспорта (STEAD/VNSTEAD), как и раньше.
+ * Имена в комментариях вида «файл effect» — файлы объекта в каталоге книги (ObjImpl.java),
+ * «eff/arm/iarm/maxStep» — поля gobj в экспортированном коде и vn.lua.
  */
 namespace nlb::presentation {
 
@@ -26,12 +28,15 @@ struct MediaRef {
     bool empty() const { return path.empty(); }
 };
 
-/// Картинка, в том числе анимированная (флаг animated: intro-1478.png -> кадры intro-1..1478)
+/// Картинка, в том числе анимированная. Флаг «Animated image» (файл animated у страницы и
+/// объекта): число перед расширением — количество кадров, intro-1478.png -> кадры
+/// intro-1.png .. intro-1478.png, которые сменяются по таймеру
 struct ImageRef {
     MediaRef file;                ///< статичная картинка; для анимации — пусто
     std::string framePattern;     ///< "images/intro-%d.png" для анимации, иначе пусто
     int frameCount = 0;           ///< 0 — не анимация
     int currentFrame = 0;         ///< 1..frameCount: какой кадр показывать сейчас (по таймеру)
+    bool looped = false;          ///< «Looped» (файл looped): после последнего кадра — снова первый
     bool empty() const { return file.empty() && framePattern.empty(); }
 };
 
@@ -39,14 +44,46 @@ struct ImageRef {
 enum class Anchor { LeftTop, MiddleTop, RightTop, LeftMiddle, MiddleMiddle, RightMiddle,
                     LeftBottom, MiddleBottom, RightBottom };
 
-/// Положение графического объекта так, как его задаёт экспорт (decorateObjEffect, vn.lua):
-/// корневой — угол + (offset или arm), вложенный — относительно родителя (arm). Экран 1920×1080.
+/// Положение графического объекта так, как его задаёт экспорт (decorateObjEffect, vn.lua).
+/// Корневой объект: угол экрана + offset (если задан) или arm (координаты редактора,
+/// пересчитанные на экран 1920×1080). Вложенный: eff с 0,0, а положение внутри родителя —
+/// iarm (координаты редактора относительно родителя или его offset, без пересчёта).
 /// Фронтенд сам переводит это в свои координаты и масштаб
 struct Placement {
-    Anchor anchor = Anchor::LeftTop;
+    Anchor anchor = Anchor::LeftTop;   ///< «Coords origin» (файл coordsor)
     bool hasOffset = false;
-    int offsetX = 0, offsetY = 0;  ///< eff = "<угол>@<x>,<y>"
-    int armX = 0, armY = 0;        ///< arm = {[0] = {x, y}}
+    int offsetX = 0, offsetY = 0;      ///< «Offset» (файл offset): eff = "<угол>@<x>,<y>"
+    int armX = 0, armY = 0;            ///< arm = {[0] = {x, y}}
+    bool hasInnerArm = false;          ///< вложенный объект
+    int innerArmX = 0, innerArmY = 0;  ///< iarm = {[0] = {x, y}}
+};
+
+/// Эффект появления графического объекта («Effect», файл effect). В экспорте — приставка к eff:
+/// "fadein-left-top@1520,40", "moveinleft-...". Проигрывается шагами от curStep до maxStep
+enum class AppearEffect {
+    None,     ///< просто показать
+    MoveIn,   ///< выезжает из-за края экрана (направление — MoveDirection)
+    MoveOut,  ///< уезжает за край экрана
+    FadeIn,   ///< появляется из прозрачности
+    FadeOut,  ///< уходит в прозрачность
+    ZoomIn,   ///< разворачивается из точки
+    ZoomOut,  ///< сворачивается в точку
+    Overlap,  ///< в vn.lua рисуется как None, но не вызывает перерисовку того, что под ним
+};
+
+/// Направление движения («Movement direction», файл mvdirection): откуда выезжает или куда
+/// уезжает объект при MoveIn/MoveOut (и с какой стороны для остальных эффектов)
+enum class MoveDirection { None, Left, Right, Top, Bottom };
+
+/// Анимация появления и кадров графического объекта (поля gobj: maxStep, startFrame, curStep)
+struct Appearance {
+    AppearEffect effect = AppearEffect::None;
+    MoveDirection direction = MoveDirection::None;
+    int maxStep = 0;        ///< шагов эффекта: кадров анимированной картинки или «Max frame» (maxframe)
+    int startFrame = 0;     ///< «Start frame» (startframe)
+    int curStep = 0;        ///< начальный шаг: startFrame, иначе 0 для FadeIn/FadeOut/None и 2 для прочих
+    int pauseFrames = 0;    ///< «Pause frames» (pausef): пауза между циклами
+    int preloadFrames = 0;  ///< «Preload frames» (preloadf): сколько кадров подгрузить заранее
 };
 
 /// Фрагмент текста. Текст страницы приходит последовательностью фрагментов вместо строки
@@ -84,13 +121,21 @@ struct SceneObject {
     ImageRef image;                 ///< картинка объекта (с учётом тега объекта)
     ImageRef hoverImage;            ///< morphover: что показать под курсором; пусто — нет
     Placement placement;
+    Appearance appearance;
     int zOrder = 0;                 ///< порядок отрисовки: родитель раньше детей
     bool visible = true;            ///< ограничение объекта выполнено
     bool collapsed = false;         ///< collapsable-свиток свёрнут: сам и содержимое не видны
     bool active = true;             ///< щелчок что-то делает
     bool takable = false;
-    bool preserved = false;         ///< остаётся на экране при смене страниц (VN)
+    bool preserved = false;         ///< «Preserved» (preserved): остаётся при смене страниц (VN)
     std::string tooltip;
+    // Подсказки отрисовки из книги; фронтенд может их учитывать или игнорировать
+    bool showOnCursor = false;      ///< «Show on cursor» (showoncur): объект следует за курсором
+    bool clearUnderTooltip = false; ///< clearutt: очищать область под подсказкой
+    bool actOnKey = false;          ///< actonkey: срабатывает по клавише
+    bool loadOnce = false;          ///< loadonce: кадры загружаются один раз
+    bool cacheText = false;         ///< cachetxt: кэшировать отрисованный текст
+    bool noRedrawOnAct = false;     ///< noactredraw: не перерисовывать по щелчку
 };
 
 /// Предмет инвентаря
@@ -133,7 +178,7 @@ struct ScreenModel {
     WindowStyle style;
 
     bool timerActive = false;       ///< у страницы есть таймер: время должно идти
-    int timerIntervalMs = 200;      ///< как timer:set() в экспорте (200, у быстрой анимации 1)
+    int timerIntervalMs = 200;      ///< как timer:set(200) в экспорте; у анимации 40 (nlb._fps = 25)
     bool finished = false;          ///< ходов больше нет
     bool canSave = true;            ///< nosave
     std::optional<std::string> externalGame;  ///< идёт внешняя игра (мини-игра, 3D-сцена)

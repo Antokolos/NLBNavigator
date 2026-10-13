@@ -13,6 +13,7 @@
 #include "nlb/exception/NLBExceptions.h"
 
 #include <algorithm>
+#include <set>
 #include <cmath>
 #include "nlb/api/Coords.h"
 #include <ctime>
@@ -136,6 +137,7 @@ bool PlayerEngine::choose(size_t choiceIndex) {
     if (m_externalGame || !m_page) {
         return false;
     }
+    beginCommand();
     const std::vector<PlayerLink> choices = availableChoices();
     if (choiceIndex >= choices.size()) {
         return false;
@@ -165,6 +167,7 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
             target = over->getId();
         }
     }
+    beginCommand();
     m_transitions = 0;
     m_context->countIncrement(PlayerContext::CountAct);
     const std::string& instance = target;
@@ -201,6 +204,7 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
     if (m_externalGame || !m_page || !isInInventoryTree(instanceId)) {
         return false;
     }
+    beginCommand();
     m_transitions = 0;
     m_context->countIncrement(PlayerContext::CountInv);
     const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
@@ -245,6 +249,7 @@ bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& t
     if (!targetVisible || !source || !target) {
         return false;
     }
+    beginCommand();
     m_transitions = 0;
     m_context->countIncrement(PlayerContext::CountUse);
     // decorateObjUseStart: use(s, w) = s:usea(w, w) + общий объект (usef, если текст уже был)
@@ -662,7 +667,7 @@ bool PlayerEngine::hasTimer() const {
 }
 
 int PlayerEngine::autoWaitTicks() const {
-    if (!hasTimer() || !availableChoices().empty()) {
+    if (m_settings.realTime || !hasTimer() || !availableChoices().empty()) {
         return 0;
     }
     const auto links = buildLinks();
@@ -680,6 +685,7 @@ bool PlayerEngine::wait() {
         return false;
     }
     m_transitions = 0;
+    if (!m_settings.realTime) beginCommand();  // тики реального времени не стирают ответ игроку
     finishAction(true);  // ровно один тик таймера (плюс автоматическое ожидание, если ходов нет)
     return true;
 }
@@ -1075,12 +1081,20 @@ void PlayerEngine::renderPage() {
         }
     }
     // Текст из модификаций страницы, затем достижения — после текста страницы
+    m_pageModText.clear();
+    ++m_revision;
     for (const auto& item : output) {
         if (item.kind == PlayerContext::OutputKind::Text) {
             const std::string text = displayText(replaceInteractionMarks(item.text));
-            if (!trim(text).empty()) m_events.push_back({Event::Kind::Text, text});
+            if (!trim(text).empty()) {
+                m_events.push_back({Event::Kind::Text, text});
+                m_pageModText.push_back(displayText(item.text));
+            }
         }
-        if (item.kind == PlayerContext::OutputKind::Info) m_events.push_back({Event::Kind::Info, item.text});
+        if (item.kind == PlayerContext::OutputKind::Info) {
+            m_events.push_back({Event::Kind::Info, item.text});
+            captureStyle(item.text);
+        }
     }
     for (const auto& item : output) {
         if (item.kind == PlayerContext::OutputKind::Achievement) m_events.push_back({Event::Kind::Achievement, item.text});
@@ -1094,9 +1108,15 @@ void PlayerEngine::flushOutput(bool) {
     for (const auto& item : output) {
         if (item.kind == PlayerContext::OutputKind::Text) {
             const std::string text = displayText(replaceInteractionMarks(item.text));
-            if (!trim(text).empty()) m_events.push_back({Event::Kind::Text, text});
+            if (!trim(text).empty()) {
+                m_events.push_back({Event::Kind::Text, text});
+                m_reactionText.push_back(displayText(item.text));  // для снимка: с {метками}
+            }
         }
-        if (item.kind == PlayerContext::OutputKind::Info) m_events.push_back({Event::Kind::Info, item.text});
+        if (item.kind == PlayerContext::OutputKind::Info) {
+            m_events.push_back({Event::Kind::Info, item.text});
+            captureStyle(item.text);
+        }
     }
     for (const auto& item : output) {
         if (item.kind == PlayerContext::OutputKind::Achievement) m_events.push_back({Event::Kind::Achievement, item.text});
@@ -1408,4 +1428,310 @@ std::vector<PlayerEngine::Event> PlayerEngine::takeEvents() {
     result.swap(m_events);
     m_lastRenderStart = 1;  // события уже отданы интерфейсу
     return result;
+}
+
+// ============================================================================ снимок экрана
+
+namespace {
+using namespace nlb::presentation;
+
+Anchor anchorOf(const std::string& origin) {
+    static const char* NAMES[] = {"left-top", "middle-top", "right-top", "left-middle", "middle-middle",
+                                  "right-middle", "left-bottom", "middle-bottom", "right-bottom"};
+    for (int i = 0; i < 9; ++i) if (origin == NAMES[i]) return static_cast<Anchor>(i);
+    return Anchor::LeftTop;
+}
+
+bool parsePair(const std::string& s, int& x, int& y) {
+    const auto comma = s.find(',');
+    if (comma == std::string::npos) return false;
+    try {
+        x = std::stoi(s.substr(0, comma));
+        y = std::stoi(s.substr(comma + 1));
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
+AppearEffect effectOf(Obj::Effect e) {
+    switch (e) {
+        case Obj::Effect::MoveIn: return AppearEffect::MoveIn;
+        case Obj::Effect::MoveOut: return AppearEffect::MoveOut;
+        case Obj::Effect::FadeIn: return AppearEffect::FadeIn;
+        case Obj::Effect::FadeOut: return AppearEffect::FadeOut;
+        case Obj::Effect::ZoomIn: return AppearEffect::ZoomIn;
+        case Obj::Effect::ZoomOut: return AppearEffect::ZoomOut;
+        case Obj::Effect::Overlap: return AppearEffect::Overlap;
+        default: return AppearEffect::None;
+    }
+}
+
+MoveDirection directionOf(Obj::MovementDirection d) {
+    switch (d) {
+        case Obj::MovementDirection::Left: return MoveDirection::Left;
+        case Obj::MovementDirection::Right: return MoveDirection::Right;
+        case Obj::MovementDirection::Top: return MoveDirection::Top;
+        case Obj::MovementDirection::Bottom: return MoveDirection::Bottom;
+        default: return MoveDirection::None;
+    }
+}
+
+std::vector<std::string> splitLines(const std::string& text) {
+    std::vector<std::string> lines;
+    std::string cur;
+    for (char c : text) {
+        if (c == '\n') { lines.push_back(cur); cur.clear(); } else cur += c;
+    }
+    lines.push_back(cur);
+    return lines;
+}
+}
+
+void PlayerEngine::beginCommand() {
+    m_reactionText.clear();
+    ++m_revision;
+}
+
+void PlayerEngine::captureStyle(const std::string& info) {
+    auto value = [&](const char* prefix) -> std::optional<std::string> {
+        const std::string p = std::string("[") + prefix + ": ";
+        if (info.rfind(p, 0) == 0 && info.size() > p.size()) return info.substr(p.size(), info.size() - p.size() - 1);
+        return std::nullopt;
+    };
+    if (auto v = value("WINGEOM")) m_windowStyle.textGeometry = v;
+    if (auto v = value("INVGEOM")) m_windowStyle.inventoryGeometry = v;
+    if (auto v = value("WINCOLOR")) m_windowStyle.textColor = v;
+    if (auto v = value("INVCOLOR")) m_windowStyle.inventoryColor = v;
+}
+
+namespace {
+const int ANIMATION_TICK_MS = 40;  // 1000 / nlb._fps
+}
+
+int PlayerEngine::timerIntervalMs() const {
+    if (!m_page) return 0;
+    // STEADExportManager: timer:set(hasFastAnim ? 1 : 200), если у страницы есть таймер или
+    // анимация (картинки страницы или объектов) и нет графических объектов — у тех свой цикл vn
+    bool animated = m_page->isImageAnimated();
+    bool graphical = false;
+    for (const auto& id : sceneObjects()) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(id));
+        if (!obj) continue;
+        animated = animated || obj->isAnimatedImage();
+        graphical = graphical || obj->isGraphical();
+    }
+    if (graphical) return hasTimer() ? 200 : 0;
+    // Быстрая анимация: timer:set(1), но тик срабатывает, только если с прошлого прошло больше
+    // 1000 / nlb._fps мс (_fps = 25) — то есть раз в 40 мс, 25 кадров в секунду
+    if (animated) return ANIMATION_TICK_MS;
+    return hasTimer() ? 200 : 0;
+}
+
+int PlayerEngine::advanceTime(int milliseconds) {
+    const int interval = timerIntervalMs();
+    if (!m_page || m_externalGame || interval <= 0 || milliseconds <= 0) {
+        return 0;
+    }
+    m_timeAccumulatorMs += milliseconds;
+    int ticks = 0;
+    // Не больше 1000 тиков за вызов: после долгой паузы (свёрнутое окно) не «догонять» вечно
+    while (m_timeAccumulatorMs >= interval && ticks < 1000 && !m_externalGame) {
+        m_timeAccumulatorMs -= interval;
+        ++ticks;
+        ++m_animationTicks;
+        const Page* before = m_page;
+        wait();
+        if (m_page != before) {
+            m_timeAccumulatorMs = 0;  // новая страница — её таймер начинается заново
+            m_animationTicks = 0;
+            break;
+        }
+    }
+    if (ticks >= 1000) m_timeAccumulatorMs = 0;
+    if (ticks > 0) ++m_revision;
+    return ticks;
+}
+
+nlb::presentation::ImageRef PlayerEngine::imageRefFor(const std::string& itemId, bool animated, bool looped) const {
+    nlb::presentation::ImageRef ref;
+    auto image = m_interpreter->selectImage(itemId);
+    if (!image) return ref;
+    if (image->kind == PlayerContext::OutputKind::Animation) {
+        ref.framePattern = image->text;
+        ref.frameCount = image->frames;
+        ref.looped = looped;
+        if (ref.frameCount > 0) {
+            const int64_t t = m_animationTicks;
+            ref.currentFrame = static_cast<int>(looped ? (t % ref.frameCount) : std::min<int64_t>(t, ref.frameCount - 1)) + 1;
+        }
+    } else {
+        ref.file.path = image->text;
+    }
+    (void)animated;
+    return ref;
+}
+
+std::vector<nlb::presentation::TextRun> PlayerEngine::textRuns(const std::string& text, const std::string& objectId) const {
+    // {метка} в описании объекта — ссылка на объект; в остальном тексте метки становятся текстом
+    std::vector<nlb::presentation::TextRun> runs;
+    size_t pos = 0;
+    while (pos < text.size()) {
+        const size_t open = text.find('{', pos);
+        const size_t close = open == std::string::npos ? std::string::npos : text.find('}', open);
+        if (open == std::string::npos || close == std::string::npos) {
+            runs.push_back({nlb::presentation::TextRun::Kind::Plain, text.substr(pos), ""});
+            break;
+        }
+        if (open > pos) runs.push_back({nlb::presentation::TextRun::Kind::Plain, text.substr(pos, open - pos), ""});
+        const std::string label = text.substr(open + 1, close - open - 1);
+        if (!label.empty()) {
+            runs.push_back({objectId.empty() ? nlb::presentation::TextRun::Kind::Plain : nlb::presentation::TextRun::Kind::ObjectLink,
+                            label, objectId});
+        }
+        pos = close + 1;
+    }
+    return runs;
+}
+
+nlb::presentation::ScreenModel PlayerEngine::screen() const {
+    using namespace nlb::presentation;
+    nlb::presentation::ScreenModel m;
+    m.revision = m_revision;
+    if (!m_page) return m;
+    const Page* page = m_page;
+    const bool vn = isVnPage(page);
+    m.layout = vn ? Layout::VisualNovel : Layout::Standard;
+    m.pageId = page->getId();
+    if (!vn && page->isUseCaption()) m.caption = trim(displayText(m_interpreter->expandText(page->getCaption())));
+    if (!m_rootBook->isSuppressMedia()) m.pageImage = imageRefFor(page->getId(), page->isImageAnimated(), true);
+    m.imageIsBackground = page->isImageBackground();
+
+    auto addParagraphs = [&](std::vector<nlb::presentation::Paragraph>& out, const std::string& text, const std::string& objectId) {
+        for (const auto& line : splitLines(text)) {
+            nlb::presentation::Paragraph p;
+            p.runs = textRuns(line, objectId);
+            out.push_back(std::move(p));
+        }
+    };
+    const std::string pageText = displayText(m_interpreter->expandText(page->getText()));
+    if (!pageText.empty()) addParagraphs(m.pageText, pageText, "");
+
+    const PageView view = this->view();
+    const std::vector<std::string> visible = sceneObjects();
+    // Описания объектов (как в renderPage): неграфические стандартной темы, без suppress_dsc
+    if (!vn) {
+        for (const auto& instanceId : visible) {
+            const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+            if (!obj || obj->isSuppressDsc()) continue;
+            const std::string dsc = displayText(m_interpreter->objDscF(instanceId));
+            if (!trim(dsc).empty()) addParagraphs(m.pageText, dsc, instanceId);
+        }
+    }
+    for (const auto& text : m_pageModText) addParagraphs(m.pageText, text, "");
+    for (const auto& text : m_reactionText) addParagraphs(m.reactionText, text, "");
+
+    // Варианты: доступные и (в стандартной теме) недоступные с альтернативным текстом
+    for (size_t i = 0; i < view.choices.size(); ++i) {
+        nlb::presentation::Choice c;
+        c.index = static_cast<int>(i);
+        c.text = view.choices[i].text;
+        m.choices.push_back(c);
+    }
+    if (!vn) {
+        for (const PlayerLink& link : buildLinks()) {
+            if (!link.autoFlag && !link.altText.empty() && !isLinkAvailable(link)) {
+                nlb::presentation::Choice c;
+                c.index = -1;
+                c.enabled = false;
+                c.text = displayText(m_interpreter->expandText(link.text));
+                c.altText = displayText(m_interpreter->expandText(link.altText));
+                m.choices.push_back(c);
+            }
+        }
+    }
+
+    // Объекты сцены: все, что на экране, в порядке обхода (родитель раньше детей). В отличие
+    // от консольного view() сюда входят и безымянные декорации (фоны, подложки подсказок):
+    // графическому интерфейсу их нужно нарисовать
+    std::set<std::string> listed(visible.begin(), visible.end());
+    int z = 0;
+    for (const auto& instanceId : visible) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+        if (!obj) continue;
+        struct { std::string instanceId, disp; bool active, takable, collapsed; } ov{
+            instanceId, trim(sceneLabel(instanceId)), hasBehaviour(obj), obj->isTakable(), m_context->isCollapsed(instanceId)};
+        nlb::presentation::SceneObject so;
+        so.id = ov.instanceId;
+        const std::string owner = m_context->containerOf(ov.instanceId);
+        if (listed.count(owner)) so.parentId = owner;
+        so.label = ov.disp;
+        so.graphical = obj->isGraphical();
+        if (obj->isImageInScene() && !m_rootBook->isSuppressMedia()) {
+            so.image = imageRefFor(ov.instanceId, obj->isAnimatedImage(), obj->isLooped());
+        }
+        if (const Obj* over = obj->getMorphOverId().empty() ? nullptr : obj->getMorphOverObj()) {
+            so.hoverImage = imageRefFor(over->getId(), over->isAnimatedImage(), over->isLooped());
+        }
+        const auto p = objPlacement(ov.instanceId);
+        so.placement.anchor = anchorOf(p.origin);
+        if (!p.offset.empty() && parsePair(p.offset, so.placement.offsetX, so.placement.offsetY)) {
+            so.placement.hasOffset = true;
+        }
+        so.placement.armX = p.armX;
+        so.placement.armY = p.armY;
+        if (!p.parentId.empty()) {
+            // iarm (decorateObjArm): offset объекта или его координаты относительно родителя
+            so.placement.hasInnerArm = true;
+            if (!parsePair(obj->getOffset(), so.placement.innerArmX, so.placement.innerArmY)) {
+                Coords& rel = obj->getRelativeCoords(true);
+                so.placement.innerArmX = static_cast<int>(rel.getLeft());
+                so.placement.innerArmY = static_cast<int>(rel.getTop());
+            }
+        }
+        so.appearance.effect = effectOf(obj->getEffect());
+        so.appearance.direction = directionOf(obj->getMovementDirection());
+        so.appearance.maxStep = so.image.frameCount > 0 ? so.image.frameCount : obj->getMaxFrame();
+        so.appearance.startFrame = obj->getStartFrame();
+        so.appearance.curStep = obj->getStartFrame() > 0 ? obj->getStartFrame()
+            : (so.appearance.effect == AppearEffect::FadeIn || so.appearance.effect == AppearEffect::FadeOut
+               || so.appearance.effect == AppearEffect::None) ? 0 : 2;
+        so.appearance.pauseFrames = obj->getPauseFrames();
+        so.appearance.preloadFrames = obj->getPreloadFrames();
+        so.zOrder = z++;
+        so.visible = m_interpreter->isObjEnabled(ov.instanceId);
+        so.collapsed = ov.collapsed;
+        so.active = ov.active;
+        so.takable = ov.takable;
+        so.preserved = obj->isPreserved();
+        so.showOnCursor = obj->isShowOnCursor();
+        so.clearUnderTooltip = obj->isClearUnderTooltip();
+        so.actOnKey = obj->isActOnKey();
+        so.loadOnce = obj->isLoadOnce();
+        so.cacheText = obj->isCacheText();
+        so.noRedrawOnAct = obj->isNoRedrawOnAct();
+        m.sceneObjects.push_back(std::move(so));
+    }
+    std::set<std::string> inInventory;
+    for (const auto& v : view.inventory) inInventory.insert(v.instanceId);
+    for (const auto& iv : view.inventory) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(iv.instanceId));
+        nlb::presentation::InventoryItem item;
+        item.id = iv.instanceId;
+        const std::string owner = m_context->containerOf(iv.instanceId);
+        if (inInventory.count(owner)) item.parentId = owner;
+        item.label = iv.disp;
+        item.active = iv.active;
+        if (obj && obj->isImageInInventory() && !m_rootBook->isSuppressMedia()) {
+            item.icon = imageRefFor(iv.instanceId, obj->isAnimatedImage(), obj->isLooped());
+        }
+        m.inventory.push_back(std::move(item));
+    }
+    m.style = m_windowStyle;
+    m.timerIntervalMs = timerIntervalMs();
+    m.timerActive = m.timerIntervalMs > 0;
+    m.finished = view.finished;
+    m.canSave = canSave();
+    if (m_externalGame) m.externalGame = m_externalGame->name;
+    return m;
 }

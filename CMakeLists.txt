@@ -28,6 +28,8 @@ set(CPARSE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/thirdparty/cparse")
 set(NLB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBCore/Public")
 set(NLB_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBCore/Private")
 set(NLB_READER_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBReader/Public")
+# Слой вывода: снимок экрана, AudioDirector, интерфейсы бэкендов (без внешних зависимостей)
+set(NLB_PRESENTATION_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Public")
 set(NLB_READER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBReader/Private")
 
 # Include directories
@@ -101,6 +103,10 @@ set(NLB_DOMAIN_HEADERS
         ${NLB_READER_INCLUDE_DIR}/nlb/domain/PlayerContext.h
         ${NLB_READER_INCLUDE_DIR}/nlb/domain/ModificationInterpreter.h
         ${NLB_READER_INCLUDE_DIR}/nlb/domain/PlayerEngine.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/ScreenModel.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/MediaSource.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/AudioBackend.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/AudioDirector.h
 )
 
 # Utility Headers
@@ -173,6 +179,7 @@ set(NLB_DOMAIN_SOURCES
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBReader.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorer.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorerScreenReader.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/AudioDirector.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerContext.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/ModificationInterpreter.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerEngine.cpp
@@ -220,6 +227,7 @@ target_include_directories(NLBReader
         PUBLIC
         $<BUILD_INTERFACE:${NLB_INCLUDE_DIR}>
         $<BUILD_INTERFACE:${NLB_READER_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${NLB_PRESENTATION_INCLUDE_DIR}>
         $<INSTALL_INTERFACE:include>
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -250,6 +258,8 @@ if(BUILD_SHARED_LIBS)
     target_include_directories(NLBReaderShared
             PUBLIC
             $<BUILD_INTERFACE:${NLB_INCLUDE_DIR}>
+            $<BUILD_INTERFACE:${NLB_READER_INCLUDE_DIR}>
+            $<BUILD_INTERFACE:${NLB_PRESENTATION_INCLUDE_DIR}>
             $<INSTALL_INTERFACE:include>
             PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}

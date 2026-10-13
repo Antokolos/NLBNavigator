@@ -1,6 +1,8 @@
 #pragma once
 
 #include <map>
+#include "nlb/presentation/ScreenModel.h"
+
 #include <functional>
 #include <memory>
 #include <optional>
@@ -44,6 +46,9 @@ public:
         unsigned randomSeed = std::random_device{}();
         /// Детерминированная случайность для сверки с INSTEAD (см. PlayerContext::setDeterministic)
         bool deterministic = false;
+        /// Режим реального времени (графические фронтенды): время идёт только через
+        /// advanceTime(), ожидание таймера не проматывается мгновенно, как в консоли
+        bool realTime = false;
         /// Начальное значение счётчика детерминированной последовательности rnd
         int64_t deterministicStart = 0;
     };
@@ -163,6 +168,16 @@ public:
     bool use(const std::string& sourceInstanceId, const std::string& targetInstanceId);
     /// Подождать: один тик таймера страницы (в INSTEAD — раз в 200 мс) и проверка auto-ссылок
     bool wait();
+    // ------------------------------------------------------------------ вывод (NLBPresentation)
+    /// Снимок экрана: что должно быть видно сейчас (см. nlb/presentation/ScreenModel.h)
+    nlb::presentation::ScreenModel screen() const;
+    /// Прошло реальное время: таймер страницы тикает с её интервалом (timer:set(200) в экспорте;
+    /// у страницы с анимацией — 25 кадров в секунду, раз в 40 мс), кадры анимации сменяются.
+    /// Возвращает число тиков. События тиков — как обычно, через takeEvents()
+    int advanceTime(int milliseconds);
+    /// Интервал таймера текущей страницы, мс (0 — таймера нет)
+    int timerIntervalMs() const;
+
     /// «Осмотреться» (look в INSTEAD): заново показать текущую страницу — картинки, текст,
     /// описания объектов — без исполнения её модификаций
     bool look();
@@ -297,6 +312,17 @@ private:
     bool m_pendingFromAutowired = false;
     std::vector<Event> m_events;
     std::optional<ExternalGame> m_externalGame;
+    // Состояние для снимка экрана
+    std::vector<std::string> m_reactionText;     ///< ответ на последнюю команду (lasttext)
+    std::vector<std::string> m_pageModText;      ///< текст из модификаций страницы при входе
+    nlb::presentation::WindowStyle m_windowStyle;     ///< WINGEOM/INVGEOM/WINCOLOR/INVCOLOR
+    uint64_t m_revision = 0;
+    int m_timeAccumulatorMs = 0;
+    int64_t m_animationTicks = 0;                ///< тики для кадров анимации на странице
+    void beginCommand();
+    void captureStyle(const std::string& info);
+    nlb::presentation::ImageRef imageRefFor(const std::string& itemId, bool animated, bool looped) const;
+    std::vector<nlb::presentation::TextRun> textRuns(const std::string& text, const std::string& objectId) const;
     /// Сохраняемые (preserved) графические объекты, которые VN-движок INSTEAD оставляет на экране
     /// при смене страниц: кнопки «Навыки»/«Инвентарь», свитки. Корни, в порядке появления
     std::vector<std::string> m_preservedRoots;
