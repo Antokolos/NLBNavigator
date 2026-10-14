@@ -52,7 +52,7 @@ public:
 private:
     // ---- клики: область экрана и что она делает
     struct Hit {
-        enum class Kind { Choice, Object, Inventory, Menu };
+        enum class Kind { Choice, Object, Inventory, Menu, ScrollUp, ScrollDown, MenuButton };
         SDL_FRect rect;
         Kind kind;
         std::string id;   ///< объект/предмет
@@ -63,6 +63,10 @@ private:
     bool init();
     void shutdown();
     void loop();
+    /// Событие SDL (общий путь для цикла и сценариев тестов)
+    void handleEvent(SDL_Event& e);
+    void scrollLines(float lines);
+    float m_lineHeight = 30;             ///< высота строки окна текста на последнем кадре
     void refresh();                      ///< новый снимок, события -> звук и сообщения
     void processEvents(const std::vector<PlayerEngine::Event>& events);
     void render();
@@ -157,11 +161,15 @@ private:
         nlb::presentation::SceneObject object;  ///< последний вид объекта (для обратного хода)
     };
     std::map<std::string, Effect> m_effects;
+    std::map<std::string, SDL_FRect> m_lastRects;   ///< где объект был на прошлом кадре (для исчезновения)
     std::map<std::string, bool> m_shown;      ///< объект был виден на прошлом снимке
     void updateEffects(const nlb::presentation::ScreenModel& before);
     /// Прозрачность, сдвиг и масштаб объекта на текущем кадре
     struct EffectState { float alpha = 1, dx = 0, dy = 0, scale = 1; bool done = true; };
     EffectState effectState(const std::string& id, const SDL_FRect& rect);
+    void drawTextAlpha(const std::string& text, TTF_Font* font, SDL_Color color, float x, float y, float alpha);
+    void renderMenuButton(const ScreenTheme& theme);
+    void renderVanishing(TTF_Font* labelFont, SDL_Color labelColor, bool spriteLabel);
     void drawObject(size_t index, const nlb::presentation::SceneObject& o, const SDL_FRect& r, TTF_Font* labelFont,
                     SDL_Color labelColor, bool spriteLabel);
 };

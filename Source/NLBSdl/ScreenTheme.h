@@ -17,6 +17,8 @@ struct ScreenTheme {
         SDL_Color fg, link, alink;
         std::string fontFile;   ///< путь к .ttf (пусто — шрифт проигрывателя)
         float fontSize = 24;
+        float lineHeight = 1.0f;  ///< fnt.height: множитель высоты строки
+        std::string upImage, downImage;  ///< gfx.up / gfx.down — стрелки прокрутки
     };
     float screenW = 1920, screenH = 1080;
     SDL_Color background{0x01, 0x13, 0x22, 255};
@@ -25,6 +27,10 @@ struct ScreenTheme {
     Window text;                      ///< win.*
     Window inventory;                 ///< inv.*
     bool inventoryHorizontal = true;  ///< inv.mode = horizontal-*
+    std::string align = "justify";    ///< win.align: left, center, right, justify (по умолчанию INSTEAD)
+    std::string menuButton;           ///< menu.gfx.button
+    float menuButtonX = 0, menuButtonY = 0;  ///< menu.button.x/y
+    std::string frameLeft, frameRight;       ///< gfx/fl.png, gfx/fr.png — рамки окна текста VN
 
     /// Тема по умолчанию экспорта NLB: standard или vn
     static ScreenTheme defaults(bool visualNovel);

@@ -184,30 +184,7 @@ void SdlPlayer::loop() {
     Uint64 last = SDL_GetTicks();
     while (!m_quit) {
         SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            SDL_ConvertEventToRenderCoordinates(m_renderer, &e);
-            switch (e.type) {
-                case SDL_EVENT_QUIT: m_quit = true; break;
-                case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                    click(e.button.x, e.button.y, e.button.button == SDL_BUTTON_RIGHT);
-                    break;
-                case SDL_EVENT_MOUSE_MOTION: {
-                    m_hoverObject.clear();
-                    for (auto it = m_hits.rbegin(); it != m_hits.rend(); ++it) {
-                        if (it->kind == Hit::Kind::Object && contains(it->rect, e.motion.x, e.motion.y)) {
-                            m_hoverObject = it->id;
-                            break;
-                        }
-                    }
-                    break;
-                }
-                case SDL_EVENT_MOUSE_WHEEL:
-                    m_scroll = std::max(0.0f, m_scroll - e.wheel.y * 60.0f);  // предел — в renderTextWindow
-                    break;
-                case SDL_EVENT_KEY_DOWN: key(e.key.key); break;
-                default: break;
-            }
-        }
+        while (SDL_PollEvent(&e)) handleEvent(e);
         const Uint64 now = SDL_GetTicks();
         const int dt = static_cast<int>(now - last);
         last = now;
@@ -219,6 +196,39 @@ void SdlPlayer::loop() {
     }
 }
 
+void SdlPlayer::handleEvent(SDL_Event& e) {
+    SDL_ConvertEventToRenderCoordinates(m_renderer, &e);
+    switch (e.type) {
+        case SDL_EVENT_QUIT: m_quit = true; break;
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            click(e.button.x, e.button.y, e.button.button == SDL_BUTTON_RIGHT);
+            break;
+        case SDL_EVENT_MOUSE_MOTION: {
+            m_hoverObject.clear();
+            for (auto it = m_hits.rbegin(); it != m_hits.rend(); ++it) {
+                if (it->kind == Hit::Kind::Object && contains(it->rect, e.motion.x, e.motion.y)) {
+                    m_hoverObject = it->id;
+                    break;
+                }
+            }
+            break;
+        }
+        case SDL_EVENT_MOUSE_WHEEL: {
+            // колесо: по 3 строки за щелчок; у «перевёрнутого» колеса (macOS) — наоборот
+            float dy = e.wheel.y;
+            if (e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) dy = -dy;
+            if (m_menu == Menu::None && !m_showChoices) scrollLines(-dy * 3);
+            break;
+        }
+        case SDL_EVENT_KEY_DOWN: key(e.key.key); break;
+        default: break;
+    }
+}
+
+void SdlPlayer::scrollLines(float lines) {
+    m_scroll = std::max(0.0f, m_scroll + lines * m_lineHeight);  // предел — в renderTextWindow
+}
+
 void SdlPlayer::refresh() {
     processEvents(m_engine->takeEvents());
     const ScreenModel before = m_screen;
@@ -228,6 +238,20 @@ void SdlPlayer::refresh() {
 
 void SdlPlayer::updateEffects(const ScreenModel& before) {
     const Uint64 now = SDL_GetTicks();
+    // Объект исчез со страницы (взят, убран, переход): эффект в обратную сторону на прежнем месте.
+    // При смене страницы не-preserved объекты в vn.lua уходят вместе со сценой — без эффекта
+    const bool samePage = before.pageId == m_screen.pageId;
+    for (const auto& old : before.sceneObjects) {
+        if (!samePage || !old.graphical || !old.visible || old.collapsed) continue;
+        const bool stillHere = std::any_of(m_screen.sceneObjects.begin(), m_screen.sceneObjects.end(),
+                                           [&](const SceneObject& o) { return o.id == old.id; });
+        const AppearEffect e = old.appearance.effect;
+        if (!stillHere && e != AppearEffect::None && e != AppearEffect::Overlap) {
+            const int steps = std::max(1, old.appearance.maxStep > old.appearance.curStep
+                                              ? old.appearance.maxStep - old.appearance.curStep : 25);
+            m_effects[old.id] = Effect{now, steps, true, old};
+        }
+    }
     std::map<std::string, bool> shown;
     for (const auto& o : m_screen.sceneObjects) {
         if (!o.graphical) continue;
@@ -304,7 +328,7 @@ void SdlPlayer::drawObject(size_t index, const SceneObject& o, const SDL_FRect& 
     }
     if (isHumanLabel(o.label) && st.alpha > 0.05f) {
         if (!spriteLabel) {
-            if (!texture(img)) drawText(o.label, labelFont, labelColor, dst.x, dst.y);
+            if (!texture(img)) drawTextAlpha(o.label, labelFont, labelColor, dst.x, dst.y, st.alpha);
             return;
         }
         // Подпись спрайта — как draw_hud в vn.lua: справа от картинки (+4 +5 px), по вертикали
@@ -319,7 +343,7 @@ void SdlPlayer::drawObject(size_t index, const SceneObject& o, const SDL_FRect& 
         const float tx = dst.x + dst.w + 4 + 5;
         float ty = dst.y + dst.h * coef - total * coef;
         for (const auto& line : lines) {
-            drawText(line, labelFont, labelColor, tx, ty);
+            drawTextAlpha(line, labelFont, labelColor, tx, ty, st.alpha);
             ty += lh;
         }
     }
@@ -387,7 +411,13 @@ void SdlPlayer::click(float x, float y, bool rightButton) {
             if (hit.kind == Hit::Kind::Menu) menuAction(hit.index);
             return;
         }
+        if (m_showChoices && hit.kind != Hit::Kind::Choice && hit.kind != Hit::Kind::MenuButton) {
+            continue;
+        }
         switch (hit.kind) {
+            case Hit::Kind::ScrollUp: m_scroll = std::max(0.0f, m_scroll - m_pageHeight); return;
+            case Hit::Kind::ScrollDown: m_scroll += m_pageHeight; return;
+            case Hit::Kind::MenuButton: openMenu(Menu::Main); return;
             case Hit::Kind::Choice:
                 m_selectedItem.clear();
                 m_engine->choose(static_cast<size_t>(hit.index));
@@ -595,36 +625,59 @@ TTF_Font* SdlPlayer::fontFor(const ScreenTheme::Window& window) {
 
 float SdlPlayer::renderParagraphs(const std::vector<Paragraph>& text, float x, float y, float width,
                                   TTF_Font* font, const ScreenTheme::Window& colors, bool draw) {
-    const float lineHeight = static_cast<float>(TTF_GetFontLineSkip(font)) * 1.1f;  // win.fnt.height
+    const float lineHeight = static_cast<float>(TTF_GetFontLineSkip(font)) * colors.lineHeight;
+    const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
+    struct Word { std::string text; float w; bool link; std::string target; };
+    // Строка выводится целиком: с выравниванием (win.align; по умолчанию INSTEAD — по ширине)
+    auto flush = [&](std::vector<Word>& line, bool lastInParagraph) {
+        if (line.empty()) return;
+        // хвостовой пробел последнего слова в ширину строки не входит
+        float total = 0;
+        for (auto& w : line) total += w.w;
+        const float trailing = textSize(" ", font).x * (line.back().text.back() == ' ' ? 1 : 0);
+        total -= trailing;
+        float cx = x, gap = 0;
+        if (theme.align == "center") cx = x + (width - total) / 2;
+        else if (theme.align == "right") cx = x + width - total;
+        else if (theme.align == "justify" && !lastInParagraph && line.size() > 1) gap = (width - total) / static_cast<float>(line.size() - 1);
+        const bool visible = y >= m_drawTop - 0.5f && y + lineHeight <= m_drawBottom + 0.5f;
+        if (draw && !visible && y + lineHeight > m_drawBottom + 0.5f && m_firstHiddenY < 0) m_firstHiddenY = y;
+        for (auto& w : line) {
+            if (draw && visible) {
+                const SDL_Color c = w.link ? (m_hoverObject == w.target ? colors.alink : colors.link) : colors.fg;
+                drawText(w.text, font, c, cx, y);
+                if (w.link) m_hits.push_back({{cx, y, w.w, lineHeight}, Hit::Kind::Object, w.target});
+            }
+            cx += w.w + gap;
+        }
+        line.clear();
+        y += lineHeight;
+    };
     for (const auto& p : text) {
-        float cx = x;
+        std::vector<Word> line;
+        float lineW = 0;
         bool any = false;
         for (const auto& run : p.runs) {
             const bool link = run.kind == TextRun::Kind::ObjectLink;
-            const SDL_Color c = link ? (m_hoverObject == run.target ? colors.alink : colors.link) : colors.fg;
             for (const auto& w : words(run.text)) {
-                const SDL_FPoint sz = textSize(w, font);
-                if (cx + sz.x > x + width && cx > x) {  // перенос
-                    cx = x;
-                    y += lineHeight;
+                const float ww = textSize(w, font).x;
+                if (lineW + ww > width && !line.empty()) {  // перенос
+                    flush(line, false);
+                    lineW = 0;
                 }
-                if (draw && y >= m_drawTop - 0.5f && y + lineHeight <= m_drawBottom + 0.5f) {
-                    drawText(w, font, c, cx, y);
-                    if (link) m_hits.push_back({{cx, y, sz.x, lineHeight}, Hit::Kind::Object, run.target});
-                } else if (draw && y + lineHeight > m_drawBottom + 0.5f && m_firstHiddenY < 0) {
-                    m_firstHiddenY = y;
-                }
-                cx += sz.x;
+                line.push_back({w, ww, link, run.target});
+                lineW += ww;
                 any = true;
             }
         }
-        y += any ? lineHeight : lineHeight * 0.5f;
+        if (any) flush(line, true);
+        else y += lineHeight * 0.5f;
     }
     return y;
 }
 
 float SdlPlayer::renderChoices(float x, float y, float width, TTF_Font* font, const ScreenTheme::Window& colors, bool draw) {
-    const float lineHeight = static_cast<float>(TTF_GetFontLineSkip(font)) * 1.15f;
+    const float lineHeight = static_cast<float>(TTF_GetFontLineSkip(font)) * std::max(1.15f, colors.lineHeight);
     y += lineHeight * 0.3f;
     int number = 0;
     for (const auto& c : m_screen.choices) {
@@ -697,7 +750,8 @@ void SdlPlayer::renderTextWindow(const ScreenTheme::Window& window, bool panel) 
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
     // paginator в INSTEAD: щелчок по окну (или колесо, PgDn) — следующая часть
-    const float lh = static_cast<float>(TTF_GetFontLineSkip(font)) * 1.1f;
+    const float lh = static_cast<float>(TTF_GetFontLineSkip(font)) * window.lineHeight;
+    m_lineHeight = lh;
     const float pageH = std::max(lh, std::floor(r.h / lh) * lh);
     const float maxScroll = std::max(0.0f, need - pageH);
     m_scroll = std::min(m_scroll, maxScroll);
@@ -730,8 +784,18 @@ void SdlPlayer::renderTextWindow(const ScreenTheme::Window& window, bool panel) 
         return h.rect.y + h.rect.h <= r.y || h.rect.y >= r.y + r.h;
     }), m_hits.end());
     // Есть ещё текст — стрелки, как win.gfx.up/down в INSTEAD (прокрутка колесом или PgUp/PgDn)
-    if (m_scroll > 0) drawText("▲", font, window.link, r.x + r.w + 4, r.y);
-    if (m_firstHiddenY >= 0) drawText("▼", font, window.link, r.x + r.w + 4, r.y + r.h - lh);
+    // Стрелки прокрутки: картинки темы (win.gfx.up/down), без них — символы; по ним можно щёлкать
+    auto arrow = [&](bool up, float ay) {
+        SDL_Texture* img = textureFor(up ? window.upImage : window.downImage);
+        float aw = lh * 0.8f, ah = lh * 0.8f;
+        if (img) SDL_GetTextureSize(img, &aw, &ah);
+        const SDL_FRect ar{r.x + r.w + 6, up ? ay : ay - ah, aw, ah};
+        if (img) SDL_RenderTexture(m_renderer, img, nullptr, &ar);
+        else drawText(up ? "▲" : "▼", font, window.link, ar.x, ar.y);
+        m_hits.push_back({{ar.x - 6, ar.y - 6, ar.w + 12, ar.h + 12}, up ? Hit::Kind::ScrollUp : Hit::Kind::ScrollDown, ""});
+    };
+    if (m_scroll > 0) arrow(true, r.y);
+    if (m_firstHiddenY >= 0) arrow(false, r.y + r.h);
 }
 
 void SdlPlayer::renderStandard() {
@@ -779,12 +843,15 @@ void SdlPlayer::renderStandard() {
         drawObject(i, o, r, fontFor(t.text), t.text.fg, false);
         if (o.active) m_hits.push_back({r, Hit::Kind::Object, o.id});
     }
+    renderVanishing(fontFor(t.text), t.text.fg, false);
     if (m_showChoices) {
         renderChoicesScreen();
+        renderMenuButton(t);
         return;
     }
     renderTextWindow(t.text, m_screen.imageIsBackground);
     renderInventory(t.inventory, false);
+    renderMenuButton(t);
 }
 
 void SdlPlayer::renderInventory(const ScreenTheme::Window& window, bool panel) {
@@ -867,9 +934,22 @@ void SdlPlayer::renderVisualNovel() {
         drawObject(i, o, r, labelFont, t.text.fg, true);
         if (o.active) m_hits.push_back({r, Hit::Kind::Object, o.id});
     }
+    renderVanishing(labelFont, t.text.fg, true);
     const bool hasText = !m_screen.pageText.empty() || !m_screen.reactionText.empty() || !m_screen.choices.empty();
-    if (m_showChoices) renderChoicesScreen();
-    else if (hasText) renderTextWindow(t.text, true);
+    if (m_showChoices) {
+        renderChoicesScreen();
+    } else if (hasText) {
+        // Каждая VN-страница экспорта вызывает vn:geom(8, 864, 1904, 184, 'dissolve', 240): окно
+        // текста — полоса почти во всю ширину, а текст — внутри неё с полями по 240 px.
+        // Полоса — полупрозрачная, как на экране INSTEAD (рамки fl/fr там не видны)
+        const SDL_FRect band{8, 864, 1904, 184};
+        const float wf = 240, pad = 8;  // vn.lua: textpad = 8
+        fillRect({0, band.y, SCREEN_W, band.h + 16}, {0, 0, 0, 110});
+        ScreenTheme::Window w = t.text;
+        w.rect = {band.x + wf, band.y + pad, band.w - 2 * wf, band.h - 2 * pad};
+        renderTextWindow(w, false);
+    }
+    renderMenuButton(t);
     renderInventory(t.inventory, false);
 }
 
@@ -1008,6 +1088,14 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
                 break;
             }
         }
+    } else if (starts("wheel:")) {
+        render();
+        SDL_Event e{};
+        e.type = SDL_EVENT_MOUSE_WHEEL;
+        e.wheel.y = std::stof(line.substr(6));
+        e.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
+        e.wheel.windowID = SDL_GetWindowID(m_window);
+        handleEvent(e);
     } else if (starts("hover:")) {
         float x = 0, y = 0;
         std::sscanf(line.c_str() + 6, "%f,%f", &x, &y);
@@ -1026,7 +1114,7 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     } else if (!line.empty() && line[0] != '#') {
         ok = false;
     }
-    if (!starts("shot:") && !starts("click") && !starts("hover:") && !starts("key:")) afterCommand();
+    if (!starts("shot:") && !starts("click") && !starts("hover:") && !starts("key:") && !starts("wheel:")) afterCommand();
     std::cout << (ok ? "" : "[НЕ ВЫПОЛНЕНО] ") << line << std::endl;
     return ok;
 }
@@ -1083,4 +1171,48 @@ void SdlPlayer::renderChoicesScreen() {
         if (c.enabled) m_hits.push_back({r, Hit::Kind::Choice, "", c.index});
         y += step;
     }
+}
+
+void SdlPlayer::renderVanishing(TTF_Font* labelFont, SDL_Color labelColor, bool spriteLabel) {
+    // Объекты, которых уже нет в снимке, но их эффект исчезновения ещё идёт
+    for (auto it = m_effects.begin(); it != m_effects.end();) {
+        const Effect& e = it->second;
+        const bool inSnapshot = std::any_of(m_screen.sceneObjects.begin(), m_screen.sceneObjects.end(),
+                                            [&](const SceneObject& o) { return o.id == it->first; });
+        auto rect = m_lastRects.find(it->first);
+        if (!e.hiding || inSnapshot || rect == m_lastRects.end()) { ++it; continue; }
+        const std::string id = it->first;
+        const SDL_FRect r = rect->second;
+        ++it;  // drawObject может удалить закончившийся эффект
+        drawObject(0, e.object, r, labelFont, labelColor, spriteLabel);
+        (void)id;
+    }
+    for (const auto& [id, r] : m_objectRects) m_lastRects[id] = r;
+}
+
+void SdlPlayer::renderMenuButton(const ScreenTheme& theme) {
+    // menu.gfx.button в menu.button.x/y — как кнопка «Меню» в INSTEAD
+    // Языковой вариант картинки, если есть: menubtn.png -> menubtn_ru.png для русской книги
+    std::string path = theme.menuButton;
+    const auto dot = path.find_last_of('.');
+    const std::string localized = dot == std::string::npos ? "" : path.substr(0, dot) + "_" + m_book->getLanguage() + path.substr(dot);
+    if (!localized.empty() && FileUtils::exists(localized)) path = localized;
+    SDL_Texture* img = textureFor(path);
+    if (!img) return;
+    float w, h;
+    SDL_GetTextureSize(img, &w, &h);
+    const SDL_FRect r{theme.menuButtonX, theme.menuButtonY, w, h};
+    SDL_RenderTexture(m_renderer, img, nullptr, &r);
+    m_hits.push_back({r, Hit::Kind::MenuButton, ""});
+}
+
+void SdlPlayer::drawTextAlpha(const std::string& text, TTF_Font* font, SDL_Color color, float x, float y, float alpha) {
+    SDL_Texture* tex = textTexture(text, font, color);
+    if (!tex) return;
+    float w, h;
+    SDL_GetTextureSize(tex, &w, &h);
+    SDL_FRect dst{x, y, w, h};
+    SDL_SetTextureAlphaModFloat(tex, alpha);
+    SDL_RenderTexture(m_renderer, tex, nullptr, &dst);
+    SDL_SetTextureAlphaModFloat(tex, 1.0f);
 }

@@ -107,9 +107,18 @@ ScreenTheme ScreenTheme::load(const std::string& dir, bool visualNovel) {
         col((prefix + ".col.fg").c_str(), w->fg); col((prefix + ".col.link").c_str(), w->link);
         col((prefix + ".col.alink").c_str(), w->alink);
         num((prefix + ".fnt.size").c_str(), w->fontSize);
+        num((prefix + ".fnt.height").c_str(), w->lineHeight);
+        if (ini.count(prefix + ".gfx.up")) w->upImage = FileUtils::combinePath(dir, ini[prefix + ".gfx.up"]);
+        if (ini.count(prefix + ".gfx.down")) w->downImage = FileUtils::combinePath(dir, ini[prefix + ".gfx.down"]);
         if (ini.count(prefix + ".fnt.name")) w->fontFile = FileUtils::combinePath(dir, firstFontVariant(ini[prefix + ".fnt.name"]));
     }
     if (ini.count("inv.mode")) t.inventoryHorizontal = ini["inv.mode"].rfind("horizontal", 0) == 0;
+    if (ini.count("win.align")) t.align = ini["win.align"];
+    if (ini.count("menu.gfx.button")) t.menuButton = FileUtils::combinePath(dir, ini["menu.gfx.button"]);
+    num("menu.button.x", t.menuButtonX); num("menu.button.y", t.menuButtonY);
+    // рамки текстового окна VN (vn.lua: gfx/fl.png, gfx/fr.png в каталоге темы)
+    if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/fl.png"))) t.frameLeft = FileUtils::combinePath(dir, "gfx/fl.png");
+    if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/fr.png"))) t.frameRight = FileUtils::combinePath(dir, "gfx/fr.png");
 
     // theme_standard.lua / theme_vn.lua: вызовы theme.win.geom(…), theme.win.color(…), theme.set(…)
     const std::string lua = readText(FileUtils::combinePath(dir, visualNovel ? "theme_vn.lua" : "theme_standard.lua"));
