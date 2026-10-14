@@ -30,7 +30,11 @@ public:
 
     /// Упаковать каталог книги (путь в UTF-8). Медиафайлы — без содержимого, если не withMedia
     /// (с медиа пакет самодостаточен: картинки и звук берутся прямо из него)
-    static std::unique_ptr<BookPack> build(const std::string& bookDir, std::string& error, bool withMedia = false);
+    static std::unique_ptr<BookPack> build(const std::string& bookDir, std::string& error, bool withMedia = false,
+                                           const std::string& themeDir = "");
+    /// Каталог внутри пакета, куда кладётся тема игры (theme.ini, theme_*.lua, fonts/, gfx/):
+    /// <пакет>/__theme__/...
+    static constexpr const char* THEME_DIR = "__theme__";
     /// Прочитать пакет из файла
     static std::unique_ptr<BookPack> read(const std::string& packPath, std::string& error);
     bool write(const std::string& packPath, std::string& error) const;

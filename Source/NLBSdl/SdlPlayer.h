@@ -108,6 +108,9 @@ private:
     std::string m_fontPath;
     ScreenTheme m_standardTheme, m_vnTheme;
     std::map<std::string, TTF_Font*> m_fonts;  ///< "файл|размер" -> шрифт
+    std::map<std::string, std::shared_ptr<std::string>> m_fontData;  ///< шрифты из пакета: данные живут, пока открыт шрифт
+    /// Открыть шрифт с диска или из смонтированного пакета
+    TTF_Font* openFont(const std::string& path, float size);
 
     std::unique_ptr<NonLinearBookImpl> m_book;
     std::unique_ptr<PlayerEngine> m_engine;
@@ -136,4 +139,20 @@ private:
     std::map<std::string, SDL_Texture*> m_images;
     std::map<std::string, SDL_Texture*> m_texts;
     std::map<std::string, SDL_FRect> m_objectRects;  ///< вычисленные места объектов (для детей)
+
+    // ---- эффекты появления спрайтов (vn.lua: шаг 20 мс, шагов maxStep или 500 мс / 20 мс)
+    struct Effect {
+        Uint64 start = 0;
+        int steps = 25;
+        bool hiding = false;        ///< обратный ход: свиток сворачивается
+        nlb::presentation::SceneObject object;  ///< последний вид объекта (для обратного хода)
+    };
+    std::map<std::string, Effect> m_effects;
+    std::map<std::string, bool> m_shown;      ///< объект был виден на прошлом снимке
+    void updateEffects(const nlb::presentation::ScreenModel& before);
+    /// Прозрачность, сдвиг и масштаб объекта на текущем кадре
+    struct EffectState { float alpha = 1, dx = 0, dy = 0, scale = 1; bool done = true; };
+    EffectState effectState(const std::string& id, const SDL_FRect& rect);
+    void drawObject(size_t index, const nlb::presentation::SceneObject& o, const SDL_FRect& r, TTF_Font* labelFont,
+                    SDL_Color labelColor, bool spriteLabel);
 };

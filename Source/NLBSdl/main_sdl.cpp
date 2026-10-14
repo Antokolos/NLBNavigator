@@ -67,6 +67,11 @@ int main(int argc, char** argv) {
         if (!pack) { std::cerr << error << std::endl; return 1; }
         BookPack::mount(std::shared_ptr<BookPack>(std::move(pack)), options.bookPath);
     }
+    // Тема, зашитая в пакет (pack --theme), если другая не указана
+    if (options.themeDir.empty() && BookPack::mounted()) {
+        const std::string packed = FileUtils::combinePath(options.bookPath, BookPack::THEME_DIR);
+        if (FileUtils::isDirectory(packed)) options.themeDir = packed;
+    }
     options.savesDir = dataPath(options.bookPath, ".saves", true);
     options.achievementsPath = dataPath(options.bookPath, ".achievements", false);
     SdlPlayer player(options);

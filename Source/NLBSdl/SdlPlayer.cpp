@@ -14,6 +14,7 @@
 #include "nlb/domain/NonLinearBookImpl.h"
 #include "nlb/presentation/AudioDirector.h"
 #include "nlb/presentation/BookMediaSource.h"
+#include "nlb/util/BookPack.h"
 #include "nlb/util/FileUtils.h"
 
 using namespace nlb::presentation;
@@ -219,7 +220,108 @@ void SdlPlayer::loop() {
 
 void SdlPlayer::refresh() {
     processEvents(m_engine->takeEvents());
+    const ScreenModel before = m_screen;
     m_screen = m_engine->screen();
+    updateEffects(before);
+}
+
+void SdlPlayer::updateEffects(const ScreenModel& before) {
+    const Uint64 now = SDL_GetTicks();
+    std::map<std::string, bool> shown;
+    for (const auto& o : m_screen.sceneObjects) {
+        if (!o.graphical) continue;
+        const bool visible = o.visible && !o.collapsed;
+        shown[o.id] = visible;
+        const bool wasVisible = m_shown.count(o.id) && m_shown[o.id];
+        const int steps = std::max(1, (o.appearance.maxStep > o.appearance.curStep ? o.appearance.maxStep - o.appearance.curStep : 25));
+        const AppearEffect e = o.appearance.effect;
+        if (visible && !wasVisible && (e == AppearEffect::FadeIn || e == AppearEffect::MoveIn || e == AppearEffect::ZoomIn)) {
+            m_effects[o.id] = Effect{now, steps, false, o};
+        } else if (!visible && wasVisible && e != AppearEffect::None && e != AppearEffect::Overlap) {
+            // свиток свернулся: эффект в обратную сторону (vn:set_step(v, nil, not v.forward))
+            m_effects[o.id] = Effect{now, steps, true, o};
+        }
+    }
+    (void)before;
+    m_shown = shown;
+}
+
+SdlPlayer::EffectState SdlPlayer::effectState(const std::string& id, const SDL_FRect& r) {
+    EffectState st;
+    auto it = m_effects.find(id);
+    if (it == m_effects.end()) return st;
+    const Effect& e = it->second;
+    float p = static_cast<float>(SDL_GetTicks() - e.start) / (static_cast<float>(e.steps) * 20.0f);
+    if (p >= 1.0f) {
+        if (e.hiding) { st.alpha = 0; }
+        m_effects.erase(it);
+        return st;
+    }
+    st.done = false;
+    const float k = e.hiding ? 1.0f - p : p;  // 0 — не виден, 1 — на месте
+    switch (e.object.appearance.effect) {
+        case AppearEffect::FadeIn: case AppearEffect::FadeOut: st.alpha = k; break;
+        case AppearEffect::ZoomIn: case AppearEffect::ZoomOut: st.scale = std::max(0.01f, k); break;
+        case AppearEffect::MoveIn: case AppearEffect::MoveOut: {
+            // выезжает из-за края экрана с указанной стороны (по умолчанию — слева)
+            const float t = 1.0f - k;
+            switch (e.object.appearance.direction) {
+                case MoveDirection::Right: st.dx = (SCREEN_W - r.x) * t; break;
+                case MoveDirection::Top: st.dy = -(r.y + r.h) * t; break;
+                case MoveDirection::Bottom: st.dy = (SCREEN_H - r.y) * t; break;
+                default: st.dx = -(r.x + r.w) * t; break;
+            }
+            break;
+        }
+        default: break;
+    }
+    return st;
+}
+
+void SdlPlayer::drawObject(size_t index, const SceneObject& o, const SDL_FRect& r, TTF_Font* labelFont,
+                           SDL_Color labelColor, bool spriteLabel) {
+    (void)index;
+    // Эффект родителя действует и на детей (в vn.lua дети получают шаги родителя)
+    EffectState st = effectState(o.id, r);
+    for (std::string p = o.parentId; st.done && !p.empty();) {
+        auto pr = m_objectRects.find(p);
+        if (pr == m_objectRects.end()) break;
+        st = effectState(p, pr->second);
+        const SceneObject* parent = nullptr;
+        for (const auto& x : m_screen.sceneObjects) if (x.id == p) { parent = &x; break; }
+        p = parent ? parent->parentId : "";
+    }
+    SDL_FRect dst{r.x + st.dx, r.y + st.dy, r.w, r.h};
+    if (st.scale != 1.0f) {
+        dst = {r.x + r.w * (1 - st.scale) / 2 + st.dx, r.y + r.h * (1 - st.scale) / 2 + st.dy, r.w * st.scale, r.h * st.scale};
+    }
+    const ImageRef& img = (m_hoverObject == o.id && !o.hoverImage.empty()) ? o.hoverImage : o.image;
+    if (SDL_Texture* tex = texture(img)) {
+        SDL_SetTextureAlphaModFloat(tex, st.alpha);
+        SDL_RenderTexture(m_renderer, tex, nullptr, &dst);
+        SDL_SetTextureAlphaModFloat(tex, 1.0f);
+    }
+    if (isHumanLabel(o.label) && st.alpha > 0.05f) {
+        if (!spriteLabel) {
+            if (!texture(img)) drawText(o.label, labelFont, labelColor, dst.x, dst.y);
+            return;
+        }
+        // Подпись спрайта — как draw_hud в vn.lua: справа от картинки (+4 +5 px), по вертикали
+        // по углу привязки (top — верх, middle — середина, bottom — низ; у вложенного — середина)
+        const float lh = static_cast<float>(TTF_GetFontLineSkip(labelFont));
+        std::vector<std::string> lines;
+        std::istringstream in(o.label);
+        for (std::string line; std::getline(in, line);) lines.push_back(line);
+        const float total = lh * static_cast<float>(lines.size());
+        const int row = static_cast<int>(o.placement.anchor) / 3;
+        const float coef = !o.parentId.empty() ? 0.5f : row == 0 ? 0.0f : row == 1 ? 0.5f : 1.0f;
+        const float tx = dst.x + dst.w + 4 + 5;
+        float ty = dst.y + dst.h * coef - total * coef;
+        for (const auto& line : lines) {
+            drawText(line, labelFont, labelColor, tx, ty);
+            ty += lh;
+        }
+    }
 }
 
 void SdlPlayer::processEvents(const std::vector<PlayerEngine::Event>& events) {
@@ -409,13 +511,27 @@ SDL_Texture* SdlPlayer::textureFor(const std::string& path) {
     auto it = m_images.find(path);
     if (it != m_images.end()) return it->second;
     SDL_Texture* tex = nullptr;
-    const std::string file = m_media->filePath(MediaRef{path});
-    if (!file.empty()) {
+    // Полный путь (картинки темы: фон, рамки) — напрямую, с диска или из пакета; иначе — медиа книги
+    std::string rel;
+    const bool fullPath = path.find('/') != std::string::npos && FileUtils::exists(path) && !FileUtils::isDirectory(path);
+    const std::string file = fullPath ? (BookPack::resolve(path, rel) ? std::string() : path) : m_media->filePath(MediaRef{path});
+    if (fullPath && file.empty()) {
+        std::string direct;
+        if (FileUtils::readFile(path, direct) && !direct.empty()) {
+            SDL_IOStream* io = SDL_IOFromConstMem(direct.data(), direct.size());
+            if (io) tex = IMG_LoadTexture_IO(m_renderer, io, true);
+        }
+    } else if (!file.empty()) {
         tex = IMG_LoadTexture(m_renderer, file.c_str());
     } else {
         std::vector<uint8_t> bytes;
+        std::string direct;
         if (m_media->read(MediaRef{path}, bytes) && !bytes.empty()) {
             SDL_IOStream* io = SDL_IOFromConstMem(bytes.data(), bytes.size());
+            if (io) tex = IMG_LoadTexture_IO(m_renderer, io, true);
+        } else if (FileUtils::readFile(path, direct) && !direct.empty()) {
+            // картинка темы (фон, рамки) — по полному пути, в том числе из пакета
+            SDL_IOStream* io = SDL_IOFromConstMem(direct.data(), direct.size());
             if (io) tex = IMG_LoadTexture_IO(m_renderer, io, true);
         }
     }
@@ -431,12 +547,25 @@ SDL_Texture* SdlPlayer::texture(const ImageRef& image) {
     return image.empty() ? nullptr : textureFor(framePath(image));
 }
 
+TTF_Font* SdlPlayer::openFont(const std::string& path, float size) {
+    std::string rel;
+    if (!BookPack::resolve(path, rel)) return TTF_OpenFont(path.c_str(), size);
+    // Шрифт темы, зашитой в пакет: SDL_ttf читает его из памяти, пока шрифт открыт
+    auto& data = m_fontData[path];
+    if (!data) {
+        data = std::make_shared<std::string>();
+        if (!FileUtils::readFile(path, *data)) return nullptr;
+    }
+    SDL_IOStream* io = SDL_IOFromConstMem(data->data(), data->size());
+    return io ? TTF_OpenFontIO(io, true, size) : nullptr;
+}
+
 TTF_Font* SdlPlayer::fontFor(const ScreenTheme::Window& window) {
     const std::string file = (!window.fontFile.empty() && FileUtils::exists(window.fontFile)) ? window.fontFile : m_fontPath;
     const std::string key = file + "|" + std::to_string(window.fontSize);
     auto it = m_fonts.find(key);
     if (it != m_fonts.end()) return it->second;
-    TTF_Font* f = TTF_OpenFont(file.c_str(), window.fontSize);
+    TTF_Font* f = openFont(file, window.fontSize);
     if (!f && file != m_fontPath) f = TTF_OpenFont(m_fontPath.c_str(), window.fontSize);
     m_fonts[key] = f ? f : m_font;
     return m_fonts[key];
@@ -610,12 +739,22 @@ void SdlPlayer::renderStandard() {
     m_objectRects.clear();
     for (size_t i = 0; i < m_screen.sceneObjects.size(); ++i) {
         const SceneObject& o = m_screen.sceneObjects[i];
-        if (!o.graphical || !o.visible || o.collapsed) continue;
+        if (!o.graphical || !o.visible) continue;
+        if (o.collapsed) {
+            // свёрнутый свиток виден, пока идёт обратный эффект; щелчков не принимает
+            auto e = m_effects.find(o.id);
+            if (e != m_effects.end() && e->second.hiding) {
+                const SDL_FRect r = objectRect(i);
+                m_objectRects[o.id] = r;
+                drawObject(i, o, r, fontFor(m_screen.layout == Layout::VisualNovel ? m_vnTheme.text : m_standardTheme.text),
+                           (m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme).text.fg,
+                           m_screen.layout == Layout::VisualNovel);
+            }
+            continue;
+        }
         const SDL_FRect r = objectRect(i);
         m_objectRects[o.id] = r;
-        const ImageRef& img = (m_hoverObject == o.id && !o.hoverImage.empty()) ? o.hoverImage : o.image;
-        if (SDL_Texture* tex = texture(img)) SDL_RenderTexture(m_renderer, tex, nullptr, &r);
-        else if (isHumanLabel(o.label)) drawText(o.label, fontFor(t.text), t.text.fg, r.x, r.y);
+        drawObject(i, o, r, fontFor(t.text), t.text.fg, false);
         if (o.active) m_hits.push_back({r, Hit::Kind::Object, o.id});
     }
     renderTextWindow(t.text, m_screen.imageIsBackground);
@@ -683,28 +822,22 @@ void SdlPlayer::renderVisualNovel() {
     TTF_Font* labelFont = fontFor(t.text);
     for (size_t i = 0; i < m_screen.sceneObjects.size(); ++i) {
         const SceneObject& o = m_screen.sceneObjects[i];
-        if (!o.graphical || !o.visible || o.collapsed) continue;
+        if (!o.graphical || !o.visible) continue;
+        if (o.collapsed) {
+            // свёрнутый свиток виден, пока идёт обратный эффект; щелчков не принимает
+            auto e = m_effects.find(o.id);
+            if (e != m_effects.end() && e->second.hiding) {
+                const SDL_FRect r = objectRect(i);
+                m_objectRects[o.id] = r;
+                drawObject(i, o, r, fontFor(m_screen.layout == Layout::VisualNovel ? m_vnTheme.text : m_standardTheme.text),
+                           (m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme).text.fg,
+                           m_screen.layout == Layout::VisualNovel);
+            }
+            continue;
+        }
         const SDL_FRect r = objectRect(i);
         m_objectRects[o.id] = r;
-        const ImageRef& img = (m_hoverObject == o.id && !o.hoverImage.empty()) ? o.hoverImage : o.image;
-        if (SDL_Texture* tex = texture(img)) SDL_RenderTexture(m_renderer, tex, nullptr, &r);
-        if (isHumanLabel(o.label)) {
-            // Подпись спрайта — как draw_hud в vn.lua: справа от картинки (+4 +5 px), по вертикали
-            // по углу привязки (top — верх, middle — середина, bottom — низ; у вложенного — середина)
-            const float lh = static_cast<float>(TTF_GetFontLineSkip(labelFont));
-            std::vector<std::string> lines;
-            std::istringstream in(o.label);
-            for (std::string line; std::getline(in, line);) lines.push_back(line);
-            const float total = lh * static_cast<float>(lines.size());
-            const int row = static_cast<int>(o.placement.anchor) / 3;
-            const float coef = !o.parentId.empty() ? 0.5f : row == 0 ? 0.0f : row == 1 ? 0.5f : 1.0f;
-            const float tx = r.x + r.w + 4 + 5;
-            float ty = r.y + r.h * coef - total * coef;
-            for (const auto& line : lines) {
-                drawText(line, labelFont, t.text.fg, tx, ty);
-                ty += lh;
-            }
-        }
+        drawObject(i, o, r, labelFont, t.text.fg, true);
         if (o.active) m_hits.push_back({r, Hit::Kind::Object, o.id});
     }
     const bool hasText = !m_screen.pageText.empty() || !m_screen.reactionText.empty() || !m_screen.choices.empty();
@@ -825,6 +958,7 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     } else if (starts("wait:")) {
         // время идёт кадрами по 16 мс, как в настоящем цикле
         for (int ms = std::stoi(line.substr(5)); ms > 0; ms -= 16) {
+            SDL_Delay(16);  // настоящее время: эффекты спрайтов идут по часам SDL
             if (m_engine->advanceTime(16) > 0) refresh();
         }
     } else if (starts("click:")) {
