@@ -1586,8 +1586,16 @@ std::vector<nlb::presentation::TextRun> PlayerEngine::textRuns(const std::string
         if (open > pos) runs.push_back({nlb::presentation::TextRun::Kind::Plain, text.substr(pos, open - pos), ""});
         const std::string label = text.substr(open + 1, close - open - 1);
         if (!label.empty()) {
-            runs.push_back({objectId.empty() ? nlb::presentation::TextRun::Kind::Plain : nlb::presentation::TextRun::Kind::ObjectLink,
-                            label, objectId});
+            // Метка в тексте ответа или модификаций (PDSCS выводит описания вложенных объектов:
+            // «Красная Шапочка может {открыть шкаф}») — ссылка на объект сцены с этой меткой
+            std::string target = objectId;
+            if (target.empty()) {
+                for (const auto& id : sceneObjects()) {
+                    if (trim(sceneLabel(id)) == trim(label)) { target = id; break; }
+                }
+            }
+            runs.push_back({target.empty() ? nlb::presentation::TextRun::Kind::Plain : nlb::presentation::TextRun::Kind::ObjectLink,
+                            label, target});
         }
         pos = close + 1;
     }
