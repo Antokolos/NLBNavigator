@@ -39,6 +39,9 @@ public:
         std::string achievementsPath;
         std::string scriptPath;                  ///< для тестов: команды и снимки экрана
         int windowWidth = 1280, windowHeight = 720;
+        /// Варианты отдельным экраном: окно показывает только текст, а дочитав его (пробел или
+        /// щелчок), игрок видит список вариантов посередине экрана. Иначе — варианты в окне текста
+        bool choicesScreen = false;
     };
 
     explicit SdlPlayer(Options options);
@@ -127,6 +130,12 @@ private:
     SDL_FRect m_textWindow{};            ///< окно текста на последнем кадре
     float m_pageHeight = 0;              ///< высота «страницы» текста — целое число строк
     bool m_moreText = false;             ///< текст не уместился: щелчок по окну — дальше
+    bool m_choicesScreen = false;        ///< режим «варианты отдельным экраном» (переключается в меню)
+    bool m_showChoices = false;          ///< сейчас показан экран вариантов
+    std::string m_choicesForPage;        ///< страница, для которой экран вариантов уже открывали
+    void renderChoicesScreen();
+    /// Дочитан текст: в режиме экрана вариантов показать варианты; true — показали
+    bool advanceToChoices();
     float m_drawTop = -1e9f, m_drawBottom = 1e9f;  ///< рисуются только строки целиком внутри
     float m_firstHiddenY = -1;           ///< верх первой не уместившейся строки (начало следующей страницы)
     Menu m_menu = Menu::None;

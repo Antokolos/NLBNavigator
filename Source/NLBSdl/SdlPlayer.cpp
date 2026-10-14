@@ -136,6 +136,7 @@ bool SdlPlayer::init() {
         }
     }
     m_soundOn = m_director != nullptr;
+    m_choicesScreen = m_options.choicesScreen;
 
     PlayerEngine::Settings settings;
     settings.exportMode = m_options.exportMode;
@@ -333,12 +334,16 @@ void SdlPlayer::processEvents(const std::vector<PlayerEngine::Event>& events) {
             m_toastUntil = SDL_GetTicks() + 4000;
         } else if (e.kind == Kind::PageText || e.kind == Kind::PageCaption) {
             m_scroll = 0;  // новая страница — с начала
+            m_showChoices = false;
         }
     }
 }
 
 void SdlPlayer::afterCommand() {
     refresh();
+    m_showChoices = false;
+    // Страница без текста: показывать нечего — сразу экран вариантов
+    if (m_choicesScreen && m_screen.pageText.empty() && m_screen.reactionText.empty()) advanceToChoices();
     if (m_screen.externalGame) {
         m_message = "Внешняя игра «" + *m_screen.externalGame + "»: в этом проигрывателе её нет.\nЩелчок — вернуться в книгу.";
         m_menu = Menu::Message;
@@ -364,8 +369,15 @@ void SdlPlayer::click(float x, float y, bool rightButton) {
     }
     bool hitSomething = false;
     for (const auto& h : m_hits) hitSomething = hitSomething || contains(h.rect, x, y);
-    if (!hitSomething && m_menu == Menu::None && m_moreText && contains(m_textWindow, x, y)) {
+    if (m_showChoices) {
+        // экран вариантов: щелчок мимо вариантов — назад к тексту
+        bool onChoice = false;
+        for (const auto& h : m_hits) onChoice = onChoice || (h.kind == Hit::Kind::Choice && contains(h.rect, x, y));
+        if (!onChoice) { m_showChoices = false; return; }
+    } else if (!hitSomething && m_menu == Menu::None && m_moreText && contains(m_textWindow, x, y)) {
         m_scroll += m_pageHeight;
+        return;
+    } else if (!hitSomething && m_menu == Menu::None && advanceToChoices()) {
         return;
     }
     for (auto it = m_hits.rbegin(); it != m_hits.rend(); ++it) {
@@ -410,6 +422,7 @@ void SdlPlayer::click(float x, float y, bool rightButton) {
 
 void SdlPlayer::key(SDL_Keycode keycode) {
     if (keycode == SDLK_ESCAPE) {
+        if (m_showChoices && m_menu == Menu::None) { m_showChoices = false; return; }
         if (m_menu == Menu::None) openMenu(Menu::Main);
         else if (m_menu != Menu::Message) m_menu = Menu::None;
         return;
@@ -422,7 +435,12 @@ void SdlPlayer::key(SDL_Keycode keycode) {
             if (!c.enabled) continue;
             if (k++ == n) { m_engine->choose(static_cast<size_t>(c.index)); afterCommand(); return; }
         }
-    } else if (keycode == SDLK_PAGEDOWN || keycode == SDLK_SPACE) {
+    } else if (keycode == SDLK_SPACE || keycode == SDLK_RETURN) {
+        // пробел: следующая часть текста, а когда он дочитан — экран вариантов
+        if (m_moreText) m_scroll += m_pageHeight;
+        else if (m_showChoices) m_showChoices = false;
+        else advanceToChoices();
+    } else if (keycode == SDLK_PAGEDOWN) {
         m_scroll += m_pageHeight;
     } else if (keycode == SDLK_PAGEUP) {
         m_scroll = std::max(0.0f, m_scroll - m_pageHeight);
@@ -453,7 +471,11 @@ void SdlPlayer::menuAction(int index) {
             case 3:
                 if (m_director) { m_soundOn = !m_soundOn; m_director->setMuted(!m_soundOn); }
                 break;
-            case 4: m_quit = true; break;
+            case 4:
+                m_choicesScreen = !m_choicesScreen;
+                m_showChoices = false;
+                break;
+            case 5: m_quit = true; break;
             default: m_menu = Menu::None; break;
         }
     } else if (m_menu == Menu::Save || m_menu == Menu::Load) {
@@ -671,7 +693,7 @@ void SdlPlayer::renderTextWindow(const ScreenTheme::Window& window, bool panel) 
     if (!m_screen.caption.empty()) need += TTF_GetFontLineSkip(font) * 1.4f;
     need = renderParagraphs(m_screen.pageText, r.x, need, r.w, font, window, false);
     need = renderParagraphs(m_screen.reactionText, r.x, need, r.w, font, window, false);
-    need = renderChoices(r.x, need, r.w, font, window, false);
+    if (!m_choicesScreen) need = renderChoices(r.x, need, r.w, font, window, false);
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
     // paginator в INSTEAD: щелчок по окну (или колесо, PgDn) — следующая часть
@@ -696,7 +718,7 @@ void SdlPlayer::renderTextWindow(const ScreenTheme::Window& window, bool panel) 
     }
     y = renderParagraphs(m_screen.pageText, r.x, y, r.w, font, window, true);
     y = renderParagraphs(m_screen.reactionText, r.x, y, r.w, font, window, true);
-    renderChoices(r.x, y, r.w, font, window, true);
+    if (!m_choicesScreen) renderChoices(r.x, y, r.w, font, window, true);
     SDL_SetRenderClipRect(m_renderer, nullptr);
     m_drawTop = -1e9f;
     m_drawBottom = 1e9f;
@@ -756,6 +778,10 @@ void SdlPlayer::renderStandard() {
         m_objectRects[o.id] = r;
         drawObject(i, o, r, fontFor(t.text), t.text.fg, false);
         if (o.active) m_hits.push_back({r, Hit::Kind::Object, o.id});
+    }
+    if (m_showChoices) {
+        renderChoicesScreen();
+        return;
     }
     renderTextWindow(t.text, m_screen.imageIsBackground);
     renderInventory(t.inventory, false);
@@ -817,10 +843,11 @@ void SdlPlayer::renderVisualNovel() {
         SDL_FRect full{0, 0, SCREEN_W, SCREEN_H};
         SDL_RenderTexture(m_renderer, bg, nullptr, &full);
     }
-    // Графические объекты в порядке обхода сцены (родитель раньше детей)
+    // Графические объекты в порядке обхода сцены (родитель раньше детей). На экране вариантов
+    // их нет — как в INSTEAD, где на время выбора остаются только фон и кнопка меню
     m_objectRects.clear();
     TTF_Font* labelFont = fontFor(t.text);
-    for (size_t i = 0; i < m_screen.sceneObjects.size(); ++i) {
+    for (size_t i = 0; i < (m_showChoices ? 0 : m_screen.sceneObjects.size()); ++i) {
         const SceneObject& o = m_screen.sceneObjects[i];
         if (!o.graphical || !o.visible) continue;
         if (o.collapsed) {
@@ -841,7 +868,8 @@ void SdlPlayer::renderVisualNovel() {
         if (o.active) m_hits.push_back({r, Hit::Kind::Object, o.id});
     }
     const bool hasText = !m_screen.pageText.empty() || !m_screen.reactionText.empty() || !m_screen.choices.empty();
-    if (hasText) renderTextWindow(t.text, true);
+    if (m_showChoices) renderChoicesScreen();
+    else if (hasText) renderTextWindow(t.text, true);
     renderInventory(t.inventory, false);
 }
 
@@ -873,6 +901,7 @@ void SdlPlayer::renderMenu() {
                  {"Загрузить игру (F9)", saves},
                  {"Начать заново", true},
                  {m_director ? (m_soundOn ? "Выключить звук" : "Включить звук") : "Звук недоступен", m_director != nullptr},
+                 {m_choicesScreen ? "Варианты: отдельным экраном" : "Варианты: в окне текста", true},
                  {"Выйти", true},
                  {"Вернуться в игру (Esc)", true}};
     } else if (m_menu == Menu::Save || m_menu == Menu::Load) {
@@ -989,7 +1018,9 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         }
     } else if (starts("key:")) {
         const std::string k = line.substr(4);
-        key(k == "esc" ? SDLK_ESCAPE : k == "f5" ? SDLK_F5 : k == "f9" ? SDLK_F9 : static_cast<SDL_Keycode>(SDLK_0 + std::stoi(k)));
+        key(k == "esc" ? SDLK_ESCAPE : k == "f5" ? SDLK_F5 : k == "f9" ? SDLK_F9 : k == "space" ? SDLK_SPACE
+            : static_cast<SDL_Keycode>(SDLK_0 + std::stoi(k)));
+        render();
     } else if (starts("shot:")) {
         ok = saveScreenshot(line.substr(5));
     } else if (!line.empty() && line[0] != '#') {
@@ -1011,4 +1042,45 @@ bool SdlPlayer::runScript() {
         all = scriptCommand(line) && all;
     }
     return all;
+}
+
+// ============================================================================ экран вариантов
+
+bool SdlPlayer::advanceToChoices() {
+    if (!m_choicesScreen || m_moreText || m_showChoices || m_menu != Menu::None) return false;
+    if (std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
+        return false;
+    }
+    m_showChoices = true;
+    return true;
+}
+
+void SdlPlayer::renderChoicesScreen() {
+    // Варианты посередине экрана на полупрозрачной панели; графические объекты сцены в это
+    // время не кликабельны (их области убираются из m_hits)
+    m_hits.erase(std::remove_if(m_hits.begin(), m_hits.end(), [](const Hit& h) {
+        return h.kind == Hit::Kind::Object || h.kind == Hit::Kind::Inventory;
+    }), m_hits.end());
+    const ScreenTheme::Window& window = m_screen.layout == Layout::VisualNovel ? m_vnTheme.text : m_standardTheme.text;
+    TTF_Font* font = fontFor({window.rect, window.fg, window.link, window.alink, window.fontFile, window.fontSize * 1.25f});
+    const float lh = static_cast<float>(TTF_GetFontLineSkip(font));
+    const float step = lh * 1.9f;
+    const float panelW = SCREEN_W * 0.675f;
+    const float panelH = std::max(SCREEN_H * 0.46f, step * static_cast<float>(m_screen.choices.size()) + lh);
+    const SDL_FRect panel{(SCREEN_W - panelW) / 2, std::max(20.0f, (SCREEN_H - panelH) / 2 - 80), panelW, panelH};
+    fillRect(panel, {0, 0, 0, 120});
+    float mx = 0, my = 0;
+    SDL_GetMouseState(&mx, &my);
+    SDL_RenderCoordinatesFromWindow(m_renderer, mx, my, &mx, &my);
+    float y = panel.y + lh * 0.5f;
+    int number = 0;
+    for (const auto& c : m_screen.choices) {
+        const std::string text = c.enabled ? std::to_string(++number) + ". " + c.text : c.altText;
+        const SDL_FPoint sz = textSize(text, font);
+        const SDL_FRect r{panel.x + 10, y, std::min(sz.x, panel.w - 20), lh};
+        const bool hover = c.enabled && contains(r, mx, my);
+        drawText(text, font, !c.enabled ? window.fg : hover ? window.alink : window.link, r.x, r.y);
+        if (c.enabled) m_hits.push_back({r, Hit::Kind::Choice, "", c.index});
+        y += step;
+    }
 }

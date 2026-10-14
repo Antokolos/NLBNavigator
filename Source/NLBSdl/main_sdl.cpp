@@ -50,12 +50,13 @@ int main(int argc, char** argv) {
         if (a == "--font" && i + 1 < args.size()) options.fontPath = args[++i];
         else if (a == "--theme" && i + 1 < args.size()) options.themeDir = args[++i];
         else if (a == "--no-sound") options.sound = false;
+        else if (a == "--choices-screen") options.choicesScreen = true;
         else if (a == "--script" && i + 1 < args.size()) options.scriptPath = args[++i];
         else if (a == "--window" && i + 1 < args.size()) std::sscanf(args[++i].c_str(), "%dx%d", &options.windowWidth, &options.windowHeight);
         else positional.push_back(a);
     }
     if (positional.empty()) {
-        std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [vn|standard] [--theme <INSTEAD theme dir>] [--font <ttf>] [--no-sound] [--window WxH]" << std::endl;
+        std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [vn|standard] [--theme <INSTEAD theme dir>] [--font <ttf>] [--no-sound] [--choices-screen] [--window WxH]" << std::endl;
         return 1;
     }
     options.bookPath = positional[0];
