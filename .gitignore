@@ -65,3 +65,10 @@ Session.vim
 
 # Visual Studio
 .vs
+# Документация и адаптеры движков (Godot, Unreal)
+!/docs/**
+!/integrations/**
+# ... кроме собранных модулей и каталогов сборки
+/integrations/godot/demo/bin/
+/integrations/godot/demo/.godot/
+/integrations/**/build/

@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(NLBReader VERSION 1.0.0 LANGUAGES CXX)
+# Библиотека может войти в динамический модуль движка (GDExtension, Unreal) — нужен PIC
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Set C++ standard
 # C++17 по умолчанию; проект собирается и в C++20 (стандарт модулей Unreal Engine 5):
@@ -108,6 +110,7 @@ set(NLB_DOMAIN_HEADERS
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/AudioBackend.h
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/AudioDirector.h
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/BookMediaSource.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/Session.h
 )
 
 # Utility Headers
@@ -182,6 +185,7 @@ set(NLB_DOMAIN_SOURCES
         ${NLB_READER_SOURCE_DIR}/nlb/domain/NLBExplorerScreenReader.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/AudioDirector.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/BookMediaSource.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/Session.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerContext.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/ModificationInterpreter.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerEngine.cpp
@@ -274,6 +278,10 @@ if(BUILD_SHARED_LIBS)
     endif()
 endif()
 
+# Программы (консоль, SDL3). Встраивание в движки (integrations/godot, Unreal) собирает только
+# библиотеку: -DNLB_BUILD_APPS=OFF
+option(NLB_BUILD_APPS "Build nlb_main / nlb_sdl executables" ON)
+if(NLB_BUILD_APPS)
 # Main executable
 add_executable(nlb_main
         Source/main.cpp
@@ -339,6 +347,8 @@ if(WIN32)
     # CommandLineToArgvW — путь к книге из UTF-16 командной строки
     target_link_libraries(nlb_main PRIVATE shell32)
 endif()
+
+endif()  # NLB_BUILD_APPS
 
 # Configuration summary
 message(STATUS "")

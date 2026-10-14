@@ -1,0 +1,16 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "0.1",
+    "FriendlyName": "NLBNavigator",
+    "Description": "Плеер книг NLB (визуальные новеллы и текстовые квесты) внутри Unreal Engine",
+    "Category": "Gameplay",
+    "CanContainContent": true,
+    "Modules": [
+        {
+            "Name": "NLBNavigatorRuntime",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        }
+    ]
+}
