@@ -31,6 +31,7 @@ public class NLBPlayer : ModuleRules
             Path.Combine(Src, "NLBReader", "Public"),
             Path.Combine(Src, "NLBPresentation", "Public"),
             Path.Combine(Src, "thirdparty", "cparse"),
+            Path.Combine(Src, "thirdparty"),   // audiodecoders/: stb_vorbis, dr_mp3, dr_wav
         });
         if (Target.Platform == UnrealTargetPlatform.Win64)
         {

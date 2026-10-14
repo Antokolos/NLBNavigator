@@ -9,10 +9,10 @@ class USoundBase;
 class UObject;
 
 /**
- * Звук плеера средствами Unreal. Звук книги ищется сначала среди ассетов проекта:
- * /Game/NLB/Sound/<имя файла без расширения> (импортируйте туда ogg/mp3 из sound/ книги —
- * сжатые форматы Unreal декодирует только для импортированных ассетов). WAV из книги
- * воспроизводится и без импорта — через USoundWaveProcedural.
+ * Звук плеера средствами Unreal. Звук ищется сначала среди ассетов проекта
+ * (/Game/NLB/Sound/<имя файла без расширения> — необязательная замена, если нужна обработка
+ * средствами Unreal), затем берётся из книги или пакета .nlbpack: ogg, mp3 и wav раскодирует
+ * AudioDecoder и отдаёт в USoundWaveProcedural — музыку потоком, короткие эффекты целиком.
  */
 class FUnrealAudioBackend : public nlb::presentation::IAudioBackend {
 public:
