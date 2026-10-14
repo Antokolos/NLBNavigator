@@ -6,7 +6,7 @@
  * @class TextChunk
  * @brief Represents a chunk of text with type information
  */
-class NLBCORE_API TextChunk {
+class TextChunk {
 public:
     static const std::string ACTION_TEXT_DEF;
 

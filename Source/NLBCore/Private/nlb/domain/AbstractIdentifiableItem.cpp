@@ -16,14 +16,14 @@ AbstractIdentifiableItem::AbstractIdentifiableItem()
     , m_parent(nullptr) {
 }
 
-AbstractIdentifiableItem::AbstractIdentifiableItem(std::shared_ptr<NonLinearBook> currentNLB)
+AbstractIdentifiableItem::AbstractIdentifiableItem(NonLinearBook* currentNLB)
     : AbstractIdentifiableItem() {
     m_currentNLB = currentNLB;
 }
 
 AbstractIdentifiableItem::AbstractIdentifiableItem(
-    const std::shared_ptr<IdentifiableItem>& identifiableItem,
-    std::shared_ptr<NonLinearBook> currentNLB
+    const IdentifiableItem* identifiableItem,
+    NonLinearBook* currentNLB
 )
     : AbstractIdentifiableItem(currentNLB) {
     m_id = identifiableItem->getId();
@@ -32,17 +32,17 @@ AbstractIdentifiableItem::AbstractIdentifiableItem(
 }
 
 AbstractIdentifiableItem::AbstractIdentifiableItem(
-    const std::shared_ptr<IdentifiableItem>& identifiableItem,
-    const std::shared_ptr<ModifyingItem>& parent,
-    std::shared_ptr<NonLinearBook> currentNLB
+    const IdentifiableItem* identifiableItem,
+    const ModifyingItem* parent,
+    NonLinearBook* currentNLB
 )
     : AbstractIdentifiableItem(currentNLB) {
     m_id = identifiableItem->getId();
     m_isDeleted = identifiableItem->isDeleted();
-    m_parent = parent;
+    m_parent = (IdentifiableItem*) parent;
 }
 
-void AbstractIdentifiableItem::copy(const std::shared_ptr<IdentifiableItem>& identifiableItem) {
+void AbstractIdentifiableItem::copy(const IdentifiableItem* identifiableItem) {
     m_id = identifiableItem->getId();
     m_isDeleted = identifiableItem->isDeleted();
     m_parent = identifiableItem->getParent();
@@ -57,16 +57,16 @@ std::string AbstractIdentifiableItem::getId() const {
     return m_id;
 }
 
-std::shared_ptr<IdentifiableItem> AbstractIdentifiableItem::getParent() const {
+IdentifiableItem* AbstractIdentifiableItem::getParent() const {
     return m_parent;
 }
 
-void AbstractIdentifiableItem::setParent(const std::shared_ptr<IdentifiableItem>& parent) {
-    m_parent = parent;
+void AbstractIdentifiableItem::setParent(const IdentifiableItem* parent) {
+    m_parent = (IdentifiableItem*) parent;
 }
 
 bool AbstractIdentifiableItem::hasDeletedParent() const {
-    std::shared_ptr<IdentifiableItem> item = getParent();
+    IdentifiableItem* item = getParent();
     while (item) {
         if (item->isDeleted()) {
             return true;
@@ -78,7 +78,7 @@ bool AbstractIdentifiableItem::hasDeletedParent() const {
 
 std::string AbstractIdentifiableItem::getFullId() const {
     std::vector<std::string> ids;
-    std::shared_ptr<IdentifiableItem> item = getParent();
+    IdentifiableItem* item = getParent();
     ids.push_back(getId());
     
     while (item) {
@@ -97,13 +97,13 @@ bool AbstractIdentifiableItem::isDeleted() const {
     return m_isDeleted;
 }
 
-std::shared_ptr<NonLinearBook> AbstractIdentifiableItem::getCurrentNLB() const {
+NonLinearBook* AbstractIdentifiableItem::getCurrentNLB() const {
     return m_currentNLB;
 }
 
-std::shared_ptr<SearchResult> AbstractIdentifiableItem::searchText(const SearchContract& contract) const {
+SearchResult* AbstractIdentifiableItem::searchText(const SearchContract& contract) const {
     if (contract.isSearchInIds() && textMatches(m_id, contract)) {
-        auto result = std::make_shared<SearchResult>();
+        auto result = new SearchResult();
         result->setId(m_id);
         result->setInformation(m_id);
         return result;

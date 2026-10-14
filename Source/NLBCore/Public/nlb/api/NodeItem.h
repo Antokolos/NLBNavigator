@@ -77,20 +77,20 @@ public:
      * @brief Gets the coordinates
      * @return Coords The coordinates object
      */
-    virtual std::shared_ptr<Coords> getCoords() const = 0;
+    virtual Coords* getCoords() const = 0;
 
     /*!
      * @brief Gets all links
-     * @return std::vector<std::shared_ptr<Link>> Vector of links
+     * @return std::vector<Link*> Vector of links
      */
-    virtual std::vector<std::shared_ptr<Link>> getLinks() const = 0;
+    virtual std::vector<Link*> getLinks() const = 0;
 
     /*!
      * @brief Gets a link by its ID
      * @param linkId The ID of the link to find
-     * @return std::shared_ptr<Link> The found link or nullptr if not found
+     * @return Link* The found link or nullptr if not found
      */
-    virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const = 0;
+    virtual Link* getLinkById(const std::string& linkId) const = 0;
     
     /*!
      * @brief Gets the external hierarchy path

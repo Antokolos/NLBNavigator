@@ -9,7 +9,7 @@
 /*!
  * @brief Model class for displaying search results in a table format
  */
-class NLBCORE_API SearchResultTableModel {
+class SearchResultTableModel {
 public:
     /*!
      * @brief Default constructor

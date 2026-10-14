@@ -1,218 +1,193 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "NLBController.h"
-#include "NLBWidget.h"
 
-#include "IImageWrapper.h"
-#include "IImageWrapperModule.h"
-#include "Components/Image.h"
-#include "Components/TextBlock.h"
+#include "Camera/CameraComponent.h"
+#include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
-#include <Camera/CameraComponent.h>
+#include "NLBNavigatorCharacter.h"
+#include "NLBPlayerSubsystem.h"
+#include "NLBWidget.h"
+#include "UObject/ConstructorHelpers.h"
 
-// Sets default values
 ANLBController::ANLBController()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-    CurrentIndex = 0;
-    bIsImageVisible = true; // Initial state -- display the image
+	PrimaryActorTick.bCanEverTick = false;  // время книги двигает UNLBPlayerSubsystem
 
-    // Create a default scene component
-    USceneComponent* DefaultSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
-    // Set it as the root component
-    RootComponent = DefaultSceneComponent;
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-    CameraComponent->SetupAttachment(RootComponent);
+	USceneComponent* DefaultSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
+	RootComponent = DefaultSceneComponent;
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetupAttachment(RootComponent);
 
-    if (UClass* WidgetClass = LoadClass<UNLBWidget>(nullptr, TEXT("/Game/NLB/UI/NLBWidget.NLBWidget_C")))
-    {
-        NLBWidget = CreateWidget<UNLBWidget>(GetWorld(), WidgetClass);
-    }
-
-    // Load files from the directory
-    FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
-    IFileManager& FileManager = IFileManager::Get();
-
-    FileManager.FindFiles(TextFiles, *(DirectoryPath + TEXT("*.txt")), true, false);
-    FileManager.FindFiles(ImageFiles, *(DirectoryPath + TEXT("*.png")), true, false);
-
-    TextFiles.Sort();
-    ImageFiles.Sort();
+	static ConstructorHelpers::FClassFinder<UNLBWidget> WidgetFinder(TEXT("/Game/NLB/UI/NLBWidget"));
+	if (WidgetFinder.Succeeded())
+	{
+		WidgetClass = WidgetFinder.Class;
+	}
 }
 
-// Called when the game starts or when spawned
 void ANLBController::BeginPlay()
 {
 	Super::BeginPlay();
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		NLBWidget = CreateWidget<UNLBWidget>(PC, WidgetClass ? *WidgetClass : UNLBWidget::StaticClass());
+	}
 }
 
-// Called every frame
-void ANLBController::Tick(float DeltaTime)
+UNLBPlayerSubsystem* ANLBController::Player() const
 {
-	Super::Tick(DeltaTime);
-
+	UGameInstance* GI = GetGameInstance();
+	return GI ? GI->GetSubsystem<UNLBPlayerSubsystem>() : nullptr;
 }
 
 void ANLBController::LoadCurrentSet()
 {
-    if (CurrentIndex < TextFiles.Num() && CurrentIndex < ImageFiles.Num())
-    {
-        FString DirectoryPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("NLBFiles/"));
-        UE_LOG(LogTemp, Error, TEXT("Loading files from DirectoryPath = %s"), *DirectoryPath);
-
-        // Load text and image files
-        FString TextContent;
-        FString TextFilePath = DirectoryPath + TextFiles[CurrentIndex];
-        if (FFileHelper::LoadFileToString(TextContent, *TextFilePath))
-        {
-            NLBWidget->UpdateText(TextContent);
-        } else {
-            UE_LOG(LogTemp, Error, TEXT("Error loading text file, path = %s"), *TextFilePath);
-        }
-
-        // Load the image
-        FString ImageFilePath = DirectoryPath + ImageFiles[CurrentIndex];
-        if (UTexture2D* Texture = LoadTextureFromFile(ImageFilePath))
-        {
-            NLBWidget->UpdateImage(Texture);
-        } else {
-            UE_LOG(LogTemp, Error, TEXT("Error loading texture file, path = %s"), *ImageFilePath);
-        }
-    }
+	UNLBPlayerSubsystem* P = Player();
+	if (!P)
+	{
+		return;
+	}
+	if (!bBound)
+	{
+		P->OnScreenChanged.AddDynamic(this, &ANLBController::HandleScreenChanged);
+		P->OnExternalGame.AddDynamic(this, &ANLBController::HandleExternalGame);
+		P->OnAchievement.AddDynamic(this, &ANLBController::HandleAchievement);
+		bBound = true;
+	}
+	if (!P->IsBookOpen() && !P->OpenBook(BookPath, bVisualNovel, ExternalGames))
+	{
+		UE_LOG(LogTemp, Error, TEXT("NLB: не удалось открыть книгу %s"), *BookPath);
+		if (NLBWidget)
+		{
+			NLBWidget->UpdateText(FString::Printf(TEXT("Не удалось открыть книгу %s"), *BookPath));
+		}
+		return;
+	}
+	// Игрок вернулся после внешней игры (шутера) — книга продолжается с того же места
+	if (!P->GetScreen().ExternalGame.IsEmpty())
+	{
+		P->FinishExternalGame();
+	}
+	Refresh();
 }
 
 void ANLBController::LoadNextSet()
 {
-    CurrentIndex++;
-    if (CurrentIndex >= FMath::Min(TextFiles.Num(), ImageFiles.Num()))
-    {
-        CurrentIndex = 0; // Reset to the beginning
-    }
-    LoadCurrentSet();
+	UNLBPlayerSubsystem* P = Player();
+	if (!P || !P->IsBookOpen())
+	{
+		return;
+	}
+	const FNLBScreen Screen = P->GetScreen();
+	int32 Available = 0, Index = -1;
+	for (const FNLBChoice& C : Screen.Choices)
+	{
+		if (C.bEnabled)
+		{
+			++Available;
+			Index = C.Index;
+		}
+	}
+	if (Available == 1)
+	{
+		P->Choose(Index);
+	}
+}
+
+void ANLBController::OnAction(ENLBAction Action, int32 Index, const FString& Id)
+{
+	UNLBPlayerSubsystem* P = Player();
+	if (!P)
+	{
+		return;
+	}
+	switch (Action)
+	{
+	case ENLBAction::Choice:
+		if (Index == -2) P->Restart();
+		else if (Index >= 0) P->Choose(Index);
+		break;
+	case ENLBAction::Object:
+		P->ClickObject(Id);
+		break;
+	case ENLBAction::Item:
+		P->ClickItem(Id);
+		break;
+	}
+	Refresh();  // выбор предмета меняет вид, даже если снимок движка тот же
+}
+
+void ANLBController::Refresh()
+{
+	UNLBPlayerSubsystem* P = Player();
+	if (NLBWidget && P && P->IsBookOpen() && bInViewport)
+	{
+		NLBWidget->ShowScreen(P->GetScreen(), P, this);
+	}
+}
+
+void ANLBController::HandleScreenChanged()
+{
+	Refresh();
+}
+
+void ANLBController::HandleExternalGame(const FString& Name)
+{
+	// Книга передала управление игре: вернуть игрока в шутер. Переменные книги шутер может
+	// читать и менять через UNLBPlayerSubsystem (GetNumber/SetNumber/...)
+	UE_LOG(LogTemp, Log, TEXT("NLB: внешняя игра %s"), *Name);
+	if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(GetOwner()))
+	{
+		Character->ReturnToShooter();
+	}
+}
+
+void ANLBController::HandleAchievement(const FString& Name)
+{
+	UE_LOG(LogTemp, Log, TEXT("NLB: достижение %s"), *Name);
 }
 
 void ANLBController::AddToViewport()
 {
-    if (NLBWidget)
-    {
-        NLBWidget->AddToViewport();
-    }
+	if (!NLBWidget)
+	{
+		return;
+	}
+	NLBWidget->AddToViewport();
+	NLBWidget->SetVisibility(ESlateVisibility::Visible);
+	bInViewport = true;
+	bIsImageVisible = true;
+	// Курсор и ввод для интерфейса: по кнопкам щёлкают мышью
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		PC->SetShowMouseCursor(true);
+		FInputModeGameAndUI Mode;
+		Mode.SetWidgetToFocus(NLBWidget->TakeWidget());
+		Mode.SetHideCursorDuringCapture(false);
+		PC->SetInputMode(Mode);
+	}
 }
-
 
 void ANLBController::RemoveFromParent()
 {
-    if (NLBWidget)
-    {
-        NLBWidget->RemoveFromParent();
-    }
+	if (NLBWidget)
+	{
+		NLBWidget->RemoveFromParent();
+	}
+	bInViewport = false;
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		PC->SetShowMouseCursor(false);
+		PC->SetInputMode(FInputModeGameOnly());
+	}
 }
 
 void ANLBController::ToggleView()
 {
-    if (bIsImageVisible)
-    {
-        // Hide the widget and switch to the camera
-        if (NLBWidget)
-        {
-            NLBWidget->SetVisibility(ESlateVisibility::Hidden);
-        }
-
-        if (CameraComponent)
-        {
-            APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-            if (PlayerController)
-            {
-                PlayerController->SetViewTarget(CameraComponent->GetOwner()); // Switch view to the camera
-            }
-        }
-    }
-    else
-    {
-        // Show the widget and switch to the default view
-        if (NLBWidget)
-        {
-            NLBWidget->SetVisibility(ESlateVisibility::Visible);
-        }
-
-        APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-        if (PlayerController)
-        {
-            PlayerController->SetViewTarget(this); // Switch view back to the controller or another object
-        }
-    }
-
-    bIsImageVisible = !bIsImageVisible;
-}
-
-UTexture2D *ANLBController::LoadTextureFromFile(const FString &FilePath)
-{
-    // Check if the file exists
-    if (!FPaths::FileExists(FilePath))
-    {
-        UE_LOG(LogTemp, Error, TEXT("File not found: %s"), *FilePath);
-        return nullptr;
-    }
-
-    // Read the file data into an array
-    TArray<uint8> FileData;
-    if (!FFileHelper::LoadFileToArray(FileData, *FilePath))
-    {
-        UE_LOG(LogTemp, Error, TEXT("Failed to load file: %s"), *FilePath);
-        return nullptr;
-    }
-
-    // Use ImageWrapper to handle compressed data
-    IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(TEXT("ImageWrapper"));
-    EImageFormat Format = ImageWrapperModule.DetectImageFormat(FileData.GetData(), FileData.Num());
-
-    if (Format == EImageFormat::Invalid)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Invalid image format: %s"), *FilePath);
-        return nullptr;
-    }
-
-    TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(Format);
-    if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(FileData.GetData(), FileData.Num()))
-    {
-        // Retrieve the uncompressed image data
-        TArray<uint8> UncompressedRGBA;
-        if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedRGBA))
-        {
-            // Allocate memory for the texture
-            UTexture2D* NewTexture = UTexture2D::CreateTransient(
-                ImageWrapper->GetWidth(),
-                ImageWrapper->GetHeight(),
-                PF_B8G8R8A8
-            );
-
-            if (!NewTexture)
-            {
-                UE_LOG(LogTemp, Error, TEXT("Failed to create texture."));
-                return nullptr;
-            }
-
-            // Allocate memory for the texture
-            void* TextureData = NewTexture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
-            FMemory::Memcpy(TextureData, UncompressedRGBA.GetData(), UncompressedRGBA.Num());
-            NewTexture->GetPlatformData()->Mips[0].BulkData.Unlock();
-
-            // Update the texture with new data
-            NewTexture->UpdateResource();
-
-            return NewTexture;
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("Failed to decompress image file: %s"), *FilePath);
-        }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Failed to process compressed image data: %s"), *FilePath);
-    }
-
-    return nullptr;
+	// Скрыть книгу и посмотреть через камеру контроллера — и обратно (как раньше)
+	if (!NLBWidget)
+	{
+		return;
+	}
+	bIsImageVisible = !bIsImageVisible;
+	NLBWidget->SetVisibility(bIsImageVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }

@@ -1,3 +1,5 @@
+#include "nlb/util/FileUtils.h"
+#include "nlb/api/Constants.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/vcs/VCSAdapter.h"
 #include "nlb/util/StringHelper.h"
@@ -6,12 +8,12 @@
 #include <sstream>
 #include <stdexcept>
 
-FileManipulator::FileManipulator(std::shared_ptr<VCSAdapter> vcsAdapter, const std::string& mainRoot)
+FileManipulator::FileManipulator(VCSAdapter* vcsAdapter, const std::string& mainRoot)
     : m_vcsAdapter(vcsAdapter)
     , m_mainRoot(mainRoot) {
 }
 
-bool FileManipulator::deleteFileOrDir(const std::string& filePath) {
+bool FileManipulator::deleteFileOrDir(const std::string& filePath) const {
     try {
         if (!FileUtils::exists(filePath)) {
             return true;
@@ -74,7 +76,7 @@ bool FileManipulator::deleteFileOrDir(const std::string& filePath) {
 void FileManipulator::writeRequiredString(
     const std::string& rootDir,
     const std::string& fileName,
-    const std::string& content) {
+    const std::string& content) const {
     try {
         std::string filePath = FileUtils::combinePath(rootDir, fileName);
         bool newFile = !FileUtils::exists(filePath);
@@ -96,7 +98,7 @@ void FileManipulator::writeOptionalString(
     const std::string& rootDir,
     const std::string& fileName,
     const std::string& content,
-    const std::string& defaultContent) {
+    const std::string& defaultContent) const {
     try {
         std::string filePath = FileUtils::combinePath(rootDir, fileName);
         bool newFile = !FileUtils::exists(filePath);
@@ -130,7 +132,7 @@ void FileManipulator::writeOptionalString(
 void FileManipulator::writeOptionalMultiLangString(
     const std::string& mlsRootDir,
     const MultiLangString& content,
-    const MultiLangString& defaultContent) {
+    const MultiLangString& defaultContent) const {
     try {
         bool rootDirExists = FileUtils::exists(mlsRootDir);
         
@@ -174,7 +176,7 @@ void FileManipulator::writeOptionalMultiLangString(
 
 void FileManipulator::createDir(
     const std::string& dirPath,
-    const std::string& errorMessage) {
+    const std::string& errorMessage) const {
     try {
         if (!FileUtils::exists(dirPath)) {
             if (!FileUtils::createDirectory(dirPath)) {
@@ -192,7 +194,7 @@ void FileManipulator::createDir(
 void FileManipulator::copyFile(
     const std::string& target,
     const std::string& source,
-    const std::string& errorMessage) {
+    const std::string& errorMessage) const {
     try {
         bool newFile = !FileUtils::exists(target);
         
@@ -200,7 +202,7 @@ void FileManipulator::copyFile(
             throw NLBIOException("Source file does not exist: " + source);
         }
 
-        std::ifstream sourceFile(source, std::ios::binary);
+        std::ifstream sourceFile(FileUtils::nativePath(source), std::ios::binary);
         if (!sourceFile.is_open()) {
             throw NLBIOException("Cannot open source file: " + source);
         }
@@ -215,10 +217,10 @@ void FileManipulator::copyFile(
 
 void FileManipulator::createFile(
     const std::string& filePath,
-    const std::string& errorMessage) {
+    const std::string& errorMessage) const {
     try {
         if (!FileUtils::exists(filePath)) {
-            std::ofstream file(filePath);
+            std::ofstream file(FileUtils::nativePath(filePath));
             if (!file.is_open()) {
                 throw NLBIOException(errorMessage);
             }
@@ -232,7 +234,7 @@ void FileManipulator::createFile(
     }
 }
 
-std::string FileManipulator::getPathRelativeToMainRoot(const std::string& filePath) {
+std::string FileManipulator::getPathRelativeToMainRoot(const std::string& filePath) const {
     std::string absolutePath = FileUtils::normalizePath(filePath);
     std::string rootPath = FileUtils::normalizePath(m_mainRoot);
     
@@ -258,14 +260,11 @@ std::string FileManipulator::getRequiredFileAsString(
         throw NLBIOException(errorMessage);
     }
 
-    std::ifstream file(filePath);
-    if (!file.is_open()) {
+    std::string raw;
+    if (!FileUtils::readFile(filePath, raw)) {
         throw NLBIOException("Cannot open file: " + filePath);
     }
-
-    std::string content = getFileAsString(file);
-    file.close();
-    return content;
+    return normalizeText(raw);
 }
 
 std::string FileManipulator::getOptionalFileAsString(
@@ -277,18 +276,8 @@ std::string FileManipulator::getOptionalFileAsString(
         return defaultValue;
     }
 
-    try {
-        std::ifstream file(filePath);
-        if (!file.is_open()) {
-            return defaultValue;
-        }
-
-        std::string content = getFileAsString(file);
-        file.close();
-        return content;
-    } catch (const std::exception&) {
-        return defaultValue;
-    }
+    std::string raw;
+    return FileUtils::readFile(filePath, raw) ? normalizeText(raw) : defaultValue;
 }
 
 MultiLangString FileManipulator::readOptionalMultiLangString(
@@ -306,22 +295,16 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
             
             for (const auto& langKey : langKeys) {
                 std::string filePath = FileUtils::combinePath(mlsRootDir, langKey);
-                if (!FileUtils::isDirectory(filePath)) {
-                    std::ifstream file(filePath);
-                    if (file.is_open()) {
-                        std::string content = getFileAsString(file);
-                        result.put(langKey, content);
-                        file.close();
-                    }
+                std::string raw;
+                if (!FileUtils::isDirectory(filePath) && FileUtils::readFile(filePath, raw)) {
+                    result.put(langKey, normalizeText(raw));
                 }
             }
         } else {
             // Single file case - treat as default language
-            std::ifstream file(mlsRootDir);
-            if (file.is_open()) {
-                std::string content = getFileAsString(file);
-                result.put(NonLinearBook::DEFAULT_LANGUAGE, content);
-                file.close();
+            std::string raw;
+            if (FileUtils::readFile(mlsRootDir, raw)) {
+                result.put(NonLinearBook::DEFAULT_LANGUAGE, normalizeText(raw));
             }
         }
     } catch (const std::exception& e) {
@@ -333,7 +316,7 @@ MultiLangString FileManipulator::readOptionalMultiLangString(
 
 void FileManipulator::writeFile(const std::string& filePath, std::istream& input) {
     try {
-        std::ofstream output(filePath, std::ios::binary);
+        std::ofstream output(FileUtils::nativePath(filePath), std::ios::binary);
         if (!output.is_open()) {
             throw NLBIOException("Cannot open file for writing: " + filePath);
         }
@@ -344,11 +327,32 @@ void FileManipulator::writeFile(const std::string& filePath, std::istream& input
     }
 }
 
+// Java FileManipulator.getFileAsString: построчное чтение (readLine понимает \n, \r и \r\n),
+// строки склеиваются через EOL_STRING, завершающий перевод строки отбрасывается
 std::string FileManipulator::getFileAsString(std::ifstream& stream) {
+    std::stringstream buffer;
+    buffer << stream.rdbuf();
+    return normalizeText(buffer.str());
+}
+
+std::string FileManipulator::normalizeText(const std::string& raw) {
     try {
-        std::stringstream buffer;
-        buffer << stream.rdbuf();
-        return buffer.str();
+        std::string result;
+        result.reserve(raw.size());
+        for (size_t i = 0; i < raw.size(); ++i) {
+            const char c = raw[i];
+            if (c == '\r' || c == '\n') {
+                if (c == '\r' && i + 1 < raw.size() && raw[i + 1] == '\n') {
+                    ++i;
+                }
+                if (i + 1 < raw.size()) {
+                    result += nlb::Constants::EOL_STRING;
+                }
+            } else {
+                result += c;
+            }
+        }
+        return result;
     } catch (const std::exception& e) {
         throw NLBIOException("Error reading from stream: " + std::string(e.what()));
     }
@@ -376,7 +380,7 @@ void FileManipulator::transfer(std::istream& input, std::ostream& output) {
     }
 }
 
-void FileManipulator::addToVCS(const std::string& filePath, bool isNewFile) {
+void FileManipulator::addToVCS(const std::string& filePath, bool isNewFile) const {
     if (FileUtils::isDirectory(filePath) && !m_vcsAdapter->getDirAddFlag()) {
         return;
     }

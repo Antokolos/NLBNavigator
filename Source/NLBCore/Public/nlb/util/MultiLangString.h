@@ -9,7 +9,7 @@
  * @class MultiLangString
  * @brief Class for handling multi-language string content
  */
-class NLBCORE_API MultiLangString {
+class MultiLangString {
 private:
     std::map<std::string, std::string> m_content;
 

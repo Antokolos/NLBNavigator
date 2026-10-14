@@ -15,12 +15,12 @@ class SearchResult;
 class ModificationImpl : public AbstractIdentifiableItem, public Modification {
 public:
     ModificationImpl();
-    explicit ModificationImpl(const std::shared_ptr<ModifyingItem>& parent);
-    ModificationImpl(const std::shared_ptr<Modification>& modification, 
-                    std::shared_ptr<NonLinearBook> currentNLB);
-    ModificationImpl(const std::shared_ptr<Modification>& modification,
-                    const std::shared_ptr<ModifyingItem>& parent,
-                    std::shared_ptr<NonLinearBook> currentNLB);
+    explicit ModificationImpl(const ModifyingItem* parent);
+    ModificationImpl(const Modification* modification,
+                    NonLinearBook* currentNLB);
+    ModificationImpl(const Modification* modification,
+                    const ModifyingItem* parent,
+                    NonLinearBook* currentNLB);
 
     virtual ~ModificationImpl() override = default;
 
@@ -34,11 +34,11 @@ public:
     virtual std::string getId() const { return AbstractIdentifiableItem::getId(); };
     virtual std::string getFullId() const { return AbstractIdentifiableItem::getFullId(); };
     virtual bool isDeleted() const { return AbstractIdentifiableItem::isDeleted(); };
-    virtual std::shared_ptr<IdentifiableItem> getParent() const { return AbstractIdentifiableItem::getParent(); };
+    virtual IdentifiableItem* getParent() const { return AbstractIdentifiableItem::getParent(); };
     virtual bool hasDeletedParent() const { return AbstractIdentifiableItem::hasDeletedParent(); };
-    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const { return AbstractIdentifiableItem::getCurrentNLB(); };
+    virtual NonLinearBook* getCurrentNLB() const { return AbstractIdentifiableItem::getCurrentNLB(); };
     
-    void copy(const std::shared_ptr<Modification>& modification);
+    void copy(const Modification* modification);
     
     // Implement Modification interface
     bool isExternal() const override;
@@ -53,9 +53,9 @@ public:
     bool returnsValue() const override;
     bool isParametrized() const override;
 
-    std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
+    SearchResult* searchText(const SearchContract& contract) const override;
 
-    void writeModification(const std::shared_ptr<FileManipulator>& fileManipulator,
+    void writeModification(const FileManipulator* fileManipulator,
                          const std::string& modificationsDir);
     void readModification(const std::string& modificationDir);
     
@@ -63,7 +63,7 @@ public:
 
 	std::string toString() const;
 	std::string toStringWithType() const;
-	bool equals(const std::shared_ptr<Modification>& other) const;
+    bool equals(const Modification* other) const;
 	bool operator==(const ModificationImpl& other) const;
 	size_t hash() const;
     

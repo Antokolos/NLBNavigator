@@ -9,8 +9,8 @@
 #include <algorithm>
 
 ModificationsTableModel::ModificationsTableModel(
-    std::shared_ptr<NonLinearBook> nlb,
-    const std::vector<std::shared_ptr<Modification>>& modifications
+    NonLinearBook* nlb,
+    const std::vector<Modification*>& modifications
 ) : m_currentNLB(nlb) {
     // Adds COPIES of original modifications to the list
     for (const auto& modification : modifications) {
@@ -19,15 +19,15 @@ ModificationsTableModel::ModificationsTableModel(
         
         auto variable = nlb->getVariableById(varId);
         if (variable) {
-            m_variableMap[varId] = std::make_shared<VariableImpl>(variable, m_currentNLB);
+            m_variableMap[varId] = new VariableImpl(variable, m_currentNLB);
         }
 
         auto expression = nlb->getVariableById(exprId);
         if (expression) {
-            m_variableMap[exprId] = std::make_shared<VariableImpl>(expression, m_currentNLB);
+            m_variableMap[exprId] = new VariableImpl(expression, m_currentNLB);
         }
 
-        m_modifications.push_back(std::make_shared<ModificationImpl>(modification, m_currentNLB));
+        m_modifications.push_back(new ModificationImpl(modification, m_currentNLB));
     }
 }
 
@@ -120,7 +120,7 @@ bool ModificationsTableModel::setValueAt(const std::string& aValue, int rowIndex
             } else {
                 if (!StringHelper::isEmpty(aValue)) {
                     auto expression = getExpression(modification);
-                    auto newVariable = std::make_shared<VariableImpl>(
+                    auto newVariable = new VariableImpl(
                         m_currentNLB,
                         Variable::Type::VAR,
                         (expression != nullptr)
@@ -159,7 +159,7 @@ bool ModificationsTableModel::setValueAt(const std::string& aValue, int rowIndex
                 }
             } else {
                 if (!StringHelper::isEmpty(aValue)) {
-                    auto newExpression = std::make_shared<VariableImpl>(
+                    auto newExpression = new VariableImpl(
                         m_currentNLB,
                         (modification->getType() == Modification::Type::TAG)
                             ? Variable::Type::TAG
@@ -195,7 +195,7 @@ bool ModificationsTableModel::setValueAt(bool aValue, int rowIndex, int columnIn
     return true;
 }
 
-void ModificationsTableModel::setDataType(std::shared_ptr<ModificationImpl> modification, const std::string& dataType) {
+void ModificationsTableModel::setDataType(ModificationImpl* modification, const std::string& dataType) {
     auto variable = getVariable(modification);
     auto expression = getExpression(modification);
     
@@ -218,13 +218,13 @@ void ModificationsTableModel::setDataType(std::shared_ptr<ModificationImpl> modi
     }
 }
 
-std::shared_ptr<VariableImpl> ModificationsTableModel::getVariable(const std::shared_ptr<Modification>& modification) const {
+VariableImpl* ModificationsTableModel::getVariable(const Modification* modification) const {
     auto varId = modification->getVarId();
     auto it = m_variableMap.find(varId);
     return (it != m_variableMap.end()) ? it->second : nullptr;
 }
 
-std::shared_ptr<VariableImpl> ModificationsTableModel::getExpression(const std::shared_ptr<Modification>& modification) const {
+VariableImpl* ModificationsTableModel::getExpression(const Modification* modification) const {
     auto exprId = modification->getExprId();
     auto it = m_variableMap.find(exprId);
     return (it != m_variableMap.end()) ? it->second : nullptr;
@@ -234,7 +234,7 @@ bool ModificationsTableModel::isCellEditable(int rowIndex, int columnIndex) cons
     return columnIndex != 1;
 }
 
-std::shared_ptr<ModificationImpl> ModificationsTableModel::getModificationAt(int rowIndex) const {
+ModificationImpl* ModificationsTableModel::getModificationAt(int rowIndex) const {
     int i = 0;
     for (const auto& modification : m_modifications) {
         if (!modification->isDeleted()) {
@@ -258,8 +258,8 @@ std::vector<std::string> ModificationsTableModel::getModificationIdsAt(const int
     return result;
 }
 
-void ModificationsTableModel::add(std::shared_ptr<ModifyingItem> modifyingItem) {
-    m_modifications.push_back(std::make_shared<ModificationImpl>(modifyingItem));
+void ModificationsTableModel::add(ModifyingItem* modifyingItem) {
+    m_modifications.push_back(new ModificationImpl(modifyingItem));
 }
 
 void ModificationsTableModel::remove(const std::vector<std::string>& modificationIds) {
@@ -270,16 +270,16 @@ void ModificationsTableModel::remove(const std::vector<std::string>& modificatio
     }
 }
 
-std::vector<std::shared_ptr<Modification>> ModificationsTableModel::getModifications() const {
-    std::vector<std::shared_ptr<Modification>> result;
+std::vector<Modification*> ModificationsTableModel::getModifications() const {
+    std::vector<Modification*> result;
     for (const auto& mod : m_modifications) {
         result.push_back(mod);
     }
     return result;
 }
 
-std::map<std::string, std::shared_ptr<Variable>> ModificationsTableModel::getVariableMap() const {
-    std::map<std::string, std::shared_ptr<Variable>> result;
+std::map<std::string, Variable*> ModificationsTableModel::getVariableMap() const {
+    std::map<std::string, Variable*> result;
     for (const auto& [key, var] : m_variableMap) {
         result[key] = var;
     }

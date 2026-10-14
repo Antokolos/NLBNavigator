@@ -1,6 +1,6 @@
 #pragma once
 
-class NLBCORE_API Coords {
+class Coords {
 public:
     virtual ~Coords() = default;
 

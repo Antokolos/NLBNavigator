@@ -5,7 +5,7 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "NLBCore",
+			"Name": "NLBPlayer",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		},

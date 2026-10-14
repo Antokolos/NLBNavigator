@@ -59,9 +59,9 @@ public:
     static const std::string CONTAINERID_FILE_NAME;
 
     // Constructors
-    ObjImpl(std::shared_ptr<Obj> source, std::shared_ptr<NonLinearBook> currentNLB);
-    explicit ObjImpl(std::shared_ptr<NonLinearBook> currentNLB);
-    ObjImpl(std::shared_ptr<NonLinearBook> currentNLB, float left, float top);
+    ObjImpl(Obj* source, NonLinearBook* currentNLB);
+    explicit ObjImpl(NonLinearBook* currentNLB);
+    ObjImpl(NonLinearBook* currentNLB, float left, float top);
 
     // Text handling methods
     void setText(const std::string& text);
@@ -84,7 +84,7 @@ public:
     std::string getVarId() const override;
     std::string getConstrId() const override;
     std::string getCommonToId() const override;
-    std::shared_ptr<Obj> getCommonToObj(std::shared_ptr<NonLinearBook> nonLinearBook) const override;
+    Obj* getCommonToObj(NonLinearBook* nonLinearBook) const override;
     void setCommonToId(const std::string& commonToId);
     void setVarId(const std::string& varId);
     void setConstrId(const std::string& constrId);
@@ -153,10 +153,10 @@ public:
 
     // Morph properties
     std::string getMorphOverId() const override;
-    std::shared_ptr<Obj> getMorphOverObj() const override;
+    Obj* getMorphOverObj() const override;
     void setMorphOverId(const std::string& morphOverId);
     std::string getMorphOutId() const override;
-    std::shared_ptr<Obj> getMorphOutObj() const override;
+    Obj* getMorphOutObj() const override;
     void setMorphOutId(const std::string& morphOutId);
 
     // Coordinate calculations
@@ -183,14 +183,14 @@ public:
 
     // File operations
     void writeObj(
-        const std::shared_ptr<FileManipulator>& fileManipulator,
+        const FileManipulator* fileManipulator,
         const std::string& objsDir,
-        std::shared_ptr<NonLinearBookImpl> nonLinearBook
+        NonLinearBookImpl* nonLinearBook
     );
     void readObj(const std::string& objDir);
 
     // Text search
-    std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
+    SearchResult* searchText(const SearchContract& contract) const override;
 
     // Text accumulation
     std::string getCumulativeText(
@@ -199,28 +199,28 @@ public:
 
     virtual std::string getFullId() const override { return AbstractNodeItem::getFullId(); }
     virtual bool isDeleted() const override { return AbstractNodeItem::isDeleted(); }
-    virtual std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractNodeItem::getParent(); }
+    virtual IdentifiableItem* getParent() const override { return AbstractNodeItem::getParent(); }
     virtual bool hasDeletedParent() const override { return AbstractNodeItem::hasDeletedParent(); }
-    virtual std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractNodeItem::getCurrentNLB(); }
+    virtual NonLinearBook* getCurrentNLB() const override { return AbstractNodeItem::getCurrentNLB(); }
     
-    virtual std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractNodeItem::getModifications(); }
+    virtual std::vector<Modification*> getModifications() const override { return AbstractNodeItem::getModifications(); }
     virtual bool hasNoModifications() const override { return AbstractNodeItem::hasNoModifications(); }
-    virtual std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractNodeItem::getModificationById(modId); }
+    virtual Modification* getModificationById(const std::string& modId) const override { return AbstractNodeItem::getModificationById(modId); }
 
     virtual std::string getDefaultTagId() const override { return AbstractNodeItem::getDefaultTagId(); }
     virtual std::string getStroke() const override { return AbstractNodeItem::getStroke(); }
     virtual std::string getFill() const override { return AbstractNodeItem::getFill(); }
     virtual std::string getTextColor() const override { return AbstractNodeItem::getTextColor(); }
     virtual std::vector<std::string> getContainedObjIds() const override { return AbstractNodeItem::getContainedObjIds(); }
-    virtual std::shared_ptr<Coords> getCoords() const override { return AbstractNodeItem::getCoords(); }
-    virtual std::vector<std::shared_ptr<Link>> getLinks() const override { return AbstractNodeItem::getLinks(); }
+    virtual Coords* getCoords() const override { return AbstractNodeItem::getCoords(); }
+    virtual std::vector<Link*> getLinks() const override { return AbstractNodeItem::getLinks(); }
 
-    virtual std::shared_ptr<Link> getLinkById(const std::string& linkId) const override { return AbstractNodeItem::getLinkById(linkId); }
+    virtual Link* getLinkById(const std::string& linkId) const override { return AbstractNodeItem::getLinkById(linkId); }
     virtual std::string getExternalHierarchy() const override { return AbstractNodeItem::getExternalHierarchy(); }
 
 
     virtual std::string getId() const override { return AbstractIdentifiableItem::getId(); }
-    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override { return AbstractNodeItem::addObserver(observer); }
+    virtual std::string addObserver(NLBObserver* observer) override { return AbstractNodeItem::addObserver(observer); }
     virtual void removeObserver(const std::string& observerId) override { AbstractNodeItem::removeObserver(observerId); }
     virtual void notifyObservers() override { AbstractNodeItem::notifyObservers(); }
 

@@ -16,19 +16,19 @@ class NodeItem;
 class LinkImpl : public AbstractModifyingItem, public Link {
 public:
     LinkImpl();
-    explicit LinkImpl(const std::shared_ptr<NodeItem>& parent);
-    LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::shared_ptr<Link>& sourceLink);
-    LinkImpl(const std::shared_ptr<NodeItem>& parent, const std::string& target);
+    explicit LinkImpl(const NodeItem* parent);
+    LinkImpl(const NodeItem* parent, const Link* sourceLink);
+    LinkImpl(const NodeItem* parent, const std::string& target);
 
     std::string getId() const override { return AbstractModifyingItem::getId(); }
     std::string getFullId() const override { return AbstractIdentifiableItem::getFullId(); }
     bool isDeleted() const override { return AbstractIdentifiableItem::isDeleted(); }
-    std::shared_ptr<IdentifiableItem> getParent() const override { return AbstractIdentifiableItem::getParent(); }
+    IdentifiableItem* getParent() const override { return AbstractIdentifiableItem::getParent(); }
     bool hasDeletedParent() const override { return AbstractIdentifiableItem::hasDeletedParent(); }
-    std::shared_ptr<NonLinearBook> getCurrentNLB() const override { return AbstractIdentifiableItem::getCurrentNLB(); }
-    std::vector<std::shared_ptr<Modification>> getModifications() const override { return AbstractModifyingItem::getModifications(); }
+    NonLinearBook* getCurrentNLB() const override { return AbstractIdentifiableItem::getCurrentNLB(); }
+    std::vector<Modification*> getModifications() const override { return AbstractModifyingItem::getModifications(); }
     bool hasNoModifications() const override { return AbstractModifyingItem::hasNoModifications(); }
-    std::shared_ptr<Modification> getModificationById(const std::string& modId) const override { return AbstractModifyingItem::getModificationById(modId); }
+    Modification* getModificationById(const std::string& modId) const override { return AbstractModifyingItem::getModificationById(modId); }
     
     // From Link interface
     std::string getVarId() const override { return m_varId; }
@@ -67,14 +67,14 @@ public:
     void setReturnLink(bool returnLink) { m_isReturnLink = returnLink; }
     void setTechnical(bool technical) { m_technical = technical; }
 
-    std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const;
+    SearchResult* searchText(const SearchContract& contract) const;
     
-    void writeLink(const std::shared_ptr<FileManipulator>& fileManipulator,
+    void writeLink(const FileManipulator* fileManipulator,
                   const std::string& linksDir);
     void readLink(const std::string& linkDir);
 
     // Observer pattern methods
-    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) override;
+    virtual std::string addObserver(NLBObserver* observer) override;
     void removeObserver(const std::string& observerId);
     void notifyObservers();
 
@@ -95,7 +95,7 @@ private:
     static const std::string POSITIVE_CONSTRAINT_FILE_NAME;
     static const std::string OBEY_MODULE_CONSTRAINT_FILE_NAME;
 
-    void writeCoords(const std::shared_ptr<FileManipulator>& fileManipulator,
+    void writeCoords(const FileManipulator* fileManipulator,
                     const std::string& linkDir);
     void readCoords(const std::string& linkDir);
 

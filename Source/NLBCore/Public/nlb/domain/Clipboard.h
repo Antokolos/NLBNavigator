@@ -5,7 +5,7 @@ class NonLinearBookImpl;
 
 class Clipboard {
 private:
-    std::shared_ptr<NonLinearBookImpl> m_nonLinearBook;
+    NonLinearBookImpl* m_nonLinearBook;
     
     // Private constructor for singleton
     Clipboard() = default;
@@ -17,7 +17,7 @@ private:
 public:
     static Clipboard& singleton();
     
-    std::shared_ptr<NonLinearBookImpl> getNonLinearBook() const;
-    void setNonLinearBook(std::shared_ptr<NonLinearBookImpl> nonLinearBook);
+    NonLinearBookImpl* getNonLinearBook() const;
+    void setNonLinearBook(NonLinearBookImpl* nonLinearBook);
     void reset();
 };

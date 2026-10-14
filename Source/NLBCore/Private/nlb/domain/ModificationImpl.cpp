@@ -37,7 +37,7 @@ ModificationImpl::ModificationImpl()
     , m_exprId("") {
 }
 
-ModificationImpl::ModificationImpl(const std::shared_ptr<ModifyingItem>& parent)
+ModificationImpl::ModificationImpl(const ModifyingItem* parent)
     : AbstractIdentifiableItem(parent->getCurrentNLB())
     , m_external(DEFAULT_EXTERNAL)
     , m_type(Type::ASSIGN)
@@ -46,8 +46,8 @@ ModificationImpl::ModificationImpl(const std::shared_ptr<ModifyingItem>& parent)
     setParent(parent);
 }
 
-ModificationImpl::ModificationImpl(const std::shared_ptr<Modification>& modification,
-                                 std::shared_ptr<NonLinearBook> currentNLB)
+ModificationImpl::ModificationImpl(const Modification* modification,
+                                 NonLinearBook* currentNLB)
     : AbstractIdentifiableItem(modification, currentNLB)
     , m_external(modification->isExternal())
     , m_type(modification->getType())
@@ -55,9 +55,9 @@ ModificationImpl::ModificationImpl(const std::shared_ptr<Modification>& modifica
     , m_exprId(modification->getExprId()) {
 }
 
-ModificationImpl::ModificationImpl(const std::shared_ptr<Modification>& modification,
-                                 const std::shared_ptr<ModifyingItem>& parent,
-                                 std::shared_ptr<NonLinearBook> currentNLB)
+ModificationImpl::ModificationImpl(const Modification* modification,
+                                 const ModifyingItem* parent,
+                                 NonLinearBook* currentNLB)
     : AbstractIdentifiableItem(modification, parent, currentNLB)
     , m_external(modification->isExternal())
     , m_type(modification->getType())
@@ -65,7 +65,7 @@ ModificationImpl::ModificationImpl(const std::shared_ptr<Modification>& modifica
     , m_exprId(modification->getExprId()) {
 }
 
-void ModificationImpl::copy(const std::shared_ptr<Modification>& modification) {
+void ModificationImpl::copy(const Modification* modification) {
     AbstractIdentifiableItem::copy(modification);
     m_external = modification->isExternal();
     m_type = modification->getType();
@@ -128,7 +128,7 @@ bool ModificationImpl::isParametrized() const {
     return UNPARAMETRIZED_TYPES.find(m_type) == UNPARAMETRIZED_TYPES.end();
 }
 
-std::shared_ptr<SearchResult> ModificationImpl::searchText(const SearchContract& contract) const {
+SearchResult* ModificationImpl::searchText(const SearchContract& contract) const {
     auto result = AbstractIdentifiableItem::searchText(contract);
     if (result) {
         return result;
@@ -226,7 +226,7 @@ void ModificationImpl::setType(const Type& type) {
     m_type = type;
 }
 
-void ModificationImpl::writeModification(const std::shared_ptr<FileManipulator>& fileManipulator,
+void ModificationImpl::writeModification(const FileManipulator* fileManipulator,
                                        const std::string& modificationsDir) {
     const std::string modificationDir = modificationsDir + "/" + AbstractIdentifiableItem::getId();
     
@@ -290,9 +290,9 @@ std::string ModificationImpl::toStringWithType() const {
     return typeStr + " " + toString();
 }
 
-bool ModificationImpl::equals(const std::shared_ptr<Modification>& other) const {
+bool ModificationImpl::equals(const Modification* other) const {
     if (!other) return false;
-    if (this == other.get()) return true;
+    if (this == other) return true;
     
     return m_external == other->isExternal() &&
            m_type == other->getType() &&

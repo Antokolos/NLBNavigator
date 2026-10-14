@@ -21,9 +21,9 @@ public:
      * @param obj The object whose container is being changed
      */
     ChangeContainerCommand(
-        std::shared_ptr<AbstractNodeItem> prevContainer,
-        std::shared_ptr<AbstractNodeItem> newContainer,
-        std::shared_ptr<ObjImpl> obj
+        AbstractNodeItem* prevContainer,
+        AbstractNodeItem* newContainer,
+        ObjImpl* obj
     );
 
     /*!
@@ -42,7 +42,7 @@ public:
     void revert() override;
 
 private:
-    std::shared_ptr<AbstractNodeItem> m_prevContainer;
-    std::shared_ptr<AbstractNodeItem> m_newContainer;
-    std::shared_ptr<ObjImpl> m_obj;
+    AbstractNodeItem* m_prevContainer;
+    AbstractNodeItem* m_newContainer;
+    ObjImpl* m_obj;
 };

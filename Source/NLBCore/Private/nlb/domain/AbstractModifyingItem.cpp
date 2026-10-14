@@ -15,31 +15,30 @@ AbstractModifyingItem::AbstractModifyingItem()
     : AbstractIdentifiableItem() {
 }
 
-AbstractModifyingItem::AbstractModifyingItem(std::shared_ptr<NonLinearBook> currentNLB)
+AbstractModifyingItem::AbstractModifyingItem(NonLinearBook* currentNLB)
     : AbstractIdentifiableItem(currentNLB) {
 }
 
-AbstractModifyingItem::AbstractModifyingItem(const std::shared_ptr<ModifyingItem>& modifyingItem, 
-                                           std::shared_ptr<NonLinearBook> currentNLB)
+AbstractModifyingItem::AbstractModifyingItem(const ModifyingItem* modifyingItem,
+                                           NonLinearBook* currentNLB)
     : AbstractIdentifiableItem(modifyingItem, currentNLB) {
     for (const auto& modification : modifyingItem->getModifications()) {
         if (!modification->isModificationImpl()) {
             continue;
         }
-        auto modificationImpl = std::static_pointer_cast<ModificationImpl>(modification);
+        auto modificationImpl = (ModificationImpl*) (modification);
         if (modificationImpl) {
-            auto newMod = std::make_shared<ModificationImpl>(modificationImpl, 
-                enable_shared_from_this<AbstractModifyingItem>::shared_from_this(), currentNLB);
+            auto newMod = new ModificationImpl(modificationImpl, this, currentNLB);
             m_modifications.push_back(newMod);
         }
     }
 }
 
-std::vector<std::shared_ptr<Modification>> AbstractModifyingItem::getModifications() const {
-    std::vector<std::shared_ptr<Modification>> result;
+std::vector<Modification*> AbstractModifyingItem::getModifications() const {
+    std::vector<Modification*> result;
     result.reserve(m_modifications.size());
     for (const auto& mod : m_modifications) {
-        result.push_back(std::static_pointer_cast<Modification>(mod));
+        result.push_back((Modification*) (mod));
     }
     return result;
 }
@@ -55,20 +54,20 @@ bool AbstractModifyingItem::hasNoModifications() const {
     return true;
 }
 
-std::shared_ptr<Modification> AbstractModifyingItem::getModificationById(const std::string& modId) const {
+Modification* AbstractModifyingItem::getModificationById(const std::string& modId) const {
     for (const auto& modification : m_modifications) {
         if (modId == modification->AbstractIdentifiableItem::getId()) {
-            return std::static_pointer_cast<Modification>(modification);
+            return (Modification*) (modification);
         }
     }
     return nullptr;
 }
 
-void AbstractModifyingItem::addModification(std::shared_ptr<ModificationImpl> modification) {
+void AbstractModifyingItem::addModification(ModificationImpl* modification) {
     m_modifications.push_back(modification);
 }
 
-void AbstractModifyingItem::writeModifications(const std::shared_ptr<FileManipulator>& fileManipulator,
+void AbstractModifyingItem::writeModifications(const FileManipulator* fileManipulator,
                                              const std::string& itemDir) {
     const std::string modificationsDir = FileUtils::combinePath(itemDir, "modifications");
     
@@ -117,15 +116,14 @@ void AbstractModifyingItem::readModifications(const std::string& itemDir) {
         std::vector<std::string> modDirsSortedList = createSortedDirList(modDirs, modOrderList);
 
         for (const auto& dir : modDirsSortedList) {
-            auto modification = std::make_shared<ModificationImpl>(
-                enable_shared_from_this<AbstractModifyingItem>::shared_from_this());
-            modification->readModification(dir);
+            auto modification = new ModificationImpl(this);
+            modification->readModification(FileUtils::combinePath(modsDir, dir));
             m_modifications.push_back(modification);
         }
     }
 }
 
-void AbstractModifyingItem::writeModOrderFile(const std::shared_ptr<FileManipulator>& fileManipulator,
+void AbstractModifyingItem::writeModOrderFile(const FileManipulator* fileManipulator,
                                             const std::string& itemDir) {
     std::string content;
     const int lastElemIndex = static_cast<int>(m_modifications.size()) - 1;

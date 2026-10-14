@@ -7,7 +7,7 @@ class ProgressData; // Forward declaration
 
 class PartialProgressData : public DummyProgressData {
 private:
-    std::shared_ptr<ProgressData> m_realProgressData;
+    ProgressData* m_realProgressData;
     int m_startingProgress;
     int m_currentProgress;
     
@@ -23,7 +23,7 @@ private:
 
 public:
     PartialProgressData(
-        std::shared_ptr<ProgressData> realProgressData,
+        ProgressData* realProgressData,
         int startingProgress,
         int maximumAllowedProgress,
         int itemsCountPerIncrement

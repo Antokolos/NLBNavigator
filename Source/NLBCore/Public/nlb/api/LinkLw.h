@@ -9,7 +9,7 @@
 /*!
  * @brief Implementation of Link interface
  */
-class LinkLw : public Link, public std::enable_shared_from_this<LinkLw> {
+class LinkLw : public Link {
 public:
     enum class Type {
         Traverse,
@@ -38,7 +38,7 @@ public:
     LinkLw(
         Type type,
         const std::string& target,
-        std::shared_ptr<Page> parent,
+        Page* parent,
         const MultiLangString& text,
         const MultiLangString& altText,
         const std::string& constrId,
@@ -49,7 +49,7 @@ public:
         bool positiveConstraint,
         bool shouldObeyToModuleConstraint,
         const std::string& mplLinkId,
-        const std::vector<std::shared_ptr<Modification>>* modifications
+        const std::vector<Modification*>* modifications
     );
 
     // Default destructor
@@ -77,17 +77,17 @@ public:
     bool isAuto() const override;
     bool isNeedsAction() const override;
     bool isOnce() const override;
-    virtual std::vector<std::shared_ptr<Modification>> getModifications() const;
+    virtual std::vector<Modification*> getModifications() const;
     bool hasNoModifications() const;
-    std::shared_ptr<Modification> getModificationById(const std::string& modId) const;
+    Modification* getModificationById(const std::string& modId) const;
     std::string getId() const override;
     std::string getFullId() const override;
     bool isDeleted() const override;
-    std::shared_ptr<IdentifiableItem> getParent() const override;
+    IdentifiableItem* getParent() const override;
     bool hasDeletedParent() const override;
-    std::shared_ptr<NonLinearBook> getCurrentNLB() const override;
-    virtual std::shared_ptr<SearchResult> searchText(const SearchContract& contract) const override;
-    std::string addObserver(std::shared_ptr<NLBObserver> observer) override;
+    NonLinearBook* getCurrentNLB() const override;
+    virtual SearchResult* searchText(const SearchContract& contract) const override;
+    std::string addObserver(NLBObserver* observer) override;
     void removeObserver(const std::string& observerId) override;
     void notifyObservers() override;
 
@@ -95,9 +95,9 @@ private:
     Type m_type;
     std::string m_target;
     std::string m_mplLinkId;
-    std::shared_ptr<IdentifiableItem> m_parent;
-    std::shared_ptr<MultiLangString> m_text;
-    std::shared_ptr<MultiLangString> m_altText;
+    IdentifiableItem* m_parent;
+    MultiLangString* m_text;
+    MultiLangString* m_altText;
     std::string m_constrId;
     std::string m_varId;
     bool m_auto;
@@ -105,6 +105,6 @@ private:
     bool m_once;
     bool m_positiveConstraint;
     bool m_shouldObeyToModuleConstraint;
-    std::vector<std::shared_ptr<Modification>> m_modifications;
-    mutable std::shared_ptr<Coords> m_coords;
+    std::vector<Modification*> m_modifications;
+    mutable Coords* m_coords;
 };

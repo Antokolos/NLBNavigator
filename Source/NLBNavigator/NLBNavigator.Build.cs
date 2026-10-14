@@ -9,14 +9,13 @@ public class NLBNavigator : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { 
             "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG",
-            "NLBCore", "PLDCore" 
+            "NLBPlayer", "PLDCore" 
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
         PublicIncludePaths.AddRange(new string[] {
 			ModuleDirectory,
-			Path.Combine(ModuleDirectory, "Adapters"),
 			Path.Combine(ModuleDirectory, "NLB"),
 			Path.Combine(ModuleDirectory, "PLD")
 		});

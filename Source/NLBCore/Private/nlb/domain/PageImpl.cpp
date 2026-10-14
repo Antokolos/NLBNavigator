@@ -1,3 +1,4 @@
+#include <iostream>
 #include "nlb/domain/PageImpl.h"
 #include "nlb/util/FileManipulator.h"
 #include "nlb/util/StringHelper.h"
@@ -64,7 +65,7 @@ PageImpl::PageImpl() : AbstractNodeItem() {
     init();
 }
 
-PageImpl::PageImpl(std::shared_ptr<NonLinearBook> currentNLB) 
+PageImpl::PageImpl(NonLinearBook* currentNLB)
     : AbstractNodeItem(currentNLB), 
       m_imageFileName(DEFAULT_IMAGE_FILE_NAME),
       m_imageBackground(DEFAULT_IMAGE_BACKGROUND),
@@ -84,7 +85,7 @@ PageImpl::PageImpl(std::shared_ptr<NonLinearBook> currentNLB)
     init();
 }
 
-PageImpl::PageImpl(std::shared_ptr<NonLinearBook> currentNLB, float left, float top)
+PageImpl::PageImpl(NonLinearBook* currentNLB, float left, float top)
     : AbstractNodeItem(currentNLB, left, top), 
       m_imageFileName(DEFAULT_IMAGE_FILE_NAME),
       m_imageBackground(DEFAULT_IMAGE_BACKGROUND),
@@ -104,15 +105,13 @@ PageImpl::PageImpl(std::shared_ptr<NonLinearBook> currentNLB, float left, float 
     init();
 }
 
-// Copy constructor
-PageImpl::PageImpl(const std::shared_ptr<Page>& source, 
-                   std::shared_ptr<NonLinearBook> currentNLB, 
+// Copy constructor. Java: PageImpl(Page source, NonLinearBook currentNLB, boolean overwriteTheme)
+// NB: создаёт полную копию, включая id (как в Java).
+PageImpl::PageImpl(const Page* source,
+                   NonLinearBook* currentNLB,
                    bool overwriteTheme)
     : AbstractNodeItem(source, currentNLB)
 {
-    init();
-    
-    // Copy all properties from source page
     m_imageFileName = source->getImageFileName();
     m_imageBackground = source->isImageBackground();
     m_imageAnimated = source->isImageAnimated();
@@ -120,42 +119,38 @@ PageImpl::PageImpl(const std::shared_ptr<Page>& source,
     m_soundSFX = source->isSoundSFX();
     m_varId = source->getVarId();
     m_timerVarId = source->getTimerVarId();
-    m_moduleConstrId = source->getModuleConstrId();
     m_caption = source->getCaptions();
     m_useCaption = source->isUseCaption();
     m_useMPL = source->isUseMPL();
     m_text = source->getTexts();
-    
-    if (overwriteTheme) {
-        m_theme = source->getTheme();
-    }
-    
+    // Тема копируется всегда; overwriteTheme влияет только на append() подмодуля
+    m_theme = source->getTheme();
     m_moduleName = source->getModuleName();
     m_moduleExternal = source->isModuleExternal();
+    resetDefaultModuleName();
     m_traverseText = source->getTraverseTexts();
     m_autoTraverse = source->isAutoTraverse();
     m_autoReturn = source->isAutoReturn();
     m_returnText = source->getReturnTexts();
     m_returnPageId = source->getReturnPageId();
+    m_moduleConstrId = source->getModuleConstrId();
+    m_module = new NonLinearBookImpl(currentNLB, this);
+    // Копируем СОДЕРЖИМОЕ подмодуля источника (раньше присоединялась пустая книга)
+    m_module->append(source->getModule(), true, overwriteTheme);
     m_autowireInText = source->getAutowireInTexts();
     m_autowireOutText = source->getAutowireOutTexts();
+    m_globalAutoWired = source->isGlobalAutowire();
+    m_noSave = source->isNoSave();
+    m_autosFirst = source->isAutosFirst();
     m_autoIn = source->isAutoIn();
     m_needsAction = source->isNeedsAction();
     m_autoOut = source->isAutoOut();
     m_autowireInConstrId = source->getAutowireInConstrId();
     m_autowireOutConstrId = source->getAutowireOutConstrId();
-    
-    // ... продолжение копирования атрибутов
-    
-    // Инициализация модуля
-    m_module = std::make_shared<NonLinearBookImpl>(currentNLB, std::enable_shared_from_this<PageImpl>::shared_from_this());
-    m_module->append(
-        std::make_shared<NonLinearBookImpl>(source->getModule(), std::enable_shared_from_this<PageImpl>::shared_from_this()),
-        true, overwriteTheme);
 }
 
 void PageImpl::init() {
-    m_module = std::make_shared<NonLinearBookImpl>(AbstractNodeItem::getCurrentNLB(), std::enable_shared_from_this<PageImpl>::shared_from_this());
+    m_module = new NonLinearBookImpl(AbstractNodeItem::getCurrentNLB(), this);
     resetDefaultModuleName();
     m_moduleName = m_defaultModuleName;
     m_moduleExternal = DEFAULT_MODULE_EXTERNAL;
@@ -307,7 +302,11 @@ bool PageImpl::isLeaf() const {
 }
 
 bool PageImpl::isFinish() const {
-    return isLeaf() && !isModuleExternal();
+    // Java: isLeaf() && getModule().isEmpty() && !isAutowire() && isEmpty(m_returnText)
+    return isLeaf()
+           && (!m_module || m_module->isEmpty())
+           && !isAutowire()
+           && StringHelper::isEmpty(m_returnText);
 }
 
 void PageImpl::setTraverseText(const std::string& traverseText) {
@@ -366,8 +365,9 @@ std::string PageImpl::getReturnPageId() const {
     return m_returnPageId;
 }
 
+// Java: !isEmpty(m_returnText) || m_autoReturn || m_useMPL
 bool PageImpl::shouldReturn() const {
-    return !m_returnPageId.empty();
+    return !StringHelper::isEmpty(m_returnText) || m_autoReturn || m_useMPL;
 }
 
 void PageImpl::setModuleName(const std::string& moduleName) {
@@ -386,7 +386,7 @@ bool PageImpl::isModuleExternal() const {
     return m_moduleExternal;
 }
 
-std::shared_ptr<NonLinearBook> PageImpl::getModule() const {
+NonLinearBook* PageImpl::getModule() const {
     return m_module;
 }
 
@@ -410,8 +410,11 @@ void PageImpl::setAutowireOutConstrId(const std::string& autowireOutConstrId) {
     m_autowireOutConstrId = autowireOutConstrId;
 }
 
+// Java: getCurrentNLB().isAutowired(getId()) — признак хранится в книге (файл autopgs),
+// а не выводится из флагов autoIn/autoOut
 bool PageImpl::isAutowire() const {
-    return isAutoIn() || isAutoOut();
+    NonLinearBook* book = getCurrentNLB();
+    return book && book->isAutowired(getId());
 }
 
 void PageImpl::setGlobalAutowire(bool globalAutowire) {
@@ -491,10 +494,10 @@ std::string PageImpl::getAutowireOutConstrId() const {
 }
 
 void PageImpl::writePage(
-    std::shared_ptr<FileManipulator> fileManipulator,
+    FileManipulator* fileManipulator,
     const std::string& pagesDir,
-    std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-    std::shared_ptr<PartialProgressData> partialProgressData)
+    NonLinearBookImpl* nonLinearBook,
+    PartialProgressData* partialProgressData)
 {
     writeToFile(fileManipulator, pagesDir, getId(), nonLinearBook);
     
@@ -520,9 +523,9 @@ void PageImpl::writePage(
         fileManipulator->writeOptionalMultiLangString(pageDir + "/" + CAPTION_SUBDIR_NAME, m_caption, DEFAULT_CAPTION);
         
         // Write module properties
-        const std::string moduleDir = pageDir + "/" + MODULE_SUBDIR_NAME;
-        fileManipulator->writeOptionalString(moduleDir, MODNAME_FILE_NAME, m_moduleName, m_defaultModuleName);
-        fileManipulator->writeOptionalString(moduleDir, EXTMOD_FILE_NAME,
+        // Как в Java PageImpl.writePage: modname и extmod пишутся в каталог страницы
+        fileManipulator->writeOptionalString(pageDir, MODNAME_FILE_NAME, m_moduleName, m_defaultModuleName);
+        fileManipulator->writeOptionalString(pageDir, EXTMOD_FILE_NAME,
             m_moduleExternal ? "true" : "false", DEFAULT_MODULE_EXTERNAL ? "true" : "false");
         fileManipulator->writeOptionalString(pageDir, MODCNSID_FILE_NAME, m_moduleConstrId, DEFAULT_MODULE_CONSTR_ID);
         
@@ -546,6 +549,8 @@ void PageImpl::writePage(
 void PageImpl::readPage(const std::string& pageDir) {
     // Устанавливаем ID из имени директории
     setId(FileUtils::getFileName(pageDir));
+    // Java: resetDefaultModuleName() сразу после setId — имя модуля по умолчанию зависит от id
+    resetDefaultModuleName();
     
     // Читаем базовые свойства страницы
     m_imageFileName = FileManipulator::getOptionalFileAsString(
@@ -589,13 +594,14 @@ void PageImpl::readPage(const std::string& pageDir) {
     m_useMPL = FileManipulator::getOptionalFileAsString(
         pageDir, USE_MPL_FILE_NAME, DEFAULT_USE_MPL ? "true" : "false") == "true";
     
-    // Читаем модульные свойства
+    // Читаем модульные свойства.
+    // Как в Java PageImpl.readPage: modname и extmod лежат в каталоге СТРАНИЦЫ, а не в module/
     const std::string moduleDir = FileUtils::combinePath(pageDir, MODULE_SUBDIR_NAME);
     m_moduleName = FileManipulator::getOptionalFileAsString(
-        moduleDir, MODNAME_FILE_NAME, m_defaultModuleName);
+        pageDir, MODNAME_FILE_NAME, m_defaultModuleName);
     
     m_moduleExternal = FileManipulator::getOptionalFileAsString(
-        moduleDir, EXTMOD_FILE_NAME, DEFAULT_MODULE_EXTERNAL ? "true" : "false") == "true";
+        pageDir, EXTMOD_FILE_NAME, DEFAULT_MODULE_EXTERNAL ? "true" : "false") == "true";
     
     m_moduleConstrId = FileManipulator::getOptionalFileAsString(
         pageDir, MODCNSID_FILE_NAME, DEFAULT_MODULE_CONSTR_ID);
@@ -654,25 +660,28 @@ void PageImpl::readPage(const std::string& pageDir) {
     
     // Инициализируем модуль, если еще не создан
     if (!m_module) {
-        m_module = std::make_shared<NonLinearBookImpl>(getCurrentNLB(), 
-            std::enable_shared_from_this<PageImpl>::shared_from_this());
+        m_module = new NonLinearBookImpl(getCurrentNLB(), this);
     }
     
     // Загружаем модуль в зависимости от типа (внешний или локальный)
     if (isModuleExternal()) {
         // Для внешних модулей
         m_module->clear();
-        std::shared_ptr<NonLinearBook> externalModule = getCurrentNLB()->findExternalModule(m_moduleName);
+        NonLinearBook* externalModule = getCurrentNLB()->findExternalModule(m_moduleName);
         if (externalModule) {
             m_module->append(externalModule, true, true);
+        } else {
+            // Java молча вызывает append(null) — модуль остаётся пустым. Поведение сохраняем,
+            // но сообщаем: это почти всегда ошибка в структуре книги (нет modules/<имя>)
+            std::cerr << "Warning: external module '" << m_moduleName
+                      << "' for page " << getId() << " not found" << std::endl;
         }
     } else {
         // Для локальных модулей
         if (FileUtils::exists(moduleDir) && FileUtils::isDirectory(moduleDir)) {
             try {
                 std::string canonicalModuleDir = FileUtils::normalizePath(moduleDir);
-                m_module->loadAndSetParent(canonicalModuleDir, getCurrentNLB(), 
-                    std::enable_shared_from_this<PageImpl>::shared_from_this());
+                m_module->loadAndSetParent(canonicalModuleDir, getCurrentNLB(), this);
             } catch (const std::exception& e) {
                 throw NLBIOException("Error loading module from directory: " + moduleDir + 
                     ". Error: " + e.what());
@@ -684,25 +693,25 @@ void PageImpl::readPage(const std::string& pageDir) {
     readModifications(pageDir);
 }
 
-std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
+PageImpl* PageImpl::createFilteredCloneWithSubstitutions(
     const std::vector<std::string>& objIdsToBeExcluded,
     const std::vector<std::string>& linkIdsToBeExcluded,
-    const std::vector<std::shared_ptr<Link>>& linksToBeAdded,
-    std::map<std::string, std::shared_ptr<void>> visitedVars)
+    const std::vector<Link*>& linksToBeAdded,
+    std::map<std::string, void*> visitedVars)
 {
     // Создаем новую страницу-результат
-    auto result = std::make_shared<PageImpl>(AbstractNodeItem::getCurrentNLB());
+    auto result = new PageImpl(AbstractNodeItem::getCurrentNLB());
     
     // 1. Основные идентификаторы и флаги
     result->AbstractIdentifiableItem::setId(AbstractIdentifiableItem::getId());
     result->AbstractIdentifiableItem::setDeleted(AbstractIdentifiableItem::isDeleted());
     
     // 2. Преобразуем visitedVars для использования с StringHelper::replaceVariables
-    std::map<std::string, std::any> visitedVarsAny;
+    std::map<std::string, Any> visitedVarsAny;
     for (const auto& [key, value] : visitedVars) {
         try {
             // Пытаемся получить строковое значение
-            auto strPtr = std::static_pointer_cast<std::string>(value);
+            auto strPtr = (std::string*) (value);
             if (strPtr) {
                 visitedVarsAny[key] = *strPtr;
             }
@@ -720,7 +729,7 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
     // 4. Копирование координат
     auto sourceCoords = getCoords();
     auto resultCoords = result->getCoords();
-    auto resultCoordsImpl = std::static_pointer_cast<CoordsImpl>(resultCoords);
+    auto resultCoordsImpl = (CoordsImpl*) (resultCoords);
     resultCoordsImpl->setLeft(sourceCoords->getLeft());
     resultCoordsImpl->setTop(sourceCoords->getTop());
     resultCoordsImpl->setWidth(sourceCoords->getWidth());
@@ -777,15 +786,15 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
     
     // 9. Фильтрация существующих ссылок (исключаем linkIdsToBeExcluded)
     AbstractNodeItem::filterTargetLinkList(
-        std::static_pointer_cast<AbstractNodeItem>(result),
-        std::static_pointer_cast<AbstractNodeItem>(std::enable_shared_from_this<PageImpl>::shared_from_this()),
+        (AbstractNodeItem*) (result),
+        (AbstractNodeItem*) (this),
         linkIdsToBeExcluded
     );
     
     // 10. Добавление новых ссылок
     for (const auto& link : linksToBeAdded) {
-        auto newLink = std::make_shared<LinkImpl>(
-            std::static_pointer_cast<AbstractNodeItem>(result), 
+        auto newLink = new LinkImpl(
+            (AbstractNodeItem*) (result),
             link
         );
         result->addLink(newLink);
@@ -798,13 +807,13 @@ std::shared_ptr<PageImpl> PageImpl::createFilteredCloneWithSubstitutions(
 }
 
 // Вспомогательный метод для замены переменных в ссылках
-void PageImpl::replaceVariablesInLinks(std::map<std::string, std::shared_ptr<void>> visitedVars) {
+void PageImpl::replaceVariablesInLinks(std::map<std::string, void*> visitedVars) {
     // Преобразуем visitedVars для использования с StringHelper::replaceVariables
-    std::map<std::string, std::any> visitedVarsAny;
+    std::map<std::string, Any> visitedVarsAny;
     for (const auto& [key, value] : visitedVars) {
         try {
             // Пытаемся получить строковое значение
-            auto strPtr = std::static_pointer_cast<std::string>(value);
+            auto strPtr = (std::string*) (value);
             if (strPtr) {
                 visitedVarsAny[key] = *strPtr;
             }
@@ -831,7 +840,7 @@ void PageImpl::replaceVariablesInLinks(std::map<std::string, std::shared_ptr<voi
 // Вспомогательный метод для генерации текста объектов
 std::string PageImpl::generateObjText(
     const std::vector<std::string>& objIdsToBeExcluded, 
-    std::map<std::string, std::shared_ptr<void>> visitedVars)
+    std::map<std::string, void*> visitedVars)
 {
     std::ostringstream result;
     
@@ -843,7 +852,7 @@ std::string PageImpl::generateObjText(
     for (const auto& [key, value] : visitedVars) {
         try {
             // Пытаемся получить строковое значение
-            auto strPtr = std::static_pointer_cast<std::string>(value);
+            auto strPtr = (std::string*) (value);
             if (strPtr) {
                 visitedVarsString[key] = *strPtr;
             }

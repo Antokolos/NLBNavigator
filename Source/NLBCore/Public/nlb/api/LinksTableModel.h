@@ -14,7 +14,7 @@ public:
      * @brief Constructs a new table model from a vector of links
      * @param links Vector of links to populate the model
      */
-    explicit LinksTableModel(const std::vector<std::shared_ptr<Link>>& links);
+    explicit LinksTableModel(const std::vector<Link*>& links);
 
     /*!
      * @brief Gets the name of the specified column
@@ -48,7 +48,7 @@ public:
      * @param rowIndex Row index
      * @return Shared pointer to the link
      */
-    std::shared_ptr<Link> getLinkAt(int rowIndex) const;
+    Link* getLinkAt(int rowIndex) const;
 
     /*!
      * @brief Deletes the link at specified row
@@ -60,7 +60,7 @@ public:
      * @brief Gets all links in the model
      * @return Vector of links
      */
-    const std::vector<std::shared_ptr<Link>>& getLinks() const;
+    const std::vector<Link*>& getLinks() const;
 
     /*!
      * @brief Moves the link at specified row up
@@ -75,5 +75,5 @@ public:
     void moveDown(int rowIndex);
 
 private:
-    std::vector<std::shared_ptr<Link>> m_links;
+    std::vector<Link*> m_links;
 };

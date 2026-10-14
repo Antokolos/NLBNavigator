@@ -1,9 +1,19 @@
 #include "nlb/util/FileUtils.h"
+#include "nlb/util/BookPack.h"
+#include <fstream>
+#include <iterator>
 #include <cstdio>
 #include <algorithm>
 #include <sstream>
 
 #ifdef _WIN32
+    // Без NOMINMAX макросы min/max из windows.h ломают std::min/std::max (MSVC)
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
     #include <windows.h>
     #include <direct.h>
     #define PATH_SEPARATOR '\\'
@@ -13,6 +23,128 @@
     #include <dirent.h>
     #define PATH_SEPARATOR '/'
 #endif
+
+#ifdef _WIN32
+std::wstring FileUtils::toWide(const std::string& utf8) {
+    if (utf8.empty()) return std::wstring();
+    UINT codePage = CP_UTF8;
+    int len = MultiByteToWideChar(codePage, MB_ERR_INVALID_CHARS, utf8.data(), static_cast<int>(utf8.size()), nullptr, 0);
+    if (len <= 0) {
+        codePage = CP_ACP;  // не UTF-8: например, путь из argv в кодировке ANSI
+        len = MultiByteToWideChar(codePage, 0, utf8.data(), static_cast<int>(utf8.size()), nullptr, 0);
+    }
+    std::wstring result(static_cast<size_t>(len), L'\0');
+    MultiByteToWideChar(codePage, 0, utf8.data(), static_cast<int>(utf8.size()), &result[0], len);
+    return result;
+}
+
+std::string FileUtils::fromWide(const std::wstring& wide) {
+    if (wide.empty()) return std::string();
+    int len = WideCharToMultiByte(CP_UTF8, 0, wide.data(), static_cast<int>(wide.size()), nullptr, 0, nullptr, nullptr);
+    std::string result(static_cast<size_t>(len), '\0');
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), static_cast<int>(wide.size()), &result[0], len, nullptr, nullptr);
+    return result;
+}
+
+std::filesystem::path FileUtils::nativePath(const std::string& utf8Path) {
+    std::wstring path = toWide(utf8Path);
+    std::replace(path.begin(), path.end(), L'/', L'\\');
+    if (path.empty() || path.rfind(L"\\\\?\\", 0) == 0) {
+        return std::filesystem::path(path);
+    }
+    // Префикс \\?\ отключает нормализацию путей в WinAPI, поэтому путь сначала делается абсолютным
+    DWORD len = GetFullPathNameW(path.c_str(), 0, nullptr, nullptr);
+    if (len == 0) {
+        return std::filesystem::path(path);
+    }
+    std::wstring full(len, L'\0');
+    len = GetFullPathNameW(path.c_str(), len, &full[0], nullptr);
+    full.resize(len);
+    if (full.rfind(L"\\\\", 0) == 0) {
+        return std::filesystem::path(L"\\\\?\\UNC\\" + full.substr(2));  // \\server\share
+    }
+    return std::filesystem::path(L"\\\\?\\" + full);
+}
+#else
+std::wstring FileUtils::toWide(const std::string& utf8) {
+    return pathFromUtf8(utf8).wstring();
+}
+
+std::string FileUtils::fromWide(const std::wstring& wide) {
+    return pathToUtf8(std::filesystem::path(wide));
+}
+
+std::filesystem::path FileUtils::nativePath(const std::string& utf8Path) {
+    return pathFromUtf8(utf8Path);
+}
+#endif
+
+bool FileUtils::readFile(const std::string& path, std::string& content) {
+    std::string rel;
+    if (BookPack::resolve(path, rel)) {
+        const BookPack::Entry* e = BookPack::mounted()->find(rel);
+        if (!e || e->type != BookPack::Entry::Type::File) return false;
+        content = e->content;
+        return true;
+    }
+    std::ifstream in(nativePath(path), std::ios::binary);
+    if (!in) return false;
+    content.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+    return true;
+}
+
+bool FileUtils::fileInfo(const std::string& path, bool& isDirectory, uint64_t& size, int64_t& mtime) {
+#ifdef _WIN32
+    WIN32_FILE_ATTRIBUTE_DATA data;
+    if (!GetFileAttributesExW(nativePath(path).c_str(), GetFileExInfoStandard, &data)) {
+        return false;
+    }
+    isDirectory = (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    size = (static_cast<uint64_t>(data.nFileSizeHigh) << 32) | data.nFileSizeLow;
+    mtime = static_cast<int64_t>((static_cast<uint64_t>(data.ftLastWriteTime.dwHighDateTime) << 32)
+                                 | data.ftLastWriteTime.dwLowDateTime);
+    return true;
+#else
+    struct stat st;
+    if (stat(path.c_str(), &st) != 0) {
+        return false;
+    }
+    isDirectory = S_ISDIR(st.st_mode);
+    size = static_cast<uint64_t>(st.st_size);
+    mtime = static_cast<int64_t>(st.st_mtime) * 1000000000LL
+#if defined(__linux__)
+        + st.st_mtim.tv_nsec
+#endif
+        ;
+    return true;
+#endif
+}
+
+bool FileUtils::renameReplace(const std::string& from, const std::string& to) {
+#ifdef _WIN32
+    return MoveFileExW(nativePath(from).c_str(), nativePath(to).c_str(),
+                       MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != 0;
+#else
+    return std::rename(from.c_str(), to.c_str()) == 0;
+#endif
+}
+
+std::filesystem::path FileUtils::pathFromUtf8(const std::string& utf8) {
+#if defined(__cpp_char8_t)
+    return std::filesystem::path(std::u8string(utf8.begin(), utf8.end()));
+#else
+    return std::filesystem::u8path(utf8);
+#endif
+}
+
+std::string FileUtils::pathToUtf8(const std::filesystem::path& path) {
+#if defined(__cpp_char8_t)
+    const std::u8string s = path.u8string();
+    return std::string(s.begin(), s.end());
+#else
+    return path.u8string();
+#endif
+}
 
 char FileUtils::getPathSeparator() {
     return PATH_SEPARATOR;
@@ -57,8 +189,10 @@ std::string FileUtils::combinePath(const std::string& path1, const std::string& 
 }
 
 bool FileUtils::exists(const std::string& path) {
+    std::string rel;
+    if (BookPack::resolve(path, rel)) return BookPack::mounted()->find(rel) != nullptr;
 #ifdef _WIN32
-    DWORD attrs = GetFileAttributesA(path.c_str());
+    DWORD attrs = GetFileAttributesW(nativePath(path).c_str());
     return (attrs != INVALID_FILE_ATTRIBUTES);
 #else
     struct stat buffer;
@@ -67,8 +201,13 @@ bool FileUtils::exists(const std::string& path) {
 }
 
 bool FileUtils::isDirectory(const std::string& path) {
+    std::string rel;
+    if (BookPack::resolve(path, rel)) {
+        const BookPack::Entry* e = BookPack::mounted()->find(rel);
+        return e && e->type == BookPack::Entry::Type::Directory;
+    }
 #ifdef _WIN32
-    DWORD attrs = GetFileAttributesA(path.c_str());
+    DWORD attrs = GetFileAttributesW(nativePath(path).c_str());
     return (attrs != INVALID_FILE_ATTRIBUTES && (attrs & FILE_ATTRIBUTE_DIRECTORY));
 #else
     struct stat buffer;
@@ -78,18 +217,21 @@ bool FileUtils::isDirectory(const std::string& path) {
 
 std::vector<std::string> FileUtils::getDirectoryFiles(const std::string& path) {
     std::vector<std::string> files;
+    std::string rel;
+    if (BookPack::resolve(path, rel)) return BookPack::mounted()->children(rel);
 
 #ifdef _WIN32
-    WIN32_FIND_DATAA findData;
-    HANDLE hFind = FindFirstFileA((path + "\\*").c_str(), &findData);
+    WIN32_FIND_DATAW findData;
+    const std::wstring pattern = nativePath(path).wstring() + L"\\*";
+    HANDLE hFind = FindFirstFileW(pattern.c_str(), &findData);
     
     if (hFind != INVALID_HANDLE_VALUE) {
         do {
-            std::string filename = findData.cFileName;
+            std::string filename = fromWide(findData.cFileName);
             if (filename != "." && filename != "..") {
                 files.push_back(filename);
             }
-        } while (FindNextFileA(hFind, &findData));
+        } while (FindNextFileW(hFind, &findData));
         FindClose(hFind);
     }
 #else
@@ -111,7 +253,7 @@ std::vector<std::string> FileUtils::getDirectoryFiles(const std::string& path) {
 
 bool FileUtils::createDirectory(const std::string& path) {
 #ifdef _WIN32
-    return _mkdir(path.c_str()) == 0;
+    return CreateDirectoryW(nativePath(path).c_str(), nullptr) != 0;
 #else
     return mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
 #endif
@@ -151,13 +293,13 @@ bool FileUtils::remove(const std::string& path, bool recursive) {
             }
         }
 #ifdef _WIN32
-        return RemoveDirectoryA(path.c_str()) != 0;
+        return RemoveDirectoryW(nativePath(path).c_str()) != 0;
 #else
         return rmdir(path.c_str()) == 0;
 #endif
     } else {
 #ifdef _WIN32
-        return DeleteFileA(path.c_str()) != 0;
+        return DeleteFileW(nativePath(path).c_str()) != 0;
 #else
         return unlink(path.c_str()) == 0;
 #endif

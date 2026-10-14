@@ -16,7 +16,7 @@ public:
      * @param observer Pointer to the observer to be added
      * @return Observer identifier string
      */
-    virtual std::string addObserver(std::shared_ptr<NLBObserver> observer) = 0;
+    virtual std::string addObserver(NLBObserver* observer) = 0;
 
     /*!
      * @brief Removes an observer from the observable object

@@ -22,8 +22,8 @@ public:
      * @param top New top coordinate
      */
     UpdateLinkCoordsCommand(
-        std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-        std::shared_ptr<Link> link,
+        NonLinearBookImpl* nonLinearBook,
+        Link* link,
         float left,
         float top
     );
@@ -36,8 +36,8 @@ public:
      * @param height New height value
      */
     UpdateLinkCoordsCommand(
-        std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-        std::shared_ptr<Link> link,
+        NonLinearBookImpl* nonLinearBook,
+        Link* link,
         float height
     );
 
@@ -56,11 +56,11 @@ private:
      * Internal constructor that initializes the common parts for both public constructors.
      */
     UpdateLinkCoordsCommand(
-        std::shared_ptr<NonLinearBookImpl> nonLinearBook,
-        std::shared_ptr<Link> link
+        NonLinearBookImpl* nonLinearBook,
+        Link* link
     );
 
-    std::shared_ptr<LinkImpl> m_linkImpl;
+    LinkImpl* m_linkImpl;
     float m_left;
     float m_top;
     float m_height;
