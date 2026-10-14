@@ -1680,8 +1680,11 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
         }
         so.placement.armX = p.armX;
         so.placement.armY = p.armY;
-        if (!p.parentId.empty()) {
-            // iarm (decorateObjArm): offset объекта или его координаты относительно родителя
+        if (!p.parentId.empty() && obj->getContainerType() == Obj::ContainerType::Obj) {
+            // iarm (decorateObjArm): только у объекта, вложенного в объект в самой книге — его
+            // offset или координаты относительно родителя. Объектам, положенным в контейнер во
+            // время игры (иконки навыков на свитке), vn.lua ставит arm = {0, y}: столбиком сверху
+            // вниз, каждый ниже предыдущего на его высоту
             so.placement.hasInnerArm = true;
             if (!parsePair(obj->getOffset(), so.placement.innerArmX, so.placement.innerArmY)) {
                 Coords& rel = obj->getRelativeCoords(true);

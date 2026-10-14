@@ -304,6 +304,26 @@ if(NLB_WITH_SDL3)
         target_include_directories(NLBAudioSDL PUBLIC Source/NLBAudioSDL/Public)
         target_link_libraries(NLBAudioSDL PUBLIC NLBReader SDL3::SDL3 SDL3_mixer::SDL3_mixer)
         message(STATUS "NLBNavigator: SDL3 audio backend enabled")
+        # Графический проигрыватель — если есть ещё SDL3_image и SDL3_ttf
+        find_package(SDL3_image CONFIG QUIET)
+        find_package(SDL3_ttf CONFIG QUIET)
+        if(SDL3_image_FOUND AND SDL3_ttf_FOUND)
+            add_executable(nlb_sdl
+                    Source/NLBSdl/main_sdl.cpp
+                    Source/NLBSdl/SdlPlayer.h
+                    Source/NLBSdl/SdlPlayer.cpp
+                    Source/NLBSdl/ScreenTheme.h
+                    Source/NLBSdl/ScreenTheme.cpp
+                    Source/PlatformPaths.cpp
+                    ${CPARSE_HEADERS}
+                    ${CPARSE_SOURCES})
+            target_include_directories(nlb_sdl PRIVATE Source ${CPARSE_DIR})
+            target_link_libraries(nlb_sdl PRIVATE NLBAudioSDL SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf)
+            if(WIN32)
+                target_link_libraries(nlb_sdl PRIVATE shell32)
+            endif()
+            message(STATUS "NLBNavigator: graphical player nlb_sdl enabled")
+        endif()
     else()
         message(STATUS "NLBNavigator: SDL3/SDL3_mixer not found — building without sound")
         set(NLB_WITH_SDL3 OFF)

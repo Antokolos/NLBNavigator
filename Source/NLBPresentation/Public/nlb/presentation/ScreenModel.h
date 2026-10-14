@@ -45,6 +45,10 @@ enum class Anchor { LeftTop, MiddleTop, RightTop, LeftMiddle, MiddleMiddle, Righ
                     LeftBottom, MiddleBottom, RightBottom };
 
 /// Положение графического объекта так, как его задаёт экспорт (decorateObjEffect, vn.lua).
+/// Как vn.lua (postoxy) переводит это в точку экрана для корневого объекта размером vw×vh:
+///   x: left — armX; right — 1920 − vw; middle — (1920 − vw) / 2; затем + offsetX
+///   y: top — armY; bottom — 1080 − vh; middle — (1080 − vh) / 2; затем + offsetY
+/// Вложенный: точка родителя + свой arm (iarm или столбик).
 /// Корневой объект: угол экрана + offset (если задан) или arm (координаты редактора,
 /// пересчитанные на экран 1920×1080). Вложенный: eff с 0,0, а положение внутри родителя —
 /// iarm (координаты редактора относительно родителя или его offset, без пересчёта).
@@ -54,8 +58,10 @@ struct Placement {
     bool hasOffset = false;
     int offsetX = 0, offsetY = 0;      ///< «Offset» (файл offset): eff = "<угол>@<x>,<y>"
     int armX = 0, armY = 0;            ///< arm = {[0] = {x, y}}
-    bool hasInnerArm = false;          ///< вложенный объект
+    bool hasInnerArm = false;          ///< вложен в объект в самой книге: положение задано iarm
     int innerArmX = 0, innerArmY = 0;  ///< iarm = {[0] = {x, y}}
+    // Вложенный объект без iarm (положен в контейнер во время игры) vn.lua ставит в столбик:
+    // arm = {0, сумма высот предыдущих таких детей}. Фронтенд раскладывает их так же
 };
 
 /// Эффект появления графического объекта («Effect», файл effect). В экспорте — приставка к eff:
