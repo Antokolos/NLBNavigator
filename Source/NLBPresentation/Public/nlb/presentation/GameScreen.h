@@ -58,7 +58,11 @@ public:
 
     struct Options {
         std::string themeDir;            ///< каталог темы INSTEAD (может быть внутри пакета)
-        bool choicesScreen = false;      ///< варианты отдельным экраном
+        /// Варианты отдельным экраном (как VN в INSTEAD с модулем paginator): текст выдаётся
+        /// порциями по абзацам, разделённым пустой строкой, без прокрутки; дочитав последнюю
+        /// порцию, игрок видит экран вариантов, а если вариант один и тривиальный («Далее») —
+        /// сразу переходит дальше. Иначе — прокрутка и варианты в конце текста
+        bool choicesScreen = false;
         bool soundAvailable = true;      ///< есть звук (пункт меню «звук»)
         FontRef uiFont{"", 32}, titleFont{"", 46}, smallFont{"", 26};  ///< шрифты меню и сообщений
         /// Монотонное время, мс (эффекты появления, всплывающие сообщения); пусто — steady_clock
@@ -79,6 +83,8 @@ public:
 
     /// После команд, отданных напрямую session.engine() (сценарии тестов)
     void afterCommand();
+    /// Сейчас показан экран вариантов (режим choicesScreen)
+    bool choicesScreenShown() const { return m_showChoices; }
     /// Игрок выбрал «Выйти» в меню
     bool quitRequested() const { return m_quit; }
     void clearQuitRequest() { m_quit = false; }
@@ -128,6 +134,13 @@ private:
     void renderOverlayMessages();
     void renderMenu();
     bool advanceToChoices();
+    /// «Дальше» (пробел, щелчок мимо ссылок): следующая строка-страница текста, следующая
+    /// порция, а после последней — экран вариантов или переход по единственной тривиальной ссылке
+    bool advanceText();
+    /// Порции текста (режим экрана вариантов): абзацы между пустыми строками, как paginator.delim
+    std::vector<std::vector<Paragraph>> portions() const;
+    /// Единственный доступный вариант и он тривиальный — индекс, иначе -1
+    int singleTrivialChoice() const;
     void menuAction(int index);
     FontRef fontFor(const ScreenTheme::Window& w) const { return FontRef{w.fontFile, w.fontSize}; }
     float textW(const FontRef& f, const std::string& s) { return m_r->textWidth(f, s); }
@@ -147,6 +160,8 @@ private:
     bool m_moreText = false;
     float m_drawTop = -1e9f, m_drawBottom = 1e9f, m_firstHiddenY = -1;
     bool m_choicesScreen = false, m_showChoices = false;
+    size_t m_portion = 0;            ///< текущая порция текста (режим экрана вариантов)
+    bool m_morePortions = false;
     Menu m_menu = Menu::None;
     std::string m_message;
     std::vector<std::string> m_toasts;

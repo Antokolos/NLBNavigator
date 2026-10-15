@@ -42,6 +42,16 @@ std::vector<std::string> words(const std::string& text) {
     return out;
 }
 
+/// Текст абзацев одной строкой — понять, что ответ на действие сменился (а не просто тикнул таймер)
+std::string flatten(const std::vector<Paragraph>& text) {
+    std::string out;
+    for (const auto& p : text) {
+        for (const auto& r : p.runs) out += r.text;
+        out += '\n';
+    }
+    return out;
+}
+
 std::string framePath(const ImageRef& image) {
     if (image.framePattern.empty()) return image.file.path;
     char buf[1024];
@@ -64,6 +74,53 @@ void GameScreen::pull() {
     m_screen = m_session.screen();
     updateEffects(before);
     m_seenRevision = m_session.revision();
+    if (before.pageId != m_screen.pageId) {
+        m_portion = 0;  // новая страница — текст с первой порции
+    } else if (!m_screen.reactionText.empty() && flatten(before.reactionText) != flatten(m_screen.reactionText)) {
+        // ответ на действие на той же странице — показать его (первая порция ответа)
+        size_t pagePortions = 0;
+        bool any = false;
+        for (const auto& p : m_screen.pageText) {
+            const bool blank = p.runs.empty() || std::all_of(p.runs.begin(), p.runs.end(), [](const TextRun& r) {
+                return r.text.find_first_not_of(" \t") == std::string::npos; });
+            if (blank) { if (any) { ++pagePortions; any = false; } } else any = true;
+        }
+        if (any) ++pagePortions;
+        m_portion = pagePortions;
+        m_scroll = 0;
+    }
+}
+
+std::vector<std::vector<Paragraph>> GameScreen::portions() const {
+    // paginator.delim = '\n[ \t]*\n': порция — абзацы до пустой строки; ответ на действие
+    // продолжает порции страницы
+    std::vector<std::vector<Paragraph>> out;
+    std::vector<Paragraph> cur;
+    auto add = [&](const std::vector<Paragraph>& text) {
+        for (const auto& p : text) {
+            const bool blank = p.runs.empty() || std::all_of(p.runs.begin(), p.runs.end(), [](const TextRun& r) {
+                return r.text.find_first_not_of(" \t") == std::string::npos; });
+            if (blank) {
+                if (!cur.empty()) { out.push_back(cur); cur.clear(); }
+            } else {
+                cur.push_back(p);
+            }
+        }
+        if (!cur.empty()) { out.push_back(cur); cur.clear(); }
+    };
+    add(m_screen.pageText);
+    add(m_screen.reactionText);
+    return out;
+}
+
+int GameScreen::singleTrivialChoice() const {
+    int found = -1, count = 0;
+    for (const auto& c : m_screen.choices) {
+        if (!c.enabled) continue;
+        ++count;
+        if (c.trivial) found = c.index;
+    }
+    return count == 1 ? found : -1;
 }
 
 uint64_t GameScreen::now() const {
@@ -104,8 +161,11 @@ void GameScreen::processEvents(const std::vector<PlayerEngine::Event>& events) {
 void GameScreen::afterCommand() {
     pull();
     m_showChoices = false;
-    // Страница без текста: показывать нечего — сразу экран вариантов
-    if (m_choicesScreen && m_screen.pageText.empty() && m_screen.reactionText.empty()) advanceToChoices();
+    // Страница без текста: показывать нечего — сразу экран вариантов (если вариант один тривиальный —
+    // ждём «дальше», чтобы игрок увидел сцену)
+    if (m_choicesScreen && m_screen.pageText.empty() && m_screen.reactionText.empty() && singleTrivialChoice() < 0) {
+        advanceToChoices();
+    }
     if (m_screen.externalGame) {
         if (m_externalHandler) {
             // игру ведёт фронтенд (сцена движка, мини-игра) — сообщить один раз
@@ -231,6 +291,10 @@ void GameScreen::click(float x, float y, bool rightButton) {
         bool onChoice = false;
         for (const auto& h : m_hits) onChoice = onChoice || (h.kind == Hit::Kind::Choice && contains(h.rect, x, y));
         if (!onChoice) { m_showChoices = false; return; }
+    } else if (m_choicesScreen && !hitSomething && m_menu == Menu::None) {
+        // как paginator: щелчок мимо спрайтов — дальше по тексту
+        advanceText();
+        return;
     } else if (!hitSomething && m_menu == Menu::None && m_moreText && contains(m_textWindow, x, y)) {
         m_scroll += m_pageHeight;
         return;
@@ -292,7 +356,8 @@ void GameScreen::key(Key k, int digit) {
         }
     } else if (k == Key::Space || k == Key::Enter) {
         // пробел: следующая часть текста, а когда он дочитан — экран вариантов
-        if (m_moreText) m_scroll += m_pageHeight;
+        if (m_choicesScreen && !m_showChoices) advanceText();
+        else if (m_moreText) m_scroll += m_pageHeight;
         else if (m_showChoices) m_showChoices = false;
         else advanceToChoices();
     } else if (k == Key::PageDown) {
@@ -315,6 +380,27 @@ bool GameScreen::hitCenter(const std::string& id, bool inventory, float& x, floa
         }
     }
     return false;
+}
+
+bool GameScreen::advanceText() {
+    if (m_menu != Menu::None || m_showChoices) return false;
+    if (m_moreText) {                       // не уместившиеся строки текущей порции
+        m_scroll += m_pageHeight;
+        return true;
+    }
+    if (m_morePortions) {                   // следующая порция
+        ++m_portion;
+        m_scroll = 0;
+        return true;
+    }
+    // текст дочитан: единственный тривиальный вариант («Далее») — сразу переход, иначе варианты
+    const int trivial = singleTrivialChoice();
+    if (trivial >= 0) {
+        m_session.choose(trivial);
+        afterCommand();
+        return true;
+    }
+    return advanceToChoices();
 }
 
 bool GameScreen::advanceToChoices() {
@@ -518,11 +604,24 @@ RectF GameScreen::objectRect(size_t index) {
 void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel) {
     const FontRef font = fontFor(window);
     const RectF r = window.rect;
+    // Режим экрана вариантов: текст порциями (как paginator), без стрелок прокрутки
+    std::vector<Paragraph> portionText;
+    if (m_choicesScreen) {
+        const auto parts = portions();
+        if (m_portion >= parts.size()) m_portion = parts.empty() ? 0 : parts.size() - 1;
+        if (!parts.empty()) portionText = parts[m_portion];
+        m_morePortions = m_portion + 1 < parts.size();
+    } else {
+        m_morePortions = false;
+    }
+    const std::vector<Paragraph>& firstText = m_choicesScreen ? portionText : m_screen.pageText;
+    static const std::vector<Paragraph> NONE;
+    const std::vector<Paragraph>& secondText = m_choicesScreen ? NONE : m_screen.reactionText;
     // Сколько места занимает текст (для прокрутки)
     float need = 0;
     if (!m_screen.caption.empty()) need += m_r->lineSkip(font) * 1.4f;
-    need = renderParagraphs(m_screen.pageText, r.x, need, r.w, font, window, false);
-    need = renderParagraphs(m_screen.reactionText, r.x, need, r.w, font, window, false);
+    need = renderParagraphs(firstText, r.x, need, r.w, font, window, false);
+    need = renderParagraphs(secondText, r.x, need, r.w, font, window, false);
     if (!m_choicesScreen) need = renderChoices(r.x, need, r.w, font, window, false);
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
@@ -547,8 +646,8 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         m_r->drawText(font, m_screen.caption, window.fg, r.x, y, 1.0f);
         y += m_r->lineSkip(font) * 1.4f;
     }
-    y = renderParagraphs(m_screen.pageText, r.x, y, r.w, font, window, true);
-    y = renderParagraphs(m_screen.reactionText, r.x, y, r.w, font, window, true);
+    y = renderParagraphs(firstText, r.x, y, r.w, font, window, true);
+    y = renderParagraphs(secondText, r.x, y, r.w, font, window, true);
     if (!m_choicesScreen) renderChoices(r.x, y, r.w, font, window, true);
     m_r->setClip(nullptr);
     m_drawTop = -1e9f;
@@ -570,6 +669,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         else m_r->drawText(font, up ? "▲" : "▼", window.link, ar.x, ar.y, 1.0f);
         m_hits.push_back({{ar.x - 6, ar.y - 6, ar.w + 12, ar.h + 12}, up ? Hit::Kind::ScrollUp : Hit::Kind::ScrollDown, ""});
     };
+    if (m_choicesScreen) return;  // как paginator: без прокрутки, «дальше» — щелчок или пробел
     if (m_scroll > 0) arrow(true, r.y);
     if (m_firstHiddenY >= 0) arrow(false, r.y + r.h);
 }
