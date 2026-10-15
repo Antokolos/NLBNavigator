@@ -14,7 +14,7 @@ class UTexture2D;
 
 /** Фрагмент текста: обычный текст или ссылка на объект/вариант */
 USTRUCT(BlueprintType)
-struct FNLBTextRun {
+struct NLBPLAYER_API FNLBTextRun {
     GENERATED_BODY()
     UPROPERTY(BlueprintReadOnly) FString Kind;    // "text", "object", "choice"
     UPROPERTY(BlueprintReadOnly) FString Text;
@@ -22,13 +22,13 @@ struct FNLBTextRun {
 };
 
 USTRUCT(BlueprintType)
-struct FNLBParagraph {
+struct NLBPLAYER_API FNLBParagraph {
     GENERATED_BODY()
     UPROPERTY(BlueprintReadOnly) TArray<FNLBTextRun> Runs;
 };
 
 USTRUCT(BlueprintType)
-struct FNLBChoice {
+struct NLBPLAYER_API FNLBChoice {
     GENERATED_BODY()
     UPROPERTY(BlueprintReadOnly) int32 Index = 0;
     UPROPERTY(BlueprintReadOnly) FString Text;
@@ -38,7 +38,7 @@ struct FNLBChoice {
 
 /** Объект сцены; положение — как в INSTEAD-экспорте (см. ScreenModel.h: угол, offset, arm, iarm) */
 USTRUCT(BlueprintType)
-struct FNLBSceneObject {
+struct NLBPLAYER_API FNLBSceneObject {
     GENERATED_BODY()
     UPROPERTY(BlueprintReadOnly) FString Id;
     UPROPERTY(BlueprintReadOnly) FString ParentId;
@@ -61,7 +61,7 @@ struct FNLBSceneObject {
 };
 
 USTRUCT(BlueprintType)
-struct FNLBInventoryItem {
+struct NLBPLAYER_API FNLBInventoryItem {
     GENERATED_BODY()
     UPROPERTY(BlueprintReadOnly) FString Id;
     UPROPERTY(BlueprintReadOnly) FString ParentId;
@@ -72,7 +72,7 @@ struct FNLBInventoryItem {
 
 /** Снимок экрана для UMG-виджета или 3D-сцены */
 USTRUCT(BlueprintType)
-struct FNLBScreen {
+struct NLBPLAYER_API FNLBScreen {
     GENERATED_BODY()
     UPROPERTY(BlueprintReadOnly) int64 Revision = 0;
     UPROPERTY(BlueprintReadOnly) bool bVisualNovel = false;
@@ -101,7 +101,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNLBGameFinished);
  * FinishExternalGame, чтобы вернуться в новеллу.
  */
 UCLASS()
-class NLBNAVIGATORRUNTIME_API UNLBPlayerSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
+class NLBPLAYER_API UNLBPlayerSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
     GENERATED_BODY()
 
 public:
@@ -111,6 +111,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NLB")
     bool OpenBook(const FString& BookPath, bool bVisualNovel, const TArray<FString>& ExternalGames);
 
+    UFUNCTION(BlueprintPure, Category = "NLB") bool IsBookOpen() const;
     UFUNCTION(BlueprintPure, Category = "NLB") FNLBScreen GetScreen() const;
     UFUNCTION(BlueprintCallable, Category = "NLB") bool Choose(int32 Index);
     UFUNCTION(BlueprintCallable, Category = "NLB") bool ClickObject(const FString& Id);

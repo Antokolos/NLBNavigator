@@ -5,13 +5,14 @@
 #include "nlb/presentation/MediaSource.h"
 
 class UAudioComponent;
-class USoundWave;
+class USoundBase;
 class UObject;
 
 /**
- * Звук NLBNavigator средствами Unreal: USoundWaveProcedural не нужен — ogg/wav из книги
- * импортируются на лету через USoundWave с данными в памяти (для ogg — сжатый формат OGG).
- * Музыка — один UAudioComponent, эффекты — PlaySound2D. Громкость — VolumeMultiplier.
+ * Звук плеера средствами Unreal. Звук ищется сначала среди ассетов проекта
+ * (/Game/NLB/Sound/<имя файла без расширения> — необязательная замена, если нужна обработка
+ * средствами Unreal), затем берётся из книги или пакета .nlbpack: ogg, mp3 и wav раскодирует
+ * AudioDecoder и отдаёт в USoundWaveProcedural — музыку потоком, короткие эффекты целиком.
  */
 class FUnrealAudioBackend : public nlb::presentation::IAudioBackend {
 public:
@@ -26,11 +27,10 @@ public:
     void setEffectsVolume(float volume) override;
 
 private:
-    USoundWave* Load(const nlb::presentation::MediaRef& Ref, bool bLoop);
+    USoundBase* Load(const nlb::presentation::MediaRef& Ref, bool bLoop);
 
     TWeakObjectPtr<UObject> Context;
     const nlb::presentation::IMediaSource* MediaSource;
     TWeakObjectPtr<UAudioComponent> Music;
-    TMap<FString, TWeakObjectPtr<USoundWave>> Cache;
     float EffectsVolume = 1.0f;
 };

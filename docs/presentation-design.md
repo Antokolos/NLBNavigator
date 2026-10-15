@@ -4,7 +4,7 @@
 Плеер (NLBCore + NLBReader) не знает, чем рисовать и звучать. Один и тот же движок работает:
 - в консоли (как сейчас, плюс звук через SDL3 — в том числе для незрячих);
 - в собственном графическом проигрывателе на SDL3;
-- внутри Godot (GDExtension) и Unreal Engine (плагин) — там рисует и звучит сам движок.
+- внутри Godot (GDExtension) и Unreal Engine (модуль NLBPlayer) — там рисует и звучит сам движок.
 
 ## Слои
 ```
@@ -16,7 +16,7 @@ NLBPresentation    снимок экрана, AudioDirector,        без за�
 nlb_console        консоль (+ SDL3 audio, если собран с SDL3)
 nlb_sdl            SDL3 + SDL3_image + SDL3_ttf + SDL3_mixer
 godot/             GDExtension: узел NLBPlayer, адаптеры к AudioStreamPlayer, res://
-unreal/            плагин: UNLBPlayerSubsystem, адаптеры к UAudioComponent, ассетам
+Source/NLBPlayer   модуль Unreal: UNLBPlayerSubsystem, звук и картинки из книги
 ```
 Зависимости только сверху вниз: NLBPresentation ничего не знает о SDL, Godot и Unreal.
 
@@ -44,8 +44,10 @@ VOID останавливает, эффекты поверх, suppmed/suppsou, �
 перенаправлениям) отдаёт байты или путь на диске:
 - каталог книги — как сейчас;
 - пакет `.nlbpack` — новая опция `pack --with-media` (сейчас медиа в пакет не кладутся);
-- Godot/Unreal — их ассеты: при импорте книги в проект картинки и звуки становятся
-  ресурсами движка, адаптер сопоставляет пути.
+- Godot/Unreal — картинки и звуки берутся прямо из книги или пакета: в Godot — его средствами
+  (Image, AudioStreamOggVorbis/MP3/WAV из байтов), в Unreal — ImageWrapper и AudioDecoder
+  (stb_vorbis, dr_mp3, dr_wav) в USoundWaveProcedural. Ассет Unreal /Game/NLB/Sound/<имя>, если
+  он импортирован, важнее файла из книги.
 
 ## Что меняется в движке (этап 1)
 - Сборка `ScreenModel` из текущего состояния (вместо консольных `PageView` + событий картинок).

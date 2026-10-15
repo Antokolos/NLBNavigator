@@ -3,6 +3,7 @@
 #include "Engine/Texture2D.h"
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
+#include "HAL/FileManager.h"
 #include "Misc/Paths.h"
 #include "Modules/ModuleManager.h"
 
@@ -40,11 +41,15 @@ TArray<FNLBParagraph> Paragraphs(const std::vector<Paragraph>& Ps) {
 }
 }
 
+bool UNLBPlayerSubsystem::IsBookOpen() const { return Session != nullptr; }
+
 bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, const TArray<FString>& ExternalGames) {
     Audio = std::make_unique<FUnrealAudioBackend>(this, nullptr);
     Session = std::make_unique<nlb::presentation::Session>(Audio.get());
     Session::Options Options;
-    Options.bookPath = U(FPaths::ConvertRelativePathToFull(BookPath));
+    // относительный путь — от каталога проекта (например, NLBFiles/book.nlbpack)
+    const FString Full = FPaths::IsRelative(BookPath) ? FPaths::ProjectDir() / BookPath : BookPath;
+    Options.bookPath = U(FPaths::ConvertRelativePathToFull(Full));
     Options.exportMode = bVisualNovel ? PlayerEngine::ExportMode::VN : PlayerEngine::ExportMode::Standard;
     const FString SaveDir = FPaths::ProjectSavedDir() / TEXT("NLBNavigator");
     IFileManager::Get().MakeDirectory(*(SaveDir / TEXT("saves")), true);
@@ -53,7 +58,7 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
     for (const FString& G : ExternalGames) Options.externalGames.push_back(U(G));
     std::string Error;
     if (!Session->open(Options, Error)) {
-        UE_LOG(LogTemp, Error, TEXT("NLB: %s"), *S(Error));
+        UE_LOG(LogTemp, Error, TEXT("NLB: %s (%s)"), *S(Error), *S(Options.bookPath));
         Session.reset();
         return false;
     }
