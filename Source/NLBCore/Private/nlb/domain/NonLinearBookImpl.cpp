@@ -1263,22 +1263,30 @@ std::vector<Link*> NonLinearBookImpl::getAssociatedLinks(NodeItem* nodeItem) {
 // Приватные методы
 void NonLinearBookImpl::readBookProperties(const std::string& rootDir) {
     // Читаем основные свойства книги
+    // Как в Java: у модуля без своих файлов свойств они наследуются от родительской книги
+    // (язык, лицензия, название, автор, версия, fullauto, suppmed, suppsou). Иначе тексты
+    // модуля английской книги искались бы на языке по умолчанию «ru» и подменялись текстами
+    // по умолчанию («Далее»)
+    const NonLinearBook* parent = m_parentNLB;
     m_startPoint = FileManipulator::getOptionalFileAsString(rootDir, STARTPOINT_FILE_NAME, DEFAULT_STARTPOINT);
-    m_language = FileManipulator::getOptionalFileAsString(rootDir, LANGUAGE_FILE_NAME, DEFAULT_LANGUAGE);
-    m_license = FileManipulator::getOptionalFileAsString(rootDir, LICENSE_FILE_NAME, DEFAULT_LICENSE);
-    m_title = FileManipulator::getOptionalFileAsString(rootDir, TITLE_FILE_NAME, DEFAULT_TITLE);
-    m_author = FileManipulator::getOptionalFileAsString(rootDir, AUTHOR_FILE_NAME, DEFAULT_AUTHOR);
-    m_version = FileManipulator::getOptionalFileAsString(rootDir, VERSION_FILE_NAME, DEFAULT_VERSION);
+    m_language = FileManipulator::getOptionalFileAsString(rootDir, LANGUAGE_FILE_NAME, parent ? parent->getLanguage() : DEFAULT_LANGUAGE);
+    m_license = FileManipulator::getOptionalFileAsString(rootDir, LICENSE_FILE_NAME, parent ? parent->getLicense() : DEFAULT_LICENSE);
+    m_title = FileManipulator::getOptionalFileAsString(rootDir, TITLE_FILE_NAME, parent ? parent->getTitle() : DEFAULT_TITLE);
+    m_author = FileManipulator::getOptionalFileAsString(rootDir, AUTHOR_FILE_NAME, parent ? parent->getAuthor() : DEFAULT_AUTHOR);
+    m_version = FileManipulator::getOptionalFileAsString(rootDir, VERSION_FILE_NAME, parent ? parent->getVersion() : DEFAULT_VERSION);
     m_perfectGameAchievementName = FileManipulator::getOptionalFileAsString(rootDir, PERFECTGAMEACHIEVEMENTNAME_FILE_NAME, DEFAULT_PERFECT_GAME_ACHIEVEMENT_NAME);
     
     // Читаем булевы свойства
-    std::string fullAutowireStr = FileManipulator::getOptionalFileAsString(rootDir, FULL_AUTOWIRE_FILE_NAME, DEFAULT_FULL_AUTOWIRE ? "true" : "false");
+    const bool fullAutowireDefault = parent ? parent->isFullAutowire() : DEFAULT_FULL_AUTOWIRE;
+    std::string fullAutowireStr = FileManipulator::getOptionalFileAsString(rootDir, FULL_AUTOWIRE_FILE_NAME, fullAutowireDefault ? "true" : "false");
     m_fullAutowire = (fullAutowireStr == "true");
     
-    std::string suppressMediaStr = FileManipulator::getOptionalFileAsString(rootDir, SUPPRESS_MEDIA_FILE_NAME, DEFAULT_SUPPRESS_MEDIA ? "true" : "false");
+    const bool suppressMediaDefault = parent ? parent->isSuppressMedia() : DEFAULT_SUPPRESS_MEDIA;
+    std::string suppressMediaStr = FileManipulator::getOptionalFileAsString(rootDir, SUPPRESS_MEDIA_FILE_NAME, suppressMediaDefault ? "true" : "false");
     m_suppressMedia = (suppressMediaStr == "true");
     
-    std::string suppressSoundStr = FileManipulator::getOptionalFileAsString(rootDir, SUPPRESS_SOUND_FILE_NAME, DEFAULT_SUPPRESS_SOUND ? "true" : "false");
+    const bool suppressSoundDefault = parent ? parent->isSuppressSound() : DEFAULT_SUPPRESS_SOUND;
+    std::string suppressSoundStr = FileManipulator::getOptionalFileAsString(rootDir, SUPPRESS_SOUND_FILE_NAME, suppressSoundDefault ? "true" : "false");
     m_suppressSound = (suppressSoundStr == "true");
     
     // Читаем тему
