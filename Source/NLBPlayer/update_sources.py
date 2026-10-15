@@ -12,9 +12,17 @@ dirs = {
     'NLB_SOURCE_DIR': 'NLBCore/Private',
     'NLB_READER_SOURCE_DIR': 'NLBReader/Private',
 }
+# Файлы из списка CMake, которые плееру не нужны и в модуле Unreal не собираются:
+# NonLinearBookFacade — фасад редактора книг; он ссылается на классы редактора (UndoManager,
+# RootModulePage, Update*CoordsCommand), которых в сборке нет. В статической библиотеке CMake
+# это незаметно (неиспользуемый объект не линкуется), а модуль Unreal линкует все свои файлы
+EXCLUDE = {
+    'NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp',
+}
 sources = []
 for var, sub in dirs.items():
     sources += [sub + '/' + f for f in re.findall(r'\$\{' + var + r'\}/(\S+?\.cpp)', cmake)]
+sources = [s for s in sources if s not in EXCLUDE]
 sources += ['NLBPresentation/Private/' + f for f in re.findall(r'Source/NLBPresentation/Private/(\S+?\.cpp)', cmake)]
 # из cparse — только сама библиотека (без тестов catch.cpp, test-shunting-yard.cpp)
 sources += ['thirdparty/cparse/' + f for f in ('shunting-yard.cpp', 'packToken.cpp', 'functions.cpp', 'containers.cpp')]
