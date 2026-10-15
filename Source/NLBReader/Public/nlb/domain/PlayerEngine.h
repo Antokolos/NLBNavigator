@@ -81,6 +81,8 @@ public:
 
     struct Choice {
         std::string text;
+        /// Тривиальная ссылка: текст по умолчанию («Далее»/«Next») — Link.isTrivial в NLB
+        bool trivial = false;
     };
 
     /// Расположение графического объекта — как его задаёт INSTEAD-экспорт (decorateObjEffect):
