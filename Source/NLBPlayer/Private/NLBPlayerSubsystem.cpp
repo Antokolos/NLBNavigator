@@ -5,7 +5,10 @@
 #include "HAL/FileManager.h"
 #include "Misc/Paths.h"
 
+#include "NLBEngineEvents.h"
 #include "UnrealAudioBackend.h"
+#include "nlb/util/BookPack.h"
+#include "nlb/util/FileUtils.h"
 #include "nlb/presentation/MediaSource.h"
 #include "nlb/presentation/Session.h"
 
@@ -64,6 +67,9 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
         return false;
     }
     Audio->SetMedia(&Session->media());
+    // тема игры, зашитая в пакет
+    const std::string Theme = FileUtils::combinePath(Options.bookPath, BookPack::THEME_DIR);
+    ThemeDir = FileUtils::isDirectory(Theme) ? S(Theme) : FString();
     LastRevision = Session->revision();
     EmitEvents();
     OnScreenChanged.Broadcast();
@@ -82,12 +88,20 @@ void UNLBPlayerSubsystem::Tick(float DeltaTime) {
     EmitEvents();
 }
 
-void UNLBPlayerSubsystem::EmitEvents() {
+void UNLBPlayerSubsystem::DispatchEvents(const FNLBEngineEvents& Events) {
     using Kind = PlayerEngine::Event::Kind;
-    for (const auto& E : Session->takeEvents()) {
+    for (const auto& E : Events.Events) {
         if (E.kind == Kind::Achievement) OnAchievement.Broadcast(S(E.text));
         else if (E.kind == Kind::ExternalGame) OnExternalGame.Broadcast(S(E.text));
         else if (E.kind == Kind::Finish) OnGameFinished.Broadcast();
+    }
+}
+
+void UNLBPlayerSubsystem::EmitEvents() {
+    // Пока книгу показывает экран (UNLBScreenWidget), события забирает он и сам вызывает DispatchEvents
+    if (!bScreenDriven) {
+        const std::vector<PlayerEngine::Event> Events = Session->takeEvents();
+        DispatchEvents(FNLBEngineEvents{Events});
     }
     if (Session->revision() != LastRevision) {
         LastRevision = Session->revision();

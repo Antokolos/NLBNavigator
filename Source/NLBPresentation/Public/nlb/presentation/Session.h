@@ -68,12 +68,16 @@ public:
     const std::string& selectedItem() const { return m_selected; }
 
     // ---- служебное
+    /// Забрать события движка и обновить снимок — после команд, отданных напрямую engine()
+    void refresh() { afterCommand(); }
     std::vector<PlayerEngine::Event> takeEvents();
     bool finishExternalGame();
     void restart();
     bool save(int slot, std::string& error);
     bool load(int slot, std::string& error);
     PlayerEngine::SaveInfo saveInfo(int slot) const;
+    /// Сохранения доступны (задан каталог сохранений)
+    bool savesAvailable() const { return !m_options.savesDir.empty(); }
     void setMuted(bool muted);
 
 private:

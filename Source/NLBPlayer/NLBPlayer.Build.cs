@@ -28,7 +28,7 @@ public class NLBPlayer : ModuleRules
         UndefinedIdentifierWarningLevel = WarningLevel.Off;
 #endif
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG", "Slate", "SlateCore", "InputCore" });
         PrivateDependencyModuleNames.AddRange(new string[] { "ImageWrapper" });
 
         string Src = Path.GetFullPath(Path.Combine(ModuleDirectory, ".."));
