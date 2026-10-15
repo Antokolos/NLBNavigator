@@ -9,7 +9,12 @@ public class NLBNavigatorEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
+		// Порядок включений — по версии движка: проект собирается и в 5.5, и в 5.6
+#if UE_5_6_OR_LATER
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_6;
+#else
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5;
+#endif
 		ExtraModuleNames.Add("NLBNavigator");
 	}
 }
