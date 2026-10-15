@@ -1,4 +1,4 @@
-// Мост между шутером и плеером книг NLB: камера «новеллы», виджет и подсистема UNLBPlayerSubsystem.
+// Мост между шутером и плеером книг NLB: камера «новеллы», экран книги и подсистема UNLBPlayerSubsystem.
 
 #pragma once
 
@@ -7,12 +7,8 @@
 #include "NLBController.generated.h"
 
 class UCameraComponent;
-class UNLBWidget;
+class UNLBScreenWidget;
 class UNLBPlayerSubsystem;
-
-/** Что нажали в виджете */
-UENUM()
-enum class ENLBAction : uint8 { Choice, Object, Item };
 
 UCLASS()
 class NLBNAVIGATOR_API ANLBController : public AActor
@@ -26,7 +22,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	/** Книга: путь от каталога проекта или абсолютный (каталог книги или .nlbpack с медиа) */
+	/** Книга: путь от каталога проекта или абсолютный (каталог книги или .nlbpack с медиа и темой) */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
 	FString BookPath = TEXT("NLBFiles/book.nlbpack");
 
@@ -34,15 +30,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
 	bool bVisualNovel = true;
 
+	/** Варианты отдельным экраном (как в INSTEAD) или в окне текста */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
+	bool bChoicesScreen = false;
+
 	/** Внешние игры: ACT/ACTF с таким именем (или «префикс*») возвращают игрока в шутер,
 	 *  а книга продолжится, когда он снова откроет её (клавиша взаимодействия у актора) */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
 	TArray<FString> ExternalGames = { TEXT("shooter*"), TEXT("play_*") };
 
-	/** Показать книгу: открыть (при первом вызове), продолжить после внешней игры, обновить виджет */
+	/** Показать книгу: открыть (при первом вызове) и продолжить после внешней игры */
 	void LoadCurrentSet();
 
-	/** «Следующая страница»: если доступен ровно один вариант — выбрать его */
+	/** «Следующая страница» (IA_NextPage): дальше по тексту, затем экран вариантов */
 	void LoadNextSet();
 
 	UFUNCTION(BlueprintCallable, Category = "Camera")
@@ -57,15 +57,9 @@ public:
 	UFUNCTION()
 	void ToggleView();
 
-	/** Нажатие в виджете: вариант, объект сцены или предмет инвентаря */
-	void OnAction(ENLBAction Action, int32 Index, const FString& Id);
-
 private:
 	UNLBPlayerSubsystem* Player() const;
-	void Refresh();
-
-	UFUNCTION()
-	void HandleScreenChanged();
+	void ReturnToShooter();
 
 	UFUNCTION()
 	void HandleExternalGame(const FString& Name);
@@ -73,16 +67,16 @@ private:
 	UFUNCTION()
 	void HandleAchievement(const FString& Name);
 
-	UPROPERTY()
-	TObjectPtr<UNLBWidget> NLBWidget;
+	UFUNCTION()
+	void HandleQuit();
 
+	/** Экран книги — тот же, что в nlb_sdl и Godot (общий GameScreen) */
 	UPROPERTY()
-	TSubclassOf<UNLBWidget> WidgetClass;
+	TObjectPtr<UNLBScreenWidget> ScreenWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> CameraComponent;
 
-	bool bIsImageVisible = true;
-	bool bInViewport = false;
+	bool bIsVisible = true;
 	bool bBound = false;
 };

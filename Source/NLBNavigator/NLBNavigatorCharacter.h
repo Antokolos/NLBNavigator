@@ -98,7 +98,7 @@ private:
 	void EnableCharacterInput();
 	UEnhancedInputLocalPlayerSubsystem* GetEnhancedInputSubsystem() const;
 	void NextPage(); // Turn the page
-	void ToggleView(); // Toggle the view of NLBWidget
+	void ToggleView(); // Toggle the view of the book screen
 	void Interact();
 
 	bool bIsInVisualNovelMode; // Flag to track the current mode

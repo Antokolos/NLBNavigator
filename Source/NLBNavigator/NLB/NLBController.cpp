@@ -5,23 +5,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "NLBNavigatorCharacter.h"
 #include "NLBPlayerSubsystem.h"
-#include "NLBWidget.h"
-#include "UObject/ConstructorHelpers.h"
+#include "NLBScreenWidget.h"
 
 ANLBController::ANLBController()
 {
-	PrimaryActorTick.bCanEverTick = false;  // время книги двигает UNLBPlayerSubsystem
+	PrimaryActorTick.bCanEverTick = false;  // время книги ведёт экран книги
 
 	USceneComponent* DefaultSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
 	RootComponent = DefaultSceneComponent;
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(RootComponent);
-
-	static ConstructorHelpers::FClassFinder<UNLBWidget> WidgetFinder(TEXT("/Game/NLB/UI/NLBWidget"));
-	if (WidgetFinder.Succeeded())
-	{
-		WidgetClass = WidgetFinder.Class;
-	}
 }
 
 void ANLBController::BeginPlay()
@@ -29,7 +22,12 @@ void ANLBController::BeginPlay()
 	Super::BeginPlay();
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
-		NLBWidget = CreateWidget<UNLBWidget>(PC, WidgetClass ? *WidgetClass : UNLBWidget::StaticClass());
+		ScreenWidget = CreateWidget<UNLBScreenWidget>(PC, UNLBScreenWidget::StaticClass());
+		if (ScreenWidget)
+		{
+			ScreenWidget->bChoicesScreen = bChoicesScreen;
+			ScreenWidget->OnQuitRequested.AddDynamic(this, &ANLBController::HandleQuit);
+		}
 	}
 }
 
@@ -48,7 +46,6 @@ void ANLBController::LoadCurrentSet()
 	}
 	if (!bBound)
 	{
-		P->OnScreenChanged.AddDynamic(this, &ANLBController::HandleScreenChanged);
 		P->OnExternalGame.AddDynamic(this, &ANLBController::HandleExternalGame);
 		P->OnAchievement.AddDynamic(this, &ANLBController::HandleAchievement);
 		bBound = true;
@@ -56,78 +53,30 @@ void ANLBController::LoadCurrentSet()
 	if (!P->IsBookOpen() && !P->OpenBook(BookPath, bVisualNovel, ExternalGames))
 	{
 		UE_LOG(LogTemp, Error, TEXT("NLB: не удалось открыть книгу %s"), *BookPath);
-		if (NLBWidget)
-		{
-			NLBWidget->UpdateText(FString::Printf(TEXT("Не удалось открыть книгу %s"), *BookPath));
-		}
 		return;
 	}
-	// Игрок вернулся после внешней игры (шутера) — книга продолжается с того же места
+	// Игрок вернулся после внешней игры (шутера) — книга продолжается с того же места;
+	// экран книги подхватит изменение сам
 	if (!P->GetScreen().ExternalGame.IsEmpty())
 	{
 		P->FinishExternalGame();
 	}
-	Refresh();
 }
 
 void ANLBController::LoadNextSet()
 {
-	UNLBPlayerSubsystem* P = Player();
-	if (!P || !P->IsBookOpen())
+	if (ScreenWidget)
 	{
-		return;
-	}
-	const FNLBScreen Screen = P->GetScreen();
-	int32 Available = 0, Index = -1;
-	for (const FNLBChoice& C : Screen.Choices)
-	{
-		if (C.bEnabled)
-		{
-			++Available;
-			Index = C.Index;
-		}
-	}
-	if (Available == 1)
-	{
-		P->Choose(Index);
+		ScreenWidget->NextPage();
 	}
 }
 
-void ANLBController::OnAction(ENLBAction Action, int32 Index, const FString& Id)
+void ANLBController::ReturnToShooter()
 {
-	UNLBPlayerSubsystem* P = Player();
-	if (!P)
+	if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(GetOwner()))
 	{
-		return;
+		Character->ReturnToShooter();
 	}
-	switch (Action)
-	{
-	case ENLBAction::Choice:
-		if (Index == -2) P->Restart();
-		else if (Index >= 0) P->Choose(Index);
-		break;
-	case ENLBAction::Object:
-		P->ClickObject(Id);
-		break;
-	case ENLBAction::Item:
-		P->ClickItem(Id);
-		break;
-	}
-	Refresh();  // выбор предмета меняет вид, даже если снимок движка тот же
-}
-
-void ANLBController::Refresh()
-{
-	UNLBPlayerSubsystem* P = Player();
-	if (NLBWidget && P && P->IsBookOpen() && bInViewport)
-	{
-		NLBWidget->ShowScreen(P->GetScreen(), P, this);
-	}
-}
-
-void ANLBController::HandleScreenChanged()
-{
-	Refresh();
 }
 
 void ANLBController::HandleExternalGame(const FString& Name)
@@ -135,10 +84,7 @@ void ANLBController::HandleExternalGame(const FString& Name)
 	// Книга передала управление игре: вернуть игрока в шутер. Переменные книги шутер может
 	// читать и менять через UNLBPlayerSubsystem (GetNumber/SetNumber/...)
 	UE_LOG(LogTemp, Log, TEXT("NLB: внешняя игра %s"), *Name);
-	if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(GetOwner()))
-	{
-		Character->ReturnToShooter();
-	}
+	ReturnToShooter();
 }
 
 void ANLBController::HandleAchievement(const FString& Name)
@@ -146,22 +92,27 @@ void ANLBController::HandleAchievement(const FString& Name)
 	UE_LOG(LogTemp, Log, TEXT("NLB: достижение %s"), *Name);
 }
 
+void ANLBController::HandleQuit()
+{
+	// «Выйти» в меню книги — обратно в шутер; книга остаётся открытой
+	ReturnToShooter();
+}
+
 void ANLBController::AddToViewport()
 {
-	if (!NLBWidget)
+	if (!ScreenWidget)
 	{
 		return;
 	}
-	NLBWidget->AddToViewport();
-	NLBWidget->SetVisibility(ESlateVisibility::Visible);
-	bInViewport = true;
-	bIsImageVisible = true;
-	// Курсор и ввод для интерфейса: по кнопкам щёлкают мышью
+	ScreenWidget->AddToViewport();
+	ScreenWidget->SetVisibility(ESlateVisibility::Visible);
+	bIsVisible = true;
+	// Курсор и ввод для экрана книги: мышь, колесо, клавиши (пробел, цифры, Esc — меню)
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		PC->SetShowMouseCursor(true);
 		FInputModeGameAndUI Mode;
-		Mode.SetWidgetToFocus(NLBWidget->TakeWidget());
+		Mode.SetWidgetToFocus(ScreenWidget->TakeWidget());
 		Mode.SetHideCursorDuringCapture(false);
 		PC->SetInputMode(Mode);
 	}
@@ -169,11 +120,10 @@ void ANLBController::AddToViewport()
 
 void ANLBController::RemoveFromParent()
 {
-	if (NLBWidget)
+	if (ScreenWidget)
 	{
-		NLBWidget->RemoveFromParent();
+		ScreenWidget->RemoveFromParent();
 	}
-	bInViewport = false;
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		PC->SetShowMouseCursor(false);
@@ -184,10 +134,10 @@ void ANLBController::RemoveFromParent()
 void ANLBController::ToggleView()
 {
 	// Скрыть книгу и посмотреть через камеру контроллера — и обратно (как раньше)
-	if (!NLBWidget)
+	if (!ScreenWidget)
 	{
 		return;
 	}
-	bIsImageVisible = !bIsImageVisible;
-	NLBWidget->SetVisibility(bIsImageVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	bIsVisible = !bIsVisible;
+	ScreenWidget->SetVisibility(bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
