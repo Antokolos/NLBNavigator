@@ -1,0 +1,8 @@
+[configuration]
+entry_symbol = "nlbnavigator_init"
+compatibility_minimum = "4.4"
+
+[libraries]
+windows.x86_64 = "res://bin/nlbnavigator.dll"
+linux.x86_64 = "res://bin/nlbnavigator.so"
+macos = "res://bin/nlbnavigator.dylib"

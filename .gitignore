@@ -37,6 +37,8 @@
 # Any file in /RawContent dir will be managed by git lfs.
 !/RawContent/**/*
 
+!CMakeLists.txt
+
 # OS/platform generated files.
 
 # Windows
@@ -63,3 +65,10 @@ Session.vim
 
 # Visual Studio
 .vs
+# Документация и адаптеры движков (Godot, Unreal)
+!/docs/**
+!/integrations/**
+# ... кроме собранных модулей и каталогов сборки
+/integrations/godot/demo/bin/
+/integrations/godot/demo/.godot/
+/integrations/**/build/
