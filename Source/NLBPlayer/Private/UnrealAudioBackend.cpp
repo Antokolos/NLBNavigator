@@ -6,6 +6,8 @@
 #include "Misc/Paths.h"
 #include "Sound/SoundWave.h"
 #include "Sound/SoundWaveProcedural.h"
+#include "UObject/Package.h"
+#include "UObject/UObjectGlobals.h"
 
 FUnrealAudioBackend::FUnrealAudioBackend(UObject* WorldContext, const nlb::presentation::IMediaSource* Media)
     : Context(WorldContext), MediaSource(Media) {}

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/WeakObjectPtr.h"
+#include "UObject/WeakObjectPtrTemplates.h"
 #include "nlb/presentation/AudioBackend.h"
 #include "nlb/presentation/MediaSource.h"
 

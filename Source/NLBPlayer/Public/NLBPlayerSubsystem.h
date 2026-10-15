@@ -10,6 +10,11 @@
 
 namespace nlb::presentation { class Session; }
 class FUnrealAudioBackend;
+
+// Удалители определены в .cpp, где типы полные: сгенерированный UHT код (конструкторы,
+// раскрутка при исключениях) не должен видеть ~Session и ~FUnrealAudioBackend
+struct FNLBSessionDeleter { void operator()(nlb::presentation::Session* P) const; };
+struct FNLBAudioDeleter { void operator()(FUnrealAudioBackend* P) const; };
 class UTexture2D;
 
 /** Фрагмент текста: обычный текст или ссылка на объект/вариант */
@@ -147,8 +152,8 @@ public:
 private:
     void EmitEvents();
 
-    std::unique_ptr<FUnrealAudioBackend> Audio;
-    std::unique_ptr<nlb::presentation::Session> Session;
+    std::unique_ptr<FUnrealAudioBackend, FNLBAudioDeleter> Audio;
+    std::unique_ptr<nlb::presentation::Session, FNLBSessionDeleter> Session;
     uint64 LastRevision = 0;
     UPROPERTY() TMap<FString, TObjectPtr<UTexture2D>> Textures;
 };
