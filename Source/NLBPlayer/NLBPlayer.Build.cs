@@ -17,9 +17,16 @@ public class NLBPlayer : ModuleRules
         bEnableExceptions = true;   // плеер и cparse используют исключения
         bUseRTTI = true;            // typeid в nlb/api/Any.h
         bUseUnity = false;          // у файлов плеера одноимённые функции в безымянных пространствах имён
-        // Предупреждения кода плеера не должны останавливать сборку игры
+        // Предупреждения кода плеера не должны останавливать сборку игры. С UE 5.5 эти настройки
+        // перенесены в CppCompileWarningSettings (старые свойства устарели); символ UE_5_5_OR_LATER
+        // UBT определяет сам, поэтому файл подходит и для 5.5, и для 5.6+, и для более старых версий
+#if UE_5_5_OR_LATER
+        CppCompileWarningSettings.ShadowVariableWarningLevel = WarningLevel.Off;
+        CppCompileWarningSettings.UndefinedIdentifierWarningLevel = WarningLevel.Off;
+#else
         ShadowVariableWarningLevel = WarningLevel.Off;
         UndefinedIdentifierWarningLevel = WarningLevel.Off;
+#endif
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine" });
         PrivateDependencyModuleNames.AddRange(new string[] { "ImageWrapper" });
