@@ -158,8 +158,8 @@ class OppMap_t {
   }
 
   int prec(const std::string& op) const { return pr_map.at(op); }
-  bool assoc(const std::string& op) const { return RtoL.count(op); }
-  bool exists(const std::string& op) const { return pr_map.count(op); }
+  bool assoc(const std::string& op) const { return RtoL.count(op) != 0; }
+  bool exists(const std::string& op) const { return pr_map.count(op) != 0; }
 };
 
 }  // namespace cparse

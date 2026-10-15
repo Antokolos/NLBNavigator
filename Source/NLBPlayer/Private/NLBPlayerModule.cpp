@@ -1,11 +1,11 @@
 #include "Modules/ModuleManager.h"
-#include "shunting-yard.h"
-#include "builtin-features.inc"
+
+void NLBPlayer_CparseStartup();  // NLBCparseStartup.cpp
 
 /** Модуль плеера: при загрузке регистрирует встроенные функции выражений NLB (cparse) */
 class FNLBPlayerModule : public IModuleInterface {
 public:
-    virtual void StartupModule() override { cparse_startup(); }
+    virtual void StartupModule() override { NLBPlayer_CparseStartup(); }
 };
 
 IMPLEMENT_MODULE(FNLBPlayerModule, NLBPlayer)

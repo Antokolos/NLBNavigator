@@ -1,11 +1,9 @@
 #include "NLBPlayerSubsystem.h"
 
 #include "Engine/Texture2D.h"
-#include "IImageWrapper.h"
-#include "IImageWrapperModule.h"
+#include "ImageUtils.h"
 #include "HAL/FileManager.h"
 #include "Misc/Paths.h"
-#include "Modules/ModuleManager.h"
 
 #include "UnrealAudioBackend.h"
 #include "nlb/presentation/MediaSource.h"
@@ -41,11 +39,14 @@ TArray<FNLBParagraph> Paragraphs(const std::vector<Paragraph>& Ps) {
 }
 }
 
+void FNLBSessionDeleter::operator()(nlb::presentation::Session* P) const { delete P; }
+void FNLBAudioDeleter::operator()(FUnrealAudioBackend* P) const { delete P; }
+
 bool UNLBPlayerSubsystem::IsBookOpen() const { return Session != nullptr; }
 
 bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, const TArray<FString>& ExternalGames) {
-    Audio = std::make_unique<FUnrealAudioBackend>(this, nullptr);
-    Session = std::make_unique<nlb::presentation::Session>(Audio.get());
+    Audio.reset(new FUnrealAudioBackend(this, nullptr));
+    Session.reset(new nlb::presentation::Session(Audio.get()));
     Session::Options Options;
     // относительный путь — от каталога проекта (например, NLBFiles/book.nlbpack)
     const FString Full = FPaths::IsRelative(BookPath) ? FPaths::ProjectDir() / BookPath : BookPath;
@@ -199,18 +200,8 @@ UTexture2D* UNLBPlayerSubsystem::LoadTexture(const FString& Path) {
     std::vector<uint8_t> Bytes;
     UTexture2D* Texture = nullptr;
     if (Session->media().read(MediaRef{U(Path)}, Bytes) && !Bytes.empty()) {
-        IImageWrapperModule& Module = FModuleManager::LoadModuleChecked<IImageWrapperModule>(TEXT("ImageWrapper"));
-        const EImageFormat Format = Module.DetectImageFormat(Bytes.data(), static_cast<int64>(Bytes.size()));
-        TSharedPtr<IImageWrapper> Wrapper = Module.CreateImageWrapper(Format);
-        TArray<uint8> Raw;
-        if (Wrapper.IsValid() && Wrapper->SetCompressed(Bytes.data(), static_cast<int64>(Bytes.size()))
-            && Wrapper->GetRaw(ERGBFormat::BGRA, 8, Raw)) {
-            Texture = UTexture2D::CreateTransient(Wrapper->GetWidth(), Wrapper->GetHeight(), PF_B8G8R8A8);
-            void* Data = Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
-            FMemory::Memcpy(Data, Raw.GetData(), Raw.Num());
-            Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
-            Texture->UpdateResource();
-        }
+        // PNG/JPG/… из памяти — средствами движка (ImageWrapper внутри)
+        Texture = FImageUtils::ImportBufferAsTexture2D(TArrayView64<const uint8>(Bytes.data(), static_cast<int64>(Bytes.size())));
     }
     Textures.Add(Path, Texture);
     return Texture;
