@@ -108,6 +108,10 @@ struct TextRun {
 /// Абзац ("^" и переводы строк из книги уже разбиты на абзацы)
 struct Paragraph {
     std::vector<TextRun> runs;
+    /// Оформление абзаца (раскладка экрана в духе INSTEAD; снимок движка их не задаёт)
+    enum class Style { Normal, Title, Emphasis };
+    Style style = Style::Normal;   ///< Title — заголовок комнаты (цвет ссылки), Emphasis — курсив (txtem)
+    bool centered = false;         ///< по центру (заголовок, пути — как в INSTEAD)
 };
 
 /// Вариант перехода (ссылка страницы, служебные ссылки модулей и autowired)
@@ -179,6 +183,11 @@ struct ScreenModel {
 
     std::vector<Paragraph> pageText;      ///< текст страницы и описания объектов
     std::vector<Paragraph> reactionText;  ///< ответ на последнее действие (lasttext)
+    // То же по частям — для раскладки как в INSTEAD (STEAD: сцена = описание комнаты ^^ описания
+    // объектов через пробел; после действия — курсивом ответ ^^ описания объектов)
+    std::vector<Paragraph> roomText;      ///< текст страницы (по строкам)
+    std::vector<Paragraph> objectsText;   ///< описания объектов — одним абзацем, через пробел
+    std::vector<Paragraph> modText;       ///< текст модификаций страницы
     std::vector<Choice> choices;
     std::vector<SceneObject> sceneObjects;
     std::vector<InventoryItem> inventory;
