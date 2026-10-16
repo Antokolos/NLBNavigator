@@ -23,6 +23,8 @@ add_library(nlbnavigator SHARED
         src/register_types.cpp
         src/nlb_player.h
         src/nlb_player.cpp
+        src/nlb_screen.h
+        src/nlb_screen.cpp
         src/godot_audio_backend.h
         src/godot_audio_backend.cpp
         ${CPARSE}/shunting-yard.cpp

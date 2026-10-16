@@ -115,6 +115,7 @@ struct Choice {
     int index = 0;            ///< номер для PlayerEngine::choose()
     std::string text;
     bool enabled = true;      ///< false — ссылка с ограничением: показывается её alt-текст
+    bool trivial = false;     ///< текст по умолчанию («Далее»/«Next»): просто «продолжить»
     std::string altText;
 };
 

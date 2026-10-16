@@ -1,4 +1,4 @@
-#include "ScreenTheme.h"
+#include "nlb/presentation/ScreenTheme.h"
 
 #include <algorithm>
 #include <cctype>
@@ -7,6 +7,8 @@
 #include <sstream>
 
 #include "nlb/util/FileUtils.h"
+
+namespace nlb::presentation {
 
 namespace {
 std::string trim(std::string s) {
@@ -33,8 +35,8 @@ std::string firstFontVariant(const std::string& name) {
 }
 }
 
-SDL_Color ScreenTheme::color(const std::string& raw, SDL_Color fallback) {
-    static const std::map<std::string, SDL_Color> NAMES = {
+Color ScreenTheme::color(const std::string& raw, Color fallback) {
+    static const std::map<std::string, Color> NAMES = {
         {"black", {0, 0, 0, 255}}, {"white", {255, 255, 255, 255}}, {"brown", {165, 42, 42, 255}},
         {"orange", {255, 165, 0, 255}}, {"gold", {255, 215, 0, 255}}, {"red", {255, 0, 0, 255}},
         {"green", {0, 128, 0, 255}}, {"blue", {0, 0, 255, 255}}, {"yellow", {255, 255, 0, 255}},
@@ -46,7 +48,7 @@ SDL_Color ScreenTheme::color(const std::string& raw, SDL_Color fallback) {
     if (v.size() == 7 && v[0] == '#') {
         try {
             const unsigned long rgb = std::stoul(v.substr(1), nullptr, 16);
-            return {static_cast<Uint8>(rgb >> 16), static_cast<Uint8>((rgb >> 8) & 0xFF), static_cast<Uint8>(rgb & 0xFF), 255};
+            return {static_cast<uint8_t>(rgb >> 16), static_cast<uint8_t>((rgb >> 8) & 0xFF), static_cast<uint8_t>(rgb & 0xFF), 255};
         } catch (...) {
             return fallback;
         }
@@ -87,7 +89,7 @@ ScreenTheme ScreenTheme::load(const std::string& dir, bool visualNovel) {
         ini[trim(line.substr(0, eq))] = trim(value);
     }
     auto num = [&](const char* k, float& v) { auto it = ini.find(k); if (it != ini.end()) try { v = std::stof(it->second); } catch (...) {} };
-    auto col = [&](const char* k, SDL_Color& c) { auto it = ini.find(k); if (it != ini.end()) c = color(it->second, c); };
+    auto col = [&](const char* k, Color& c) { auto it = ini.find(k); if (it != ini.end()) c = color(it->second, c); };
     num("scr.w", t.screenW); num("scr.h", t.screenH);
     col("scr.col.bg", t.background);
     if (ini.count("scr.gfx.bg")) {
@@ -143,3 +145,5 @@ ScreenTheme ScreenTheme::load(const std::string& dir, bool visualNovel) {
     }
     return t;
 }
+
+}  // namespace nlb::presentation

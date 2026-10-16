@@ -1358,7 +1358,7 @@ PlayerEngine::PageView PlayerEngine::view() const {
     }
     v.pageId = m_page->getId();
     for (const PlayerLink& link : availableChoices()) {
-        v.choices.push_back({displayText(m_interpreter->expandText(link.text))});
+        v.choices.push_back({displayText(m_interpreter->expandText(link.text)), link.trivial});
     }
     for (const auto& instanceId : sceneObjects()) {
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
@@ -1644,6 +1644,7 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
         nlb::presentation::Choice c;
         c.index = static_cast<int>(i);
         c.text = view.choices[i].text;
+        c.trivial = view.choices[i].trivial;
         m.choices.push_back(c);
     }
     if (!vn) {

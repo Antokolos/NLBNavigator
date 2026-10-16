@@ -4,6 +4,7 @@
 #include <godot_cpp/godot.hpp>
 
 #include "nlb_player.h"
+#include "nlb_screen.h"
 #include "shunting-yard.h"
 #include "builtin-features.inc"
 
@@ -13,6 +14,7 @@ static void initialize(ModuleInitializationLevel level) {
     if (level != MODULE_INITIALIZATION_LEVEL_SCENE) return;
     cparse_startup();  // встроенные функции выражений NLB (cparse)
     GDREGISTER_CLASS(NLBPlayer);
+    GDREGISTER_CLASS(NLBScreen);
 }
 
 static void uninitialize(ModuleInitializationLevel) {}

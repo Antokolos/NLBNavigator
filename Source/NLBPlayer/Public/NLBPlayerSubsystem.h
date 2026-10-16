@@ -14,6 +14,7 @@ class FUnrealAudioBackend;
 // Удалители определены в .cpp, где типы полные: сгенерированный UHT код (конструкторы,
 // раскрутка при исключениях) не должен видеть ~Session и ~FUnrealAudioBackend
 struct FNLBSessionDeleter { void operator()(nlb::presentation::Session* P) const; };
+struct FNLBEngineEvents;  // события движка (NLBEngineEvents.h, только внутри модуля)
 struct FNLBAudioDeleter { void operator()(FUnrealAudioBackend* P) const; };
 class UTexture2D;
 
@@ -147,10 +148,21 @@ public:
     // FTickableGameObject
     virtual void Tick(float DeltaTime) override;
     virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UNLBPlayerSubsystem, STATGROUP_Tickables); }
-    virtual bool IsTickable() const override { return Session != nullptr; }
+    virtual bool IsTickable() const override { return Session != nullptr && !bScreenDriven; }
+
+    // ---- для экрана игры UNLBScreenWidget (C++, внутри модуля)
+    nlb::presentation::Session* GetSession() const { return Session.get(); }
+    /// Тема игры, зашитая в пакет (pack --theme): <пакет>/__theme__; пусто — тема по умолчанию
+    FString GetThemeDir() const { return ThemeDir; }
+    /// Время книги и события ведёт экран (GameScreen), а не такт подсистемы
+    void SetScreenDriven(bool bDriven) { bScreenDriven = bDriven; }
+    /// Разослать делегаты (достижения, внешние игры, конец) по событиям, которые забрал экран
+    void DispatchEvents(const FNLBEngineEvents& Events);
 
 private:
     void EmitEvents();
+    bool bScreenDriven = false;
+    FString ThemeDir;
 
     std::unique_ptr<FUnrealAudioBackend, FNLBAudioDeleter> Audio;
     std::unique_ptr<nlb::presentation::Session, FNLBSessionDeleter> Session;

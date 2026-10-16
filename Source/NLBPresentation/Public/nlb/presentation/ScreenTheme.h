@@ -1,8 +1,14 @@
 #pragma once
 
-#include <SDL3/SDL.h>
-
+#include <cstdint>
 #include <string>
+
+namespace nlb::presentation {
+
+/// Цвет RGBA
+struct Color { uint8_t r = 0, g = 0, b = 0, a = 255; };
+/// Прямоугольник на экране 1920×1080
+struct RectF { float x = 0, y = 0, w = 0, h = 0; };
 
 /**
  * @brief Оформление экрана как в теме INSTEAD (theme.ini + theme_standard.lua / theme_vn.lua).
@@ -13,17 +19,17 @@
  */
 struct ScreenTheme {
     struct Window {
-        SDL_FRect rect;
-        SDL_Color fg, link, alink;
+        RectF rect;
+        Color fg, link, alink;
         std::string fontFile;   ///< путь к .ttf (пусто — шрифт проигрывателя)
         float fontSize = 24;
         float lineHeight = 1.0f;  ///< fnt.height: множитель высоты строки
         std::string upImage, downImage;  ///< gfx.up / gfx.down — стрелки прокрутки
     };
     float screenW = 1920, screenH = 1080;
-    SDL_Color background{0x01, 0x13, 0x22, 255};
+    Color background{0x01, 0x13, 0x22, 255};
     std::string backgroundImage;      ///< scr.gfx.bg, если это картинка (а не box:…)
-    SDL_FRect pictureArea{40, 30, 1787, 640};  ///< scr.gfx.x/y/w/h — картинка страницы (STANDARD)
+    RectF pictureArea{40, 30, 1787, 640};  ///< scr.gfx.x/y/w/h — картинка страницы (STANDARD)
     Window text;                      ///< win.*
     Window inventory;                 ///< inv.*
     bool inventoryHorizontal = true;  ///< inv.mode = horizontal-*
@@ -38,5 +44,7 @@ struct ScreenTheme {
     /// чего нет в файлах — остаётся по умолчанию
     static ScreenTheme load(const std::string& dir, bool visualNovel);
     /// Цвет INSTEAD: имя (black, brown, orange, white, gold…) или #RRGGBB
-    static SDL_Color color(const std::string& value, SDL_Color fallback);
+    static Color color(const std::string& value, Color fallback);
 };
+
+}  // namespace nlb::presentation

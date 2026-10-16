@@ -111,6 +111,8 @@ set(NLB_DOMAIN_HEADERS
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/AudioDirector.h
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/BookMediaSource.h
         ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/Session.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/ScreenTheme.h
+        ${NLB_PRESENTATION_INCLUDE_DIR}/nlb/presentation/GameScreen.h
 )
 
 # Utility Headers
@@ -186,6 +188,8 @@ set(NLB_DOMAIN_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/AudioDirector.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/BookMediaSource.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/Session.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerContext.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/ModificationInterpreter.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerEngine.cpp
@@ -320,8 +324,6 @@ if(NLB_WITH_SDL3)
                     Source/NLBSdl/main_sdl.cpp
                     Source/NLBSdl/SdlPlayer.h
                     Source/NLBSdl/SdlPlayer.cpp
-                    Source/NLBSdl/ScreenTheme.h
-                    Source/NLBSdl/ScreenTheme.cpp
                     Source/PlatformPaths.cpp
                     ${CPARSE_HEADERS}
                     ${CPARSE_SOURCES})
