@@ -52,6 +52,18 @@ std::string flatten(const std::vector<Paragraph>& text) {
     return out;
 }
 
+/// Строки подписи объекта (как texts в vn.lua: каждая строка — отдельно)
+std::vector<std::string> labelLines(const std::string& label) {
+    std::vector<std::string> lines;
+    std::string cur;
+    for (char c : label) {
+        if (c == '\n') { lines.push_back(cur); cur.clear(); }
+        else if (c != '\r') cur += c;
+    }
+    lines.push_back(cur);
+    return lines;
+}
+
 std::string framePath(const ImageRef& image) {
     if (image.framePattern.empty()) return image.file.path;
     char buf[1024];
@@ -488,10 +500,21 @@ void GameScreen::drawObject(const SceneObject& o, const RectF& r, const FontRef&
     const bool hasImage = imageSize(img, iw, ih);
     if (hasImage) m_r->drawImage(framePath(img), dst, st.alpha);
     if (isHumanLabel(o.label) && st.alpha > 0.05f) {
-        if (!spriteLabel) {
-            if (!hasImage) m_r->drawText(labelFont, o.label, labelColor, dst.x, dst.y, st.alpha);
+        if (!hasImage) {
+            // Объект без картинки — только подпись, как draw_hud в vn.lua (в обоих режимах):
+            // строки по одной (пустая строка — отступ hud_indent_spacing), блок справа от точки
+            // объекта на default_label_extent + default_tooltip_offset (4 + 5 px). Прямоугольник
+            // объекта (objectRect) уже охватывает блок подписи
+            const float lh = m_r->fontHeight(labelFont);
+            float ty = dst.y;
+            for (const auto& line : labelLines(o.label)) {
+                if (line.empty()) { ty += 25; continue; }
+                m_r->drawText(labelFont, line, labelColor, dst.x + 4 + 5, ty, st.alpha);
+                ty += lh;
+            }
             return;
         }
+        if (!spriteLabel) return;
         // Подпись спрайта — как draw_hud в vn.lua: справа от картинки (+4 +5 px), по вертикали
         // по углу привязки (top — верх, middle — середина, bottom — низ; у вложенного — середина)
         const float lh = m_r->lineSkip(labelFont);
@@ -584,10 +607,27 @@ float GameScreen::renderChoices(float x, float y, float width, const FontRef& fo
 RectF GameScreen::objectRect(size_t index) {
     const SceneObject& o = m_screen.sceneObjects[index];
     float w = 0, h = 0;
-    if (!imageSize(o.image, w, h) && isHumanLabel(o.label)) {
-        w = textW(m_options.smallFont, o.label);
-        h = m_r->fontHeight(m_options.smallFont);
+    // Объект без картинки, но с подписью: в vn.lua его спрайт пустой (0×0), а подпись — блок
+    // строк справа от точки объекта, по вертикали — по углу привязки (get_pos_coef: top — вниз
+    // от точки, middle — по центру, bottom — вверх; у вложенного — по центру)
+    float labelW = 0, labelH = 0, labelCoef = 0;
+    const bool textOnly = !imageSize(o.image, w, h) && isHumanLabel(o.label);
+    if (textOnly) {
+        const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
+        const FontRef font = fontFor(theme.text);
+        for (const auto& line : labelLines(o.label)) {
+            if (line.empty()) { labelH += 25; continue; }  // hud_indent_spacing
+            labelW = std::max(labelW, textW(font, line) + 4 + 5);
+            labelH += m_r->fontHeight(font);
+        }
+        const int row = static_cast<int>(o.placement.anchor) / 3;
+        labelCoef = !o.parentId.empty() ? 0.5f : row == 0 ? 0.0f : row == 1 ? 0.5f : 1.0f;
+        w = h = 0;
     }
+    auto finish = [&](float x, float y) -> RectF {
+        if (textOnly) return {x, y - labelH * labelCoef, labelW, labelH};
+        return {x, y, w, h};
+    };
     const Placement& p = o.placement;
     auto parent = m_objectRects.find(o.parentId);
     if (!o.parentId.empty() && parent != m_objectRects.end()) {
@@ -606,7 +646,7 @@ RectF GameScreen::objectRect(size_t index) {
             }
             ay = stacked;
         }
-        return {parent->second.x + ax, parent->second.y + ay, w, h};
+        return finish(parent->second.x + ax, parent->second.y + ay);
     }
     // Корневой: vn.lua postoxy
     const int a = static_cast<int>(p.anchor);
@@ -614,7 +654,7 @@ RectF GameScreen::objectRect(size_t index) {
     float x = col == 0 ? static_cast<float>(p.armX) : col == 2 ? SCREEN_W - w : std::floor((SCREEN_W - w) / 2);
     float y = row == 0 ? static_cast<float>(p.armY) : row == 2 ? SCREEN_H - h : std::floor((SCREEN_H - h) / 2);
     if (p.hasOffset) { x += static_cast<float>(p.offsetX); y += static_cast<float>(p.offsetY); }
-    return {x, y, w, h};
+    return finish(x, y);
 }
 
 void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel) {
