@@ -283,6 +283,10 @@ void UNLBScreenWidget::NextPage() {
     if (EnsureScreen()) Screen->key(GameScreen::Key::Space);
 }
 
+void UNLBScreenWidget::Back() {
+    if (EnsureScreen()) Screen->key(GameScreen::Key::Escape);
+}
+
 UTexture2D* UNLBScreenWidget::TextureFor(const FString& Path) {
     if (Path.IsEmpty()) return nullptr;
     if (TObjectPtr<UTexture2D>* Found = Textures.Find(Path)) return *Found;
