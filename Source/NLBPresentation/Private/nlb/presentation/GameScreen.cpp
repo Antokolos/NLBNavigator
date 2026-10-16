@@ -343,6 +343,7 @@ void GameScreen::key(Key k, int digit) {
     if (k == Key::Escape) {
         if (m_showChoices && m_menu == Menu::None) { m_showChoices = false; return; }
         if (m_menu == Menu::None) m_menu = Menu::Main;
+        else if (m_menu == Menu::ConfirmQuit) m_menu = Menu::Main;
         else if (m_menu != Menu::Message) m_menu = Menu::None;
         return;
     }
@@ -403,6 +404,17 @@ bool GameScreen::advanceText() {
     return advanceToChoices();
 }
 
+bool GameScreen::menuItemCenter(int index, float& x, float& y) const {
+    for (const auto& h : m_hits) {
+        if (h.kind == Hit::Kind::Menu && h.index == index) {
+            x = h.rect.x + h.rect.w / 2;
+            y = h.rect.y + h.rect.h / 2;
+            return true;
+        }
+    }
+    return false;
+}
+
 bool GameScreen::advanceToChoices() {
     if (!m_choicesScreen || m_moreText || m_showChoices || m_menu != Menu::None) return false;
     if (std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
@@ -427,9 +439,12 @@ void GameScreen::menuAction(int index) {
                 m_choicesScreen = !m_choicesScreen;
                 m_showChoices = false;
                 break;
-            case 5: m_quit = true; break;
+            case 5: m_menu = Menu::ConfirmQuit; break;  // сначала спросить
             default: m_menu = Menu::None; break;
         }
+    } else if (m_menu == Menu::ConfirmQuit) {
+        if (index == 0) { m_quit = true; m_menu = Menu::None; }  // «Да, выйти»
+        else m_menu = Menu::Main;                                 // «Нет» — обратно в меню
     } else if (m_menu == Menu::Save || m_menu == Menu::Load) {
         if (index < 1 || index > 9) { m_menu = Menu::Main; return; }
         const bool ok = m_menu == Menu::Save ? m_session.save(index, error) : m_session.load(index, error);
@@ -891,6 +906,9 @@ void GameScreen::renderMenu() {
                  {m_choicesScreen ? "Варианты: отдельным экраном" : "Варианты: в окне текста", true},
                  {"Выйти", true},
                  {"Вернуться в игру (Esc)", true}};
+    } else if (m_menu == Menu::ConfirmQuit) {
+        title = "Выйти из игры?";
+        items = {{"Да, выйти", true}, {"Нет, вернуться (Esc)", true}};
     } else if (m_menu == Menu::Save || m_menu == Menu::Load) {
         title = m_menu == Menu::Save ? "Сохранить в слот" : "Загрузить из слота";
         items.push_back({"Назад", true});
