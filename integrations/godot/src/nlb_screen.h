@@ -36,6 +36,7 @@ public:
 
     void set_player(const godot::NodePath& path) { m_playerPath = path; }
     godot::NodePath get_player() const { return m_playerPath; }
+    /// Экран вариантов для книги в режиме Standard; в режиме VN он включён всегда
     void set_choices_screen(bool on) { m_choicesScreen = on; }
     bool get_choices_screen() const { return m_choicesScreen; }
 

@@ -60,7 +60,8 @@ bool NLBScreen::ensureScreen() {
     m_screenSession = p->session();
     GameScreen::Options o;
     o.themeDir = std::string(p->theme_dir().utf8().get_data());
-    o.choicesScreen = m_choicesScreen;
+    // VN — всегда экран вариантов (как paginator в VN-INSTEAD), Standard — по свойству choices_screen
+    o.choicesScreen = p->session()->exportMode() == PlayerEngine::ExportMode::VN || m_choicesScreen;
     o.soundAvailable = true;
     o.clock = [] { return static_cast<uint64_t>(Time::get_singleton()->get_ticks_msec()); };
     m_screen = std::make_unique<GameScreen>(*p->session(), o);
