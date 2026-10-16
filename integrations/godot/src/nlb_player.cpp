@@ -12,6 +12,8 @@
 
 #include "godot_audio_backend.h"
 #include "nlb/presentation/MediaSource.h"
+#include "nlb/util/BookPack.h"
+#include "nlb/util/FileUtils.h"
 
 using namespace godot;
 using namespace nlb::presentation;
@@ -154,6 +156,7 @@ bool NLBPlayer::open() {
     m_session = std::make_unique<Session>(m_audio.get());
     Session::Options options;
     options.bookPath = u(resolveBookPath());
+    m_openedPath = options.bookPath;
     options.exportMode = m_visualNovel ? PlayerEngine::ExportMode::VN : PlayerEngine::ExportMode::Standard;
     const String data = ProjectSettings::get_singleton()->globalize_path("user://nlbnavigator");
     DirAccess::make_dir_recursive_absolute("user://nlbnavigator/saves");
@@ -182,18 +185,29 @@ void NLBPlayer::_exit_tree() {
 }
 
 void NLBPlayer::_process(double delta) {
-    if (!m_session) return;
+    if (!m_session || m_screenDriven) return;  // экран NLBScreen сам ведёт время и события
     m_session->advance(static_cast<int>(delta * 1000.0));
     emitEvents();
 }
 
-void NLBPlayer::emitEvents() {
+void NLBPlayer::dispatch_events(const std::vector<PlayerEngine::Event>& events) {
     using Kind = PlayerEngine::Event::Kind;
-    for (const auto& e : m_session->takeEvents()) {
+    for (const auto& e : events) {
         if (e.kind == Kind::Achievement) emit_signal("achievement", s(e.text));
         else if (e.kind == Kind::ExternalGame) emit_signal("external_game", s(e.text));
         else if (e.kind == Kind::Finish) emit_signal("game_finished");
     }
+}
+
+String NLBPlayer::theme_dir() const {
+    if (!m_session) return String();
+    const std::string dir = FileUtils::combinePath(m_openedPath, BookPack::THEME_DIR);
+    return FileUtils::isDirectory(dir) ? s(dir) : String();
+}
+
+void NLBPlayer::emitEvents() {
+    // пока книгу показывает NLBScreen, события забирает он и сам вызывает dispatch_events
+    if (!m_screenDriven) dispatch_events(m_session->takeEvents());
     if (m_session->revision() != m_lastRevision) {
         m_lastRevision = m_session->revision();
         emit_signal("screen_changed");
@@ -219,6 +233,7 @@ Dictionary NLBPlayer::get_screen() const {
         cd["text"] = s(c.text);
         cd["enabled"] = c.enabled;
         cd["alt_text"] = s(c.altText);
+        cd["trivial"] = c.trivial;
         choices.push_back(cd);
     }
     d["choices"] = choices;

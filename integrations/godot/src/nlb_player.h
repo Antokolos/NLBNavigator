@@ -59,6 +59,15 @@ public:
     /// Картинка книги (путь из снимка экрана) как текстура; кэшируется
     godot::Ref<godot::Texture2D> load_texture(const godot::String& path);
 
+    // ---- для экрана NLBScreen (C++)
+    nlb::presentation::Session* session() const { return m_session.get(); }
+    /// Время книги и события ведёт экран (GameScreen), а не _process узла
+    void set_screen_driven(bool driven) { m_screenDriven = driven; }
+    /// Сигналы (достижения, внешние игры, конец) по событиям, которые забрал экран
+    void dispatch_events(const std::vector<PlayerEngine::Event>& events);
+    /// Тема игры, зашитая в пакет (pack --theme); пусто — тема по умолчанию
+    godot::String theme_dir() const;
+
 protected:
     static void _bind_methods();
 
@@ -74,4 +83,6 @@ private:
     std::unique_ptr<nlb::presentation::Session> m_session;
     uint64_t m_lastRevision = 0;
     godot::Dictionary m_textures;
+    bool m_screenDriven = false;
+    std::string m_openedPath;
 };
