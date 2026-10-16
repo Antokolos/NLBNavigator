@@ -1624,6 +1624,7 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     };
     const std::string pageText = displayText(m_interpreter->expandText(page->getText()));
     if (!pageText.empty()) addParagraphs(m.pageText, pageText, "");
+    if (!pageText.empty()) addParagraphs(m.roomText, pageText, "");
 
     const PageView view = this->view();
     const std::vector<std::string> visible = sceneObjects();
@@ -1634,9 +1635,23 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
             if (!obj || obj->isSuppressDsc()) continue;
             const std::string dsc = displayText(m_interpreter->objDscF(instanceId));
             if (!trim(dsc).empty()) addParagraphs(m.pageText, dsc, instanceId);
+            // STEAD: описания объектов идут одним абзацем через пробел (stead.fmt: переводы
+            // строк внутри строки — тоже пробел)
+            if (!trim(dsc).empty()) {
+                if (m.objectsText.empty()) m.objectsText.emplace_back();
+                auto& runs = m.objectsText.back().runs;
+                if (!runs.empty()) runs.push_back({nlb::presentation::TextRun::Kind::Plain, " ", ""});
+                for (const auto& line : splitLines(dsc)) {
+                    if (trim(line).empty()) continue;
+                    for (auto& r : textRuns(trim(line), instanceId)) runs.push_back(std::move(r));
+                    runs.push_back({nlb::presentation::TextRun::Kind::Plain, " ", ""});
+                }
+                if (!runs.empty() && runs.back().text == " ") runs.pop_back();
+            }
         }
     }
     for (const auto& text : m_pageModText) addParagraphs(m.pageText, text, "");
+    for (const auto& text : m_pageModText) addParagraphs(m.modText, text, "");
     for (const auto& text : m_reactionText) addParagraphs(m.reactionText, text, "");
 
     // Варианты: доступные и (в стандартной теме) недоступные с альтернативным текстом

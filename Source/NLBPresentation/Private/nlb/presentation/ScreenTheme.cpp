@@ -5,6 +5,7 @@
 #include <map>
 #include <regex>
 #include <sstream>
+#include <vector>
 
 #include "nlb/util/FileUtils.h"
 
@@ -23,16 +24,22 @@ std::string readText(const std::string& path) {
     return content;
 }
 
-/// "fonts/{sans,sans-b,sans-i,sans-bi}.ttf" -> "fonts/sans.ttf" (обычное начертание)
-std::string firstFontVariant(const std::string& name) {
+/// "fonts/{sans,sans-b,sans-i,sans-bi}.ttf", 2 -> "fonts/sans-i.ttf" (0 — обычный, 1 — жирный,
+/// 2 — курсив, 3 — жирный курсив); пустой вариант — обычный, как в INSTEAD
+std::string fontVariant(const std::string& name, int index) {
     const auto open = name.find('{');
     const auto close = name.find('}', open == std::string::npos ? 0 : open);
     if (open == std::string::npos || close == std::string::npos) return name;
-    std::string inner = name.substr(open + 1, close - open - 1);
-    const auto comma = inner.find(',');
-    if (comma != std::string::npos) inner = inner.substr(0, comma);
-    return name.substr(0, open) + inner + name.substr(close + 1);
+    std::vector<std::string> parts;
+    std::string inner = name.substr(open + 1, close - open - 1), cur;
+    for (char c : inner) { if (c == ',') { parts.push_back(cur); cur.clear(); } else cur += c; }
+    parts.push_back(cur);
+    std::string pick = index < static_cast<int>(parts.size()) ? parts[index] : "";
+    if (trim(pick).empty()) pick = parts[0];
+    return name.substr(0, open) + trim(pick) + name.substr(close + 1);
 }
+
+std::string firstFontVariant(const std::string& name) { return fontVariant(name, 0); }
 }
 
 Color ScreenTheme::color(const std::string& raw, Color fallback) {
@@ -161,10 +168,19 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
         num(prefix + ".fnt.height", w->lineHeight);
         if (has(prefix + ".gfx.up")) w->upImage = path(prefix + ".gfx.up", str(prefix + ".gfx.up"));
         if (has(prefix + ".gfx.down")) w->downImage = path(prefix + ".gfx.down", str(prefix + ".gfx.down"));
-        if (has(prefix + ".fnt.name")) w->fontFile = path(prefix + ".fnt.name", firstFontVariant(str(prefix + ".fnt.name")));
+        if (has(prefix + ".fnt.name")) {
+            w->fontFile = path(prefix + ".fnt.name", firstFontVariant(str(prefix + ".fnt.name")));
+            w->fontItalicFile = path(prefix + ".fnt.name", fontVariant(str(prefix + ".fnt.name"), 2));
+        }
     }
-    if (has("inv.mode")) t.inventoryHorizontal = str("inv.mode").rfind("horizontal", 0) == 0;
+    if (has("inv.mode")) {
+        const std::string mode = str("inv.mode");
+        t.inventoryHorizontal = mode.rfind("horizontal", 0) == 0;
+        const auto dash = mode.find('-');
+        t.inventoryAlign = dash == std::string::npos ? "center" : mode.substr(dash + 1);
+    }
     if (has("win.align")) t.align = str("win.align");
+    if (has("win.ways.mode")) t.waysBottom = str("win.ways.mode") == "bottom";
     if (has("menu.gfx.button")) t.menuButton = path("menu.gfx.button", str("menu.gfx.button"));
     posX("menu.button.x", t.menuButtonX); posY("menu.button.y", t.menuButtonY);
 
@@ -198,7 +214,9 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
         }
         const std::regex setFont(R"(theme\.set\('(win|inv)\.fnt\.name'\s*,\s*(?:tr\s*\.\.\s*)?'([^']*)'\))");
         for (auto it = std::sregex_iterator(lua.begin(), lua.end(), setFont); it != std::sregex_iterator(); ++it) {
-            ((*it)[1] == "win" ? t.text : t.inventory).fontFile = FileUtils::combinePath(dir, firstFontVariant((*it)[2]));
+            Window& w = (*it)[1] == "win" ? t.text : t.inventory;
+            w.fontFile = FileUtils::combinePath(dir, firstFontVariant((*it)[2]));
+            w.fontItalicFile = FileUtils::combinePath(dir, fontVariant((*it)[2], 2));
         }
     }
     return t;
