@@ -8,6 +8,7 @@
 #include "Components/WidgetInteractionComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/LocalPlayer.h"
+#include "Engine/OverlapResult.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
@@ -272,17 +273,19 @@ void UNLBVRModeComponent::CreateInputAssets()
 	NextAction = MakeAction(EInputActionValueType::Boolean);
 	BackAction = MakeAction(EInputActionValueType::Boolean);
 	MenuAction = MakeAction(EInputActionValueType::Boolean);
+	// Клавиши — по имени (FKey("OculusTouch_…")): они регистрируются модулями XR и в разных
+	// версиях движка объявлены в разных заголовках, а имена у них постоянные.
 	// Контроллеры Oculus Touch (Quest по Link): левый стик — ходьба, правый — поворот рывками,
 	// правый курок — действие/щелчок, Grip — взять, A — «дальше» в книге, B — назад/меню книги,
 	// кнопка меню левого контроллера — меню паузы
-	VRContext->MapKey(MoveAction, EKeys::OculusTouch_Left_Thumbstick_2D);
-	VRContext->MapKey(TurnAction, EKeys::OculusTouch_Right_Thumbstick_X);
-	VRContext->MapKey(TriggerAction, EKeys::OculusTouch_Right_Trigger_Click);
-	VRContext->MapKey(GripLeftAction, EKeys::OculusTouch_Left_Grip_Click);
-	VRContext->MapKey(GripRightAction, EKeys::OculusTouch_Right_Grip_Click);
-	VRContext->MapKey(NextAction, EKeys::OculusTouch_Right_A_Click);
-	VRContext->MapKey(BackAction, EKeys::OculusTouch_Right_B_Click);
-	VRContext->MapKey(MenuAction, EKeys::OculusTouch_Left_Menu_Click);
+	VRContext->MapKey(MoveAction, FKey(TEXT("OculusTouch_Left_Thumbstick_2D")));
+	VRContext->MapKey(TurnAction, FKey(TEXT("OculusTouch_Right_Thumbstick_X")));
+	VRContext->MapKey(TriggerAction, FKey(TEXT("OculusTouch_Right_Trigger_Click")));
+	VRContext->MapKey(GripLeftAction, FKey(TEXT("OculusTouch_Left_Grip_Click")));
+	VRContext->MapKey(GripRightAction, FKey(TEXT("OculusTouch_Right_Grip_Click")));
+	VRContext->MapKey(NextAction, FKey(TEXT("OculusTouch_Right_A_Click")));
+	VRContext->MapKey(BackAction, FKey(TEXT("OculusTouch_Right_B_Click")));
+	VRContext->MapKey(MenuAction, FKey(TEXT("OculusTouch_Left_Menu_Click")));
 }
 
 void UNLBVRModeComponent::SetupInput(UEnhancedInputComponent* Input)
