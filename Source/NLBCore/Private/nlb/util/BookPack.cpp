@@ -66,7 +66,7 @@ void putStr(std::string& out, const std::string& s) { putU32(out, static_cast<ui
 }
 
 std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::string& error, bool withMedia,
-                                          const std::string& themeDir) {
+                                          const std::string& themeDir, const std::string& baseThemeDir) {
     auto pack = std::make_unique<BookPack>();
     pack->m_sourceDir = bookDir;
     if (!FileUtils::isDirectory(bookDir)) {
@@ -99,24 +99,25 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
         if (error.empty()) error = "ошибка обхода каталога книги " + bookDir;
         return nullptr;
     }
-    // Тема игры (оформление INSTEAD-экспорта) — целиком, с содержимым: шрифты и картинки темы
-    // нужны проигрывателю, а в книге NLB их нет
-    if (!themeDir.empty()) {
-        if (!FileUtils::isDirectory(themeDir)) {
-            error = "нет каталога темы " + themeDir;
+    // Тема игры и базовая тема (оформление INSTEAD) — целиком, с содержимым: шрифты и картинки
+    // тем нужны проигрывателю, а в книге NLB их нет
+    for (const auto& [dirToPack, prefixName] : {std::pair<std::string, const char*>{themeDir, THEME_DIR}, {baseThemeDir, BASE_THEME_DIR}}) {
+        if (dirToPack.empty()) continue;
+        if (!FileUtils::isDirectory(dirToPack)) {
+            error = "нет каталога темы " + dirToPack;
             return nullptr;
         }
-        const std::string prefix = THEME_DIR;
+        const std::string prefix = prefixName;
         pack->m_entries[prefix] = Entry{Entry::Type::Directory, 0, 0, {}};
-        const bool themeOk = walk(themeDir, "", [&](const std::string& rel, bool isDir, uint64_t size, int64_t mtime) {
+        const bool themeOk = walk(dirToPack, "", [&](const std::string& rel, bool isDir, uint64_t size, int64_t mtime) {
             Entry entry;
             entry.mtime = mtime;
             entry.size = isDir ? 0 : size;
             entry.type = isDir ? Entry::Type::Directory : Entry::Type::File;
             entry.length = isDir ? 0 : size;
             if (!isDir && size > LAZY_THRESHOLD) {
-                entry.sourceFile = FileUtils::combinePath(themeDir, rel);
-            } else if (!isDir && !FileUtils::readFile(FileUtils::combinePath(themeDir, rel), entry.content)) {
+                entry.sourceFile = FileUtils::combinePath(dirToPack, rel);
+            } else if (!isDir && !FileUtils::readFile(FileUtils::combinePath(dirToPack, rel), entry.content)) {
                 error = "не удалось прочитать файл темы " + rel;
                 return false;
             }
@@ -124,7 +125,7 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
             return true;
         });
         if (!themeOk) {
-            if (error.empty()) error = "ошибка обхода каталога темы " + themeDir;
+            if (error.empty()) error = "ошибка обхода каталога темы " + dirToPack;
             return nullptr;
         }
     }

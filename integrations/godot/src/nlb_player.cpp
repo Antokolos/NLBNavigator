@@ -205,6 +205,12 @@ String NLBPlayer::theme_dir() const {
     return FileUtils::isDirectory(dir) ? s(dir) : String();
 }
 
+String NLBPlayer::base_theme_dir() const {
+    if (!m_session) return String();
+    const std::string dir = FileUtils::combinePath(m_openedPath, BookPack::BASE_THEME_DIR);
+    return FileUtils::isDirectory(dir) ? s(dir) : String();
+}
+
 void NLBPlayer::emitEvents() {
     // пока книгу показывает NLBScreen, события забирает он и сам вызывает dispatch_events
     if (!m_screenDriven) dispatch_events(m_session->takeEvents());

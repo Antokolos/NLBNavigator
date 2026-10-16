@@ -139,6 +139,7 @@ int main(int argc, char* argv[]) {
     bool useCache = false;
     bool withMedia = false;  // pack: класть в пакет и картинки со звуками
     std::string packTheme;   // pack: каталог темы игры (INSTEAD-экспорт), зашивается в пакет
+    std::string packBaseTheme;  // pack: каталог базовой темы (оформление по умолчанию)
     bool sound = true;       // звук через SDL3, если плеер собран с ним
     for (size_t i = 1; i < args.size(); ++i) {
         const std::string& arg = args[i];
@@ -150,6 +151,8 @@ int main(int argc, char* argv[]) {
             screenReader = true;
         } else if (arg == "--theme" && i + 1 < args.size()) {
             packTheme = args[++i];
+        } else if (arg == "--base-theme" && i + 1 < args.size()) {
+            packBaseTheme = args[++i];
         } else if (arg == "--with-media") {
             withMedia = true;
         } else if (arg == "--no-sound") {
@@ -174,6 +177,7 @@ int main(int argc, char* argv[]) {
         std::cout << "  --cache          - keep a packed copy of the book directory in ~/.nlbnavigator" << std::endl;
         std::cout << "  --with-media     - pack: include images and sounds into the .nlbpack file" << std::endl;
         std::cout << "  --theme <dir>    - pack: include the game theme (INSTEAD theme directory) into the .nlbpack file" << std::endl;
+        std::cout << "  --base-theme <dir> - pack: include the base theme (default look; the game theme overrides it)" << std::endl;
         std::cout << "  --no-sound       - do not play music and sounds" << std::endl;
         return 1;
     }
@@ -192,7 +196,7 @@ int main(int argc, char* argv[]) {
         const std::string out = positional.size() > 2 ? positional[2]
             : FileUtils::pathToUtf8(FileUtils::pathFromUtf8(nlbPath).lexically_normal()) + ".nlbpack";
         std::string error;
-        auto pack = BookPack::build(nlbPath, error, withMedia, packTheme);
+        auto pack = BookPack::build(nlbPath, error, withMedia, packTheme, packBaseTheme);
         if (!pack || !pack->write(out, error)) {
             std::cerr << "Cannot pack the book: " << error << std::endl;
             return 1;

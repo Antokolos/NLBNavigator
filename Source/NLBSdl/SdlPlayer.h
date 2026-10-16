@@ -26,7 +26,8 @@ public:
         std::string bookPath;                    ///< каталог книги или .nlbpack (UTF-8)
         PlayerEngine::ExportMode exportMode = PlayerEngine::ExportMode::VN;
         std::string fontPath;                    ///< шрифт проигрывателя (меню; запасной для темы)
-        std::string themeDir;                    ///< каталог темы INSTEAD; пусто — тема по умолчанию
+        std::string themeDir;                    ///< каталог темы игры INSTEAD; пусто — тема по умолчанию
+        std::string baseThemeDir;                ///< базовая тема: оформление по умолчанию
         bool sound = true;
         std::string savesDir;                    ///< пусто — сохранения недоступны
         std::string achievementsPath;

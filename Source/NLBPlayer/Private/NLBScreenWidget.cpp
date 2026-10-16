@@ -181,6 +181,7 @@ bool UNLBScreenWidget::EnsureScreen() {
     if (!Renderer) Renderer.reset(new FNLBSlateRenderer(this));
     GameScreen::Options O;
     O.themeDir = U(P->GetThemeDir());
+    O.baseThemeDir = U(P->GetBaseThemeDir());
     // VN — всегда экран вариантов (как paginator в VN-INSTEAD), Standard — по свойству
     O.choicesScreen = P->GetSession()->exportMode() == PlayerEngine::ExportMode::VN || bChoicesScreen;
     O.soundAvailable = true;

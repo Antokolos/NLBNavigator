@@ -70,6 +70,8 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
     // тема игры, зашитая в пакет
     const std::string Theme = FileUtils::combinePath(Options.bookPath, BookPack::THEME_DIR);
     ThemeDir = FileUtils::isDirectory(Theme) ? S(Theme) : FString();
+    const std::string BaseTheme = FileUtils::combinePath(Options.bookPath, BookPack::BASE_THEME_DIR);
+    BaseThemeDir = FileUtils::isDirectory(BaseTheme) ? S(BaseTheme) : FString();
     LastRevision = Session->revision();
     EmitEvents();
     OnScreenChanged.Broadcast();

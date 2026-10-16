@@ -67,6 +67,8 @@ public:
     void dispatch_events(const std::vector<PlayerEngine::Event>& events);
     /// Тема игры, зашитая в пакет (pack --theme); пусто — тема по умолчанию
     godot::String theme_dir() const;
+    /// Базовая тема, зашитая в пакет (pack --base-theme); пусто — нет
+    godot::String base_theme_dir() const;
 
 protected:
     static void _bind_methods();
