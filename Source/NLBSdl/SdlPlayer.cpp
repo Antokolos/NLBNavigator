@@ -376,6 +376,12 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         float x = 0, y = 0;
         ok = m_screen->hitCenter(id, inv, x, y);
         if (ok) m_screen->click(x, y, false);
+    } else if (starts("menu:")) {
+        // щелчок мышью по пункту открытого меню с номером N (0 — первый)
+        renderFrame();
+        float x = 0, y = 0;
+        ok = m_screen->menuItemCenter(std::stoi(line.substr(5)), x, y);
+        if (ok) m_screen->click(x, y, false);
     } else if (starts("wheel:")) {
         renderFrame();
         SDL_Event e{};
@@ -403,7 +409,7 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     } else if (!line.empty() && line[0] != '#') {
         ok = false;
     }
-    if (!starts("shot:") && !starts("click") && !starts("hover:") && !starts("key:") && !starts("wheel:")) {
+    if (!starts("shot:") && !starts("click") && !starts("hover:") && !starts("key:") && !starts("wheel:") && !starts("menu:")) {
         m_session->refresh();
         m_screen->afterCommand();
     }
@@ -420,6 +426,7 @@ bool SdlPlayer::runScript() {
         if (!line.empty() && line.back() == '\r') line.pop_back();
         if (line.empty() || line[0] == '#') continue;
         all = scriptCommand(line) && all;
+        if (m_screen->quitRequested()) { std::cout << "ВЫХОД" << std::endl; break; }
     }
     return all;
 }

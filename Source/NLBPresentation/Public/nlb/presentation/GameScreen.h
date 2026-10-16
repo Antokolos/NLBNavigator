@@ -95,6 +95,8 @@ public:
     void setExternalGameHandler(std::function<void(const std::string&)> handler) { m_externalHandler = std::move(handler); }
     /// Центр кликабельной области объекта или предмета на последнем кадре (для тестов)
     bool hitCenter(const std::string& id, bool inventory, float& x, float& y) const;
+    /// Центр пункта меню с номером index на последнем кадре (для тестов)
+    bool menuItemCenter(int index, float& x, float& y) const;
 
     static constexpr float SCREEN_W = 1920.0f, SCREEN_H = 1080.0f;
 
@@ -106,7 +108,7 @@ private:
         std::string id;
         int index = -1;
     };
-    enum class Menu { None, Main, Save, Load, Message };
+    enum class Menu { None, Main, Save, Load, Message, ConfirmQuit };
     struct Effect {
         uint64_t start = 0;
         int steps = 25;
