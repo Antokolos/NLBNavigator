@@ -41,6 +41,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NLB")
     void NextPage();
 
+    /** «Назад» (как Esc): закрыть экран вариантов или открыть/закрыть меню книги — для кнопок
+     *  контроллера VR или геймпада */
+    UFUNCTION(BlueprintCallable, Category = "NLB")
+    void Back();
+
     // ---- для FNLBSlateRenderer
     UTexture2D* TextureFor(const FString& Path);
 
