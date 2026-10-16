@@ -82,10 +82,7 @@ std::filesystem::path FileUtils::nativePath(const std::string& utf8Path) {
 bool FileUtils::readFile(const std::string& path, std::string& content) {
     std::string rel;
     if (BookPack::resolve(path, rel)) {
-        const BookPack::Entry* e = BookPack::mounted()->find(rel);
-        if (!e || e->type != BookPack::Entry::Type::File) return false;
-        content = e->content;
-        return true;
+        return BookPack::mounted()->readContent(rel, content);  // крупные файлы — с диска по запросу
     }
     std::ifstream in(nativePath(path), std::ios::binary);
     if (!in) return false;

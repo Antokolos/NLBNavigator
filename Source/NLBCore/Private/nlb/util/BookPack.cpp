@@ -63,25 +63,6 @@ void putU32(std::string& out, uint32_t v) { for (int i = 0; i < 4; ++i) out += s
 void putU64(std::string& out, uint64_t v) { for (int i = 0; i < 8; ++i) out += static_cast<char>((v >> (8 * i)) & 0xFF); }
 void putStr(std::string& out, const std::string& s) { putU32(out, static_cast<uint32_t>(s.size())); out += s; }
 
-struct Reader {
-    const std::string& data;
-    size_t pos = 0;
-    bool ok = true;
-    uint64_t u(int bytes) {
-        if (pos + bytes > data.size()) { ok = false; return 0; }
-        uint64_t v = 0;
-        for (int i = 0; i < bytes; ++i) v |= static_cast<uint64_t>(static_cast<unsigned char>(data[pos + i])) << (8 * i);
-        pos += bytes;
-        return v;
-    }
-    std::string str() {
-        const uint64_t n = u(4);
-        if (!ok || pos + n > data.size()) { ok = false; return {}; }
-        std::string s = data.substr(pos, n);
-        pos += n;
-        return s;
-    }
-};
 }
 
 std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::string& error, bool withMedia,
@@ -103,7 +84,10 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
             entry.type = Entry::Type::MediaFile;
         } else {
             entry.type = Entry::Type::File;
-            if (!FileUtils::readFile(FileUtils::combinePath(bookDir, rel), entry.content)) {
+            entry.length = size;
+            if (size > LAZY_THRESHOLD) {
+                entry.sourceFile = FileUtils::combinePath(bookDir, rel);  // прочитается при записи
+            } else if (!FileUtils::readFile(FileUtils::combinePath(bookDir, rel), entry.content)) {
                 error = "не удалось прочитать " + rel;
                 return false;
             }
@@ -129,7 +113,10 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
             entry.mtime = mtime;
             entry.size = isDir ? 0 : size;
             entry.type = isDir ? Entry::Type::Directory : Entry::Type::File;
-            if (!isDir && !FileUtils::readFile(FileUtils::combinePath(themeDir, rel), entry.content)) {
+            entry.length = isDir ? 0 : size;
+            if (!isDir && size > LAZY_THRESHOLD) {
+                entry.sourceFile = FileUtils::combinePath(themeDir, rel);
+            } else if (!isDir && !FileUtils::readFile(FileUtils::combinePath(themeDir, rel), entry.content)) {
                 error = "не удалось прочитать файл темы " + rel;
                 return false;
             }
@@ -146,23 +133,39 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
 }
 
 bool BookPack::write(const std::string& packPath, std::string& error) const {
-    std::string out(MAGIC, sizeof(MAGIC));
-    putU32(out, VERSION);
-    putStr(out, m_sourceDir);
-    putU64(out, m_entries.size());
-    for (const auto& [rel, e] : m_entries) {
-        out += static_cast<char>(e.type);
-        putStr(out, rel);
-        putU64(out, e.size);
-        putU64(out, static_cast<uint64_t>(e.mtime));
-        if (e.type == Entry::Type::File) putStr(out, e.content);
-    }
     const std::string tmp = packPath + ".tmp";
     {
         std::ofstream f(FileUtils::nativePath(tmp), std::ios::binary | std::ios::trunc);
-        if (!f || !f.write(out.data(), static_cast<std::streamsize>(out.size()))) {
-            error = "не удалось записать " + packPath;
-            return false;
+        if (!f) { error = "не удалось записать " + packPath; return false; }
+        std::string head(MAGIC, sizeof(MAGIC));
+        putU32(head, VERSION);
+        putStr(head, m_sourceDir);
+        putU64(head, m_entries.size());
+        f.write(head.data(), static_cast<std::streamsize>(head.size()));
+        std::string content;
+        for (const auto& [rel, e] : m_entries) {
+            std::string rec;
+            rec += static_cast<char>(e.type);
+            putStr(rec, rel);
+            putU64(rec, e.size);
+            putU64(rec, static_cast<uint64_t>(e.mtime));
+            if (e.type == Entry::Type::File) {
+                // содержимое: в памяти, в исходном файле (сборка) или в прежнем пакете (lazy)
+                const std::string* data = &e.content;
+                if (!e.sourceFile.empty()) {
+                    if (!FileUtils::readFile(e.sourceFile, content)) { error = "не удалось прочитать " + e.sourceFile; return false; }
+                    data = &content;
+                } else if (e.lazy) {
+                    if (!readContent(e, content)) { error = "не удалось прочитать " + rel + " из пакета"; return false; }
+                    data = &content;
+                }
+                putU32(rec, static_cast<uint32_t>(data->size()));
+                f.write(rec.data(), static_cast<std::streamsize>(rec.size()));
+                f.write(data->data(), static_cast<std::streamsize>(data->size()));
+            } else {
+                f.write(rec.data(), static_cast<std::streamsize>(rec.size()));
+            }
+            if (!f) { error = "не удалось записать " + packPath; return false; }
         }
     }
     if (!FileUtils::renameReplace(tmp, packPath)) {
@@ -172,17 +175,43 @@ bool BookPack::write(const std::string& packPath, std::string& error) const {
     return true;
 }
 
+namespace {
+/// Чтение полей пакета из потока (тот же формат, что пишет write)
+struct StreamReader {
+    std::istream& in;
+    bool ok = true;
+    uint64_t u(int bytes) {
+        unsigned char buf[8];
+        if (!in.read(reinterpret_cast<char*>(buf), bytes)) { ok = false; return 0; }
+        uint64_t v = 0;
+        for (int i = 0; i < bytes; ++i) v |= static_cast<uint64_t>(buf[i]) << (8 * i);
+        return v;
+    }
+    std::string str() {
+        const uint64_t n = u(4);
+        std::string s(static_cast<size_t>(ok ? n : 0), '\0');
+        if (ok && n && !in.read(&s[0], static_cast<std::streamsize>(n))) ok = false;
+        return s;
+    }
+};
+}
+
 std::unique_ptr<BookPack> BookPack::read(const std::string& packPath, std::string& error) {
+    // Читаем только описание дерева и мелкие файлы; крупные (медиа, шрифты) — пропускаем,
+    // запоминая место: их прочитает readContent при первом обращении
     std::ifstream f(FileUtils::nativePath(packPath), std::ios::binary);
     if (!f) { error = "не удалось открыть " + packPath; return nullptr; }
-    const std::string data((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
-    if (data.size() < sizeof(MAGIC) || data.compare(0, sizeof(MAGIC), std::string(MAGIC, sizeof(MAGIC))) != 0) {
+    std::vector<char> buffer(1 << 20);
+    f.rdbuf()->pubsetbuf(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+    char magic[sizeof(MAGIC)];
+    if (!f.read(magic, sizeof(MAGIC)) || std::string(magic, sizeof(MAGIC)) != std::string(MAGIC, sizeof(MAGIC))) {
         error = "это не пакет книги NLB";
         return nullptr;
     }
-    Reader r{data, sizeof(MAGIC)};
+    StreamReader r{f};
     if (r.u(4) != VERSION) { error = "неподдерживаемая версия пакета"; return nullptr; }
     auto pack = std::make_unique<BookPack>();
+    pack->m_packPath = packPath;
     pack->m_sourceDir = r.str();
     const uint64_t count = r.u(8);
     for (uint64_t i = 0; i < count && r.ok; ++i) {
@@ -191,12 +220,46 @@ std::unique_ptr<BookPack> BookPack::read(const std::string& packPath, std::strin
         const std::string rel = r.str();
         e.size = r.u(8);
         e.mtime = static_cast<int64_t>(r.u(8));
-        if (e.type == Entry::Type::File) e.content = r.str();
+        if (e.type == Entry::Type::File && r.ok) {
+            e.length = r.u(4);
+            if (e.length > LAZY_THRESHOLD) {
+                e.lazy = true;
+                e.offset = static_cast<uint64_t>(f.tellg());
+                f.seekg(static_cast<std::streamoff>(e.length), std::ios::cur);
+                if (!f) r.ok = false;
+            } else if (r.ok) {
+                e.content.resize(static_cast<size_t>(e.length));
+                if (e.length && !f.read(&e.content[0], static_cast<std::streamsize>(e.length))) r.ok = false;
+            }
+        }
         pack->m_entries[rel] = std::move(e);
     }
     if (!r.ok) { error = "пакет повреждён"; return nullptr; }
     pack->index();
     return pack;
+}
+
+bool BookPack::readContent(const std::string& rel, std::string& out) const {
+    const Entry* e = find(rel);
+    if (!e || e->type != Entry::Type::File) return false;
+    return readContent(*e, out);
+}
+
+bool BookPack::readContent(const Entry& e, std::string& out) const {
+    if (!e.lazy) {
+        out = e.content;
+        return true;
+    }
+    // отложенное чтение: файл пакета открыт один раз; звук может читать другой поток
+    std::lock_guard<std::mutex> lock(m_ioMutex);
+    if (!m_file.is_open()) {
+        m_file.open(FileUtils::nativePath(m_packPath), std::ios::binary);
+        if (!m_file) return false;
+    }
+    m_file.clear();
+    m_file.seekg(static_cast<std::streamoff>(e.offset));
+    out.resize(static_cast<size_t>(e.length));
+    return e.length == 0 || static_cast<bool>(m_file.read(&out[0], static_cast<std::streamsize>(e.length)));
 }
 
 void BookPack::index() {
