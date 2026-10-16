@@ -74,6 +74,7 @@ void GameScreen::pull() {
     m_screen = m_session.screen();
     updateEffects(before);
     m_seenRevision = m_session.revision();
+    if (!choicesMode()) m_showChoices = false;  // страница STANDARD — экрана вариантов нет
     if (before.pageId != m_screen.pageId) {
         m_portion = 0;  // новая страница — текст с первой порции
     } else if (!m_screen.reactionText.empty() && flatten(before.reactionText) != flatten(m_screen.reactionText)) {
@@ -163,7 +164,7 @@ void GameScreen::afterCommand() {
     m_showChoices = false;
     // Страница без текста: показывать нечего — сразу экран вариантов (если вариант один тривиальный —
     // ждём «дальше», чтобы игрок увидел сцену)
-    if (m_choicesScreen && m_screen.pageText.empty() && m_screen.reactionText.empty() && singleTrivialChoice() < 0) {
+    if (choicesMode() && m_screen.pageText.empty() && m_screen.reactionText.empty() && singleTrivialChoice() < 0) {
         advanceToChoices();
     }
     if (m_screen.externalGame) {
@@ -291,7 +292,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
         bool onChoice = false;
         for (const auto& h : m_hits) onChoice = onChoice || (h.kind == Hit::Kind::Choice && contains(h.rect, x, y));
         if (!onChoice) { m_showChoices = false; return; }
-    } else if (m_choicesScreen && !hitSomething && m_menu == Menu::None) {
+    } else if (choicesMode() && !hitSomething && m_menu == Menu::None) {
         // как paginator: щелчок мимо спрайтов — дальше по тексту
         advanceText();
         return;
@@ -357,7 +358,7 @@ void GameScreen::key(Key k, int digit) {
         }
     } else if (k == Key::Space || k == Key::Enter) {
         // пробел: следующая часть текста, а когда он дочитан — экран вариантов
-        if (m_choicesScreen && !m_showChoices) advanceText();
+        if (choicesMode() && !m_showChoices) advanceText();
         else if (m_moreText) m_scroll += m_pageHeight;
         else if (m_showChoices) m_showChoices = false;
         else advanceToChoices();
@@ -416,7 +417,7 @@ bool GameScreen::menuItemCenter(int index, float& x, float& y) const {
 }
 
 bool GameScreen::advanceToChoices() {
-    if (!m_choicesScreen || m_moreText || m_showChoices || m_menu != Menu::None) return false;
+    if (!choicesMode() || m_moreText || m_showChoices || m_menu != Menu::None) return false;
     if (std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
         return false;
     }
@@ -621,7 +622,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     const RectF r = window.rect;
     // Режим экрана вариантов: текст порциями (как paginator), без стрелок прокрутки
     std::vector<Paragraph> portionText;
-    if (m_choicesScreen) {
+    if (choicesMode()) {
         const auto parts = portions();
         if (m_portion >= parts.size()) m_portion = parts.empty() ? 0 : parts.size() - 1;
         if (!parts.empty()) portionText = parts[m_portion];
@@ -629,15 +630,15 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     } else {
         m_morePortions = false;
     }
-    const std::vector<Paragraph>& firstText = m_choicesScreen ? portionText : m_screen.pageText;
+    const std::vector<Paragraph>& firstText = choicesMode() ? portionText : m_screen.pageText;
     static const std::vector<Paragraph> NONE;
-    const std::vector<Paragraph>& secondText = m_choicesScreen ? NONE : m_screen.reactionText;
+    const std::vector<Paragraph>& secondText = choicesMode() ? NONE : m_screen.reactionText;
     // Сколько места занимает текст (для прокрутки)
     float need = 0;
     if (!m_screen.caption.empty()) need += m_r->lineSkip(font) * 1.4f;
     need = renderParagraphs(firstText, r.x, need, r.w, font, window, false);
     need = renderParagraphs(secondText, r.x, need, r.w, font, window, false);
-    if (!m_choicesScreen) need = renderChoices(r.x, need, r.w, font, window, false);
+    if (!choicesMode()) need = renderChoices(r.x, need, r.w, font, window, false);
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
     // paginator в INSTEAD: щелчок по окну (или колесо, PgDn) — следующая часть
@@ -663,7 +664,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     }
     y = renderParagraphs(firstText, r.x, y, r.w, font, window, true);
     y = renderParagraphs(secondText, r.x, y, r.w, font, window, true);
-    if (!m_choicesScreen) renderChoices(r.x, y, r.w, font, window, true);
+    if (!choicesMode()) renderChoices(r.x, y, r.w, font, window, true);
     m_r->setClip(nullptr);
     m_drawTop = -1e9f;
     m_drawBottom = 1e9f;
@@ -684,7 +685,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         else m_r->drawText(font, up ? "▲" : "▼", window.link, ar.x, ar.y, 1.0f);
         m_hits.push_back({{ar.x - 6, ar.y - 6, ar.w + 12, ar.h + 12}, up ? Hit::Kind::ScrollUp : Hit::Kind::ScrollDown, ""});
     };
-    if (m_choicesScreen) return;  // как paginator: без прокрутки, «дальше» — щелчок или пробел
+    if (choicesMode()) return;  // как paginator: без прокрутки, «дальше» — щелчок или пробел
     if (m_scroll > 0) arrow(true, r.y);
     if (m_firstHiddenY >= 0) arrow(false, r.y + r.h);
 }
@@ -903,7 +904,9 @@ void GameScreen::renderMenu() {
                  {"Загрузить игру (F9)", saves},
                  {"Начать заново", true},
                  {m_options.soundAvailable ? (m_soundOn ? "Выключить звук" : "Включить звук") : "Звук недоступен", m_options.soundAvailable},
-                 {m_choicesScreen ? "Варианты: отдельным экраном" : "Варианты: в окне текста", true},
+                 {m_choicesScreen ? (m_screen.layout == Layout::VisualNovel ? "Варианты: отдельным экраном"
+                                                                             : "Варианты: отдельным экраном (только в VN)")
+                                  : "Варианты: в окне текста", true},
                  {"Выйти", true},
                  {"Вернуться в игру (Esc)", true}};
     } else if (m_menu == Menu::ConfirmQuit) {

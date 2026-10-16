@@ -58,7 +58,8 @@ public:
 
     struct Options {
         std::string themeDir;            ///< каталог темы INSTEAD (может быть внутри пакета)
-        /// Варианты отдельным экраном (как VN в INSTEAD с модулем paginator): текст выдаётся
+        /// Варианты отдельным экраном (как VN в INSTEAD с модулем paginator; только на страницах
+        /// с темой VN, на страницах STANDARD — всегда варианты в тексте): текст выдаётся
         /// порциями по абзацам, разделённым пустой строкой, без прокрутки; дочитав последнюю
         /// порцию, игрок видит экран вариантов, а если вариант один и тривиальный («Далее») —
         /// сразу переходит дальше. Иначе — прокрутка и варианты в конце текста
@@ -161,7 +162,10 @@ private:
     RectF m_textWindow{};
     bool m_moreText = false;
     float m_drawTop = -1e9f, m_drawBottom = 1e9f, m_firstHiddenY = -1;
-    bool m_choicesScreen = false, m_showChoices = false;
+    bool m_choicesScreen = false, m_showChoices = false;  ///< m_choicesScreen — выбор игрока (меню)
+    /// Режим «варианты отдельным экраном» действует только на страницах с темой VN (там его вёл
+    /// paginator INSTEAD); на страницах STANDARD — всегда варианты в тексте с прокруткой
+    bool choicesMode() const { return m_choicesScreen && m_screen.layout == Layout::VisualNovel; }
     size_t m_portion = 0;            ///< текущая порция текста (режим экрана вариантов)
     bool m_morePortions = false;
     Menu m_menu = Menu::None;
