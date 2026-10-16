@@ -1,5 +1,6 @@
 // nlb_sdl — графический проигрыватель книг NLB на SDL3.
-//   nlb_sdl <каталог книги | файл.nlbpack> [vn|standard] [--font <ttf>] [--no-sound]
+//   nlb_sdl <каталог книги | файл.nlbpack> [explore] [vn|standard] [--font <ttf>] [--no-sound]
+//           [--choices-screen | --choices-in-text]   (по умолчанию: vn — экран вариантов, standard — в тексте)
 //           [--window WxH] [--script <файл>]   (сценарий — для тестов: команды и снимки экрана)
 #include "SdlPlayer.h"
 
@@ -45,22 +46,35 @@ int main(int argc, char** argv) {
     const std::vector<std::string> args = utf8Args(argc, argv);
     SdlPlayer::Options options;
     std::vector<std::string> positional;
+    int choicesScreen = -1;  // -1 — по режиму экспорта: vn — отдельным экраном, standard — в тексте
     for (size_t i = 1; i < args.size(); ++i) {
         const std::string& a = args[i];
         if (a == "--font" && i + 1 < args.size()) options.fontPath = args[++i];
         else if (a == "--theme" && i + 1 < args.size()) options.themeDir = args[++i];
         else if (a == "--no-sound") options.sound = false;
-        else if (a == "--choices-screen") options.choicesScreen = true;
+        else if (a == "--choices-screen") choicesScreen = 1;
+        else if (a == "--choices-in-text") choicesScreen = 0;
         else if (a == "--script" && i + 1 < args.size()) options.scriptPath = args[++i];
         else if (a == "--window" && i + 1 < args.size()) std::sscanf(args[++i].c_str(), "%dx%d", &options.windowWidth, &options.windowHeight);
         else positional.push_back(a);
     }
     if (positional.empty()) {
-        std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [vn|standard] [--theme <INSTEAD theme dir>] [--font <ttf>] [--no-sound] [--choices-screen] [--window WxH]" << std::endl;
+        std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--font <ttf>] [--no-sound]"
+                     " [--choices-screen | --choices-in-text] [--window WxH]" << std::endl;
+        std::cout << "  vn (default)  - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
+        std::cout << "  standard      - as exported to INSTEAD; choices at the end of the text by default" << std::endl;
         return 1;
     }
     options.bookPath = positional[0];
-    if (positional.size() > 1 && positional[1] == "standard") options.exportMode = PlayerEngine::ExportMode::Standard;
+    // режим: «vn» или «standard» (как у nlb_main explore; само слово explore можно указывать)
+    for (size_t i = 1; i < positional.size(); ++i) {
+        if (positional[i] == "standard") options.exportMode = PlayerEngine::ExportMode::Standard;
+        else if (positional[i] == "vn") options.exportMode = PlayerEngine::ExportMode::VN;
+    }
+    // Варианты по умолчанию — как в соответствующем экспорте: в VN-INSTEAD текст порциями и экран
+    // вариантов, в обычном INSTEAD — ссылки в конце текста. Ключи --choices-screen / --choices-in-text
+    // задают явно; в меню режим можно переключить
+    options.choicesScreen = choicesScreen >= 0 ? choicesScreen == 1 : options.exportMode == PlayerEngine::ExportMode::VN;
     // Пакет .nlbpack — монтируется как каталог книги
     if (FileUtils::exists(options.bookPath) && !FileUtils::isDirectory(options.bookPath)) {
         std::string error;
