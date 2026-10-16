@@ -73,8 +73,8 @@ std::string framePath(const ImageRef& image) {
 }
 
 GameScreen::GameScreen(Session& session, Options options) : m_session(session), m_options(std::move(options)) {
-    m_standardTheme = ScreenTheme::load(m_options.themeDir, false);
-    m_vnTheme = ScreenTheme::load(m_options.themeDir, true);
+    m_standardTheme = ScreenTheme::load(m_options.baseThemeDir, m_options.themeDir, false);
+    m_vnTheme = ScreenTheme::load(m_options.baseThemeDir, m_options.themeDir, true);
     m_choicesScreen = m_options.choicesScreen;
     m_soundOn = m_options.soundAvailable;
     pull();
@@ -720,6 +720,11 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         const std::string& path = up ? window.upImage : window.downImage;
         float aw = lh * 0.8f, ah = lh * 0.8f;
         const bool img = !path.empty() && m_r->imageSize(path, aw, ah);
+        if (img) {  // картинки темы — в масштабе её экрана (scr.w×scr.h -> 1920×1080)
+            const float k = (m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme).scale;
+            aw *= k;
+            ah *= k;
+        }
         const RectF ar{r.x + r.w + 6, up ? ay : ay - ah, aw, ah};
         if (img) m_r->drawImage(path, ar, 1.0f);
         else m_r->drawText(font, up ? "▲" : "▼", window.link, ar.x, ar.y, 1.0f);
@@ -761,7 +766,7 @@ void GameScreen::renderStandard() {
     m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.background);
     float w = 0, h = 0;
     if (!t.backgroundImage.empty() && m_r->imageSize(t.backgroundImage, w, h)) {
-        m_r->drawImage(t.backgroundImage, {0, 0, SCREEN_W, SCREEN_H}, 1.0f);
+        m_r->drawImage(t.backgroundImage, t.screenArea, 1.0f);  // фон темы — на её экран (scr.w×scr.h)
     }
     if (imageSize(m_screen.pageImage, w, h)) {
         RectF dst;
@@ -886,7 +891,7 @@ void GameScreen::renderMenuButton(const ScreenTheme& theme) {
     if (!localized.empty() && FileUtils::exists(localized)) path = localized;
     float w = 0, h = 0;
     if (!m_r->imageSize(path, w, h)) return;
-    const RectF r{theme.menuButtonX, theme.menuButtonY, w, h};
+    const RectF r{theme.menuButtonX, theme.menuButtonY, w * theme.scale, h * theme.scale};
     m_r->drawImage(path, r, 1.0f);
     m_hits.push_back({r, Hit::Kind::MenuButton, ""});
 }

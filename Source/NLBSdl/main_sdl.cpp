@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
         const std::string& a = args[i];
         if (a == "--font" && i + 1 < args.size()) options.fontPath = args[++i];
         else if (a == "--theme" && i + 1 < args.size()) options.themeDir = args[++i];
+        else if (a == "--base-theme" && i + 1 < args.size()) options.baseThemeDir = args[++i];
         else if (a == "--no-sound") options.sound = false;
         else if (a == "--choices-screen") choicesScreen = 1;
         else if (a == "--choices-in-text") choicesScreen = 0;
@@ -59,7 +60,7 @@ int main(int argc, char** argv) {
         else positional.push_back(a);
     }
     if (positional.empty()) {
-        std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--font <ttf>] [--no-sound]"
+        std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
                      " [--choices-screen | --choices-in-text] [--window WxH]" << std::endl;
         std::cout << "  vn (default)  - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
         std::cout << "  standard      - as exported to INSTEAD; choices at the end of the text by default" << std::endl;
@@ -86,6 +87,11 @@ int main(int argc, char** argv) {
     if (options.themeDir.empty() && BookPack::mounted()) {
         const std::string packed = FileUtils::combinePath(options.bookPath, BookPack::THEME_DIR);
         if (FileUtils::isDirectory(packed)) options.themeDir = packed;
+    }
+    // Базовая тема, зашитая в пакет (pack --base-theme), если другая не указана
+    if (options.baseThemeDir.empty() && BookPack::mounted()) {
+        const std::string packed = FileUtils::combinePath(options.bookPath, BookPack::BASE_THEME_DIR);
+        if (FileUtils::isDirectory(packed)) options.baseThemeDir = packed;
     }
     options.savesDir = dataPath(options.bookPath, ".saves", true);
     options.achievementsPath = dataPath(options.bookPath, ".achievements", false);

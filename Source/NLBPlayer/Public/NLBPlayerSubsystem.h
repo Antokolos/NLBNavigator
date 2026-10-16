@@ -154,6 +154,8 @@ public:
     nlb::presentation::Session* GetSession() const { return Session.get(); }
     /// Тема игры, зашитая в пакет (pack --theme): <пакет>/__theme__; пусто — тема по умолчанию
     FString GetThemeDir() const { return ThemeDir; }
+    /// Базовая тема, зашитая в пакет (pack --base-theme): <пакет>/__base_theme__
+    FString GetBaseThemeDir() const { return BaseThemeDir; }
     /// Время книги и события ведёт экран (GameScreen), а не такт подсистемы
     void SetScreenDriven(bool bDriven) { bScreenDriven = bDriven; }
     /// Разослать делегаты (достижения, внешние игры, конец) по событиям, которые забрал экран
@@ -163,6 +165,7 @@ private:
     void EmitEvents();
     bool bScreenDriven = false;
     FString ThemeDir;
+    FString BaseThemeDir;
 
     std::unique_ptr<FUnrealAudioBackend, FNLBAudioDeleter> Audio;
     std::unique_ptr<nlb::presentation::Session, FNLBSessionDeleter> Session;

@@ -57,7 +57,8 @@ public:
     enum class Key { Escape, Space, Enter, PageUp, PageDown, Save, Load, Digit };
 
     struct Options {
-        std::string themeDir;            ///< каталог темы INSTEAD (может быть внутри пакета)
+        std::string themeDir;            ///< каталог темы игры INSTEAD (может быть внутри пакета)
+        std::string baseThemeDir;        ///< базовая тема: оформление по умолчанию, тема игры его дополняет
         /// Варианты отдельным экраном (как VN в INSTEAD с модулем paginator; только на страницах
         /// с темой VN, на страницах STANDARD — всегда варианты в тексте): текст выдаётся
         /// порциями по абзацам, разделённым пустой строкой, без прокрутки; дочитав последнюю
