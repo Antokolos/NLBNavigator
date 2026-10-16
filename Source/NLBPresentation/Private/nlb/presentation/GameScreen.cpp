@@ -765,8 +765,11 @@ void GameScreen::renderStandard() {
     const ScreenTheme& t = m_standardTheme;
     m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.background);
     float w = 0, h = 0;
-    if (!t.backgroundImage.empty() && m_r->imageSize(t.backgroundImage, w, h)) {
-        m_r->drawImage(t.backgroundImage, t.screenArea, 1.0f);  // фон темы — на её экран (scr.w×scr.h)
+    // Фон: у страницы STANDARD без своего фона экспорт ставит bgimg = nlb:std_bg() (gfx/bg.jpg
+    // темы); если его нет — scr.gfx.bg из theme.ini. Своя картинка-фон страницы рисуется ниже
+    const std::string& bg = !t.pageBackground.empty() ? t.pageBackground : t.backgroundImage;
+    if (!bg.empty() && m_r->imageSize(bg, w, h)) {
+        m_r->drawImage(bg, t.screenArea, 1.0f);  // фон темы — на её экран (scr.w×scr.h)
     }
     if (imageSize(m_screen.pageImage, w, h)) {
         RectF dst;

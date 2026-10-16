@@ -168,6 +168,13 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
     if (has("menu.gfx.button")) t.menuButton = path("menu.gfx.button", str("menu.gfx.button"));
     posX("menu.button.x", t.menuButtonX); posY("menu.button.y", t.menuButtonY);
 
+    // nlb:std_bg(): gfx/bg.jpg активной темы — фон страниц STANDARD без своего фона
+    for (const std::string& dir : {baseDir, gameDir}) {
+        if (dir.empty() || !FileUtils::isDirectory(dir)) continue;
+        const std::string bg = FileUtils::combinePath(dir, "gfx/bg.jpg");
+        if (FileUtils::exists(bg)) t.pageBackground = bg;
+    }
+
     // Рамки текстового окна VN и theme_standard.lua / theme_vn.lua — базовой темы, затем темы игры
     for (const std::string& dir : {baseDir, gameDir}) {
         if (dir.empty() || !FileUtils::isDirectory(dir)) continue;

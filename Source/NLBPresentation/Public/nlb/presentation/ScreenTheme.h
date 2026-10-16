@@ -36,6 +36,10 @@ struct ScreenTheme {
     float screenW = 1920, screenH = 1080;
     Color background{0x01, 0x13, 0x22, 255};
     std::string backgroundImage;      ///< scr.gfx.bg, если это картинка (а не box:…)
+    /// Фон страниц STANDARD: экспорт задаёт каждой такой странице bgimg = nlb:std_bg() —
+    /// gfx/bg.jpg активной темы (темы игры, иначе базовой), если у страницы нет своего фона.
+    /// Он заменяет scr.gfx.bg из theme.ini (поэтому там bg.jpg обычно закомментирован)
+    std::string pageBackground;
     RectF pictureArea{40, 30, 1787, 640};  ///< scr.gfx.x/y/w/h — картинка страницы (STANDARD)
     Window text;                      ///< win.*
     Window inventory;                 ///< inv.*
