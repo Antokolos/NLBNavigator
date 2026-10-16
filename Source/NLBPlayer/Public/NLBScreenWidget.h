@@ -29,7 +29,9 @@ class NLBPLAYER_API UNLBScreenWidget : public UUserWidget {
     GENERATED_BODY()
 
 public:
-    /** Варианты отдельным экраном (как в INSTEAD с длинным текстом); иначе — в окне текста */
+    /** Варианты отдельным экраном, если книга открыта в режиме Standard. В режиме VN (bVisualNovel
+     *  у OpenBook) экран вариантов — родной режим VN-INSTEAD и включается всегда; во время игры
+     *  его можно переключить в меню книги */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
     bool bChoicesScreen = false;
 

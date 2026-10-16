@@ -181,7 +181,8 @@ bool UNLBScreenWidget::EnsureScreen() {
     if (!Renderer) Renderer.reset(new FNLBSlateRenderer(this));
     GameScreen::Options O;
     O.themeDir = U(P->GetThemeDir());
-    O.choicesScreen = bChoicesScreen;
+    // VN — всегда экран вариантов (как paginator в VN-INSTEAD), Standard — по свойству
+    O.choicesScreen = P->GetSession()->exportMode() == PlayerEngine::ExportMode::VN || bChoicesScreen;
     O.soundAvailable = true;
     O.clock = [] { return static_cast<uint64_t>(FPlatformTime::Seconds() * 1000.0); };
     Screen.reset(new GameScreen(*P->GetSession(), O));

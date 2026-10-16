@@ -76,6 +76,8 @@ public:
     bool save(int slot, std::string& error);
     bool load(int slot, std::string& error);
     PlayerEngine::SaveInfo saveInfo(int slot) const;
+    /// Режим экспорта, в котором открыта книга (VN или Standard)
+    PlayerEngine::ExportMode exportMode() const { return m_options.exportMode; }
     /// Сохранения доступны (задан каталог сохранений)
     bool savesAvailable() const { return !m_options.savesDir.empty(); }
     void setMuted(bool muted);
