@@ -9,7 +9,7 @@ public class NLBNavigator : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { 
             "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG",
-            "NLBPlayer", "PLDCore" 
+            "NLBPlayer", "PLDCore", "HeadMountedDisplay" 
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
@@ -17,7 +17,9 @@ public class NLBNavigator : ModuleRules
         PublicIncludePaths.AddRange(new string[] {
 			ModuleDirectory,
 			Path.Combine(ModuleDirectory, "NLB"),
-			Path.Combine(ModuleDirectory, "PLD")
+			Path.Combine(ModuleDirectory, "PLD"),
+			Path.Combine(ModuleDirectory, "VR"),
+			Path.Combine(ModuleDirectory, "UI")
 		});
     }
 }

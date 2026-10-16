@@ -6,6 +6,7 @@
 #include "NLBNavigatorCharacter.h"
 #include "NLBPlayerSubsystem.h"
 #include "NLBScreenWidget.h"
+#include "NLBVRModeComponent.h"
 
 ANLBController::ANLBController()
 {
@@ -104,6 +105,16 @@ void ANLBController::AddToViewport()
 	{
 		return;
 	}
+	// В VR экран окна в шлеме не виден — книга на панели перед игроком, щелчки лучом
+	if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(GetOwner()))
+	{
+		if (Character->IsVRMode())
+		{
+			Character->GetVRMode()->ShowPanel(ScreenWidget);
+			bIsVisible = true;
+			return;
+		}
+	}
 	ScreenWidget->AddToViewport();
 	ScreenWidget->SetVisibility(ESlateVisibility::Visible);
 	bIsVisible = true;
@@ -120,6 +131,13 @@ void ANLBController::AddToViewport()
 
 void ANLBController::RemoveFromParent()
 {
+	if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(GetOwner()))
+	{
+		if (Character->IsVRMode())
+		{
+			Character->GetVRMode()->HidePanel();
+		}
+	}
 	if (ScreenWidget)
 	{
 		ScreenWidget->RemoveFromParent();

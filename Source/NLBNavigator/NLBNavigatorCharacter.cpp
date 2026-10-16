@@ -22,6 +22,11 @@
 #include "PLDInteractableActor.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Misc/CommandLine.h"
+#include "Misc/ConfigCacheIni.h"
+#include "TimerManager.h"
+#include "NLBVRModeComponent.h"
+#include "NLBPauseMenuWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -35,6 +40,7 @@ ANLBNavigatorCharacter::ANLBNavigatorCharacter()
 		
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	VRMode = CreateDefaultSubobject<UNLBVRModeComponent>(TEXT("VRMode"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
@@ -60,6 +66,105 @@ ANLBNavigatorCharacter::ANLBNavigatorCharacter()
 
 //////////////////////////////////////////////////////////////////////////// Input
 
+void ANLBNavigatorCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	VRMode->OnInteract.BindUObject(this, &ANLBNavigatorCharacter::OnVRInteract);
+	VRMode->OnPause.BindUObject(this, &ANLBNavigatorCharacter::TogglePauseMenu);
+	// VR — по ключу -vr или по сохранённому выбору; шлем к первому кадру может быть не готов,
+	// поэтому включаем на следующем такте
+	bool bWantVR = FParse::Param(FCommandLine::Get(), TEXT("vr"));
+	if (!bWantVR && GConfig)
+	{
+		GConfig->GetBool(TEXT("NLBNavigator"), TEXT("VRMode"), bWantVR, GGameUserSettingsIni);
+	}
+	if (bWantVR)
+	{
+		GetWorldTimerManager().SetTimerForNextTick([this]() {
+			FString Error;
+			if (!VRMode->SetVRMode(true, Error))
+			{
+				UE_LOG(LogTemplateCharacter, Warning, TEXT("VR: %s"), *Error);
+			}
+		});
+	}
+}
+
+bool ANLBNavigatorCharacter::IsVRMode() const
+{
+	return VRMode && VRMode->IsVRActive();
+}
+
+bool ANLBNavigatorCharacter::SetVRMode(bool bEnable, FString& OutError)
+{
+	if (bIsInVisualNovelMode)
+	{
+		ReturnToShooter();  // книга откроется заново уже в новом режиме
+	}
+	if (!VRMode->SetVRMode(bEnable, OutError))
+	{
+		return false;
+	}
+	if (GConfig)
+	{
+		GConfig->SetBool(TEXT("NLBNavigator"), TEXT("VRMode"), bEnable, GGameUserSettingsIni);
+		GConfig->Flush(false, GGameUserSettingsIni);
+	}
+	return true;
+}
+
+void ANLBNavigatorCharacter::OnVRInteract(AActor* Target)
+{
+	if (bIsInVisualNovelMode)
+	{
+		return;
+	}
+	if (IInteractableInterface* I = Cast<IInteractableInterface>(Target))
+	{
+		I->Interact(this);
+	}
+}
+
+void ANLBNavigatorCharacter::TogglePauseMenu()
+{
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC || bIsInVisualNovelMode)
+	{
+		return;  // в книге Esc — её собственное меню
+	}
+	if (PauseMenu)
+	{
+		// закрыть
+		if (VRMode->IsVRActive()) VRMode->HidePanel();
+		PauseMenu->RemoveFromParent();
+		PauseMenu = nullptr;
+		PC->SetShowMouseCursor(false);
+		PC->SetInputMode(FInputModeGameOnly());
+		EnableCharacterInput();
+		return;
+	}
+	PauseMenu = CreateWidget<UNLBPauseMenuWidget>(PC, UNLBPauseMenuWidget::StaticClass());
+	if (!PauseMenu)
+	{
+		return;
+	}
+	PauseMenu->Owner = this;
+	PauseMenu->Refresh();
+	DisableCharacterInput();
+	if (VRMode->IsVRActive())
+	{
+		VRMode->ShowPanel(PauseMenu);  // в шлеме экран окна не виден — меню на панели перед игроком
+	}
+	else
+	{
+		PauseMenu->AddToViewport(100);
+		PC->SetShowMouseCursor(true);
+		FInputModeUIOnly Mode;
+		Mode.SetWidgetToFocus(PauseMenu->TakeWidget());
+		PC->SetInputMode(Mode);
+	}
+}
+
 void ANLBNavigatorCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
@@ -70,6 +175,10 @@ void ANLBNavigatorCharacter::NotifyControllerChanged()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			if (PauseContext)
+			{
+				Subsystem->AddMappingContext(PauseContext, 3);
+			}
 		}
 	}
 }
@@ -97,6 +206,20 @@ void ANLBNavigatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		EnhancedInputComponent->BindAction(ToggleViewAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::ToggleView);
 
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ANLBNavigatorCharacter::Interact);
+
+		// Режим VR: свои действия контроллеров (контекст ввода включается вместе с режимом)
+		VRMode->SetupInput(EnhancedInputComponent);
+
+		// Меню паузы: Esc или P (в редакторе Esc останавливает игру — там удобнее P)
+		if (!PauseAction)
+		{
+			PauseAction = NewObject<UInputAction>(this);
+			PauseAction->ValueType = EInputActionValueType::Boolean;
+			PauseContext = NewObject<UInputMappingContext>(this);
+			PauseContext->MapKey(PauseAction, EKeys::Escape);
+			PauseContext->MapKey(PauseAction, EKeys::P);
+		}
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &ANLBNavigatorCharacter::TogglePauseMenu);
 	}
 	else
 	{
@@ -178,11 +301,14 @@ void ANLBNavigatorCharacter::SwitchToVisualNovel()
 		}
 	}
 
-	// Switch the camera view to the NLBController
+	// Switch the camera view to the NLBController (в VR — нет: смотрим через шлем, книга на панели)
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	if (PlayerController && VisualNovelController)
 	{
-		PlayerController->SetViewTargetWithBlend(VisualNovelController, 0.0f);
+		if (!IsVRMode())
+		{
+			PlayerController->SetViewTargetWithBlend(VisualNovelController, 0.0f);
+		}
 		VisualNovelController->AddToViewport();
 		VisualNovelController->LoadCurrentSet();
 		DisableCharacterInput();
@@ -309,6 +435,16 @@ void ANLBNavigatorCharacter::Interact()
 void ANLBNavigatorCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    // В VR предметы выбирает луч правой руки (UNLBVRModeComponent), а не взгляд камеры
+    if (IsVRMode())
+    {
+        if (CurrentInteractable)
+        {
+            Cast<APLDInteractableActor>(CurrentInteractable)->ShowInteractionWidget(false);
+            CurrentInteractable = nullptr;
+        }
+        return;
+    }
 
     // Line Trace logic to find PLDInteractableActor
     FVector Start = FirstPersonCameraComponent->GetComponentLocation();
