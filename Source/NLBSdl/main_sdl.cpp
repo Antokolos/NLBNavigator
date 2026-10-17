@@ -47,6 +47,7 @@ int main(int argc, char** argv) {
     SdlPlayer::Options options;
     std::vector<std::string> positional;
     int choicesScreen = -1;  // -1 — по режиму экспорта: vn — отдельным экраном, standard — в тексте
+    options.args = args;  // EOS: -AUTH_PASSWORD и др. от Epic Games Launcher
     for (size_t i = 1; i < args.size(); ++i) {
         const std::string& a = args[i];
         if (a == "--font" && i + 1 < args.size()) options.fontPath = args[++i];
@@ -56,6 +57,8 @@ int main(int argc, char** argv) {
         else if (a == "--choices-screen") choicesScreen = 1;
         else if (a == "--choices-in-text") choicesScreen = 0;
         else if (a == "--fullscreen") options.fullscreen = true;
+        else if (a == "--platform" && i + 1 < args.size()) options.platforms.push_back(args[++i]);
+        else if (a == "--platform-config" && i + 1 < args.size()) options.platformConfig = args[++i];
         else if (a == "--log" && i + 1 < args.size()) options.logPath = args[++i];
         else if (a.rfind("--log=", 0) == 0) options.logPath = a.substr(6);
         else if (a == "--script" && i + 1 < args.size()) options.scriptPath = args[++i];
@@ -64,7 +67,8 @@ int main(int argc, char** argv) {
     }
     if (positional.empty()) {
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
-                     " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--log <file>]" << std::endl;
+                     " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--log <file>]"
+                     " [--platform steam|epic|log[:file]]... [--platform-config <platform.ini>]" << std::endl;
         std::cout << "  vn (default)  - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
         std::cout << "  standard      - as exported to INSTEAD; choices at the end of the text by default" << std::endl;
         return 1;

@@ -34,7 +34,7 @@ add_library(nlbnavigator SHARED
 target_include_directories(nlbnavigator PRIVATE src ${CPARSE})
 # godot-cpp 4.4: цели godot-cpp::template_debug / template_release / editor
 set(NLB_GODOT_TARGET "template_release" CACHE STRING "godot-cpp target: template_debug, template_release or editor")
-target_link_libraries(nlbnavigator PRIVATE godot-cpp::${NLB_GODOT_TARGET} NLBReader)
+target_link_libraries(nlbnavigator PRIVATE godot-cpp::${NLB_GODOT_TARGET} NLBReader NLBPlatforms)
 # godot-cpp передаёт зависящим целям -fno-exceptions, а плеер и cparse используют исключения.
 # Включаем их обратно для файлов модуля свойством самих файлов: оно идёт в командной строке
 # после флагов зависимостей (флаги цели — до них и проигрывают). Сам godot-cpp исключений не бросает

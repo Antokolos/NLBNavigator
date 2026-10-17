@@ -1098,7 +1098,12 @@ void PlayerEngine::renderPage() {
         }
     }
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Achievement) m_events.push_back({Event::Kind::Achievement, item.text});
+        if (item.kind == PlayerContext::OutputKind::Achievement) {
+            Event e{Event::Kind::Achievement, item.text};
+            const auto colon = item.text.find(": ");  // «Получено достижение: ИМЯ»
+            e.id = colon == std::string::npos ? item.text : item.text.substr(colon + 2);
+            m_events.push_back(e);
+        }
     }
 }
 
@@ -1120,7 +1125,12 @@ void PlayerEngine::flushOutput(bool) {
         }
     }
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Achievement) m_events.push_back({Event::Kind::Achievement, item.text});
+        if (item.kind == PlayerContext::OutputKind::Achievement) {
+            Event e{Event::Kind::Achievement, item.text};
+            const auto colon = item.text.find(": ");  // «Получено достижение: ИМЯ»
+            e.id = colon == std::string::npos ? item.text : item.text.substr(colon + 2);
+            m_events.push_back(e);
+        }
     }
 }
 

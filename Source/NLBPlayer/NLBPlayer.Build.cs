@@ -29,7 +29,8 @@ public class NLBPlayer : ModuleRules
 #endif
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG", "Slate", "SlateCore", "InputCore" });
-        PrivateDependencyModuleNames.AddRange(new string[] { "ImageWrapper" });
+        // OnlineSubsystem: достижения, статистика, рекорды (Steam, EOS, консоли — по настройке проекта)
+        PrivateDependencyModuleNames.AddRange(new string[] { "ImageWrapper", "OnlineSubsystem" });
 
         string Src = Path.GetFullPath(Path.Combine(ModuleDirectory, ".."));
         PrivateIncludePaths.AddRange(new string[] {
