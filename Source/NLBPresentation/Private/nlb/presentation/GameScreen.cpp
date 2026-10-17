@@ -127,8 +127,10 @@ void GameScreen::pull() {
     m_seenRevision = m_session.revision();
     if (!choicesMode()) m_showChoices = false;  // страница STANDARD — экрана вариантов нет
     if (before.pageId != m_screen.pageId) {
+        m_reactionThenRoom = true;  // ответ (если есть) — перед описанием новой комнаты
         m_portion = 0;  // новая страница — текст с первой порции
     } else if (!m_screen.reactionText.empty() && flatten(before.reactionText) != flatten(m_screen.reactionText)) {
+        m_reactionThenRoom = false;  // новое действие на той же странице
         // ответ на действие на той же странице — показать его (первая порция ответа)
         size_t pagePortions = 0;
         bool any = false;
@@ -842,6 +844,9 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
                     composed.push_back(em);
                 }
             }
+            // действие привело на новую страницу: после ответа — и её описание, чтобы не потерять
+            // ни то, ни другое (INSTEAD показал бы только комнату, а ответ пропал бы)
+            if (m_reactionThenRoom) composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
         } else {
             composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
         }
