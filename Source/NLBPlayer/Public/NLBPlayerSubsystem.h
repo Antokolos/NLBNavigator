@@ -128,6 +128,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NLB") bool SaveGame(int32 Slot);
     UFUNCTION(BlueprintCallable, Category = "NLB") bool LoadGame(int32 Slot);
     UFUNCTION(BlueprintCallable, Category = "NLB") void SetMuted(bool bMuted);
+    /// Пауза звука книги: экран книги скрыт (игрок в шутере) — музыка замирает, при показе
+    /// продолжается. Экран книги (UNLBScreenWidget) вызывает это сам при появлении и скрытии
+    UFUNCTION(BlueprintCallable, Category = "NLB") void SetAudioPaused(bool bPaused);
 
     /** Переменные новеллы — для мини-игр и сцен, которым передано управление */
     UFUNCTION(BlueprintPure, Category = "NLB") double GetNumber(const FString& Name) const;

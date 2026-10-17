@@ -216,11 +216,16 @@ bool UNLBScreenWidget::EnsureScreen() {
 
 void UNLBScreenWidget::NativeConstruct() {
     Super::NativeConstruct();
+    if (UNLBPlayerSubsystem* P = Player()) P->SetAudioPaused(false);  // книга снова на экране — звук дальше
     EnsureScreen();
 }
 
 void UNLBScreenWidget::NativeDestruct() {
-    if (UNLBPlayerSubsystem* P = Player()) P->SetScreenDriven(false);
+    // книгу скрыли (выход в шутер, внешняя игра) — её музыка не должна играть в шутере
+    if (UNLBPlayerSubsystem* P = Player()) {
+        P->SetScreenDriven(false);
+        P->SetAudioPaused(true);
+    }
     Screen.reset();
     Super::NativeDestruct();
 }

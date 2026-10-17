@@ -29,6 +29,10 @@ public:
     void setMusicVolume(float volume) override;
     void setEffectsVolume(float volume) override;
 
+    /// Пауза звука книги (книга скрыта — игрок в шутере): музыка замирает на месте и продолжается
+    /// при возврате; новые звуки во время паузы не начинаются (музыка запустится, но на паузе)
+    void SetPaused(bool bPaused);
+
 private:
     USoundBase* Load(const nlb::presentation::MediaRef& Ref, bool bLoop);
 
@@ -40,4 +44,5 @@ private:
     TStrongObjectPtr<UAudioComponent> Music;
     TStrongObjectPtr<USoundBase> MusicSound;
     float EffectsVolume = 1.0f;
+    bool bPaused = false;
 };
