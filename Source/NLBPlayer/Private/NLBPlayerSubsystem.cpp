@@ -7,6 +7,8 @@
 
 #include "NLBEngineEvents.h"
 #include "UnrealAudioBackend.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "nlb/util/BookPack.h"
 #include "nlb/util/FileUtils.h"
 #include "nlb/presentation/MediaSource.h"
@@ -67,6 +69,9 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
         return false;
     }
     Audio->SetMedia(&Session->media());
+    // журнал прохождения по ключу запуска -nlblog=<файл>
+    FString LogPath;
+    if (FParse::Value(FCommandLine::Get(), TEXT("nlblog="), LogPath)) SetLogFile(LogPath);
     // тема игры, зашитая в пакет
     const std::string Theme = FileUtils::combinePath(Options.bookPath, BookPack::THEME_DIR);
     ThemeDir = FileUtils::isDirectory(Theme) ? S(Theme) : FString();
@@ -175,6 +180,15 @@ void UNLBPlayerSubsystem::ClearSelection() { if (Session) { Session->clearSelect
 void UNLBPlayerSubsystem::Restart() { if (Session) { Session->restart(); EmitEvents(); } }
 void UNLBPlayerSubsystem::SetMuted(bool bMuted) { if (Session) Session->setMuted(bMuted); }
 void UNLBPlayerSubsystem::SetAudioPaused(bool bPaused) { if (Audio) Audio->SetPaused(bPaused); }
+
+bool UNLBPlayerSubsystem::SetLogFile(const FString& Path) {
+    if (!Session) return false;
+    std::string Error;
+    const bool bOk = Session->setLogFile(U(Path), Error);
+    if (!bOk) UE_LOG(LogTemp, Warning, TEXT("NLB: %s"), *S(Error));
+    else if (!Path.IsEmpty()) UE_LOG(LogTemp, Log, TEXT("NLB: журнал прохождения — %s"), *Path);
+    return bOk;
+}
 
 bool UNLBPlayerSubsystem::SaveGame(int32 Slot) {
     std::string Error;

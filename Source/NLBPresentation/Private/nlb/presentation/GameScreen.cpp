@@ -380,8 +380,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
             case Hit::Kind::MenuButton: m_menu = Menu::Main; return;
             case Hit::Kind::Choice:
                 if (hit.index == -1) {
-                    m_session.engine().look();  // заголовок комнаты: снова описание сцены
-                    m_session.refresh();
+                    m_session.look();  // заголовок комнаты: снова описание сцены
                 } else {
                     m_session.choose(hit.index);
                 }

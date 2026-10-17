@@ -56,13 +56,15 @@ int main(int argc, char** argv) {
         else if (a == "--choices-screen") choicesScreen = 1;
         else if (a == "--choices-in-text") choicesScreen = 0;
         else if (a == "--fullscreen") options.fullscreen = true;
+        else if (a == "--log" && i + 1 < args.size()) options.logPath = args[++i];
+        else if (a.rfind("--log=", 0) == 0) options.logPath = a.substr(6);
         else if (a == "--script" && i + 1 < args.size()) options.scriptPath = args[++i];
         else if (a == "--window" && i + 1 < args.size()) std::sscanf(args[++i].c_str(), "%dx%d", &options.windowWidth, &options.windowHeight);
         else positional.push_back(a);
     }
     if (positional.empty()) {
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
-                     " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen]" << std::endl;
+                     " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--log <file>]" << std::endl;
         std::cout << "  vn (default)  - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
         std::cout << "  standard      - as exported to INSTEAD; choices at the end of the text by default" << std::endl;
         return 1;

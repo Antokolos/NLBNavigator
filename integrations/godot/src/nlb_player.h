@@ -36,6 +36,9 @@ public:
     bool get_visual_novel() const { return m_visualNovel; }
     void set_external_games(const godot::PackedStringArray& games) { m_externalGames = games; }
     godot::PackedStringArray get_external_games() const { return m_externalGames; }
+    /// Журнал прохождения, как --log у консольного плеера (путь на диске; пусто — без журнала)
+    void set_log_path(const godot::String& path);
+    godot::String get_log_path() const { return m_logPath; }
     void set_autostart(bool on) { m_autostart = on; }
     bool get_autostart() const { return m_autostart; }
 
@@ -81,6 +84,7 @@ private:
     bool m_visualNovel = true;
     bool m_autostart = true;
     godot::PackedStringArray m_externalGames;
+    godot::String m_logPath;
     std::unique_ptr<GodotAudioBackend> m_audio;
     std::unique_ptr<nlb::presentation::Session> m_session;
     uint64_t m_lastRevision = 0;

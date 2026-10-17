@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include <memory>
 #include <optional>
 #include <string>
@@ -70,6 +71,12 @@ public:
     // ---- служебное
     /// Забрать события движка и обновить снимок — после команд, отданных напрямую engine()
     void refresh() { afterCommand(); }
+    /// «Осмотреться»: снова описание сцены (заголовок комнаты в INSTEAD)
+    void look();
+    /// Журнал прохождения, как --log у консольного плеера: что было на экране (заголовок, текст,
+    /// объекты, инвентарь, переходы) и что выбрал игрок — после каждой команды. Пустой путь —
+    /// закрыть журнал. Если книга уже открыта, сразу записывается текущий экран
+    bool setLogFile(const std::string& path, std::string& error);
     std::vector<PlayerEngine::Event> takeEvents();
     bool finishExternalGame();
     void restart();
@@ -85,6 +92,8 @@ public:
 private:
     void afterCommand();
     std::string slotPath(int slot) const;
+    void logAction(const std::string& action);
+    void logScreen();
 
     Options m_options;
     IAudioBackend* m_audio = nullptr;
@@ -96,6 +105,9 @@ private:
     std::vector<PlayerEngine::Event> m_pending;
     std::string m_selected;
     uint64_t m_localRevision = 0;  ///< выбор предмета меняет вид, но не снимок движка
+    std::unique_ptr<std::ofstream> m_log;  ///< журнал прохождения (setLogFile)
+    std::string m_logPage;                 ///< страница, описанная в журнале последней
+    uint64_t m_logRevision = 0;            ///< ревизия снимка, записанного последним
 };
 
 }  // namespace nlb::presentation
