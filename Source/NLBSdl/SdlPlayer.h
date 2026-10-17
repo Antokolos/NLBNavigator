@@ -33,6 +33,7 @@ public:
         std::string achievementsPath;
         std::string scriptPath;                  ///< для тестов: команды и снимки экрана
         int windowWidth = 1280, windowHeight = 720;
+        bool fullscreen = false;                 ///< --fullscreen: сразу во весь экран (F11 — переключить)
         /// Варианты отдельным экраном: окно показывает только текст, а дочитав его (пробел или
         /// щелчок), игрок видит список вариантов посередине экрана. Иначе — варианты в окне текста
         bool choicesScreen = false;

@@ -113,6 +113,7 @@ struct Paragraph {
     Style style = Style::Normal;   ///< Title — заголовок комнаты (цвет ссылки), Emphasis — курсив (txtem)
     bool centered = false;         ///< по центру (заголовок, пути — как в INSTEAD)
     float spacing = 0;             ///< пустой абзац: отступ в пикселях (0 — полстроки)
+    bool joinPrevious = false;     ///< продолжает предыдущий абзац через пробел (следующий ответ)
 };
 
 /// Вариант перехода (ссылка страницы, служебные ссылки модулей и autowired)

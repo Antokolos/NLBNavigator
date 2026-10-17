@@ -98,6 +98,11 @@ bool SdlPlayer::init() {
     go.clock = [] { return static_cast<uint64_t>(SDL_GetTicks()); };
     m_screen = std::make_unique<GameScreen>(*m_session, go);
     std::cerr << "Оформление: " << m_screen->describeThemes() << std::endl;
+    // Полный экран: пункт меню, F11 и Alt+Enter; экран книги вписывается в него с полями, как в окне
+    m_screen->setFullscreenHandler(
+        [this](bool on) { SDL_SetWindowFullscreen(m_window, on); },
+        [this] { return (SDL_GetWindowFlags(m_window) & SDL_WINDOW_FULLSCREEN) != 0; });
+    if (m_options.fullscreen) SDL_SetWindowFullscreen(m_window, true);
     return true;
 }
 
@@ -164,7 +169,9 @@ void SdlPlayer::handleEvent(SDL_Event& e) {
         case SDL_EVENT_KEY_DOWN: {
             const SDL_Keycode k = e.key.key;
             using Key = GameScreen::Key;
-            if (k == SDLK_ESCAPE) m_screen->key(Key::Escape);
+            if (k == SDLK_F11 || (k == SDLK_RETURN && (e.key.mod & SDL_KMOD_ALT))) {
+                SDL_SetWindowFullscreen(m_window, (SDL_GetWindowFlags(m_window) & SDL_WINDOW_FULLSCREEN) == 0);
+            } else if (k == SDLK_ESCAPE) m_screen->key(Key::Escape);
             else if (k == SDLK_SPACE) m_screen->key(Key::Space);
             else if (k == SDLK_RETURN) m_screen->key(Key::Enter);
             else if (k == SDLK_PAGEUP) m_screen->key(Key::PageUp);

@@ -1,5 +1,6 @@
 #include "nlb_screen.h"
 
+#include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/font_file.hpp>
 #include <godot_cpp/classes/image.hpp>
@@ -70,6 +71,15 @@ bool NLBScreen::ensureScreen() {
     m_screen->setEventListener([p](const std::vector<PlayerEngine::Event>& events) { p->dispatch_events(events); });
     // внешнюю игру ведёт сама игра (сигнал external_game) — сообщение «её нет» не нужно
     m_screen->setExternalGameHandler([](const std::string&) {});
+    // Полный экран — пункт меню книги (окно Godot)
+    m_screen->setFullscreenHandler(
+        [](bool on) {
+            DisplayServer::get_singleton()->window_set_mode(on ? DisplayServer::WINDOW_MODE_FULLSCREEN : DisplayServer::WINDOW_MODE_WINDOWED);
+        },
+        [] {
+            const auto mode = DisplayServer::get_singleton()->window_get_mode();
+            return mode == DisplayServer::WINDOW_MODE_FULLSCREEN || mode == DisplayServer::WINDOW_MODE_EXCLUSIVE_FULLSCREEN;
+        });
     p->set_screen_driven(true);
     return true;
 }
