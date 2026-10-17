@@ -93,6 +93,8 @@ public:
     std::string describeThemes() const;
     /// Сейчас показан экран вариантов (режим choicesScreen)
     bool choicesScreenShown() const { return m_showChoices; }
+    /// Показано сообщение (конец игры, внешняя игра, ошибка) — для тестов
+    bool messageShown() const { return m_menu == Menu::Message; }
     /// Игрок выбрал «Выйти» в меню
     bool quitRequested() const { return m_quit; }
     void clearQuitRequest() { m_quit = false; }

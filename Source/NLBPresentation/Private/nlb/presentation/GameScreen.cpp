@@ -207,7 +207,11 @@ void GameScreen::afterCommand() {
         }
     } else {
         m_externalNotified.clear();
-        if (m_screen.finished) {
+        // Конец игры: сообщение «начать заново» — не сразу, а когда текст последней страницы
+        // дочитан, и только в режиме экрана вариантов (VN, текст порциями: advanceText). В
+        // режиме ссылок в тексте его нет вовсе, как в INSTEAD: игрок читает последнюю страницу,
+        // а начать заново можно из меню. Страница без текста — сразу
+        if (m_screen.finished && choicesMode() && m_screen.pageText.empty() && m_screen.reactionText.empty()) {
             m_message = "Конец игры.\nЩелчок — начать заново.";
             m_menu = Menu::Message;
         }
@@ -432,7 +436,13 @@ bool GameScreen::advanceText() {
         m_scroll = 0;
         return true;
     }
-    // текст дочитан: единственный тривиальный вариант («Далее») — сразу переход, иначе варианты
+    // текст дочитан: конец игры — сообщение «начать заново»
+    if (m_screen.finished && std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
+        m_message = "Конец игры.\nЩелчок — начать заново.";
+        m_menu = Menu::Message;
+        return true;
+    }
+    // единственный тривиальный вариант («Далее») — сразу переход, иначе варианты
     const int trivial = singleTrivialChoice();
     if (trivial >= 0) {
         m_session.choose(trivial);
