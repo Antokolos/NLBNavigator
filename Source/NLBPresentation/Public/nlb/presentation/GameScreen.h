@@ -192,6 +192,9 @@ private:
     /// paginator INSTEAD); на страницах STANDARD — всегда варианты в тексте с прокруткой
     bool choicesMode() const { return m_choicesScreen && m_screen.layout == Layout::VisualNovel; }
     size_t m_portion = 0;            ///< текущая порция текста (режим экрана вариантов)
+    /// Действие привело на другую страницу (ответ «Изучив панно…» и сразу «Больно вам, больно!»):
+    /// показать и ответ, и описание новой комнаты (INSTEAD показал бы только комнату)
+    bool m_reactionThenRoom = false;
     bool m_morePortions = false;
     Menu m_menu = Menu::None;
     std::string m_message;

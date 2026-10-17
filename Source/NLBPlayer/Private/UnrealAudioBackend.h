@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/StrongObjectPtr.h"
 #include "UObject/WeakObjectPtr.h"
 #include "UObject/WeakObjectPtrTemplates.h"
 #include "nlb/presentation/AudioBackend.h"
@@ -33,6 +34,10 @@ private:
 
     TWeakObjectPtr<UObject> Context;
     const nlb::presentation::IMediaSource* MediaSource;
-    TWeakObjectPtr<UAudioComponent> Music;
+    // Музыка держится сильными ссылками: компонент из SpawnSound2D без владельца-актора и
+    // созданный в коде USoundWaveProcedural иначе ничем не удерживаются, и сборщик мусора
+    // Unreal (раз в ~минуту) удалял их посреди игры — музыка обрывалась «через какое-то время»
+    TStrongObjectPtr<UAudioComponent> Music;
+    TStrongObjectPtr<USoundBase> MusicSound;
     float EffectsVolume = 1.0f;
 };
