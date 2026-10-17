@@ -57,7 +57,13 @@ void Session::afterCommand() {
     if (m_director) m_director->apply(events);
     m_pending.insert(m_pending.end(), events.begin(), events.end());
     m_screen = m_engine->screen();
+    if (m_platforms) m_platforms->onCommand(events, *m_engine, m_screen.finished);
     logScreen();
+}
+
+std::string Session::platformConfigPath() const {
+    const std::string path = FileUtils::combinePath(m_options.bookPath, "platform.ini");
+    return FileUtils::exists(path) ? path : std::string();
 }
 
 // ============================================================================ журнал прохождения
@@ -158,6 +164,7 @@ void Session::logScreen() {
 
 void Session::advance(int milliseconds) {
     if (m_engine && m_engine->advanceTime(milliseconds) > 0) afterCommand();
+    if (m_platforms) m_platforms->tick();  // ответы площадок (вход игрока, поиск таблиц рекордов)
 }
 
 bool Session::choose(int choiceIndex) {
@@ -237,6 +244,7 @@ bool Session::finishExternalGame() {
 }
 
 void Session::restart() {
+    if (m_platforms) m_platforms->reset();
     logAction("Начать заново");
     m_logPage.clear();
     m_logRevision = static_cast<uint64_t>(-1);

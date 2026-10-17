@@ -5,7 +5,10 @@
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+
+#include "PlatformFactory.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -105,6 +108,9 @@ void NLBPlayer::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "book_path", PROPERTY_HINT_FILE, "*.nlbpack"), "set_book_path", "get_book_path");
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "visual_novel"), "set_visual_novel", "get_visual_novel");
     ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "external_games"), "set_external_games", "get_external_games");
+    ClassDB::bind_method(D_METHOD("set_platforms", "platforms"), &NLBPlayer::set_platforms);
+    ClassDB::bind_method(D_METHOD("get_platforms"), &NLBPlayer::get_platforms);
+    ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "platforms"), "set_platforms", "get_platforms");
     ClassDB::bind_method(D_METHOD("set_log_path", "path"), &NLBPlayer::set_log_path);
     ClassDB::bind_method(D_METHOD("get_log_path"), &NLBPlayer::get_log_path);
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "log_path", PROPERTY_HINT_GLOBAL_SAVE_FILE, "*.log,*.txt"), "set_log_path", "get_log_path");
@@ -183,6 +189,21 @@ bool NLBPlayer::open() {
     }
     m_audio->setMedia(&m_session->media());
     if (!m_logPath.is_empty()) set_log_path(m_logPath);  // журнал прохождения — вместе с книгой
+    // игровые площадки: достижения, статистика, рекорды книги (platform.ini книги)
+    if (!m_platforms.is_empty()) {
+        const nlb::platform::PlatformConfig config = nlb::platform::PlatformConfig::load(m_session->platformConfigPath());
+        std::vector<std::string> args;
+        const PackedStringArray cmd = OS::get_singleton()->get_cmdline_args();
+        for (int64_t i = 0; i < cmd.size(); ++i) args.emplace_back(cmd[i].utf8().get_data());
+        auto bridge = std::make_unique<nlb::platform::PlatformBridge>(config);
+        for (int64_t i = 0; i < m_platforms.size(); ++i) {
+            std::string perror;
+            auto services = nlb::platform::createPlatformServices(std::string(m_platforms[i].utf8().get_data()), config, args, perror);
+            if (!perror.empty()) UtilityFunctions::push_warning("NLBPlayer: ", s(perror));
+            bridge->add(std::move(services));
+        }
+        m_session->setPlatforms(std::move(bridge));
+    }
     m_lastRevision = m_session->revision();
     emitEvents();
     emit_signal("screen_changed");

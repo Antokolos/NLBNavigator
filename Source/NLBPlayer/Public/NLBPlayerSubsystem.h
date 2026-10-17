@@ -134,6 +134,10 @@ public:
     /// Журнал прохождения, как --log у консольного плеера (пусто — закрыть). Можно и ключом
     /// запуска игры: -nlblog=<файл> — журнал откроется вместе с книгой
     UFUNCTION(BlueprintCallable, Category = "NLB") bool SetLogFile(const FString& Path);
+    /// Достижения, статистика и рекорды книги — на игровую площадку через OnlineSubsystem (Steam,
+    /// EOS, консоли — какую настроит проект). Включается само, если рядом с книгой (или в пакете)
+    /// есть platform.ini. Ключ запуска -nlbplatformlog=<файл> дублирует вызовы в журнал
+    UFUNCTION(BlueprintCallable, Category = "NLB") bool IsPlatformAvailable() const;
 
     /** Переменные новеллы — для мини-игр и сцен, которым передано управление */
     UFUNCTION(BlueprintPure, Category = "NLB") double GetNumber(const FString& Name) const;

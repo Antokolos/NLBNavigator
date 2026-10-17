@@ -1,5 +1,7 @@
 #include "SdlPlayer.h"
 
+#include "PlatformFactory.h"
+
 #include <SDL3_image/SDL_image.h>
 
 #include <algorithm>
@@ -77,6 +79,20 @@ bool SdlPlayer::init() {
     if (!m_session->open(so, error)) {
         std::cerr << "Cannot load book: " << error << std::endl;
         return false;
+    }
+    // Игровые площадки: достижения, статистика и рекорды книги — в Steam, Epic и т. д.
+    if (!m_options.platforms.empty()) {
+        const std::string configPath = !m_options.platformConfig.empty() ? m_options.platformConfig : m_session->platformConfigPath();
+        nlb::platform::PlatformConfig config = nlb::platform::PlatformConfig::load(configPath);
+        auto bridge = std::make_unique<nlb::platform::PlatformBridge>(config);
+        for (const auto& name : m_options.platforms) {
+            std::string perror;
+            auto services = nlb::platform::createPlatformServices(name, config, m_options.args, perror);
+            if (!perror.empty()) std::cerr << "Площадка " << name << ": " << perror << std::endl;
+            bridge->add(std::move(services));
+        }
+        std::cerr << "Площадки: настройки " << (configPath.empty() ? "нет (platform.ini)" : configPath) << std::endl;
+        m_session->setPlatforms(std::move(bridge));
     }
     if (!m_options.logPath.empty() && !m_session->setLogFile(m_options.logPath, error)) {
         std::cerr << "Warning: " << error << std::endl;

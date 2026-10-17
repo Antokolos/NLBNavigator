@@ -7,6 +7,7 @@
 
 #include "NLBEngineEvents.h"
 #include "UnrealAudioBackend.h"
+#include "NLBOnlinePlatformServices.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "nlb/util/BookPack.h"
@@ -69,6 +70,19 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
         return false;
     }
     Audio->SetMedia(&Session->media());
+    // Игровая площадка (OnlineSubsystem): если у книги есть platform.ini
+    {
+        const std::string ConfigPath = Session->platformConfigPath();
+        FString PlatformLog;
+        const bool bLog = FParse::Value(FCommandLine::Get(), TEXT("nlbplatformlog="), PlatformLog);
+        if (!ConfigPath.empty() || bLog) {
+            auto Bridge = std::make_unique<nlb::platform::PlatformBridge>(nlb::platform::PlatformConfig::load(ConfigPath));
+            Bridge->add(std::make_unique<FNLBOnlinePlatformServices>(0));
+            if (bLog) Bridge->add(std::make_unique<nlb::platform::LogPlatformServices>(U(PlatformLog)));
+            Session->setPlatforms(std::move(Bridge));
+            UE_LOG(LogTemp, Log, TEXT("NLB: площадка — OnlineSubsystem (%s)"), ConfigPath.empty() ? TEXT("без platform.ini") : *S(ConfigPath));
+        }
+    }
     // журнал прохождения по ключу запуска -nlblog=<файл>
     FString LogPath;
     if (FParse::Value(FCommandLine::Get(), TEXT("nlblog="), LogPath)) SetLogFile(LogPath);
@@ -180,6 +194,12 @@ void UNLBPlayerSubsystem::ClearSelection() { if (Session) { Session->clearSelect
 void UNLBPlayerSubsystem::Restart() { if (Session) { Session->restart(); EmitEvents(); } }
 void UNLBPlayerSubsystem::SetMuted(bool bMuted) { if (Session) Session->setMuted(bMuted); }
 void UNLBPlayerSubsystem::SetAudioPaused(bool bPaused) { if (Audio) Audio->SetPaused(bPaused); }
+
+bool UNLBPlayerSubsystem::IsPlatformAvailable() const {
+    if (!Session || !Session->platforms()) return false;
+    for (const auto& Service : Session->platforms()->services()) if (Service->available()) return true;
+    return false;
+}
 
 bool UNLBPlayerSubsystem::SetLogFile(const FString& Path) {
     if (!Session) return false;

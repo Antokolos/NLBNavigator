@@ -35,6 +35,9 @@ public:
         int windowWidth = 1280, windowHeight = 720;
         bool fullscreen = false;                 ///< --fullscreen: сразу во весь экран (F11 — переключить)
         std::string logPath;                     ///< --log: журнал прохождения, как у nlb_main
+        std::vector<std::string> platforms;      ///< --platform steam|epic|log[:файл] (можно несколько)
+        std::string platformConfig;              ///< --platform-config: platform.ini (иначе — из книги)
+        std::vector<std::string> args;           ///< командная строка (EOS: код входа от Epic Games Launcher)
         /// Варианты отдельным экраном: окно показывает только текст, а дочитав его (пробел или
         /// щелчок), игрок видит список вариантов посередине экрана. Иначе — варианты в окне текста
         bool choicesScreen = false;

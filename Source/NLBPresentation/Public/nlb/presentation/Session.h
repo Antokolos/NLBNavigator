@@ -8,6 +8,7 @@
 
 #include "nlb/domain/PlayerEngine.h"
 #include "nlb/presentation/ScreenModel.h"
+#include "nlb/platform/PlatformBridge.h"
 
 class NonLinearBookImpl;
 
@@ -77,6 +78,12 @@ public:
     /// объекты, инвентарь, переходы) и что выбрал игрок — после каждой команды. Пустой путь —
     /// закрыть журнал. Если книга уже открыта, сразу записывается текущий экран
     bool setLogFile(const std::string& path, std::string& error);
+    /// Игровые площадки (Steam, Epic, консоли…): достижения, статистика, рекорды книги уходят
+    /// туда после каждой команды. nullptr — отключить
+    void setPlatforms(std::unique_ptr<nlb::platform::PlatformBridge> bridge) { m_platforms = std::move(bridge); }
+    nlb::platform::PlatformBridge* platforms() const { return m_platforms.get(); }
+    /// platform.ini книги (рядом с книгой или в пакете), если есть; иначе пусто
+    std::string platformConfigPath() const;
     std::vector<PlayerEngine::Event> takeEvents();
     bool finishExternalGame();
     void restart();
@@ -106,6 +113,7 @@ private:
     std::string m_selected;
     uint64_t m_localRevision = 0;  ///< выбор предмета меняет вид, но не снимок движка
     std::unique_ptr<std::ofstream> m_log;  ///< журнал прохождения (setLogFile)
+    std::unique_ptr<nlb::platform::PlatformBridge> m_platforms;
     std::string m_logPage;                 ///< страница, описанная в журнале последней
     uint64_t m_logRevision = 0;            ///< ревизия снимка, записанного последним
 };
