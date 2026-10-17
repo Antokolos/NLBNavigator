@@ -178,6 +178,9 @@ struct ScreenModel {
     Layout layout = Layout::Standard;
     std::string pageId;
     std::string caption;            ///< заголовок страницы (если показывается)
+    /// Название комнаты, как nam в экспорте STEAD: заголовок страницы (если показывается), иначе
+    /// название модуля (книги), где она лежит, иначе «...» — INSTEAD выводит его над текстом
+    std::string roomTitle;
 
     ImageRef pageImage;             ///< картинка страницы
     bool imageIsBackground = false; ///< imagebg: картинка — фон всего экрана

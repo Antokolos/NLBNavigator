@@ -608,9 +608,11 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
         y += lineHeight;
     };
     for (const auto& p : text) {
-        // курсив (txtem) — третьим начертанием шрифта темы, если оно есть
-        const FontRef pf = p.style == Paragraph::Style::Emphasis && !colors.fontItalicFile.empty()
-                               ? FontRef{colors.fontItalicFile, font.size} : font;
+        // курсив (txtem) — третьим начертанием шрифта темы, заголовок комнаты — вторым (полужирным),
+        // как в INSTEAD; если начертания нет — обычное
+        FontRef pf = font;
+        if (p.style == Paragraph::Style::Emphasis && !colors.fontItalicFile.empty()) pf = FontRef{colors.fontItalicFile, font.size};
+        if (p.style == Paragraph::Style::Title && !colors.fontBoldFile.empty()) pf = FontRef{colors.fontBoldFile, font.size};
         std::vector<Word> line;
         float lineW = 0;
         bool any = false;
@@ -733,9 +735,10 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     std::vector<Paragraph> composed;
     if (instead) {
         const ScreenTheme& st = m_standardTheme;
-        if (!m_screen.caption.empty()) {
+        if (!m_screen.roomTitle.empty()) {
+            // название комнаты: заголовок страницы, а без него — название модуля (nam в экспорте)
             Paragraph title;
-            title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.caption, "-1"});
+            title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.roomTitle, "-1"});
             title.style = Paragraph::Style::Title;
             title.centered = true;
             composed.push_back(title);

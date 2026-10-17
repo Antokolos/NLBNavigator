@@ -1614,6 +1614,15 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     m.layout = vn ? Layout::VisualNovel : Layout::Standard;
     m.pageId = page->getId();
     if (!vn && page->isUseCaption()) m.caption = trim(displayText(m_interpreter->expandText(page->getCaption())));
+    if (!vn) {
+        // STEADExportManager.decoratePageCaption: nam = заголовок или название модуля
+        // (getNonEmptyTitle: у модуля без названия — название родителя; совсем без — «...»)
+        m.roomTitle = m.caption;
+        for (const NonLinearBook* b = page->getCurrentNLB(); m.roomTitle.empty() && b; b = b->getParentNLB()) {
+            m.roomTitle = trim(b->getTitle());
+        }
+        if (m.roomTitle.empty()) m.roomTitle = "...";
+    }
     if (!m_rootBook->isSuppressMedia()) m.pageImage = imageRefFor(page->getId(), page->isImageAnimated(), true);
     m.imageIsBackground = page->isImageBackground();
 

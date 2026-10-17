@@ -171,6 +171,7 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
         if (has(prefix + ".fnt.name")) {
             w->fontFile = path(prefix + ".fnt.name", firstFontVariant(str(prefix + ".fnt.name")));
             w->fontItalicFile = path(prefix + ".fnt.name", fontVariant(str(prefix + ".fnt.name"), 2));
+            w->fontBoldFile = path(prefix + ".fnt.name", fontVariant(str(prefix + ".fnt.name"), 1));
         }
     }
     if (has("inv.mode")) {
@@ -217,6 +218,7 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
             Window& w = (*it)[1] == "win" ? t.text : t.inventory;
             w.fontFile = FileUtils::combinePath(dir, firstFontVariant((*it)[2]));
             w.fontItalicFile = FileUtils::combinePath(dir, fontVariant((*it)[2], 2));
+            w.fontBoldFile = FileUtils::combinePath(dir, fontVariant((*it)[2], 1));
         }
     }
     return t;
