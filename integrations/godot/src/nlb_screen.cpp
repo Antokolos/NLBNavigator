@@ -161,7 +161,7 @@ Ref<Texture2D> NLBScreen::texture(const std::string& path) {
     Ref<Texture2D> tex;
     std::string data;
     // полный путь (картинки темы) — с диска или из пакета; иначе — медиа книги через NLBPlayer
-    if (path.find('/') != std::string::npos && FileUtils::exists(path) && !FileUtils::isDirectory(path) && FileUtils::readFile(path, data)) {
+    if (path.find_first_of("/\\") != std::string::npos && FileUtils::exists(path) && !FileUtils::isDirectory(path) && FileUtils::readFile(path, data)) {
         PackedByteArray bytes;
         bytes.resize(static_cast<int64_t>(data.size()));
         memcpy(bytes.ptrw(), data.data(), data.size());
