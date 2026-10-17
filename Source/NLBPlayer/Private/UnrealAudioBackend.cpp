@@ -71,7 +71,8 @@ void FUnrealAudioBackend::playMusic(const nlb::presentation::MediaRef& track, bo
     USoundBase* Sound = Load(track, loop);
     if (!Ctx || !Sound) return;
     if (Music.IsValid()) Music->Stop();
-    Music = UGameplayStatics::SpawnSound2D(Ctx, Sound, 1.0f, 1.0f, 0.0f, nullptr, true, false);
+    MusicSound.Reset(Sound);
+    Music.Reset(UGameplayStatics::SpawnSound2D(Ctx, Sound, 1.0f, 1.0f, 0.0f, nullptr, true, false));
     if (Music.IsValid() && fadeInMs > 0) Music->FadeIn(fadeInMs / 1000.0f);
 }
 
