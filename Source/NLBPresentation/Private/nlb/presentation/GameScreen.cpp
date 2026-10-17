@@ -1012,7 +1012,12 @@ void GameScreen::renderVisualNovel() {
     if (imageSize(m_screen.pageImage, w, h)) m_r->drawImage(framePath(m_screen.pageImage), {0, 0, SCREEN_W, SCREEN_H}, 1.0f);
     // На экране вариантов объектов нет — как в INSTEAD, где на время выбора остаются только фон и кнопка меню
     renderSceneObjects(t, true, m_showChoices);
-    const bool hasText = !m_screen.pageText.empty() || !m_screen.reactionText.empty() || !m_screen.choices.empty();
+    // Полоса текста — только если в ней есть что показать: текст страницы или ответ, а в режиме
+    // ссылок в тексте — и переходы. На странице без текста в режиме экрана вариантов (переходы —
+    // отдельным экраном) полупрозрачной подложки нет, картинка видна целиком
+    const bool anyText = std::any_of(m_screen.pageText.begin(), m_screen.pageText.end(), [](const Paragraph& p) { return !p.runs.empty(); })
+                         || std::any_of(m_screen.reactionText.begin(), m_screen.reactionText.end(), [](const Paragraph& p) { return !p.runs.empty(); });
+    const bool hasText = anyText || (!choicesMode() && !m_screen.choices.empty());
     if (m_showChoices) {
         renderChoicesScreen();
     } else if (hasText) {
