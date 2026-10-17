@@ -437,6 +437,14 @@ bool GameScreen::advanceText() {
     return advanceToChoices();
 }
 
+std::string GameScreen::describeThemes() const {
+    auto orNone = [](const std::string& s) { return s.empty() ? std::string("нет") : s; };
+    const ScreenTheme& t = m_standardTheme;
+    return "тема игры: " + orNone(m_options.themeDir) + "; базовая тема: " + orNone(m_options.baseThemeDir)
+        + "; фон страниц STANDARD (gfx/bg.jpg): " + orNone(t.pageBackground)
+        + "; scr.gfx.bg: " + orNone(t.backgroundImage) + "; шрифт текста: " + orNone(t.text.fontFile);
+}
+
 bool GameScreen::menuItemCenter(int index, float& x, float& y) const {
     for (const auto& h : m_hits) {
         if (h.kind == Hit::Kind::Menu && h.index == index) {
@@ -736,7 +744,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         Paragraph ways;
         ways.centered = true;
         for (const auto& c : m_screen.choices) {
-            if (!c.enabled) continue;
+            if (!c.enabled || c.inlineLink) continue;  // реплики и «Далее» — внизу текста (xdsc)
             if (!ways.runs.empty()) ways.runs.push_back({TextRun::Kind::Plain, " | ", ""});
             ways.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
         }
@@ -755,6 +763,20 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         }
         if (!m_screen.objectsText.empty()) {
             composed.insert(composed.end(), m_screen.objectsText.begin(), m_screen.objectsText.end());
+        }
+        // xdsc экспорта: после описаний объектов — с новой строки alt-тексты недоступных ссылок,
+        // затем ссылки в тексте (реплики диалога, «Далее»), каждая отдельной строкой
+        for (const auto& c : m_screen.choices) {
+            if (c.enabled || c.altText.empty()) continue;
+            Paragraph alt;
+            alt.runs.push_back({TextRun::Kind::Plain, c.altText, ""});
+            composed.push_back(alt);
+        }
+        for (const auto& c : m_screen.choices) {
+            if (!c.enabled || !c.inlineLink) continue;
+            Paragraph link;
+            link.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
+            composed.push_back(link);
         }
         composed.insert(composed.end(), m_screen.modText.begin(), m_screen.modText.end());
         if (!ways.runs.empty() && st.waysBottom) composed.push_back(ways);

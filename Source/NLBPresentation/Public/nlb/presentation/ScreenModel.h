@@ -120,6 +120,7 @@ struct Choice {
     std::string text;
     bool enabled = true;      ///< false — ссылка с ограничением: показывается её alt-текст
     bool trivial = false;     ///< текст по умолчанию («Далее»/«Next»): просто «продолжить»
+    bool inlineLink = false;  ///< в стандартной теме — ссылка внизу текста (xact), а не путь
     std::string altText;
 };
 

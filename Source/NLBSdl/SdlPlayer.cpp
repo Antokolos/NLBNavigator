@@ -97,6 +97,7 @@ bool SdlPlayer::init() {
     go.soundAvailable = m_audio != nullptr;
     go.clock = [] { return static_cast<uint64_t>(SDL_GetTicks()); };
     m_screen = std::make_unique<GameScreen>(*m_session, go);
+    std::cerr << "Оформление: " << m_screen->describeThemes() << std::endl;
     return true;
 }
 
