@@ -78,6 +78,9 @@ bool SdlPlayer::init() {
         std::cerr << "Cannot load book: " << error << std::endl;
         return false;
     }
+    if (!m_options.logPath.empty() && !m_session->setLogFile(m_options.logPath, error)) {
+        std::cerr << "Warning: " << error << std::endl;
+    }
     const std::string title = "NLBNavigator — " + m_session->title();
     if (!SDL_CreateWindowAndRenderer(title.c_str(), m_options.windowWidth, m_options.windowHeight,
                                      SDL_WINDOW_RESIZABLE, &m_window, &m_renderer)) {
@@ -357,20 +360,25 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     if (starts("c:")) {
         ok = false;
         for (size_t i = 0; i < v.choices.size(); ++i) {
-            if (v.choices[i].text.rfind(line.substr(2), 0) == 0) { ok = engine.choose(i); break; }
+            if (v.choices[i].text.rfind(line.substr(2), 0) == 0) { ok = m_session->choose(static_cast<int>(i)); break; }
         }
     } else if (starts("o:")) {
+        // команды сценария — через Session, как щелчки игрока (журнал прохождения их видит)
         const std::string id = findObj(v.sceneObjects, line.substr(2));
-        ok = !id.empty() && engine.actOnObject(id);
+        m_session->clearSelection();
+        ok = !id.empty() && m_session->clickObject(id);
     } else if (starts("i:")) {
         const std::string id = findObj(v.inventory, line.substr(2));
-        ok = !id.empty() && engine.clickInventory(id);
+        m_session->clearSelection();
+        ok = !id.empty() && m_session->clickItem(id) && m_session->clickItem(id);  // выбрать и осмотреть
     } else if (starts("u:")) {
         const auto gt = line.find('>');
         const std::string a = findObj(v.inventory, line.substr(2, gt - 2));
-        std::string b = findObj(v.sceneObjects, line.substr(gt + 1));
-        if (b.empty()) b = findObj(v.inventory, line.substr(gt + 1));
-        ok = !a.empty() && !b.empty() && engine.use(a, b);
+        const std::string bObj = findObj(v.sceneObjects, line.substr(gt + 1));
+        const std::string bItem = bObj.empty() ? findObj(v.inventory, line.substr(gt + 1)) : "";
+        m_session->clearSelection();
+        ok = !a.empty() && (!bObj.empty() || !bItem.empty()) && m_session->clickItem(a)
+             && (!bObj.empty() ? m_session->clickObject(bObj) : m_session->clickItem(bItem));
     } else if (starts("start:")) {
         engine.start(line.substr(6));  // начать с указанной страницы (проверка отдельных сцен)
     } else if (starts("set:")) {

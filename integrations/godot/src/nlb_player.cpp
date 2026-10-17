@@ -105,6 +105,9 @@ void NLBPlayer::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "book_path", PROPERTY_HINT_FILE, "*.nlbpack"), "set_book_path", "get_book_path");
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "visual_novel"), "set_visual_novel", "get_visual_novel");
     ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "external_games"), "set_external_games", "get_external_games");
+    ClassDB::bind_method(D_METHOD("set_log_path", "path"), &NLBPlayer::set_log_path);
+    ClassDB::bind_method(D_METHOD("get_log_path"), &NLBPlayer::get_log_path);
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "log_path", PROPERTY_HINT_GLOBAL_SAVE_FILE, "*.log,*.txt"), "set_log_path", "get_log_path");
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "autostart"), "set_autostart", "get_autostart");
 
     ClassDB::bind_method(D_METHOD("open"), &NLBPlayer::open);
@@ -151,6 +154,15 @@ String NLBPlayer::resolveBookPath() const {
     return ProjectSettings::get_singleton()->globalize_path(cached);
 }
 
+void NLBPlayer::set_log_path(const String& path) {
+    m_logPath = path;
+    if (!m_session) return;
+    std::string error;
+    // res:// и user:// — в путь на диске
+    const String disk = path.begins_with("res://") || path.begins_with("user://") ? ProjectSettings::get_singleton()->globalize_path(path) : path;
+    if (!m_session->setLogFile(std::string(disk.utf8().get_data()), error)) UtilityFunctions::push_warning("NLBPlayer: ", s(error));
+}
+
 bool NLBPlayer::open() {
     if (!m_audio) m_audio = std::make_unique<GodotAudioBackend>(this, nullptr);
     m_session = std::make_unique<Session>(m_audio.get());
@@ -170,6 +182,7 @@ bool NLBPlayer::open() {
         return false;
     }
     m_audio->setMedia(&m_session->media());
+    if (!m_logPath.is_empty()) set_log_path(m_logPath);  // журнал прохождения — вместе с книгой
     m_lastRevision = m_session->revision();
     emitEvents();
     emit_signal("screen_changed");

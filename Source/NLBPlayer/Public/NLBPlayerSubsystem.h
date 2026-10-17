@@ -131,6 +131,9 @@ public:
     /// Пауза звука книги: экран книги скрыт (игрок в шутере) — музыка замирает, при показе
     /// продолжается. Экран книги (UNLBScreenWidget) вызывает это сам при появлении и скрытии
     UFUNCTION(BlueprintCallable, Category = "NLB") void SetAudioPaused(bool bPaused);
+    /// Журнал прохождения, как --log у консольного плеера (пусто — закрыть). Можно и ключом
+    /// запуска игры: -nlblog=<файл> — журнал откроется вместе с книгой
+    UFUNCTION(BlueprintCallable, Category = "NLB") bool SetLogFile(const FString& Path);
 
     /** Переменные новеллы — для мини-игр и сцен, которым передано управление */
     UFUNCTION(BlueprintPure, Category = "NLB") double GetNumber(const FString& Name) const;
