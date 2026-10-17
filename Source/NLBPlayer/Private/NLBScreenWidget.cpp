@@ -298,7 +298,7 @@ UTexture2D* UNLBScreenWidget::TextureFor(const FString& Path) {
     std::string Direct;
     std::vector<uint8_t> Bytes;
     // полный путь (картинки темы) — файл с диска или из пакета; иначе — медиа книги
-    if (P.find('/') != std::string::npos && FileUtils::exists(P) && !FileUtils::isDirectory(P) && FileUtils::readFile(P, Direct)) {
+    if (P.find_first_of("/\\") != std::string::npos && FileUtils::exists(P) && !FileUtils::isDirectory(P) && FileUtils::readFile(P, Direct)) {
         Bytes.assign(Direct.begin(), Direct.end());
     } else if (UNLBPlayerSubsystem* Sub = Player(); Sub && Sub->GetSession()) {
         Sub->GetSession()->media().read(MediaRef{P}, Bytes);

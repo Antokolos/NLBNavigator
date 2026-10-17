@@ -234,7 +234,7 @@ SDL_Texture* SdlPlayer::textureFor(const std::string& path) {
     SDL_Texture* tex = nullptr;
     // Полный путь (картинки темы: фон, рамки) — напрямую, с диска или из пакета; иначе — медиа книги
     std::string rel;
-    const bool fullPath = path.find('/') != std::string::npos && FileUtils::exists(path) && !FileUtils::isDirectory(path);
+    const bool fullPath = path.find_first_of("/\\") != std::string::npos && FileUtils::exists(path) && !FileUtils::isDirectory(path);
     const std::string file = fullPath ? (BookPack::resolve(path, rel) ? std::string() : path) : m_media->filePath(MediaRef{path});
     if (fullPath && file.empty()) {
         std::string direct;
