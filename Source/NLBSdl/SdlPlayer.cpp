@@ -378,6 +378,20 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         float x = 0, y = 0;
         ok = m_screen->hitCenter(id, inv, x, y);
         if (ok) m_screen->click(x, y, false);
+    } else if (starts("clickchoice:") || starts("hoverchoice:")) {
+        // переход с номером N (-1 — заголовок комнаты): щелчок или наведение мыши
+        renderFrame();
+        float x = 0, y = 0;
+        ok = m_screen->choiceCenter(std::stoi(line.substr(line.find(':') + 1)), x, y);
+        if (ok && starts("click")) m_screen->click(x, y, false);
+        if (ok && starts("hover")) m_screen->mouseMove(x, y);
+    } else if (starts("hoverobj:") || starts("hoverinv:")) {
+        const bool inv = starts("hoverinv:");
+        const std::string id = findObj(inv ? v.inventory : v.sceneObjects, line.substr(9));
+        renderFrame();
+        float x = 0, y = 0;
+        ok = m_screen->hitCenter(id, inv, x, y);
+        if (ok) m_screen->mouseMove(x, y);
     } else if (starts("menu:")) {
         // щелчок мышью по пункту открытого меню с номером N (0 — первый)
         renderFrame();
@@ -411,7 +425,7 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     } else if (!line.empty() && line[0] != '#') {
         ok = false;
     }
-    if (!starts("shot:") && !starts("click") && !starts("hover:") && !starts("key:") && !starts("wheel:") && !starts("menu:")) {
+    if (!starts("shot:") && !starts("click") && !starts("hover") && !starts("key:") && !starts("wheel:") && !starts("menu:")) {
         m_session->refresh();
         m_screen->afterCommand();
     }

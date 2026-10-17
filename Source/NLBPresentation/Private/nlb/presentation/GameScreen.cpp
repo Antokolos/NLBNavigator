@@ -285,12 +285,17 @@ GameScreen::EffectState GameScreen::effectState(const std::string& id, const Rec
 void GameScreen::mouseMove(float x, float y) {
     m_mouseX = x;
     m_mouseY = y;
+    // что под курсором — подсвечивается цветом alink (объекты, переходы и заголовок, предметы)
     m_hoverObject.clear();
+    m_hoverChoice = NO_HOVER;
+    m_hoverItem.clear();
     for (auto it = m_hits.rbegin(); it != m_hits.rend(); ++it) {
-        if (it->kind == Hit::Kind::Object && contains(it->rect, x, y)) {
-            m_hoverObject = it->id;
-            break;
-        }
+        if (!contains(it->rect, x, y)) continue;
+        if (it->kind == Hit::Kind::Object) m_hoverObject = it->id;
+        else if (it->kind == Hit::Kind::Choice) m_hoverChoice = it->index;
+        else if (it->kind == Hit::Kind::Inventory) m_hoverItem = it->id;
+        else continue;
+        break;
     }
 }
 
@@ -445,6 +450,17 @@ std::string GameScreen::describeThemes() const {
         + "; scr.gfx.bg: " + orNone(t.backgroundImage) + "; шрифт текста: " + orNone(t.text.fontFile);
 }
 
+bool GameScreen::choiceCenter(int index, float& x, float& y) const {
+    for (const auto& h : m_hits) {
+        if (h.kind == Hit::Kind::Choice && h.index == index) {
+            x = h.rect.x + h.rect.w / 2;
+            y = h.rect.y + h.rect.h / 2;
+            return true;
+        }
+    }
+    return false;
+}
+
 bool GameScreen::menuItemCenter(int index, float& x, float& y) const {
     for (const auto& h : m_hits) {
         if (h.kind == Hit::Kind::Menu && h.index == index) {
@@ -591,7 +607,11 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
             if (draw && visible) {
                 Color c = colors.fg;
                 if (w.kind == TextRun::Kind::ObjectLink) c = m_hoverObject == w.target ? colors.alink : colors.link;
-                else if (w.kind == TextRun::Kind::ChoiceLink || p.style == Paragraph::Style::Title) c = colors.link;
+                else if (w.kind == TextRun::Kind::ChoiceLink || p.style == Paragraph::Style::Title) {
+                    int index = NO_HOVER;
+                    try { index = std::stoi(w.target); } catch (...) {}
+                    c = w.kind == TextRun::Kind::ChoiceLink && index == m_hoverChoice ? colors.alink : colors.link;
+                }
                 m_r->drawText(pf, w.text, c, cx, y, 1.0f);
                 if (w.kind == TextRun::Kind::ObjectLink) {
                     m_hits.push_back({{cx, y, w.w, lineHeight}, Hit::Kind::Object, w.target});
@@ -650,7 +670,7 @@ float GameScreen::renderChoices(float x, float y, float width, const FontRef& fo
         const std::string text = c.enabled ? std::to_string(++number) + ". " + c.text : c.altText;
         const float w = textW(font, text);
         if (draw && y >= m_drawTop - 0.5f && y + lineHeight <= m_drawBottom + 0.5f) {
-            m_r->drawText(font, text, c.enabled ? colors.link : colors.fg, x, y, 1.0f);
+            m_r->drawText(font, text, !c.enabled ? colors.fg : c.index == m_hoverChoice ? colors.alink : colors.link, x, y, 1.0f);
             if (c.enabled) m_hits.push_back({{x, y, std::min(w, width), lineHeight}, Hit::Kind::Choice, "", c.index});
         } else if (draw && y + lineHeight > m_drawBottom + 0.5f && m_firstHiddenY < 0) {
             m_firstHiddenY = y;
@@ -982,7 +1002,8 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
                 tx += lineHeight + 6;
             }
             const bool isSelected = it.item->id == selected;
-            m_r->drawText(font, it.label, !it.item->active ? window.fg : isSelected ? window.alink : window.link, tx, y, 1.0f);
+            const bool hovered = it.item->id == m_hoverItem;
+            m_r->drawText(font, it.label, !it.item->active ? window.fg : isSelected || hovered ? window.alink : window.link, tx, y, 1.0f);
             if (it.item->active) m_hits.push_back({cell, Hit::Kind::Inventory, it.item->id});
             if (horizontal && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y, 1.0f);
             x += it.w + gap;
