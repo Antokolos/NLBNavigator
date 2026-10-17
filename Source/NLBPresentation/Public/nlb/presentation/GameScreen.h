@@ -101,6 +101,8 @@ public:
     bool hitCenter(const std::string& id, bool inventory, float& x, float& y) const;
     /// Центр пункта меню с номером index на последнем кадре (для тестов)
     bool menuItemCenter(int index, float& x, float& y) const;
+    /// Центр перехода с номером index (-1 — заголовок комнаты) на последнем кадре (для тестов)
+    bool choiceCenter(int index, float& x, float& y) const;
 
     static constexpr float SCREEN_W = 1920.0f, SCREEN_H = 1080.0f;
 
@@ -160,6 +162,9 @@ private:
 
     std::vector<Hit> m_hits;
     std::string m_hoverObject;
+    static constexpr int NO_HOVER = -1000000;
+    int m_hoverChoice = NO_HOVER;    ///< переход под курсором (номер варианта; -1 — заголовок комнаты)
+    std::string m_hoverItem;         ///< предмет инвентаря под курсором
     float m_mouseX = 0, m_mouseY = 0;
     float m_scroll = 0, m_contentHeight = 0, m_lineHeight = 30, m_pageHeight = 0;
     RectF m_textWindow{};

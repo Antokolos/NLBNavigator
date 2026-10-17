@@ -694,6 +694,7 @@ bool PlayerEngine::look() {
     if (!m_page) {
         return false;
     }
+    beginCommand();  // «осмотреться» — новая команда: прежний ответ стирается, сцена описывается заново
     m_shownImages.clear();
     m_preservedImagesShown.clear();  // «осмотреться» показывает экран целиком
     renderPage();
