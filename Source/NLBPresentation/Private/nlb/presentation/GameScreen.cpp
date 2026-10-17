@@ -1077,7 +1077,8 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
                 : ia == "right" ? r.x + r.w - total : r.x + (r.w - total) / 2;
         for (const auto& it : row) {
             const RectF cell{x, y, it.w, lineHeight};
-            if (it.item->id == selected) m_r->fillRect({cell.x - 6, cell.y, cell.w + 12, cell.h}, {255, 255, 255, 60});
+            // выбранный предмет — на тёмной плашке: светлая на светлой подложке темы была не видна
+            if (it.item->id == selected) m_r->fillRect({cell.x - 6, cell.y, cell.w + 12, cell.h}, {0, 0, 0, 150});
             float tx = x, iw = 0, ih = 0;
             if (imageSize(it.item->icon, iw, ih)) {
                 m_r->drawImage(framePath(it.item->icon), {x, y, lineHeight, lineHeight}, 1.0f);
@@ -1175,7 +1176,12 @@ void GameScreen::renderOverlayMessages() {
         m_toasts.clear();
     }
     if (!m_session.selectedItem().empty() && m_menu == Menu::None) {
-        m_r->drawText(m_options.smallFont, "Выбран предмет: щёлкните, к чему применить (правая кнопка — отмена)", REACTION, 60, SCREEN_H - 36, 1.0f);
+        // подсказка — на тёмной плашке, чтобы читалась на любом фоне (светлая подложка темы, картинка)
+        const std::string hint = "Выбран предмет: щёлкните, к чему применить (правая кнопка — отмена)";
+        const float w = textW(m_options.smallFont, hint), h = m_r->fontHeight(m_options.smallFont);
+        const float x = 60, y = SCREEN_H - h - 12;
+        m_r->fillRect({x - 14, y - 6, w + 28, h + 12}, {0, 0, 0, 190});
+        m_r->drawText(m_options.smallFont, hint, REACTION, x, y, 1.0f);
     }
 }
 
