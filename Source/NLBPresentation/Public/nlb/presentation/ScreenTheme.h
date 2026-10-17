@@ -33,6 +33,7 @@ struct ScreenTheme {
         float lineHeight = 1.0f;  ///< fnt.height: множитель высоты строки
         std::string upImage, downImage;  ///< gfx.up / gfx.down — стрелки прокрутки
         std::string fontItalicFile;  ///< курсив: третий вариант из fnt.name «{обычный,жирный,курсив,…}»
+        std::string fontBoldFile;    ///< полужирный: второй вариант (заголовок комнаты в INSTEAD)
     };
     float screenW = 1920, screenH = 1080;
     Color background{0x01, 0x13, 0x22, 255};
