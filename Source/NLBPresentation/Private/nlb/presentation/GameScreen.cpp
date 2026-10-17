@@ -579,7 +579,11 @@ void GameScreen::drawObject(const SceneObject& o, const RectF& r, const FontRef&
 
 float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, float y, float width,
                                    const FontRef& font, const ScreenTheme::Window& colors, bool draw) {
-    const float lineHeight = m_r->lineSkip(font) * colors.lineHeight;
+    // Как txt_layout INSTEAD (graphics.c): высота строки — целая часть высоты шрифта × fnt.height,
+    // слово — по середине строки: (высота строки − высота шрифта) / 2
+    const float px = m_r->pixelScale();  // округления — в пикселях окна, как у INSTEAD
+    const float lineHeight = std::floor(m_r->fontHeight(font) * px * colors.lineHeight) / px;
+    const float textOffset = std::floor((lineHeight - m_r->fontHeight(font)) * px / 2) / px;
     const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
     // glued — слово продолжает предыдущее без пробела («{кран}, испачканный»: запятая сразу за
     // ссылкой) — между ними не добавляется промежуток выравнивания
@@ -612,7 +616,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
                     try { index = std::stoi(w.target); } catch (...) {}
                     c = w.kind == TextRun::Kind::ChoiceLink && index == m_hoverChoice ? colors.alink : colors.link;
                 }
-                m_r->drawText(pf, w.text, c, cx, y, 1.0f);
+                m_r->drawText(pf, w.text, c, cx, y + textOffset, 1.0f);
                 if (w.kind == TextRun::Kind::ObjectLink) {
                     m_hits.push_back({{cx, y, w.w, lineHeight}, Hit::Kind::Object, w.target});
                 } else if (w.kind == TextRun::Kind::ChoiceLink) {
@@ -645,7 +649,10 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
                     if (!line.empty()) { line.back().text += w; line.back().w += ww; lineW += ww; }
                     continue;
                 }
-                if (lineW + ww > width && !line.empty()) {  // перенос
+                // перенос — как txt_layout INSTEAD: слово (без пробела после него) не помещается
+                const std::string bare = w.substr(0, w.find_last_not_of(' ') + 1);
+                const float bareW = bare.size() == w.size() ? ww : textW(pf, bare);
+                if (lineW + bareW > width && !line.empty()) {
                     flush(line, false, p, pf);
                     lineW = 0;
                 }
@@ -657,7 +664,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
             }
         }
         if (any) flush(line, true, p, pf);
-        else y += lineHeight * 0.5f;
+        else y += p.spacing > 0 ? p.spacing : lineHeight * 0.5f;
     }
     return y;
 }
@@ -762,7 +769,9 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             title.style = Paragraph::Style::Title;
             title.centered = true;
             composed.push_back(title);
-            composed.push_back(Paragraph{});  // win_spacing = половина строки
+            Paragraph spacer;  // game.c: win_spacing = font_size * font_height / 2 (целое)
+            spacer.spacing = std::floor(window.fontSize * m_r->pixelScale() * window.lineHeight / 2) / m_r->pixelScale();
+            composed.push_back(spacer);
         }
         Paragraph ways;
         ways.centered = true;
@@ -819,7 +828,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
     // paginator в INSTEAD: щелчок по окну (или колесо, PgDn) — следующая часть
-    const float lh = m_r->lineSkip(font) * window.lineHeight;
+    const float lh = std::floor(m_r->fontHeight(font) * m_r->pixelScale() * window.lineHeight) / m_r->pixelScale();
     m_lineHeight = lh;
     const float pageH = std::max(lh, std::floor(r.h / lh) * lh);
     const float maxScroll = std::max(0.0f, need - pageH);
@@ -961,7 +970,10 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
     const FontRef font = fontFor(window);
     const RectF r = window.rect;
     if (panel) m_r->fillRect({r.x, r.y, r.w, r.h}, {0, 0, 0, 140});
-    const float lineHeight = m_r->lineSkip(font) * 1.15f;
+    // высота строки — как у текста (inv.fnt.height), слово — по середине строки
+    const float px = m_r->pixelScale();
+    const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight) / px;
+    const float textOffset = std::floor((lineHeight - m_r->fontHeight(font)) * px / 2) / px;
     // Предметы в строку разделяются « | », как hinv_delim в INSTEAD (game.gui)
     const bool horizontal = m_standardTheme.inventoryHorizontal;
     const std::string delim = " | ";
@@ -1003,9 +1015,9 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
             }
             const bool isSelected = it.item->id == selected;
             const bool hovered = it.item->id == m_hoverItem;
-            m_r->drawText(font, it.label, !it.item->active ? window.fg : isSelected || hovered ? window.alink : window.link, tx, y, 1.0f);
+            m_r->drawText(font, it.label, !it.item->active ? window.fg : isSelected || hovered ? window.alink : window.link, tx, y + textOffset, 1.0f);
             if (it.item->active) m_hits.push_back({cell, Hit::Kind::Inventory, it.item->id});
-            if (horizontal && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y, 1.0f);
+            if (horizontal && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y + textOffset, 1.0f);
             x += it.w + gap;
         }
         y += lineHeight;
@@ -1030,14 +1042,25 @@ void GameScreen::renderVanishing(const FontRef& labelFont, Color labelColor, boo
 }
 
 void GameScreen::renderMenuButton(const ScreenTheme& theme) {
-    // menu.gfx.button в menu.button.x/y — как кнопка «Меню» в INSTEAD.
+    float w = 0, h = 0;
+    // Игра NLB при запуске ставит кнопку сама (nlb.lua, _syscall_showmenubtn): gfx/menubtn_ru.png
+    // (для русской книги) или gfx/menubtn.png активной темы, в правый верхний угол — x = scr.w −
+    // ширина картинки, y = 0. Она заменяет menu.gfx.button / menu.button.x/y из theme.ini
+    const std::string nlbButton = m_session.language() == "ru" && !theme.nlbMenuButtonRu.empty()
+                                      ? theme.nlbMenuButtonRu : theme.nlbMenuButton;
+    if (!nlbButton.empty() && m_r->imageSize(nlbButton, w, h)) {
+        const RectF r{theme.screenArea.x + theme.screenArea.w - w * theme.scale, theme.screenArea.y, w * theme.scale, h * theme.scale};
+        m_r->drawImage(nlbButton, r, 1.0f);
+        m_hits.push_back({r, Hit::Kind::MenuButton, ""});
+        return;
+    }
+    // Без неё — menu.gfx.button в menu.button.x/y из theme.ini, как в INSTEAD.
     // Языковой вариант картинки, если есть: menubtn.png -> menubtn_ru.png для русской книги
     std::string path = theme.menuButton;
     if (path.empty()) return;
     const auto dot = path.find_last_of('.');
     const std::string localized = dot == std::string::npos ? "" : path.substr(0, dot) + "_" + m_session.language() + path.substr(dot);
     if (!localized.empty() && FileUtils::exists(localized)) path = localized;
-    float w = 0, h = 0;
     if (!m_r->imageSize(path, w, h)) return;
     const RectF r{theme.menuButtonX, theme.menuButtonY, w * theme.scale, h * theme.scale};
     m_r->drawImage(path, r, 1.0f);

@@ -179,6 +179,12 @@ void SdlPlayer::handleEvent(SDL_Event& e) {
 }
 
 void SdlPlayer::renderFrame() {
+    // Масштаб окна: текст, как в INSTEAD, рисуется шрифтом размера font_size × scale (целое),
+    // а не растягивается из 1920×1080 — тогда переносы и межстрочные расстояния те же
+    int ow = 0, oh = 0;
+    if (SDL_GetCurrentRenderOutputSize(m_renderer, &ow, &oh) && ow > 0 && oh > 0) {
+        m_pixelScale = std::min(ow / GameScreen::SCREEN_W, oh / GameScreen::SCREEN_H);
+    }
     SDL_SetRenderDrawColor(m_renderer, BACKGROUND.r, BACKGROUND.g, BACKGROUND.b, 255);
     SDL_RenderClear(m_renderer);
     m_screen->render(*this);
@@ -201,11 +207,12 @@ TTF_Font* SdlPlayer::openFont(const std::string& path, float size) {
 
 TTF_Font* SdlPlayer::font(const FontRef& ref) {
     const std::string file = (!ref.file.empty() && FileUtils::exists(ref.file)) ? ref.file : m_fontPath;
-    const std::string key = file + "|" + std::to_string(ref.size);
+    const float size = std::floor(ref.size * m_pixelScale);  // как font_size * scale в INSTEAD (int)
+    const std::string key = file + "|" + std::to_string(size);
     auto it = m_fonts.find(key);
     if (it != m_fonts.end()) return it->second;
-    TTF_Font* f = openFont(file, ref.size);
-    if (!f && file != m_fontPath) f = TTF_OpenFont(m_fontPath.c_str(), ref.size);
+    TTF_Font* f = openFont(file, size);
+    if (!f && file != m_fontPath) f = TTF_OpenFont(m_fontPath.c_str(), size);
     m_fonts[key] = f;
     return f;
 }
@@ -284,17 +291,19 @@ void SdlPlayer::fillRect(const RectF& r, Color c) {
 float SdlPlayer::textWidth(const FontRef& ref, const std::string& text) {
     int w = 0, h = 0;
     if (TTF_Font* f = font(ref); f && !text.empty()) TTF_GetStringSize(f, text.c_str(), 0, &w, &h);
-    return static_cast<float>(w);
+    return static_cast<float>(w) / m_pixelScale;
 }
 
 float SdlPlayer::fontHeight(const FontRef& ref) {
     TTF_Font* f = font(ref);
-    return f ? static_cast<float>(TTF_GetFontHeight(f)) : 0.0f;
+    // Высота шрифта как в SDL2_ttf, которым собран INSTEAD: ascent − descent + 1 (строка с базовой
+    // линией). SDL3_ttf считает её на 1 пиксель меньше, и строки INSTEAD выходили бы ниже наших
+    return f ? static_cast<float>(TTF_GetFontAscent(f) - TTF_GetFontDescent(f) + 1) / m_pixelScale : 0.0f;
 }
 
 float SdlPlayer::lineSkip(const FontRef& ref) {
     TTF_Font* f = font(ref);
-    return f ? static_cast<float>(TTF_GetFontLineSkip(f)) : 0.0f;
+    return f ? static_cast<float>(TTF_GetFontLineSkip(f)) / m_pixelScale : 0.0f;
 }
 
 void SdlPlayer::drawText(const FontRef& ref, const std::string& text, Color c, float x, float y, float alpha) {
@@ -302,7 +311,7 @@ void SdlPlayer::drawText(const FontRef& ref, const std::string& text, Color c, f
     if (!tex) return;
     float w, h;
     SDL_GetTextureSize(tex, &w, &h);
-    const SDL_FRect dst{x, y, w, h};
+    const SDL_FRect dst{x, y, w / m_pixelScale, h / m_pixelScale};  // надпись в пикселях окна — 1:1
     SDL_SetTextureAlphaModFloat(tex, alpha);
     SDL_RenderTexture(m_renderer, tex, nullptr, &dst);
     SDL_SetTextureAlphaModFloat(tex, 1.0f);

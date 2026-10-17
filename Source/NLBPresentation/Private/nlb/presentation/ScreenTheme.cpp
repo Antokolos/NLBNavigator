@@ -195,6 +195,8 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
     // Рамки текстового окна VN и theme_standard.lua / theme_vn.lua — базовой темы, затем темы игры
     for (const std::string& dir : {baseDir, gameDir}) {
         if (dir.empty() || !FileUtils::isDirectory(dir)) continue;
+        if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/menubtn.png"))) t.nlbMenuButton = FileUtils::combinePath(dir, "gfx/menubtn.png");
+        if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/menubtn_ru.png"))) t.nlbMenuButtonRu = FileUtils::combinePath(dir, "gfx/menubtn_ru.png");
         if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/fl.png"))) t.frameLeft = FileUtils::combinePath(dir, "gfx/fl.png");
         if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/fr.png"))) t.frameRight = FileUtils::combinePath(dir, "gfx/fr.png");
         // вызовы theme.win.geom(…), theme.win.color(…), theme.set(…) — в координатах экрана темы

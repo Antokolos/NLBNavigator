@@ -41,6 +41,10 @@ public:
     virtual void drawText(const FontRef& font, const std::string& text, Color c, float x, float y, float alpha) = 0;
     /// Ограничить рисование прямоугольником; nullptr — снять ограничение
     virtual void setClip(const RectF* clip) = 0;
+    /// Сколько пикселей окна приходится на единицу экрана 1920×1080. INSTEAD раскладывает текст
+    /// шрифтом уже в масштабе окна (font_size × scale) и округляет высоту строки в пикселях;
+    /// рендерер, который делает так же, сообщает масштаб, чтобы раскладка совпала (по умолчанию 1)
+    virtual float pixelScale() const { return 1.0f; }
 };
 
 /**
