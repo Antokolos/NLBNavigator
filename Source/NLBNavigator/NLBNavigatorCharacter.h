@@ -63,6 +63,16 @@ public:
 	bool IsVRMode() const;
 	UNLBVRModeComponent* GetVRMode() const { return VRMode; }
 
+	/** Книга: путь от каталога проекта или абсолютный (пусто — по умолчанию контроллера,
+	 *  NLBFiles/book.nlbpack). Задаётся в деталях BP_FirstPersonCharacter */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
+	FString BookPath;
+
+	/** Режим книги: VN (как экспорт в VN-INSTEAD) или STANDARD (как обычный INSTEAD:
+	 *  подложка темы, заголовок и пути над текстом). Задаётся в деталях BP_FirstPersonCharacter */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
+	bool bBookVisualNovel = true;
+
 	/** Меню паузы (Esc или P; в VR — кнопка меню левого контроллера) */
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void TogglePauseMenu();

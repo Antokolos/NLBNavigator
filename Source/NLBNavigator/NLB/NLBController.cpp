@@ -51,6 +51,10 @@ void ANLBController::LoadCurrentSet()
 		P->OnAchievement.AddDynamic(this, &ANLBController::HandleAchievement);
 		bBound = true;
 	}
+	if (!P->IsBookOpen())
+	{
+		UE_LOG(LogTemp, Log, TEXT("NLB: открываю книгу %s в режиме %s"), *BookPath, bVisualNovel ? TEXT("VN") : TEXT("STANDARD"));
+	}
 	if (!P->IsBookOpen() && !P->OpenBook(BookPath, bVisualNovel, ExternalGames))
 	{
 		UE_LOG(LogTemp, Error, TEXT("NLB: не удалось открыть книгу %s"), *BookPath);

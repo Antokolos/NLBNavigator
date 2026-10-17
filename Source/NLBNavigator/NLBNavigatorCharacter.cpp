@@ -299,6 +299,13 @@ void ANLBNavigatorCharacter::SwitchToVisualNovel()
 			UE_LOG(LogTemp, Error, TEXT("Failed to spawn NLBController."));
 			return;
 		}
+		// Книга и режим — из настроек персонажа (детали BP_FirstPersonCharacter, категория NLB):
+		// контроллер создаётся из C++-класса, своего Blueprint у него нет
+		VisualNovelController->bVisualNovel = bBookVisualNovel;
+		if (!BookPath.IsEmpty())
+		{
+			VisualNovelController->BookPath = BookPath;
+		}
 	}
 
 	// Switch the camera view to the NLBController (в VR — нет: смотрим через шлем, книга на панели)
