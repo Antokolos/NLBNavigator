@@ -41,6 +41,10 @@ public:
     virtual void drawText(const FontRef& font, const std::string& text, Color c, float x, float y, float alpha) = 0;
     /// Ограничить рисование прямоугольником; nullptr — снять ограничение
     virtual void setClip(const RectF* clip) = 0;
+    /// Сколько пикселей окна приходится на единицу экрана 1920×1080. INSTEAD раскладывает текст
+    /// шрифтом уже в масштабе окна (font_size × scale) и округляет высоту строки в пикселях;
+    /// рендерер, который делает так же, сообщает масштаб, чтобы раскладка совпала (по умолчанию 1)
+    virtual float pixelScale() const { return 1.0f; }
 };
 
 /**
@@ -87,8 +91,16 @@ public:
     void afterCommand();
     /// Какие темы подключены и что из них взято (для журнала фронтенда: разобраться с оформлением)
     std::string describeThemes() const;
+    /// Полноэкранный режим — дело фронтенда: если он умеет, пусть даст переключатель и текущее
+    /// состояние, тогда в меню появится пункт «Полный экран»
+    void setFullscreenHandler(std::function<void(bool)> setFullscreen, std::function<bool()> isFullscreen) {
+        m_setFullscreen = std::move(setFullscreen);
+        m_isFullscreen = std::move(isFullscreen);
+    }
     /// Сейчас показан экран вариантов (режим choicesScreen)
     bool choicesScreenShown() const { return m_showChoices; }
+    /// Показано сообщение (конец игры, внешняя игра, ошибка) — для тестов
+    bool messageShown() const { return m_menu == Menu::Message; }
     /// Игрок выбрал «Выйти» в меню
     bool quitRequested() const { return m_quit; }
     void clearQuitRequest() { m_quit = false; }
@@ -162,6 +174,11 @@ private:
 
     std::vector<Hit> m_hits;
     std::string m_hoverObject;
+    std::function<void(bool)> m_setFullscreen;
+    std::function<bool()> m_isFullscreen;
+    /// Пункты главного меню по порядку (полный экран — только если фронтенд его умеет)
+    enum class MainItem { Save, Load, Restart, Sound, Choices, Fullscreen, Quit, Back };
+    std::vector<MainItem> mainItems() const;
     static constexpr int NO_HOVER = -1000000;
     int m_hoverChoice = NO_HOVER;    ///< переход под курсором (номер варианта; -1 — заголовок комнаты)
     std::string m_hoverItem;         ///< предмет инвентаря под курсором

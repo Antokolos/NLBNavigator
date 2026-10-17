@@ -33,6 +33,7 @@ public:
         std::string achievementsPath;
         std::string scriptPath;                  ///< для тестов: команды и снимки экрана
         int windowWidth = 1280, windowHeight = 720;
+        bool fullscreen = false;                 ///< --fullscreen: сразу во весь экран (F11 — переключить)
         /// Варианты отдельным экраном: окно показывает только текст, а дочитав его (пробел или
         /// щелчок), игрок видит список вариантов посередине экрана. Иначе — варианты в окне текста
         bool choicesScreen = false;
@@ -53,6 +54,7 @@ public:
     void drawText(const nlb::presentation::FontRef& font, const std::string& text, nlb::presentation::Color c,
                   float x, float y, float alpha) override;
     void setClip(const nlb::presentation::RectF* clip) override;
+    float pixelScale() const override { return m_pixelScale; }
 
 private:
     bool init();
@@ -75,6 +77,7 @@ private:
     SDL_Renderer* m_renderer = nullptr;
     std::string m_fontPath;
     bool m_quit = false;
+    float m_pixelScale = 1.0f;  ///< пикселей окна на единицу экрана 1920×1080 (текст — в этом масштабе)
     std::unique_ptr<nlb::presentation::IMediaSource> m_media;
     std::unique_ptr<nlb::audio::SdlAudioBackend> m_audio;
     std::unique_ptr<nlb::presentation::Session> m_session;

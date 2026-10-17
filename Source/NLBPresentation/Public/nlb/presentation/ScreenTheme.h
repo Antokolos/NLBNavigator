@@ -52,6 +52,9 @@ struct ScreenTheme {
     std::string menuButton;           ///< menu.gfx.button
     float menuButtonX = 0, menuButtonY = 0;  ///< menu.button.x/y
     std::string frameLeft, frameRight;       ///< gfx/fl.png, gfx/fr.png — рамки окна текста VN
+    /// Кнопка меню, которую ставит игра NLB (nlb.lua, _syscall_showmenubtn): gfx/menubtn.png и
+    /// gfx/menubtn_ru.png активной темы, в правом верхнем углу (scr.w − ширина, 0)
+    std::string nlbMenuButton, nlbMenuButtonRu;
     float scale = 1.0f;               ///< масштаб экрана темы (scr.w×scr.h) к 1920×1080: картинки темы
     RectF screenArea{0, 0, 1920, 1080};  ///< где экран темы на экране 1920×1080 (фон scr.gfx.bg — сюда)
 

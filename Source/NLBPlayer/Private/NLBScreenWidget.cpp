@@ -1,5 +1,8 @@
 #include "NLBScreenWidget.h"
 
+#include "Engine/Engine.h"
+#include "GameFramework/GameUserSettings.h"
+
 #include "Engine/GameInstance.h"
 #include "Engine/Texture2D.h"
 #include "Fonts/FontMeasure.h"
@@ -195,6 +198,18 @@ bool UNLBScreenWidget::EnsureScreen() {
     // внешнюю игру ведёт сама игра (OnExternalGame) — сообщение «её нет» не нужно
     Screen->setExternalGameHandler([](const std::string&) {});
     P->SetScreenDriven(true);
+    // Полный экран — пункт меню книги: режим окна игры (UGameUserSettings), как в настройках игры
+    Screen->setFullscreenHandler(
+        [](bool bOn) {
+            if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr) {
+                S->SetFullscreenMode(bOn ? EWindowMode::WindowedFullscreen : EWindowMode::Windowed);
+                S->ApplySettings(false);
+            }
+        },
+        [] {
+            const UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
+            return S && S->GetFullscreenMode() != EWindowMode::Windowed;
+        });
     UE_LOG(LogTemp, Log, TEXT("NLB: оформление: %s"), UTF8_TO_TCHAR(Screen->describeThemes().c_str()));
     return true;
 }

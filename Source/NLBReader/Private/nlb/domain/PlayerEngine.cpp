@@ -1664,7 +1664,13 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     }
     for (const auto& text : m_pageModText) addParagraphs(m.pageText, text, "");
     for (const auto& text : m_pageModText) addParagraphs(m.modText, text, "");
-    for (const auto& text : m_reactionText) addParagraphs(m.reactionText, text, "");
+    for (const auto& text : m_reactionText) {
+        // следующий ответ продолжает предыдущий через пробел (STEAD: p() — через пробел),
+        // а строки внутри одного ответа — каждая с новой строки
+        const size_t first = m.reactionText.size();
+        addParagraphs(m.reactionText, text, "");
+        if (first > 0 && first < m.reactionText.size()) m.reactionText[first].joinPrevious = true;
+    }
 
     // Варианты: доступные и (в стандартной теме) недоступные с альтернативным текстом
     for (size_t i = 0; i < view.choices.size(); ++i) {

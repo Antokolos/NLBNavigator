@@ -79,6 +79,30 @@ std::string dashes(const std::string& s) {
     return out;
 }
 
+/// Кавычки, как модуль quotes STEAD (экспорт подключает его всегда): _" -> «, "_ -> »,
+/// "текст" -> «текст», ,, -> „, '' -> ”
+std::string quotes(const std::string& in) {
+    if (in.find_first_of("\",'_") == std::string::npos) return in;
+    auto replaceAll = [](std::string s, const std::string& a, const std::string& b) {
+        for (size_t pos = 0; (pos = s.find(a, pos)) != std::string::npos; pos += b.size()) s.replace(pos, a.size(), b);
+        return s;
+    };
+    std::string s = replaceAll(replaceAll(in, "_\"", "\xC2\xAB"), "\"_", "\xC2\xBB");
+    std::string out;
+    for (size_t i = 0; i < s.size(); ++i) {
+        if (s[i] == '"') {
+            const size_t close = s.find('"', i + 1);
+            if (close != std::string::npos) {
+                out += "\xC2\xAB" + s.substr(i + 1, close - i - 1) + "\xC2\xBB";
+                i = close;
+                continue;
+            }
+        }
+        out += s[i];
+    }
+    return replaceAll(replaceAll(out, ",,", "\xE2\x80\x9E"), "''", "\xE2\x80\x9D");
+}
+
 std::string framePath(const ImageRef& image) {
     if (image.framePattern.empty()) return image.file.path;
     char buf[1024];
@@ -207,7 +231,11 @@ void GameScreen::afterCommand() {
         }
     } else {
         m_externalNotified.clear();
-        if (m_screen.finished) {
+        // Конец игры: сообщение «начать заново» — не сразу, а когда текст последней страницы
+        // дочитан, и только в режиме экрана вариантов (VN, текст порциями: advanceText). В
+        // режиме ссылок в тексте его нет вовсе, как в INSTEAD: игрок читает последнюю страницу,
+        // а начать заново можно из меню. Страница без текста — сразу
+        if (m_screen.finished && choicesMode() && m_screen.pageText.empty() && m_screen.reactionText.empty()) {
             m_message = "Конец игры.\nЩелчок — начать заново.";
             m_menu = Menu::Message;
         }
@@ -432,7 +460,13 @@ bool GameScreen::advanceText() {
         m_scroll = 0;
         return true;
     }
-    // текст дочитан: единственный тривиальный вариант («Далее») — сразу переход, иначе варианты
+    // текст дочитан: конец игры — сообщение «начать заново»
+    if (m_screen.finished && std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
+        m_message = "Конец игры.\nЩелчок — начать заново.";
+        m_menu = Menu::Message;
+        return true;
+    }
+    // единственный тривиальный вариант («Далее») — сразу переход, иначе варианты
     const int trivial = singleTrivialChoice();
     if (trivial >= 0) {
         m_session.choose(trivial);
@@ -448,6 +482,14 @@ std::string GameScreen::describeThemes() const {
     return "тема игры: " + orNone(m_options.themeDir) + "; базовая тема: " + orNone(m_options.baseThemeDir)
         + "; фон страниц STANDARD (gfx/bg.jpg): " + orNone(t.pageBackground)
         + "; scr.gfx.bg: " + orNone(t.backgroundImage) + "; шрифт текста: " + orNone(t.text.fontFile);
+}
+
+std::vector<GameScreen::MainItem> GameScreen::mainItems() const {
+    std::vector<MainItem> items{MainItem::Save, MainItem::Load, MainItem::Restart, MainItem::Sound, MainItem::Choices};
+    if (m_setFullscreen) items.push_back(MainItem::Fullscreen);
+    items.push_back(MainItem::Quit);
+    items.push_back(MainItem::Back);
+    return items;
 }
 
 bool GameScreen::choiceCenter(int index, float& x, float& y) const {
@@ -485,19 +527,23 @@ void GameScreen::menuAction(int index) {
     std::string error;
     const bool saves = m_session.savesAvailable();
     if (m_menu == Menu::Main) {
-        switch (index) {
-            case 0: if (saves && m_screen.canSave) m_menu = Menu::Save; break;
-            case 1: if (saves) m_menu = Menu::Load; break;
-            case 2: m_session.restart(); m_menu = Menu::None; afterCommand(); break;
-            case 3:
+        const auto items = mainItems();
+        switch (index >= 0 && index < static_cast<int>(items.size()) ? items[index] : MainItem::Back) {
+            case MainItem::Save: if (saves && m_screen.canSave) m_menu = Menu::Save; break;
+            case MainItem::Load: if (saves) m_menu = Menu::Load; break;
+            case MainItem::Restart: m_session.restart(); m_menu = Menu::None; afterCommand(); break;
+            case MainItem::Sound:
                 if (m_options.soundAvailable) { m_soundOn = !m_soundOn; m_session.setMuted(!m_soundOn); }
                 break;
-            case 4:
+            case MainItem::Choices:
                 m_choicesScreen = !m_choicesScreen;
                 m_showChoices = false;
                 break;
-            case 5: m_menu = Menu::ConfirmQuit; break;  // сначала спросить
-            default: m_menu = Menu::None; break;
+            case MainItem::Fullscreen:
+                if (m_setFullscreen) m_setFullscreen(!(m_isFullscreen && m_isFullscreen()));
+                break;
+            case MainItem::Quit: m_menu = Menu::ConfirmQuit; break;  // сначала спросить
+            case MainItem::Back: m_menu = Menu::None; break;
         }
     } else if (m_menu == Menu::ConfirmQuit) {
         if (index == 0) { m_quit = true; m_menu = Menu::None; }  // «Да, выйти»
@@ -579,7 +625,11 @@ void GameScreen::drawObject(const SceneObject& o, const RectF& r, const FontRef&
 
 float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, float y, float width,
                                    const FontRef& font, const ScreenTheme::Window& colors, bool draw) {
-    const float lineHeight = m_r->lineSkip(font) * colors.lineHeight;
+    // Как txt_layout INSTEAD (graphics.c): высота строки — целая часть высоты шрифта × fnt.height,
+    // слово — по середине строки: (высота строки − высота шрифта) / 2
+    const float px = m_r->pixelScale();  // округления — в пикселях окна, как у INSTEAD
+    const float lineHeight = std::floor(m_r->fontHeight(font) * px * colors.lineHeight) / px;
+    const float textOffset = std::floor((lineHeight - m_r->fontHeight(font)) * px / 2) / px;
     const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
     // glued — слово продолжает предыдущее без пробела («{кран}, испачканный»: запятая сразу за
     // ссылкой) — между ними не добавляется промежуток выравнивания
@@ -612,7 +662,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
                     try { index = std::stoi(w.target); } catch (...) {}
                     c = w.kind == TextRun::Kind::ChoiceLink && index == m_hoverChoice ? colors.alink : colors.link;
                 }
-                m_r->drawText(pf, w.text, c, cx, y, 1.0f);
+                m_r->drawText(pf, w.text, c, cx, y + textOffset, 1.0f);
                 if (w.kind == TextRun::Kind::ObjectLink) {
                     m_hits.push_back({{cx, y, w.w, lineHeight}, Hit::Kind::Object, w.target});
                 } else if (w.kind == TextRun::Kind::ChoiceLink) {
@@ -637,7 +687,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
         float lineW = 0;
         bool any = false;
         for (const auto& run : p.runs) {
-            for (const auto& w : words(dashes(run.text))) {
+            for (const auto& w : words(quotes(dashes(run.text)))) {
                 const float ww = textW(pf, w);
                 // одни пробелы (на стыке фрагментов: «{кран} с водой») — к предыдущему слову, а в
                 // начале строки — не нужны: иначе выравнивание по ширине удваивает промежутки
@@ -645,7 +695,10 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
                     if (!line.empty()) { line.back().text += w; line.back().w += ww; lineW += ww; }
                     continue;
                 }
-                if (lineW + ww > width && !line.empty()) {  // перенос
+                // перенос — как txt_layout INSTEAD: слово (без пробела после него) не помещается
+                const std::string bare = w.substr(0, w.find_last_not_of(' ') + 1);
+                const float bareW = bare.size() == w.size() ? ww : textW(pf, bare);
+                if (lineW + bareW > width && !line.empty()) {
                     flush(line, false, p, pf);
                     lineW = 0;
                 }
@@ -657,7 +710,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
             }
         }
         if (any) flush(line, true, p, pf);
-        else y += lineHeight * 0.5f;
+        else y += p.spacing > 0 ? p.spacing : lineHeight * 0.5f;
     }
     return y;
 }
@@ -735,7 +788,7 @@ RectF GameScreen::objectRect(size_t index) {
 
 void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel) {
     const FontRef font = fontFor(window);
-    const RectF r = window.rect;
+    RectF r = window.rect;
     // Режим экрана вариантов: текст порциями (как paginator), без стрелок прокрутки
     std::vector<Paragraph> portionText;
     if (choicesMode()) {
@@ -753,6 +806,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     // описания объектов (описание комнаты — только при входе: game.forcedsc = false в экспорте)
     const bool instead = m_screen.layout == Layout::Standard && !choicesMode();
     std::vector<Paragraph> composed;
+    std::vector<Paragraph> header;  // заголовок и пути — над сценой, не прокручиваются (el_title, el_ways)
     if (instead) {
         const ScreenTheme& st = m_standardTheme;
         if (!m_screen.roomTitle.empty()) {
@@ -761,8 +815,10 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.roomTitle, "-1"});
             title.style = Paragraph::Style::Title;
             title.centered = true;
-            composed.push_back(title);
-            composed.push_back(Paragraph{});  // win_spacing = половина строки
+            header.push_back(title);
+            Paragraph spacer;  // game.c: win_spacing = font_size * font_height / 2 (целое)
+            spacer.spacing = std::floor(window.fontSize * m_r->pixelScale() * window.lineHeight / 2) / m_r->pixelScale();
+            header.push_back(spacer);
         }
         Paragraph ways;
         ways.centered = true;
@@ -771,16 +827,21 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             if (!ways.runs.empty()) ways.runs.push_back({TextRun::Kind::Plain, " | ", ""});
             ways.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
         }
-        if (!ways.runs.empty() && !st.waysBottom) composed.push_back(ways);
+        if (!ways.runs.empty() && !st.waysBottom) header.push_back(ways);
         if (!m_screen.reactionText.empty()) {
-            Paragraph em;
-            em.style = Paragraph::Style::Emphasis;
+            // ответ курсивом: строки ответа — с новой строки, а следующий ответ (другой p() в
+            // экспорте) продолжает предыдущий через пробел, как stead.fmt
             for (const auto& p : m_screen.reactionText) {
                 if (p.runs.empty()) continue;
-                if (!em.runs.empty()) em.runs.push_back({TextRun::Kind::Plain, " ", ""});
-                em.runs.insert(em.runs.end(), p.runs.begin(), p.runs.end());
+                if (p.joinPrevious && !composed.empty() && composed.back().style == Paragraph::Style::Emphasis) {
+                    composed.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
+                    composed.back().runs.insert(composed.back().runs.end(), p.runs.begin(), p.runs.end());
+                } else {
+                    Paragraph em = p;
+                    em.style = Paragraph::Style::Emphasis;
+                    composed.push_back(em);
+                }
             }
-            composed.push_back(em);
         } else {
             composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
         }
@@ -810,6 +871,15 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     const bool showCaption = !instead && !m_screen.caption.empty();
     const bool showChoices = !instead && !choicesMode();
 
+    // Заголовок и пути (INSTEAD: el_title, el_ways) — над прокручиваемой сценой, на месте
+    if (!header.empty()) {
+        m_drawTop = -1e9f;
+        m_drawBottom = 1e9f;
+        const float headerH = renderParagraphs(header, r.x, r.y, r.w, font, window, true) - r.y;
+        r.y += headerH;
+        r.h = std::max(0.0f, r.h - headerH);
+    }
+
     // Сколько места занимает текст (для прокрутки)
     float need = 0;
     if (showCaption) need += m_r->lineSkip(font) * 1.4f;
@@ -819,7 +889,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
     // paginator в INSTEAD: щелчок по окну (или колесо, PgDn) — следующая часть
-    const float lh = m_r->lineSkip(font) * window.lineHeight;
+    const float lh = std::floor(m_r->fontHeight(font) * m_r->pixelScale() * window.lineHeight) / m_r->pixelScale();
     m_lineHeight = lh;
     const float pageH = std::max(lh, std::floor(r.h / lh) * lh);
     const float maxScroll = std::max(0.0f, need - pageH);
@@ -961,7 +1031,10 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
     const FontRef font = fontFor(window);
     const RectF r = window.rect;
     if (panel) m_r->fillRect({r.x, r.y, r.w, r.h}, {0, 0, 0, 140});
-    const float lineHeight = m_r->lineSkip(font) * 1.15f;
+    // высота строки — как у текста (inv.fnt.height), слово — по середине строки
+    const float px = m_r->pixelScale();
+    const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight) / px;
+    const float textOffset = std::floor((lineHeight - m_r->fontHeight(font)) * px / 2) / px;
     // Предметы в строку разделяются « | », как hinv_delim в INSTEAD (game.gui)
     const bool horizontal = m_standardTheme.inventoryHorizontal;
     const std::string delim = " | ";
@@ -1003,9 +1076,9 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
             }
             const bool isSelected = it.item->id == selected;
             const bool hovered = it.item->id == m_hoverItem;
-            m_r->drawText(font, it.label, !it.item->active ? window.fg : isSelected || hovered ? window.alink : window.link, tx, y, 1.0f);
+            m_r->drawText(font, it.label, !it.item->active ? window.fg : isSelected || hovered ? window.alink : window.link, tx, y + textOffset, 1.0f);
             if (it.item->active) m_hits.push_back({cell, Hit::Kind::Inventory, it.item->id});
-            if (horizontal && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y, 1.0f);
+            if (horizontal && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y + textOffset, 1.0f);
             x += it.w + gap;
         }
         y += lineHeight;
@@ -1030,14 +1103,25 @@ void GameScreen::renderVanishing(const FontRef& labelFont, Color labelColor, boo
 }
 
 void GameScreen::renderMenuButton(const ScreenTheme& theme) {
-    // menu.gfx.button в menu.button.x/y — как кнопка «Меню» в INSTEAD.
+    float w = 0, h = 0;
+    // Игра NLB при запуске ставит кнопку сама (nlb.lua, _syscall_showmenubtn): gfx/menubtn_ru.png
+    // (для русской книги) или gfx/menubtn.png активной темы, в правый верхний угол — x = scr.w −
+    // ширина картинки, y = 0. Она заменяет menu.gfx.button / menu.button.x/y из theme.ini
+    const std::string nlbButton = m_session.language() == "ru" && !theme.nlbMenuButtonRu.empty()
+                                      ? theme.nlbMenuButtonRu : theme.nlbMenuButton;
+    if (!nlbButton.empty() && m_r->imageSize(nlbButton, w, h)) {
+        const RectF r{theme.screenArea.x + theme.screenArea.w - w * theme.scale, theme.screenArea.y, w * theme.scale, h * theme.scale};
+        m_r->drawImage(nlbButton, r, 1.0f);
+        m_hits.push_back({r, Hit::Kind::MenuButton, ""});
+        return;
+    }
+    // Без неё — menu.gfx.button в menu.button.x/y из theme.ini, как в INSTEAD.
     // Языковой вариант картинки, если есть: menubtn.png -> menubtn_ru.png для русской книги
     std::string path = theme.menuButton;
     if (path.empty()) return;
     const auto dot = path.find_last_of('.');
     const std::string localized = dot == std::string::npos ? "" : path.substr(0, dot) + "_" + m_session.language() + path.substr(dot);
     if (!localized.empty() && FileUtils::exists(localized)) path = localized;
-    float w = 0, h = 0;
     if (!m_r->imageSize(path, w, h)) return;
     const RectF r{theme.menuButtonX, theme.menuButtonY, w * theme.scale, h * theme.scale};
     m_r->drawImage(path, r, 1.0f);
@@ -1093,15 +1177,29 @@ void GameScreen::renderMenu() {
     const bool saves = m_session.savesAvailable();
     if (m_menu == Menu::Main) {
         title = "Меню";
-        items = {{m_screen.canSave ? "Сохранить игру (F5)" : "Сохранить игру — здесь нельзя", saves && m_screen.canSave},
-                 {"Загрузить игру (F9)", saves},
-                 {"Начать заново", true},
-                 {m_options.soundAvailable ? (m_soundOn ? "Выключить звук" : "Включить звук") : "Звук недоступен", m_options.soundAvailable},
-                 {m_choicesScreen ? (m_screen.layout == Layout::VisualNovel ? "Варианты: отдельным экраном"
-                                                                             : "Варианты: отдельным экраном (только в VN)")
-                                  : "Варианты: в окне текста", true},
-                 {"Выйти", true},
-                 {"Вернуться в игру (Esc)", true}};
+        for (MainItem item : mainItems()) {
+            switch (item) {
+                case MainItem::Save:
+                    items.push_back({m_screen.canSave ? "Сохранить игру (F5)" : "Сохранить игру — здесь нельзя", saves && m_screen.canSave});
+                    break;
+                case MainItem::Load: items.push_back({"Загрузить игру (F9)", saves}); break;
+                case MainItem::Restart: items.push_back({"Начать заново", true}); break;
+                case MainItem::Sound:
+                    items.push_back({m_options.soundAvailable ? (m_soundOn ? "Выключить звук" : "Включить звук") : "Звук недоступен",
+                                     m_options.soundAvailable});
+                    break;
+                case MainItem::Choices:
+                    items.push_back({m_choicesScreen ? (m_screen.layout == Layout::VisualNovel ? "Варианты: отдельным экраном"
+                                                                                                : "Варианты: отдельным экраном (только в VN)")
+                                                     : "Варианты: в окне текста", true});
+                    break;
+                case MainItem::Fullscreen:
+                    items.push_back({m_isFullscreen && m_isFullscreen() ? "Полный экран: выключить (F11)" : "Полный экран: включить (F11)", true});
+                    break;
+                case MainItem::Quit: items.push_back({"Выйти", true}); break;
+                case MainItem::Back: items.push_back({"Вернуться в игру (Esc)", true}); break;
+            }
+        }
     } else if (m_menu == Menu::ConfirmQuit) {
         title = "Выйти из игры?";
         items = {{"Да, выйти", true}, {"Нет, вернуться (Esc)", true}};
