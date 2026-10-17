@@ -85,6 +85,8 @@ public:
 
     /// После команд, отданных напрямую session.engine() (сценарии тестов)
     void afterCommand();
+    /// Какие темы подключены и что из них взято (для журнала фронтенда: разобраться с оформлением)
+    std::string describeThemes() const;
     /// Сейчас показан экран вариантов (режим choicesScreen)
     bool choicesScreenShown() const { return m_showChoices; }
     /// Игрок выбрал «Выйти» в меню

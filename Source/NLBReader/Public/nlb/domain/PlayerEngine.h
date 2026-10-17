@@ -83,6 +83,9 @@ public:
         std::string text;
         /// Тривиальная ссылка: текст по умолчанию («Далее»/«Next») — Link.isTrivial в NLB
         bool trivial = false;
+        /// Ссылка в тексте, а не путь комнаты (ExportManager.isInlineLink): тривиальная или с
+        /// текстом, который начинается с «-», «"» или «'» — например, реплика в диалоге
+        bool inlineLink = false;
     };
 
     /// Расположение графического объекта — как его задаёт INSTEAD-экспорт (decorateObjEffect):

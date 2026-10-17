@@ -195,6 +195,7 @@ bool UNLBScreenWidget::EnsureScreen() {
     // внешнюю игру ведёт сама игра (OnExternalGame) — сообщение «её нет» не нужно
     Screen->setExternalGameHandler([](const std::string&) {});
     P->SetScreenDriven(true);
+    UE_LOG(LogTemp, Log, TEXT("NLB: оформление: %s"), UTF8_TO_TCHAR(Screen->describeThemes().c_str()));
     return true;
 }
 
