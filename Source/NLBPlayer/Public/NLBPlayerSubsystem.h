@@ -178,6 +178,12 @@ private:
     FString BaseThemeDir;
 
     std::unique_ptr<FUnrealAudioBackend, FNLBAudioDeleter> Audio;
+
+    /// Книга на диске: относительный путь — от проекта или Content; на Android пакет копируется из
+    /// APK в хранилище приложения. Пусто — не найдена
+    static FString ResolveBookPath(const FString& BookPath);
+    /// Путь Unreal -> путь для обычного файлового ввода-вывода (на Android — в хранилище приложения)
+    static FString DiskPath(const FString& UePath);
     std::unique_ptr<nlb::presentation::Session, FNLBSessionDeleter> Session;
     uint64 LastRevision = 0;
     UPROPERTY() TMap<FString, TObjectPtr<UTexture2D>> Textures;
