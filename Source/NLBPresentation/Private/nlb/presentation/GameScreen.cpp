@@ -179,6 +179,25 @@ int GameScreen::singleTrivialChoice() const {
 }
 
 uint64_t GameScreen::now() const {
+    // пауза в меню: время экрана (анимации спрайтов, эффекты появления, всплывающие сообщения)
+    // стоит, а после закрытия меню идёт дальше с того же места
+    const uint64_t t = m_pauseStart ? m_pauseStart : rawNow();
+    return t - m_pausedTotal;
+}
+
+void GameScreen::updatePause() {
+    if (m_menu != Menu::None && !m_pauseStart) {
+        m_pauseStart = rawNow();
+        m_hoverObject.clear();  // под меню ничего не подсвечено
+        m_hoverChoice = NO_HOVER;
+        m_hoverItem.clear();
+    } else if (m_menu == Menu::None && m_pauseStart) {
+        m_pausedTotal += rawNow() - m_pauseStart;
+        m_pauseStart = 0;
+    }
+}
+
+uint64_t GameScreen::rawNow() const {
     if (m_options.clock) return m_options.clock();
     using namespace std::chrono;
     return static_cast<uint64_t>(duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count());
@@ -193,7 +212,8 @@ bool GameScreen::imageSize(const ImageRef& image, float& w, float& h) {
 void GameScreen::update(int milliseconds) {
     // Сессию изменили снаружи (подсистема движка, вернувшая книгу после внешней игры) — как после команды
     if (m_session.revision() != m_seenRevision) afterCommand();
-    if (m_menu != Menu::None) return;  // время идёт, только пока игрок не в меню (как пауза в INSTEAD)
+    updatePause();
+    if (m_menu != Menu::None) return;  // время книги идёт, только пока игрок не в меню (пауза)
     const uint64_t revision = m_session.revision();
     m_session.advance(milliseconds);
     if (m_session.revision() != revision) pull();
@@ -319,6 +339,7 @@ GameScreen::EffectState GameScreen::effectState(const std::string& id, const Rec
 void GameScreen::mouseMove(float x, float y) {
     m_mouseX = x;
     m_mouseY = y;
+    if (m_menu != Menu::None) return;  // пауза: книга под меню на мышь не отзывается
     // что под курсором — подсвечивается цветом alink (объекты, переходы и заголовок, предметы)
     m_hoverObject.clear();
     m_hoverChoice = NO_HOVER;
@@ -344,6 +365,18 @@ void GameScreen::click(float x, float y, bool rightButton) {
         if (m_screen.externalGame) m_session.finishExternalGame();
         else if (m_screen.finished) m_session.restart();
         afterCommand();
+        return;
+    }
+    if (m_menu != Menu::None) {
+        // пауза: щёлкать можно только по пунктам меню, книга под ним не отзывается
+        if (rightButton) return;
+        for (auto it = m_hits.rbegin(); it != m_hits.rend(); ++it) {
+            if (it->kind != Hit::Kind::Menu || !contains(it->rect, x, y)) continue;
+            const ScreenTheme& t = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
+            m_session.playUiSound(t.clickSound);
+            menuAction(it->index);
+            return;
+        }
         return;
     }
     if (rightButton) {
@@ -589,6 +622,7 @@ void GameScreen::menuAction(int index) {
 
 void GameScreen::render(IScreenRenderer& r) {
     m_r = &r;
+    updatePause();
     m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, BACKGROUND);
     m_hits.clear();
     if (m_screen.layout == Layout::VisualNovel) renderVisualNovel();
@@ -1183,7 +1217,7 @@ void GameScreen::renderChoicesScreen() {
     for (const auto& c : m_screen.choices) {
         const std::string text = c.enabled ? std::to_string(++number) + ". " + c.text : c.altText;
         const RectF r{panel.x + 10, y, std::min(textW(font, text), panel.w - 20), lh};
-        const bool hover = c.enabled && contains(r, m_mouseX, m_mouseY);
+        const bool hover = c.enabled && m_menu == Menu::None && contains(r, m_mouseX, m_mouseY);
         m_r->drawText(font, text, !c.enabled ? window.fg : hover ? window.alink : window.link, r.x, r.y, 1.0f);
         if (c.enabled) m_hits.push_back({r, Hit::Kind::Choice, "", c.index});
         y += step;
