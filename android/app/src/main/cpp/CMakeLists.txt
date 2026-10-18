@@ -59,12 +59,21 @@ add_subdirectory("${NLB_ROOT}" nlb)
 add_library(main SHARED
         "${NLB_ROOT}/Source/NLBSdl/main_sdl.cpp"
         "${NLB_ROOT}/Source/NLBSdl/SdlPlayer.cpp"
-        "${NLB_ROOT}/Source/NLBAudioSDL/Private/nlb/audio/SdlAudioBackend.cpp")
+        "${NLB_ROOT}/Source/NLBAudioSDL/Private/nlb/audio/SdlAudioBackend.cpp"
+        "${NLB_ROOT}/Source/PlatformPaths.cpp"
+        # интерпретатор выражений cparse — как в программах на ПК, отдельно от библиотеки NLBReader
+        "${NLB_ROOT}/Source/thirdparty/cparse/shunting-yard.cpp"
+        "${NLB_ROOT}/Source/thirdparty/cparse/packToken.cpp"
+        "${NLB_ROOT}/Source/thirdparty/cparse/functions.cpp"
+        "${NLB_ROOT}/Source/thirdparty/cparse/containers.cpp")
 target_include_directories(main PRIVATE
         "${NLB_ROOT}/Source"
         "${NLB_ROOT}/Source/NLBSdl"
         "${NLB_ROOT}/Source/NLBAudioSDL/Public")
 target_compile_features(main PRIVATE cxx_std_20)
+target_include_directories(main PRIVATE "${NLB_ROOT}/Source/thirdparty/cparse")
+# все символы должны найтись при сборке (как требует Android) — и при проверке на ПК
+target_link_options(main PRIVATE "-Wl,--no-undefined")
 target_link_libraries(main PRIVATE
         NLBReader NLBPlatforms
         SDL3::SDL3-shared SDL3_image::SDL3_image-static SDL3_ttf::SDL3_ttf-static SDL3_mixer::SDL3_mixer-static)
