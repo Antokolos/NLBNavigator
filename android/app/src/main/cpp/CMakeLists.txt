@@ -4,6 +4,10 @@
 cmake_minimum_required(VERSION 3.22)
 project(nlbnavigator_android C CXX)
 
+# pkg-config с ПК (например, из MSYS2 в PATH) для Android не годится: он нашёл бы библиотеки
+# Windows. Всё нужное собирается из исходников, поэтому pkg-config не ищем
+set(CMAKE_DISABLE_FIND_PACKAGE_PkgConfig ON)
+
 get_filename_component(NLB_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../.." ABSOLUTE)
 set(DEPS "${NLB_ROOT}/android/deps")
 if(NOT EXISTS "${DEPS}/SDL/CMakeLists.txt")
