@@ -1,5 +1,7 @@
 #include "NLBScreenWidget.h"
 
+#include "Fonts/CompositeFont.h"
+
 #include "Engine/Engine.h"
 #include "GameFramework/GameUserSettings.h"
 
@@ -146,7 +148,7 @@ private:
             File = Copy;
         }
         FSlateFontInfo Info = (!File.IsEmpty() && FPaths::FileExists(File))
-            ? FSlateFontInfo(File, Points)
+            ? FSlateFontInfo(MakeShared<FStandaloneCompositeFont>(NAME_None, File, EFontHinting::Default, EFontLoadingPolicy::LazyLoad), Points)
             : FCoreStyle::GetDefaultFontStyle("Regular", Points);
         return Fonts.emplace(Font, Info).first->second;
     }

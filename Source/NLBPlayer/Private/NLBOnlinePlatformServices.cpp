@@ -60,7 +60,7 @@ void FNLBOnlinePlatformServices::submitScore(const std::string& leaderboard, int
     if (!User.IsValid() || !Leaderboards.IsValid()) return;
     const FString Board = F(leaderboard);
     FOnlineLeaderboardWrite Write;
-    Write.LeaderboardNames.Add(*Board);
+    Write.LeaderboardNames.Add(FString(Board));  // не *TCHAR: у обёртки массива есть и Add(FName)
     Write.RatedStat = FString(Board);
     Write.SortMethod = ELeaderboardSort::Descending;
     Write.UpdateMethod = ELeaderboardUpdateMethod::KeepBest;
