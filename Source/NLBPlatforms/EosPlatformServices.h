@@ -32,6 +32,7 @@ public:
     ~EosPlatformServices() override;
 
     std::string name() const override { return "epic"; }
+    std::string language() const override { return m_language; }
     bool available() const override { return m_user != nullptr; }
     const std::string& lastError() const { return m_error; }
 
@@ -54,6 +55,7 @@ private:
     EOS_ProductUserId m_user = nullptr;
     std::vector<std::function<void()>> m_queue;
     std::string m_error;
+    std::string m_language;  ///< -epiclocale от Epic Games Launcher
 };
 
 }  // namespace nlb::platform

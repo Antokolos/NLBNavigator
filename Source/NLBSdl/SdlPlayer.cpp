@@ -1,6 +1,7 @@
 #include "SdlPlayer.h"
 
 #include "PlatformFactory.h"
+#include "nlb/presentation/Localization.h"
 
 #include <SDL3_image/SDL_image.h>
 
@@ -75,6 +76,16 @@ bool SdlPlayer::init() {
     so.exportMode = m_options.exportMode;
     so.achievementsPath = m_options.achievementsPath;
     so.savesDir = m_options.savesDir;
+    // язык: ключ запуска (--lang, -epiclocale от Epic Games Launcher…), затем языки системы
+    {
+        const std::string fromArgs = nlb::presentation::languageFromArgs(m_options.args);
+        if (!fromArgs.empty()) so.preferredLanguages.push_back(fromArgs);
+        int count = 0;
+        if (SDL_Locale** locales = SDL_GetPreferredLocales(&count)) {
+            for (int i = 0; i < count; ++i) if (locales[i] && locales[i]->language) so.preferredLanguages.push_back(locales[i]->language);
+            SDL_free(locales);
+        }
+    }
     std::string error;
     if (!m_session->open(so, error)) {
         std::cerr << "Cannot load book: " << error << std::endl;

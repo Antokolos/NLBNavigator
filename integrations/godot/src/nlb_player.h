@@ -41,6 +41,10 @@ public:
     /// Игровые площадки: «steam», «epic», «log» или «log:<файл>» (достижения, статистика и
     /// рекорды книги по её platform.ini). Steam и Epic — если модуль собран с их SDK
     void set_platforms(const godot::PackedStringArray& platforms) { m_platforms = platforms; }
+    /// Язык книги по умолчанию для этой игры («ru», «en»…), главнее языка системы; пусто —
+    /// язык лаунчера/системы, иначе английский. Выбор игрока в меню всё равно главнее
+    void set_language(const godot::String& lang) { m_language = lang; }
+    godot::String get_language() const { return m_language; }
     godot::PackedStringArray get_platforms() const { return m_platforms; }
     godot::String get_log_path() const { return m_logPath; }
     void set_autostart(bool on) { m_autostart = on; }
@@ -90,6 +94,7 @@ private:
     godot::PackedStringArray m_externalGames;
     godot::String m_logPath;
     godot::PackedStringArray m_platforms;
+    godot::String m_language;
     std::unique_ptr<GodotAudioBackend> m_audio;
     std::unique_ptr<nlb::presentation::Session> m_session;
     uint64_t m_lastRevision = 0;

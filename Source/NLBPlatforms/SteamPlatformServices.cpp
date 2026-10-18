@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstdlib>
 
+#include "nlb/presentation/Localization.h"
+
 namespace nlb::platform {
 
 namespace {
@@ -39,6 +41,11 @@ SteamPlatformServices::~SteamPlatformServices() {
         SteamUserStats()->StoreStats();
         SteamAPI_Shutdown();
     }
+}
+
+std::string SteamPlatformServices::language() const {
+    // язык игры, выбранный в клиенте Steam («russian», «english»…)
+    return m_ok ? nlb::presentation::languageFromSteam(SteamApps()->GetCurrentGameLanguage()) : std::string();
 }
 
 void SteamPlatformServices::unlockAchievement(const std::string& apiName) {

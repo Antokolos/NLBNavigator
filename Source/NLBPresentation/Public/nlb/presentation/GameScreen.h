@@ -126,7 +126,7 @@ private:
         std::string id;
         int index = -1;
     };
-    enum class Menu { None, Main, Save, Load, Message, ConfirmQuit };
+    enum class Menu { None, Main, Save, Load, Message, ConfirmQuit, Language };
     struct Effect {
         uint64_t start = 0;
         int steps = 25;
@@ -177,7 +177,8 @@ private:
     std::function<void(bool)> m_setFullscreen;
     std::function<bool()> m_isFullscreen;
     /// Пункты главного меню по порядку (полный экран — только если фронтенд его умеет)
-    enum class MainItem { Save, Load, Restart, Sound, Choices, Fullscreen, Quit, Back };
+    enum class MainItem { Save, Load, Restart, Sound, Choices, Fullscreen, Language, Quit, Back };
+    std::string tr(int key) const;  ///< текст интерфейса на языке книги (Localization.h, Ui)
     std::vector<MainItem> mainItems() const;
     static constexpr int NO_HOVER = -1000000;
     int m_hoverChoice = NO_HOVER;    ///< переход под курсором (номер варианта; -1 — заголовок комнаты)

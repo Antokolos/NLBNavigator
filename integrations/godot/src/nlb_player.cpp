@@ -9,6 +9,7 @@
 #include <godot_cpp/classes/project_settings.hpp>
 
 #include "PlatformFactory.h"
+#include "nlb/presentation/Localization.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -108,6 +109,9 @@ void NLBPlayer::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "book_path", PROPERTY_HINT_FILE, "*.nlbpack"), "set_book_path", "get_book_path");
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "visual_novel"), "set_visual_novel", "get_visual_novel");
     ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "external_games"), "set_external_games", "get_external_games");
+    ClassDB::bind_method(D_METHOD("set_language", "language"), &NLBPlayer::set_language);
+    ClassDB::bind_method(D_METHOD("get_language"), &NLBPlayer::get_language);
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "language"), "set_language", "get_language");
     ClassDB::bind_method(D_METHOD("set_platforms", "platforms"), &NLBPlayer::set_platforms);
     ClassDB::bind_method(D_METHOD("get_platforms"), &NLBPlayer::get_platforms);
     ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "platforms"), "set_platforms", "get_platforms");
@@ -181,6 +185,17 @@ bool NLBPlayer::open() {
     options.savesDir = u(data + String("/saves"));
     options.achievementsPath = u(data + String("/achievements.tsv"));
     for (int64_t i = 0; i < m_externalGames.size(); ++i) options.externalGames.push_back(u(m_externalGames[i]));
+    // язык: ключ запуска (--lang, -epiclocale от Epic Games Launcher…), затем язык системы
+    {
+        std::vector<std::string> args;
+        for (const PackedStringArray& list : {OS::get_singleton()->get_cmdline_args(), OS::get_singleton()->get_cmdline_user_args()}) {
+            for (int64_t i = 0; i < list.size(); ++i) args.emplace_back(list[i].utf8().get_data());
+        }
+        const std::string fromArgs = nlb::presentation::languageFromArgs(args);
+        if (!fromArgs.empty()) options.preferredLanguages.push_back(fromArgs);
+        if (!m_language.is_empty()) options.preferredLanguages.push_back(u(m_language));
+        options.preferredLanguages.push_back(u(OS::get_singleton()->get_locale_language()));
+    }
     std::string error;
     if (!m_session->open(options, error)) {
         UtilityFunctions::push_error("NLBPlayer: ", s(error));
