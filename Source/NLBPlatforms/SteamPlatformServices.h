@@ -24,6 +24,7 @@ public:
     ~SteamPlatformServices() override;
 
     std::string name() const override { return "steam"; }
+    std::string language() const override;
     bool available() const override { return m_ok; }
     const std::string& lastError() const { return m_error; }
 

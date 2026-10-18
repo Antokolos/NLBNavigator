@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "nlb/presentation/Localization.h"
+
 namespace nlb::platform {
 
 namespace {
@@ -16,6 +18,7 @@ std::string argValue(const std::vector<std::string>& args, const std::string& na
 }
 
 EosPlatformServices::EosPlatformServices(const PlatformConfig& config, const std::vector<std::string>& args) {
+    m_language = nlb::presentation::normalizeLanguage(argValue(args, "epiclocale"));
     const std::string productName = config.value("epic", "product_name", "NLBNavigator");
     const std::string productVersion = config.value("epic", "product_version", "1.0");
     EOS_InitializeOptions init{};

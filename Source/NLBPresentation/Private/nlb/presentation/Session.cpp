@@ -1,4 +1,8 @@
 #include "nlb/presentation/Session.h"
+#include <algorithm>
+#include <set>
+#include "nlb/domain/PageImpl.h"
+#include "nlb/presentation/Localization.h"
 
 #include "nlb/api/DummyProgressData.h"
 #include "nlb/domain/NonLinearBookImpl.h"
@@ -43,6 +47,14 @@ bool Session::open(const Options& options, std::string& error) {
         }
         return false;
     });
+    // Язык: выбор игрока (сохранён), иначе первый из предпочтений, что есть в книге, иначе английский
+    {
+        std::vector<std::string> preferred;
+        if (!savedLanguage().empty()) preferred.push_back(savedLanguage());
+        preferred.insert(preferred.end(), options.preferredLanguages.begin(), options.preferredLanguages.end());
+        const std::string lang = chooseLanguage(availableLanguages(), preferred, m_book->getLanguage());
+        if (!lang.empty() && lang != m_book->getLanguage()) applyLanguage(lang);
+    }
     m_engine->start();
     afterCommand();
     return true;
@@ -281,6 +293,72 @@ PlayerEngine::SaveInfo Session::saveInfo(int slot) const {
 
 void Session::setMuted(bool muted) {
     if (m_director) m_director->setMuted(muted);
+}
+
+namespace {
+void collectLanguages(const NonLinearBook* book, std::set<std::string>& out) {
+    if (!book) return;
+    if (!book->getLanguage().empty()) out.insert(book->getLanguage());
+    for (const auto& [id, page] : book->getPages()) {
+        for (const auto& lang : page->getTexts().keySet()) if (!page->getTexts().get(lang).empty()) out.insert(lang);
+        if (page->getModule()) collectLanguages(page->getModule(), out);
+    }
+}
+
+void setBookLanguage(NonLinearBookImpl* book, const std::string& lang) {
+    if (!book) return;
+    book->setLanguage(lang);
+    // страницы книги — PageImpl, их модули — NonLinearBookImpl (у модуля свой язык текстов)
+    for (const auto& [id, page] : book->getPages()) setBookLanguage(static_cast<PageImpl*>(page)->getModuleImpl(), lang);
+}
+}
+
+std::vector<std::string> Session::availableLanguages() const {
+    std::set<std::string> langs;
+    collectLanguages(m_book.get(), langs);
+    return {langs.begin(), langs.end()};
+}
+
+void Session::applyLanguage(const std::string& language) {
+    setBookLanguage(m_book.get(), language);
+}
+
+std::string Session::savedLanguage() const {
+    if (m_options.savesDir.empty()) return "";
+    std::string text;
+    if (!FileUtils::readFile(FileUtils::combinePath(m_options.savesDir, "settings.ini"), text)) return "";
+    const auto p = text.find("language=");
+    if (p == std::string::npos) return "";
+    std::string v = text.substr(p + 9);
+    return v.substr(0, v.find_first_of("\r\n"));
+}
+
+bool Session::setLanguage(const std::string& language, bool byPlayer) {
+    if (!m_engine) return false;
+    const auto langs = availableLanguages();
+    if (std::find(langs.begin(), langs.end(), language) == langs.end()) return false;
+    if (byPlayer && !m_options.savesDir.empty()) {
+        FileUtils::createDirectoryRecursive(m_options.savesDir);
+        std::ofstream(FileUtils::nativePath(FileUtils::combinePath(m_options.savesDir, "settings.ini")), std::ios::trunc)
+            << "language=" << language << "\n";
+    }
+    if (language == m_book->getLanguage()) return true;
+    applyLanguage(language);
+    m_engine->look();  // сцена заново — на новом языке
+    afterCommand();
+    return true;
+}
+
+void Session::setPlatforms(std::unique_ptr<nlb::platform::PlatformBridge> bridge) {
+    m_platforms = std::move(bridge);
+    // язык, выбранный в лаунчере (Steam, Epic), — если игрок не выбирал язык в меню
+    if (m_platforms && m_engine && savedLanguage().empty()) {
+        const std::string lang = m_platforms->language();
+        if (!lang.empty()) {
+            const std::string chosen = chooseLanguage(availableLanguages(), {lang}, m_book->getLanguage());
+            if (chosen != m_book->getLanguage()) setLanguage(chosen, false);
+        }
+    }
 }
 
 void Session::playUiSound(const std::string& path) {

@@ -45,6 +45,10 @@ public:
     /// Сохранить накопленное (Steam: StoreStats) — после пачки изменений
     virtual void flush() {}
 
+    /// Язык, выбранный игроком в лаунчере площадки (Steam: язык игры; Epic: -epiclocale), код
+    /// вида «ru»; пусто — площадка его не сообщает
+    virtual std::string language() const { return ""; }
+
     /// Обработать ответы площадки (Steam: SteamAPI_RunCallbacks, EOS: EOS_Platform_Tick) —
     /// вызывается каждый кадр
     virtual void tick() {}

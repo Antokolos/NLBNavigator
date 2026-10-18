@@ -1,4 +1,5 @@
 #include "nlb/presentation/GameScreen.h"
+#include "nlb/presentation/Localization.h"
 
 #include <algorithm>
 #include <chrono>
@@ -203,7 +204,8 @@ void GameScreen::processEvents(const std::vector<PlayerEngine::Event>& events) {
     if (m_eventListener && !events.empty()) m_eventListener(events);
     for (const auto& e : events) {
         if (e.kind == Kind::Achievement) {
-            m_toasts.push_back(e.text);
+            // «Получено достижение: …» — на языке интерфейса
+            m_toasts.push_back(e.id.empty() ? e.text : tr(static_cast<int>(Ui::Achievement)) + e.id);
             m_toastUntil = now() + 4000;
         } else if (e.kind == Kind::PageText || e.kind == Kind::PageCaption) {
             m_scroll = 0;  // новая страница — с начала
@@ -228,7 +230,9 @@ void GameScreen::afterCommand() {
                 m_externalHandler(*m_screen.externalGame);
             }
         } else {
-            m_message = "Внешняя игра «" + *m_screen.externalGame + "»: в этом проигрывателе её нет.\nЩелчок — вернуться в книгу.";
+            m_message = tr(static_cast<int>(Ui::ExternalGameMissing));
+            const auto at = m_message.find("%s");
+            if (at != std::string::npos) m_message.replace(at, 2, *m_screen.externalGame);
             m_menu = Menu::Message;
         }
     } else {
@@ -238,7 +242,7 @@ void GameScreen::afterCommand() {
         // режиме ссылок в тексте его нет вовсе, как в INSTEAD: игрок читает последнюю страницу,
         // а начать заново можно из меню. Страница без текста — сразу
         if (m_screen.finished && choicesMode() && m_screen.pageText.empty() && m_screen.reactionText.empty()) {
-            m_message = "Конец игры.\nЩелчок — начать заново.";
+            m_message = tr(static_cast<int>(Ui::GameOver));
             m_menu = Menu::Message;
         }
     }
@@ -416,7 +420,7 @@ void GameScreen::key(Key k, int digit) {
     if (k == Key::Escape) {
         if (m_showChoices && m_menu == Menu::None) { m_showChoices = false; return; }
         if (m_menu == Menu::None) m_menu = Menu::Main;
-        else if (m_menu == Menu::ConfirmQuit) m_menu = Menu::Main;
+        else if (m_menu == Menu::ConfirmQuit || m_menu == Menu::Language) m_menu = Menu::Main;
         else if (m_menu != Menu::Message) m_menu = Menu::None;
         return;
     }
@@ -469,7 +473,7 @@ bool GameScreen::advanceText() {
     }
     // текст дочитан: конец игры — сообщение «начать заново»
     if (m_screen.finished && std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
-        m_message = "Конец игры.\nЩелчок — начать заново.";
+        m_message = tr(static_cast<int>(Ui::GameOver));
         m_menu = Menu::Message;
         return true;
     }
@@ -492,9 +496,14 @@ std::string GameScreen::describeThemes() const {
         + "; щелчок (snd.click): " + orNone(t.clickSound);
 }
 
+std::string GameScreen::tr(int key) const {
+    return uiText(static_cast<Ui>(key), m_session.language());
+}
+
 std::vector<GameScreen::MainItem> GameScreen::mainItems() const {
     std::vector<MainItem> items{MainItem::Save, MainItem::Load, MainItem::Restart, MainItem::Sound, MainItem::Choices};
     if (m_setFullscreen) items.push_back(MainItem::Fullscreen);
+    if (m_session.availableLanguages().size() > 1) items.push_back(MainItem::Language);  // язык — если есть выбор
     items.push_back(MainItem::Quit);
     items.push_back(MainItem::Back);
     return items;
@@ -550,8 +559,19 @@ void GameScreen::menuAction(int index) {
             case MainItem::Fullscreen:
                 if (m_setFullscreen) m_setFullscreen(!(m_isFullscreen && m_isFullscreen()));
                 break;
+            case MainItem::Language: m_menu = Menu::Language; break;
             case MainItem::Quit: m_menu = Menu::ConfirmQuit; break;  // сначала спросить
             case MainItem::Back: m_menu = Menu::None; break;
+        }
+    } else if (m_menu == Menu::Language) {
+        // 0 — «Назад», дальше языки книги по порядку
+        const auto langs = m_session.availableLanguages();
+        if (index >= 1 && index <= static_cast<int>(langs.size())) {
+            m_session.setLanguage(langs[static_cast<size_t>(index - 1)], true);
+            m_menu = Menu::None;
+            afterCommand();
+        } else {
+            m_menu = Menu::Main;
         }
     } else if (m_menu == Menu::ConfirmQuit) {
         if (index == 0) { m_quit = true; m_menu = Menu::None; }  // «Да, выйти»
@@ -560,7 +580,7 @@ void GameScreen::menuAction(int index) {
         if (index < 1 || index > 9) { m_menu = Menu::Main; return; }
         const bool ok = m_menu == Menu::Save ? m_session.save(index, error) : m_session.load(index, error);
         m_menu = Menu::None;
-        if (!ok) { m_message = "Не удалось: " + error; m_menu = Menu::Message; return; }
+        if (!ok) { m_message = tr(static_cast<int>(Ui::Failed)) + error; m_menu = Menu::Message; return; }
         afterCommand();
     }
 }
@@ -1184,7 +1204,7 @@ void GameScreen::renderOverlayMessages() {
     }
     if (!m_session.selectedItem().empty() && m_menu == Menu::None) {
         // подсказка — на тёмной плашке, чтобы читалась на любом фоне (светлая подложка темы, картинка)
-        const std::string hint = "Выбран предмет: щёлкните, к чему применить (правая кнопка — отмена)";
+        const std::string hint = tr(static_cast<int>(Ui::ItemSelected));
         const float w = textW(m_options.smallFont, hint), h = m_r->fontHeight(m_options.smallFont);
         const float x = 60, y = SCREEN_H - h - 12;
         m_r->fillRect({x - 14, y - 6, w + 28, h + 12}, {0, 0, 0, 190});
@@ -1197,40 +1217,50 @@ void GameScreen::renderMenu() {
     std::vector<std::pair<std::string, bool>> items;  // текст, доступен
     std::string title;
     const bool saves = m_session.savesAvailable();
+    auto T = [this](Ui k) { return tr(static_cast<int>(k)); };
     if (m_menu == Menu::Main) {
-        title = "Меню";
+        title = T(Ui::Menu);
         for (MainItem item : mainItems()) {
             switch (item) {
                 case MainItem::Save:
-                    items.push_back({m_screen.canSave ? "Сохранить игру (F5)" : "Сохранить игру — здесь нельзя", saves && m_screen.canSave});
+                    items.push_back({m_screen.canSave ? T(Ui::SaveGame) : T(Ui::SaveForbidden), saves && m_screen.canSave});
                     break;
-                case MainItem::Load: items.push_back({"Загрузить игру (F9)", saves}); break;
-                case MainItem::Restart: items.push_back({"Начать заново", true}); break;
+                case MainItem::Load: items.push_back({T(Ui::LoadGame), saves}); break;
+                case MainItem::Restart: items.push_back({T(Ui::Restart), true}); break;
                 case MainItem::Sound:
-                    items.push_back({m_options.soundAvailable ? (m_soundOn ? "Выключить звук" : "Включить звук") : "Звук недоступен",
+                    items.push_back({m_options.soundAvailable ? (m_soundOn ? T(Ui::SoundOff) : T(Ui::SoundOn)) : T(Ui::SoundUnavailable),
                                      m_options.soundAvailable});
                     break;
                 case MainItem::Choices:
-                    items.push_back({m_choicesScreen ? (m_screen.layout == Layout::VisualNovel ? "Варианты: отдельным экраном"
-                                                                                                : "Варианты: отдельным экраном (только в VN)")
-                                                     : "Варианты: в окне текста", true});
+                    items.push_back({m_choicesScreen ? (m_screen.layout == Layout::VisualNovel ? T(Ui::ChoicesScreen) : T(Ui::ChoicesScreenVnOnly))
+                                                     : T(Ui::ChoicesInText), true});
                     break;
                 case MainItem::Fullscreen:
-                    items.push_back({m_isFullscreen && m_isFullscreen() ? "Полный экран: выключить (F11)" : "Полный экран: включить (F11)", true});
+                    items.push_back({m_isFullscreen && m_isFullscreen() ? T(Ui::FullscreenOff) : T(Ui::FullscreenOn), true});
                     break;
-                case MainItem::Quit: items.push_back({"Выйти", true}); break;
-                case MainItem::Back: items.push_back({"Вернуться в игру (Esc)", true}); break;
+                case MainItem::Language:
+                    items.push_back({T(Ui::Language) + ": " + languageName(m_session.language()), true});
+                    break;
+                case MainItem::Quit: items.push_back({T(Ui::Quit), true}); break;
+                case MainItem::Back: items.push_back({T(Ui::BackToGame), true}); break;
             }
         }
+    } else if (m_menu == Menu::Language) {
+        // языки книги — каждый своим названием; текущий отмечен
+        title = T(Ui::Language);
+        items.push_back({T(Ui::Back), true});
+        for (const auto& lang : m_session.availableLanguages()) {
+            items.push_back({(lang == m_session.language() ? "• " : "") + languageName(lang), true});
+        }
     } else if (m_menu == Menu::ConfirmQuit) {
-        title = "Выйти из игры?";
-        items = {{"Да, выйти", true}, {"Нет, вернуться (Esc)", true}};
+        title = T(Ui::QuitQuestion);
+        items = {{T(Ui::QuitYes), true}, {T(Ui::QuitNo), true}};
     } else if (m_menu == Menu::Save || m_menu == Menu::Load) {
-        title = m_menu == Menu::Save ? "Сохранить в слот" : "Загрузить из слота";
-        items.push_back({"Назад", true});
+        title = m_menu == Menu::Save ? T(Ui::SaveToSlot) : T(Ui::LoadFromSlot);
+        items.push_back({T(Ui::Back), true});
         for (int slot = 1; slot <= 9; ++slot) {
             const auto info = m_session.saveInfo(slot);
-            const std::string text = std::to_string(slot) + ". " + (info.exists ? info.time + " — " + info.label : "пусто");
+            const std::string text = std::to_string(slot) + ". " + (info.exists ? info.time + " — " + info.label : T(Ui::EmptySlot));
             items.push_back({text, m_menu == Menu::Save || (info.exists && info.compatible)});
         }
     } else {

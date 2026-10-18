@@ -9,6 +9,7 @@ func _initialize() -> void:
 		return
 	p.autostart = false
 	p.book_path = "res://book.nlbpack"
+	p.language = "ru"  # сценарий — по русским надписям «Варвара»
 	p.external_games = PackedStringArray(["play_bp_*"])
 	root.add_child(p)
 	var got_external := [false]

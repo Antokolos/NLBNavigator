@@ -78,6 +78,8 @@ public:
     void onCommand(const std::vector<PlayerEngine::Event>& events, const PlayerEngine& engine, bool finished);
     /// Каждый кадр: ответы площадок
     void tick();
+    /// Язык лаунчера: первый, что сообщила какая-нибудь площадка
+    std::string language() const;
     /// Новая игра: рекорды «в конце игры» можно отправить снова, значения перечитываются
     void reset();
 

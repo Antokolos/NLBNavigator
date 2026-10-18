@@ -137,6 +137,14 @@ void PlatformBridge::onCommand(const std::vector<PlayerEngine::Event>& events, c
     if (changed) for (auto& s : m_services) s->flush();
 }
 
+std::string PlatformBridge::language() const {
+    for (const auto& s : m_services) {
+        const std::string l = s->language();
+        if (!l.empty()) return l;
+    }
+    return "";
+}
+
 void PlatformBridge::tick() {
     for (auto& s : m_services) s->tick();
 }

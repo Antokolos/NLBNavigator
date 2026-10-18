@@ -8,6 +8,9 @@
 #include "NLBEngineEvents.h"
 #include "UnrealAudioBackend.h"
 #include "NLBOnlinePlatformServices.h"
+#include "Internationalization/Culture.h"
+#include "Internationalization/Internationalization.h"
+#include "nlb/presentation/Localization.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "nlb/util/BookPack.h"
@@ -110,6 +113,18 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
     Options.savesDir = U(DiskPath(SaveDir / TEXT("saves")));
     Options.achievementsPath = U(DiskPath(SaveDir / TEXT("achievements.tsv")));
     for (const FString& G : ExternalGames) Options.externalGames.push_back(U(G));
+    // язык: ключ запуска (-lang=, -culture=, -epiclocale= от Epic Games Launcher), язык культуры
+    // Unreal (он учитывает -culture) и язык системы; книга включит первый из них, что в ней есть
+    {
+        TArray<FString> Tokens, Switches;
+        FCommandLine::Parse(FCommandLine::Get(), Tokens, Switches);
+        std::vector<std::string> Args;
+        for (const FString& Sw : Switches) Args.push_back("-" + U(Sw));
+        const std::string FromArgs = nlb::presentation::languageFromArgs(Args);
+        if (!FromArgs.empty()) Options.preferredLanguages.push_back(FromArgs);
+        Options.preferredLanguages.push_back(U(FInternationalization::Get().GetCurrentLanguage()->GetTwoLetterISOLanguageName()));
+        Options.preferredLanguages.push_back(U(FPlatformMisc::GetDefaultLanguage()));
+    }
     std::string Error;
     if (!Session->open(Options, Error)) {
         UE_LOG(LogTemp, Error, TEXT("NLB: %s (%s)"), *S(Error), *S(Options.bookPath));

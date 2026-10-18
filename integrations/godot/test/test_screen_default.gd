@@ -12,6 +12,7 @@ func _initialize() -> void:
 	player = ClassDB.instantiate("NLBPlayer")
 	player.autostart = false
 	player.book_path = "res://book.nlbpack"
+	player.language = "ru"  # сценарий — по русским надписям «Варвара»
 	player.external_games = PackedStringArray(["play_bp_*"])
 	root.add_child(player)
 	screen = ClassDB.instantiate("NLBScreen")
