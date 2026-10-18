@@ -268,7 +268,7 @@ std::string StringHelper::anyToString(const Any& value) {
         }
 
         // Для неизвестных типов возвращаем имя типа
-        return std::string("UNKNOWN_TYPE:") + value.type().name();
+        return std::string("UNKNOWN_TYPE");
 
     } catch (const std::exception& e) {
         return std::string("CONVERSION_ERROR:") + e.what();
