@@ -68,6 +68,7 @@ Session.vim
 # Документация и адаптеры движков (Godot, Unreal)
 !/docs/**
 !/integrations/**
+!/android/**
 # ... кроме собранных модулей и каталогов сборки
 /integrations/godot/demo/bin/
 /integrations/godot/demo/.godot/
