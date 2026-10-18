@@ -4,11 +4,17 @@
 //           [--window WxH] [--script <файл>]   (сценарий — для тестов: команды и снимки экрана)
 #include "SdlPlayer.h"
 
+// На Android точку входа вызывает SDLActivity (SDL_main из libmain.so) — там SDL_main.h должен
+// переименовать main; на ПК main — обычная функция
+#ifndef __ANDROID__
 #define SDL_MAIN_HANDLED
+#endif
 #include <SDL3/SDL_main.h>
 
+#include <fstream>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include "PlatformPaths.h"
 #include "nlb/util/BookPack.h"
@@ -17,7 +23,54 @@
 #include "builtin-features.inc"
 
 namespace {
-/// Каталог ~/.nlbnavigator/<имя книги>.<suffix> (как у консольного nlb_main)
+/// Каталог данных: ~/.nlbnavigator (как у nlb_main), на Android — хранилище приложения
+std::filesystem::path dataRoot() {
+#ifdef __ANDROID__
+    char* pref = SDL_GetPrefPath("NLBNavigator", "data");
+    if (!pref) return {};
+    std::filesystem::path p = FileUtils::pathFromUtf8(pref);
+    SDL_free(pref);
+    return p;
+#else
+    const std::filesystem::path home = homeDir();
+    return home.empty() ? home : home / ".nlbnavigator";
+#endif
+}
+
+/// Встроенная книга (самодостаточная игра): book.nlbpack рядом с программой, а на Android — в
+/// assets приложения (или в install-time asset pack). На Android пакет при первом запуске (и когда
+/// он в приложении сменился — по размеру) копируется в хранилище приложения: плеер читает книгу
+/// обычным файловым вводом-выводом. Пусто — встроенной книги нет
+std::string embeddedBook() {
+    const char* NAME = "book.nlbpack";
+#ifdef __ANDROID__
+    SDL_IOStream* in = SDL_IOFromFile(NAME, "rb");  // SDL на Android читает и из assets
+    if (!in) return "";
+    const Sint64 size = SDL_GetIOSize(in);
+    const std::filesystem::path target = dataRoot() / NAME;
+    const std::string targetUtf8 = FileUtils::pathToUtf8(target);
+    std::error_code ec;
+    if (size <= 0 || !std::filesystem::exists(target, ec) || static_cast<Sint64>(std::filesystem::file_size(target, ec)) != size) {
+        const std::filesystem::path tmp = dataRoot() / "book.nlbpack.part";
+        std::ofstream out(tmp, std::ios::binary | std::ios::trunc);
+        std::vector<char> buf(1 << 20);
+        size_t got = 0;
+        while ((got = SDL_ReadIO(in, buf.data(), buf.size())) > 0) out.write(buf.data(), static_cast<std::streamsize>(got));
+        out.close();
+        std::filesystem::rename(tmp, target, ec);
+        if (ec) { SDL_CloseIO(in); return ""; }
+    }
+    SDL_CloseIO(in);
+    return targetUtf8;
+#else
+    const char* base = SDL_GetBasePath();  // каталог программы (строку SDL хранит сам)
+    if (!base) return "";
+    const std::string path = FileUtils::combinePath(base, NAME);
+    return FileUtils::exists(path) ? path : std::string();
+#endif
+}
+
+/// <каталог данных>/<имя книги>.<suffix>
 std::string dataPath(const std::string& bookPath, const std::string& suffix, bool directory) {
     namespace fs = std::filesystem;
     try {
@@ -25,9 +78,8 @@ std::string dataPath(const std::string& bookPath, const std::string& suffix, boo
         fs::path name = book.filename();
         if (name.empty()) name = book.parent_path().filename();
         if (name.extension() == ".nlbpack") name = name.stem();
-        const fs::path home = homeDir();
-        if (home.empty()) return "";
-        fs::path dir = home / ".nlbnavigator";
+        fs::path dir = dataRoot();
+        if (dir.empty()) return "";
         std::error_code ec;
         fs::create_directories(dir, ec);
         fs::path result = dir / name;
@@ -65,6 +117,19 @@ int main(int argc, char** argv) {
         else if (a == "--window" && i + 1 < args.size()) std::sscanf(args[++i].c_str(), "%dx%d", &options.windowWidth, &options.windowHeight);
         else positional.push_back(a);
     }
+    // Самодостаточная игра: книга встроена в приложение (book.nlbpack рядом с программой, на
+    // Android — в assets). Тогда путь к книге не нужен и другую книгу не открыть: режим (vn/standard)
+    // и ключи по-прежнему можно передать
+    {
+        const bool noBook = positional.empty() || positional[0] == "vn" || positional[0] == "standard" || positional[0] == "explore";
+        if (noBook) {
+            const std::string book = embeddedBook();
+            if (!book.empty()) positional.insert(positional.begin(), book);
+        }
+    }
+#ifdef __ANDROID__
+    options.fullscreen = true;  // на телефоне — весь экран
+#endif
     if (positional.empty()) {
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
                      " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--log <file>]"

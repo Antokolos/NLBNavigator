@@ -201,7 +201,7 @@ void SdlPlayer::handleEvent(SDL_Event& e) {
             using Key = GameScreen::Key;
             if (k == SDLK_F11 || (k == SDLK_RETURN && (e.key.mod & SDL_KMOD_ALT))) {
                 SDL_SetWindowFullscreen(m_window, (SDL_GetWindowFlags(m_window) & SDL_WINDOW_FULLSCREEN) == 0);
-            } else if (k == SDLK_ESCAPE) m_screen->key(Key::Escape);
+            } else if (k == SDLK_ESCAPE || k == SDLK_AC_BACK) m_screen->key(Key::Escape);  // «Назад» Android — как Esc
             else if (k == SDLK_SPACE) m_screen->key(Key::Space);
             else if (k == SDLK_RETURN) m_screen->key(Key::Enter);
             else if (k == SDLK_PAGEUP) m_screen->key(Key::PageUp);
