@@ -101,7 +101,11 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
     }
     // Тема игры и базовая тема (оформление INSTEAD) — целиком, с содержимым: шрифты и картинки
     // тем нужны проигрывателю, а в книге NLB их нет
-    for (const auto& [dirToPack, prefixName] : {std::pair<std::string, const char*>{themeDir, THEME_DIR}, {baseThemeDir, BASE_THEME_DIR}}) {
+    for (const auto& themePair : {std::pair<std::string, const char*>{themeDir, THEME_DIR}, {baseThemeDir, BASE_THEME_DIR}}) {
+        // обычные переменные, а не structured bindings: их захват в лямбду — только с C++20
+        // (clang Android NDK r25 его не умеет)
+        const std::string& dirToPack = themePair.first;
+        const char* prefixName = themePair.second;
         if (dirToPack.empty()) continue;
         if (!FileUtils::isDirectory(dirToPack)) {
             error = "нет каталога темы " + dirToPack;
