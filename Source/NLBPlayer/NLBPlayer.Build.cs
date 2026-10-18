@@ -15,7 +15,10 @@ public class NLBPlayer : ModuleRules
         PCHUsage = PCHUsageMode.NoPCHs;
         CppStandard = CppStandardVersion.Cpp20;
         bEnableExceptions = true;   // плеер и cparse используют исключения
-        bUseRTTI = true;            // typeid в nlb/api/Any.h
+        // RTTI выключен, как во всём движке: иначе под Android (clang) сборщику нужны typeinfo
+        // классов движка (UGameInstanceSubsystem, UUserWidget…), а их в сборке движка нет.
+        // Плееру RTTI не нужен (Any.h без typeid), исключения работают и без него
+        bUseRTTI = false;
         bUseUnity = false;          // у файлов плеера одноимённые функции в безымянных пространствах имён
         // Предупреждения кода плеера не должны останавливать сборку игры. С UE 5.5 эти настройки
         // перенесены в CppCompileWarningSettings (старые свойства устарели); символ UE_5_5_OR_LATER

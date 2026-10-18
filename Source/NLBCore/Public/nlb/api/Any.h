@@ -1,19 +1,27 @@
 #pragma once
 #include <string>
-#include <typeinfo>
 #include <memory>
 #include <sstream>
 #include <iomanip>
 #include <stdexcept>
 
-// Собственная реализация Any для совместимости с macOS High Sierra
+// Собственная реализация Any для совместимости с macOS High Sierra.
+// Без RTTI: модуль Unreal под Android собирается с -fno-rtti, иначе сборщику нужны typeinfo
+// классов движка, которых в его сборке нет. Тип различается адресом статической метки,
+// своей у каждого T
 class Any {
 private:
+    template<typename T>
+    static const void* typeKey() {
+        static const char key = 0;
+        return &key;
+    }
+
     // Базовый класс для хранения любого типа
     struct Base {
         virtual ~Base() {}
         virtual std::unique_ptr<Base> clone() const = 0;
-        virtual const std::type_info& type() const = 0;
+        virtual const void* type() const = 0;
     };
     
     // Шаблонный класс для конкретного типа
@@ -27,8 +35,8 @@ private:
             return std::make_unique<Derived<T>>(value);
         }
         
-        const std::type_info& type() const override {
-            return typeid(T);
+        const void* type() const override {
+            return typeKey<T>();
         }
     };
     
@@ -72,10 +80,8 @@ public:
     // Приведение типа с проверкой
     template<typename T>
     T cast() const {
-        if (!ptr || ptr->type() != typeid(T)) {
-            throw std::runtime_error("Bad any cast from " + 
-                std::string(ptr ? ptr->type().name() : "empty") + 
-                " to " + typeid(T).name());
+        if (!ptr || ptr->type() != typeKey<T>()) {
+            throw std::runtime_error(ptr ? "Bad any cast: wrong type" : "Bad any cast: empty");
         }
         return static_cast<Derived<T>*>(ptr.get())->value;
     }
@@ -83,15 +89,10 @@ public:
     // Безопасное приведение типа (возвращает указатель)
     template<typename T>
     const T* cast_ptr() const {
-        if (!ptr || ptr->type() != typeid(T)) {
+        if (!ptr || ptr->type() != typeKey<T>()) {
             return nullptr;
         }
         return &(static_cast<Derived<T>*>(ptr.get())->value);
-    }
-    
-    // Получение информации о типе
-    const std::type_info& type() const {
-        return ptr ? ptr->type() : typeid(void);
     }
     
     // Проверка на пустоту
@@ -107,7 +108,7 @@ public:
     // Проверка типа
     template<typename T>
     bool is_type() const {
-        return ptr && ptr->type() == typeid(T);
+        return ptr && ptr->type() == typeKey<T>();
     }
 };
 
