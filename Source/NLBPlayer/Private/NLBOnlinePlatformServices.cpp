@@ -34,9 +34,9 @@ void FNLBOnlinePlatformServices::unlockAchievement(const std::string& apiName) {
     IOnlineAchievementsPtr Achievements = S ? S->GetAchievementsInterface() : nullptr;
     if (!User.IsValid() || !Achievements.IsValid()) return;
     FOnlineAchievementsWriteRef Write = MakeShared<FOnlineAchievementsWrite, ESPMode::ThreadSafe>();
-    // ключи статистик в разных версиях движка — FName или FString; *TCHAR подходит к обоим
+    // ключи статистик — FString (перегрузки с FName в UE 5.5+ устарели и дают неоднозначность)
     const FString Key = F(apiName);
-    Write->SetFloatStat(*Key, 100.0f);  // 100% — открыто
+    Write->SetFloatStat(Key, 100.0f);  // 100% — открыто
     Achievements->WriteAchievements(*User, Write);
 }
 
@@ -61,10 +61,10 @@ void FNLBOnlinePlatformServices::submitScore(const std::string& leaderboard, int
     const FString Board = F(leaderboard);
     FOnlineLeaderboardWrite Write;
     Write.LeaderboardNames.Add(*Board);
-    Write.RatedStat = *Board;
+    Write.RatedStat = FString(Board);
     Write.SortMethod = ELeaderboardSort::Descending;
     Write.UpdateMethod = ELeaderboardUpdateMethod::KeepBest;
-    Write.SetIntStat(*Board, static_cast<int32>(score));
+    Write.SetIntStat(Board, static_cast<int32>(score));
     Leaderboards->WriteLeaderboards(NAME_GameSession, *User, Write);
     bLeaderboardsDirty = true;
 }

@@ -252,8 +252,12 @@ bool UNLBPlayerSubsystem::SetLogFile(const FString& Path) {
     if (!Session) return false;
     std::string Error;
     const bool bOk = Session->setLogFile(U(Path), Error);
-    if (!bOk) UE_LOG(LogTemp, Warning, TEXT("NLB: %s"), *S(Error));
-    else if (!Path.IsEmpty()) UE_LOG(LogTemp, Log, TEXT("NLB: журнал прохождения — %s"), *Path);
+    // UE_LOG раскрывается в блок со своими скобками — if/else только в фигурных скобках
+    if (!bOk) {
+        UE_LOG(LogTemp, Warning, TEXT("NLB: %s"), *S(Error));
+    } else if (!Path.IsEmpty()) {
+        UE_LOG(LogTemp, Log, TEXT("NLB: журнал прохождения — %s"), *Path);
+    }
     return bOk;
 }
 
