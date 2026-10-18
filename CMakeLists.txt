@@ -245,10 +245,17 @@ target_include_directories(NLBReader
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# std::filesystem отдельной библиотекой нужен только старому GCC (до 9) с libstdc++; clang с libc++
+# (Android NDK) и новые GCC её не имеют и не требуют
+set(NLB_NEEDS_STDCXXFS OFF)
+if(UNIX AND NOT APPLE AND NOT ANDROID AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
+    set(NLB_NEEDS_STDCXXFS ON)
+endif()
+
 # Platform-specific libs
 if(WIN32)
     target_link_libraries(NLBReader PRIVATE shlwapi)
-elseif(UNIX AND NOT APPLE)
+elseif(NLB_NEEDS_STDCXXFS)
     target_link_libraries(NLBReader PRIVATE stdc++fs)
 endif()
 
@@ -279,7 +286,7 @@ if(BUILD_SHARED_LIBS)
 
     if(WIN32)
         target_link_libraries(NLBReaderShared PRIVATE shlwapi)
-    elseif(UNIX AND NOT APPLE)
+    elseif(NLB_NEEDS_STDCXXFS)
         target_link_libraries(NLBReaderShared PRIVATE stdc++fs)
     endif()
 endif()
