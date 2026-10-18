@@ -4,6 +4,10 @@
 cmake_minimum_required(VERSION 3.22)
 project(nlbnavigator_android C CXX)
 
+# pkg-config с ПК (например, из MSYS2 в PATH) для Android не годится: он нашёл бы библиотеки
+# Windows. Всё нужное собирается из исходников, поэтому pkg-config не ищем
+set(CMAKE_DISABLE_FIND_PACKAGE_PkgConfig ON)
+
 get_filename_component(NLB_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../.." ABSOLUTE)
 set(DEPS "${NLB_ROOT}/android/deps")
 if(NOT EXISTS "${DEPS}/SDL/CMakeLists.txt")
@@ -55,12 +59,21 @@ add_subdirectory("${NLB_ROOT}" nlb)
 add_library(main SHARED
         "${NLB_ROOT}/Source/NLBSdl/main_sdl.cpp"
         "${NLB_ROOT}/Source/NLBSdl/SdlPlayer.cpp"
-        "${NLB_ROOT}/Source/NLBAudioSDL/Private/nlb/audio/SdlAudioBackend.cpp")
+        "${NLB_ROOT}/Source/NLBAudioSDL/Private/nlb/audio/SdlAudioBackend.cpp"
+        "${NLB_ROOT}/Source/PlatformPaths.cpp"
+        # интерпретатор выражений cparse — как в программах на ПК, отдельно от библиотеки NLBReader
+        "${NLB_ROOT}/Source/thirdparty/cparse/shunting-yard.cpp"
+        "${NLB_ROOT}/Source/thirdparty/cparse/packToken.cpp"
+        "${NLB_ROOT}/Source/thirdparty/cparse/functions.cpp"
+        "${NLB_ROOT}/Source/thirdparty/cparse/containers.cpp")
 target_include_directories(main PRIVATE
         "${NLB_ROOT}/Source"
         "${NLB_ROOT}/Source/NLBSdl"
         "${NLB_ROOT}/Source/NLBAudioSDL/Public")
 target_compile_features(main PRIVATE cxx_std_20)
+target_include_directories(main PRIVATE "${NLB_ROOT}/Source/thirdparty/cparse")
+# все символы должны найтись при сборке (как требует Android) — и при проверке на ПК
+target_link_options(main PRIVATE "-Wl,--no-undefined")
 target_link_libraries(main PRIVATE
         NLBReader NLBPlatforms
         SDL3::SDL3-shared SDL3_image::SDL3_image-static SDL3_ttf::SDL3_ttf-static SDL3_mixer::SDL3_mixer-static)
