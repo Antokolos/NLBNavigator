@@ -367,6 +367,12 @@ void GameScreen::click(float x, float y, bool rightButton) {
     for (auto it = m_hits.rbegin(); it != m_hits.rend(); ++it) {
         if (!contains(it->rect, x, y)) continue;
         const Hit hit = *it;
+        // щелчок по ссылке, предмету, пункту меню — звук темы (snd.click), как в INSTEAD
+        if (hit.kind != Hit::Kind::ScrollUp && hit.kind != Hit::Kind::ScrollDown
+            && (m_menu == Menu::None || hit.kind == Hit::Kind::Menu)) {
+            const ScreenTheme& t = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
+            m_session.playUiSound(t.clickSound);
+        }
         if (m_menu != Menu::None) {
             if (hit.kind == Hit::Kind::Menu) menuAction(hit.index);
             return;
@@ -482,7 +488,8 @@ std::string GameScreen::describeThemes() const {
     const ScreenTheme& t = m_standardTheme;
     return "тема игры: " + orNone(m_options.themeDir) + "; базовая тема: " + orNone(m_options.baseThemeDir)
         + "; фон страниц STANDARD (gfx/bg.jpg): " + orNone(t.pageBackground)
-        + "; scr.gfx.bg: " + orNone(t.backgroundImage) + "; шрифт текста: " + orNone(t.text.fontFile);
+        + "; scr.gfx.bg: " + orNone(t.backgroundImage) + "; шрифт текста: " + orNone(t.text.fontFile)
+        + "; щелчок (snd.click): " + orNone(t.clickSound);
 }
 
 std::vector<GameScreen::MainItem> GameScreen::mainItems() const {

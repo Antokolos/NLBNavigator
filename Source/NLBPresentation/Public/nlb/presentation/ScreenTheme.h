@@ -56,6 +56,7 @@ struct ScreenTheme {
     /// gfx/menubtn_ru.png активной темы, в правом верхнем углу (scr.w − ширина, 0)
     std::string nlbMenuButton, nlbMenuButtonRu;
     float scale = 1.0f;               ///< масштаб экрана темы (scr.w×scr.h) к 1920×1080: картинки темы
+    std::string clickSound;           ///< snd.click — звук щелчка по ссылке (стандартная тема INSTEAD)
     RectF screenArea{0, 0, 1920, 1080};  ///< где экран темы на экране 1920×1080 (фон scr.gfx.bg — сюда)
 
     /// Тема по умолчанию экспорта NLB: standard или vn

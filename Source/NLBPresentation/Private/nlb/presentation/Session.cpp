@@ -283,4 +283,9 @@ void Session::setMuted(bool muted) {
     if (m_director) m_director->setMuted(muted);
 }
 
+void Session::playUiSound(const std::string& path) {
+    if (path.empty() || !m_audio || (m_director && m_director->muted())) return;
+    m_audio->playEffect(MediaRef{path});
+}
+
 }  // namespace nlb::presentation
