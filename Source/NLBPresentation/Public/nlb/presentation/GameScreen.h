@@ -211,7 +211,11 @@ private:
     std::function<void(const std::vector<PlayerEngine::Event>&)> m_eventListener;
     uint64_t m_seenRevision = 0;     ///< ревизия сессии, которую экран уже показал
     void pull();                     ///< забрать события и снимок из сессии
-    uint64_t now() const;
+    uint64_t now() const;          ///< время экрана: стоит, пока открыто меню (пауза)
+    uint64_t rawNow() const;       ///< часы фронтенда
+    void updatePause();            ///< меню открылось — время экрана встаёт; закрылось — идёт дальше
+    uint64_t m_pauseStart = 0;     ///< когда открылось меню (0 — не на паузе)
+    uint64_t m_pausedTotal = 0;    ///< сколько всего простояло на паузе
 };
 
 }  // namespace nlb::presentation
