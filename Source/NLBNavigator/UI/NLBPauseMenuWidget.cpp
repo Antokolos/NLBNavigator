@@ -85,8 +85,11 @@ void UNLBPauseMenuWidget::Refresh()
 	else
 	{
 		AddItem(TEXT("Продолжить (Esc)"), Continue);
+#if !PLATFORM_ANDROID
+		// на автономном шлеме (Quest) только VR — переключать нечего
 		const bool bVR = C && C->IsVRMode();
 		AddItem(bVR ? TEXT("Режим: VR → обычный") : TEXT("Режим: обычный → VR"), ToggleVR);
+#endif
 		AddItem(TEXT("Выйти из игры"), Quit);
 	}
 	Status->SetText(FText::FromString(StatusText));

@@ -74,6 +74,9 @@ void ANLBNavigatorCharacter::BeginPlay()
 	// VR — по ключу -vr или по сохранённому выбору; шлем к первому кадру может быть не готов,
 	// поэтому включаем на следующем такте
 	bool bWantVR = FParse::Param(FCommandLine::Get(), TEXT("vr"));
+#if PLATFORM_ANDROID
+	bWantVR = true;  // автономный шлем (Quest): обычного режима нет
+#endif
 	if (!bWantVR && GConfig)
 	{
 		GConfig->GetBool(TEXT("NLBNavigator"), TEXT("VRMode"), bWantVR, GGameUserSettingsIni);
