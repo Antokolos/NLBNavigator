@@ -50,18 +50,65 @@ void FNLBAudioDeleter::operator()(FUnrealAudioBackend* P) const { delete P; }
 
 bool UNLBPlayerSubsystem::IsBookOpen() const { return Session != nullptr; }
 
+FString UNLBPlayerSubsystem::DiskPath(const FString& UePath) {
+#if PLATFORM_ANDROID
+    // путь Unreal («../../../Проект/Saved/…») -> настоящий путь в хранилище приложения
+    return IFileManager::Get().ConvertToAbsolutePathForExternalAppForWrite(*UePath);
+#else
+    return FPaths::ConvertRelativePathToFull(UePath);
+#endif
+}
+
+FString UNLBPlayerSubsystem::ResolveBookPath(const FString& BookPath) {
+    if (!FPaths::IsRelative(BookPath)) return BookPath;
+    // относительный путь — от каталога проекта, а если там нет — от Content (так книга попадает в
+    // сборку: Content/NLBFiles, «всегда как отдельные файлы» в настройках упаковки)
+    IFileManager& Files = IFileManager::Get();
+    FString Ue = FPaths::ProjectDir() / BookPath;
+    if (!Files.FileExists(*Ue) && !Files.DirectoryExists(*Ue)) Ue = FPaths::ProjectContentDir() / BookPath;
+#if PLATFORM_ANDROID
+    // В APK/OBB файлы игры — внутри архива, а плеер читает книгу обычным вводом-выводом: при первом
+    // запуске (и когда книга в сборке сменилась) пакет копируется в хранилище приложения
+    if (Files.DirectoryExists(*Ue)) {
+        UE_LOG(LogTemp, Error, TEXT("NLB: на Android книга должна быть пакетом .nlbpack (%s)"), *Ue);
+        return FString();
+    }
+    const int64 Size = Files.FileSize(*Ue);
+    if (Size < 0) {
+        UE_LOG(LogTemp, Error, TEXT("NLB: книга не найдена в сборке: %s"), *BookPath);
+        return FString();
+    }
+    const FString Copy = FPaths::ProjectPersistentDownloadDir() / TEXT("NLBNavigator") / FPaths::GetCleanFilename(Ue);
+    if (Files.FileSize(*Copy) != Size) {
+        Files.MakeDirectory(*FPaths::GetPath(Copy), true);
+        if (Files.Copy(*Copy, *Ue) != COPY_OK) {
+            UE_LOG(LogTemp, Error, TEXT("NLB: не удалось скопировать книгу в %s"), *Copy);
+            return FString();
+        }
+        UE_LOG(LogTemp, Log, TEXT("NLB: книга скопирована из сборки (%lld байт)"), Size);
+    }
+    return DiskPath(Copy);
+#else
+    return FPaths::ConvertRelativePathToFull(Ue);
+#endif
+}
+
 bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, const TArray<FString>& ExternalGames) {
     Audio.reset(new FUnrealAudioBackend(this, nullptr));
     Session.reset(new nlb::presentation::Session(Audio.get()));
     Session::Options Options;
-    // относительный путь — от каталога проекта (например, NLBFiles/book.nlbpack)
-    const FString Full = FPaths::IsRelative(BookPath) ? FPaths::ProjectDir() / BookPath : BookPath;
-    Options.bookPath = U(FPaths::ConvertRelativePathToFull(Full));
+    const FString Book = ResolveBookPath(BookPath);
+    if (Book.IsEmpty()) {
+        Session.reset();
+        return false;
+    }
+    Options.bookPath = U(Book);
     Options.exportMode = bVisualNovel ? PlayerEngine::ExportMode::VN : PlayerEngine::ExportMode::Standard;
     const FString SaveDir = FPaths::ProjectSavedDir() / TEXT("NLBNavigator");
     IFileManager::Get().MakeDirectory(*(SaveDir / TEXT("saves")), true);
-    Options.savesDir = U(SaveDir / TEXT("saves"));
-    Options.achievementsPath = U(SaveDir / TEXT("achievements.tsv"));
+    // плеер пишет сохранения и достижения обычным файловым вводом-выводом — нужен путь на диске
+    Options.savesDir = U(DiskPath(SaveDir / TEXT("saves")));
+    Options.achievementsPath = U(DiskPath(SaveDir / TEXT("achievements.tsv")));
     for (const FString& G : ExternalGames) Options.externalGames.push_back(U(G));
     std::string Error;
     if (!Session->open(Options, Error)) {
