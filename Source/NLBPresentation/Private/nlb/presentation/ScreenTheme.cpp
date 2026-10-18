@@ -183,6 +183,7 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
     if (has("win.align")) t.align = str("win.align");
     if (has("win.ways.mode")) t.waysBottom = str("win.ways.mode") == "bottom";
     if (has("menu.gfx.button")) t.menuButton = path("menu.gfx.button", str("menu.gfx.button"));
+    if (has("snd.click") && !str("snd.click").empty()) t.clickSound = path("snd.click", str("snd.click"));
     posX("menu.button.x", t.menuButtonX); posY("menu.button.y", t.menuButtonY);
 
     // nlb:std_bg(): gfx/bg.jpg активной темы — фон страниц STANDARD без своего фона

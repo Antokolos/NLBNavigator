@@ -95,6 +95,8 @@ public:
     /// Сохранения доступны (задан каталог сохранений)
     bool savesAvailable() const { return !m_options.savesDir.empty(); }
     void setMuted(bool muted);
+    /// Звук интерфейса (щелчок темы snd.click) — эффектом, если звук не выключен
+    void playUiSound(const std::string& path);
 
 private:
     void afterCommand();

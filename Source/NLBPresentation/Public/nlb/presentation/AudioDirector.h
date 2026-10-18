@@ -24,6 +24,7 @@ public:
     /// События движка после команды игрока или тика времени
     void apply(const std::vector<PlayerEngine::Event>& events);
     void setMuted(bool muted);
+    bool muted() const { return m_muted; }
     const std::string& currentMusic() const { return m_currentMusic; }
 
 private:

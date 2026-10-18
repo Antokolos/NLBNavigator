@@ -27,6 +27,10 @@ void BookMediaSource::buildIndex(const std::string& dir, int depth) const {
 
 std::string BookMediaSource::resolve(const MediaRef& ref) const {
     if (ref.path.empty()) return "";
+    // полный путь (звуки и картинки темы, в том числе из пакета) — как есть
+    if (ref.path.find_first_of("/\\") != std::string::npos && FileUtils::exists(ref.path) && !FileUtils::isDirectory(ref.path)) {
+        return ref.path;
+    }
     if (!m_indexed) {
         buildIndex(m_root, 0);
         m_indexed = true;
