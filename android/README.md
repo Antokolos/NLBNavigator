@@ -37,6 +37,41 @@
 положите в install-time asset pack (Play Asset Delivery): его файлы видны как обычные assets, код
 менять не нужно. Для установки APK напрямую (вне Play) ограничения нет.
 
+## Проигрыватель с каталогом (вариант `player`)
+
+Лаунчер (Kotlin + Jetpack Compose): вкладки «Установленные» и «Каталог», кнопка «Открыть файл»
+(`.nlbpack` или `.nlbz` с устройства). Игры ставятся в хранилище приложения и запускаются в том же
+плеере, что и самодостаточная игра. Сборка: `gradlew assemblePlayerDebug`
+(APK — `android/app/build/outputs/apk/player/debug/`).
+
+**Игра `.nlbz`** — обычный ZIP из двух файлов: `book.nlbpack` и `meta.json` (описание игры).
+Собирается скриптом `tools/make_nlbz.py`:
+```
+python tools/make_nlbz.py book.nlbpack servant-of-ra.nlbz --id servant-of-ra --version 1.0 \
+    --title ru="Слуга Ра" --title en="Servant of Ra" --mode standard --url https://…/servant-of-ra.nlbz
+```
+Скрипт печатает готовую запись для каталога (с размером архива).
+
+**Каталог** — JSON по адресу `nlb.player.catalogUrl` (`android/gradle.properties`). Скачивается
+по кнопке «Обновить каталог» и хранится в приложении; до первого обновления — встроенный
+`app/src/player/assets/catalog.json` (тестовый, со ссылками-заглушками). Формат:
+```json
+{"games": [{
+  "id": "servant-of-ra", "version": "1.0", "mode": "standard", "args": "",
+  "title": {"ru": "Слуга Ра", "en": "Servant of Ra"},
+  "author": {"ru": "…", "en": "…"},
+  "summary": {"ru": "кратко…", "en": "…"},
+  "description": {"ru": "подробно…", "en": "…"},
+  "size": 2981573,
+  "url": "https://…/servant-of-ra.nlbz",
+  "thumbnail": "https://…/servant-of-ra-thumb.png",
+  "screenshot": "https://…/servant-of-ra.png"
+}]}
+```
+Тексты — по языкам (показывается язык телефона, иначе английский). `mode` — режим книги (`vn`
+или `standard`), `args` — ключи плеера. Если версия в каталоге отличается от установленной,
+кнопка «Установить» становится «Обновить».
+
 ## Проверка на ПК
 
 Тот же режим работает и на ПК: `book.nlbpack` рядом с `nlb_sdl` — и `nlb_sdl` без пути к книге

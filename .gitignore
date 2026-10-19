@@ -69,6 +69,7 @@ Session.vim
 !/docs/**
 !/integrations/**
 !/android/**
+!/tools/**
 # ... кроме собранных модулей и каталогов сборки
 /integrations/godot/demo/bin/
 /integrations/godot/demo/.godot/

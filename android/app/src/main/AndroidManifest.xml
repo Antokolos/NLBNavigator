@@ -11,10 +11,12 @@
         android:hardwareAccelerated="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
-        <!-- Плеер (SDLActivity): книга во весь экран, альбомная ориентация -->
+        <!-- Плеер (SDLActivity): книга во весь экран, альбомная ориентация. Свой процесс: SDL при
+             каждом запуске книги из лаунчера начинает с чистого листа -->
         <activity
             android:name=".NLBActivity"
             android:exported="true"
+            android:process=":book"
             android:screenOrientation="sensorLandscape"
             android:launchMode="singleTask"
             android:alwaysRetainTaskState="true"

@@ -1,0 +1,55 @@
+{
+  "games": [
+    {
+      "id": "servant-of-ra",
+      "version": "1.0",
+      "mode": "standard",
+      "args": "",
+      "title": {
+        "ru": "Слуга Ра",
+        "en": "Servant of Ra"
+      },
+      "author": {
+        "ru": "NLB project",
+        "en": "NLB project"
+      },
+      "summary": {
+        "ru": "Вы приходите в себя в комнате без окон. Чей-то голос в голове отдаёт приказы.",
+        "en": "You wake up in a windowless room. A voice in your head gives orders."
+      },
+      "description": {
+        "ru": "Текстовая игра в стандартной теме INSTEAD: исследуйте комнаты, применяйте предметы, выполняйте задания голоса.",
+        "en": "A text adventure in the standard INSTEAD theme: explore the rooms, use items and follow the voice's tasks."
+      },
+      "size": 2981573,
+      "url": "https://example.org/nlbnavigator/servant-of-ra.nlbz",
+      "thumbnail": "",
+      "screenshot": ""
+    },
+    {
+      "id": "test-placeholder",
+      "version": "0.1",
+      "mode": "vn",
+      "args": "",
+      "title": {
+        "ru": "Тестовая игра (ссылка-заглушка)",
+        "en": "Test game (placeholder link)"
+      },
+      "author": {
+        "en": "NLB project"
+      },
+      "summary": {
+        "ru": "Пример второй записи каталога.",
+        "en": "Second catalog entry example."
+      },
+      "description": {
+        "ru": "Замените ссылки каталога на настоящие — и игру можно будет скачать.",
+        "en": "Replace the catalog links with real ones to make this game downloadable."
+      },
+      "size": 0,
+      "url": "",
+      "thumbnail": "",
+      "screenshot": ""
+    }
+  ]
+}
