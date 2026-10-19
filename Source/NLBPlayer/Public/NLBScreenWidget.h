@@ -29,7 +29,9 @@ class NLBPLAYER_API UNLBScreenWidget : public UUserWidget {
     GENERATED_BODY()
 
 public:
-    /** Варианты отдельным экраном (как в INSTEAD с длинным текстом); иначе — в окне текста */
+    /** Варианты отдельным экраном, если книга открыта в режиме Standard. В режиме VN (bVisualNovel
+     *  у OpenBook) экран вариантов — родной режим VN-INSTEAD и включается всегда; во время игры
+     *  его можно переключить в меню книги */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
     bool bChoicesScreen = false;
 
@@ -40,6 +42,11 @@ public:
     /** «Дальше» с клавиатуры или геймпада игры: следующая часть текста, затем экран вариантов */
     UFUNCTION(BlueprintCallable, Category = "NLB")
     void NextPage();
+
+    /** «Назад» (как Esc): закрыть экран вариантов или открыть/закрыть меню книги — для кнопок
+     *  контроллера VR или геймпада */
+    UFUNCTION(BlueprintCallable, Category = "NLB")
+    void Back();
 
     // ---- для FNLBSlateRenderer
     UTexture2D* TextureFor(const FString& Path);

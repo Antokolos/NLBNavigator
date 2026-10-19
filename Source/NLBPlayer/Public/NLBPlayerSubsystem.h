@@ -128,6 +128,16 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NLB") bool SaveGame(int32 Slot);
     UFUNCTION(BlueprintCallable, Category = "NLB") bool LoadGame(int32 Slot);
     UFUNCTION(BlueprintCallable, Category = "NLB") void SetMuted(bool bMuted);
+    /// Пауза звука книги: экран книги скрыт (игрок в шутере) — музыка замирает, при показе
+    /// продолжается. Экран книги (UNLBScreenWidget) вызывает это сам при появлении и скрытии
+    UFUNCTION(BlueprintCallable, Category = "NLB") void SetAudioPaused(bool bPaused);
+    /// Журнал прохождения, как --log у консольного плеера (пусто — закрыть). Можно и ключом
+    /// запуска игры: -nlblog=<файл> — журнал откроется вместе с книгой
+    UFUNCTION(BlueprintCallable, Category = "NLB") bool SetLogFile(const FString& Path);
+    /// Достижения, статистика и рекорды книги — на игровую площадку через OnlineSubsystem (Steam,
+    /// EOS, консоли — какую настроит проект). Включается само, если рядом с книгой (или в пакете)
+    /// есть platform.ini. Ключ запуска -nlbplatformlog=<файл> дублирует вызовы в журнал
+    UFUNCTION(BlueprintCallable, Category = "NLB") bool IsPlatformAvailable() const;
 
     /** Переменные новеллы — для мини-игр и сцен, которым передано управление */
     UFUNCTION(BlueprintPure, Category = "NLB") double GetNumber(const FString& Name) const;
@@ -154,6 +164,8 @@ public:
     nlb::presentation::Session* GetSession() const { return Session.get(); }
     /// Тема игры, зашитая в пакет (pack --theme): <пакет>/__theme__; пусто — тема по умолчанию
     FString GetThemeDir() const { return ThemeDir; }
+    /// Базовая тема, зашитая в пакет (pack --base-theme): <пакет>/__base_theme__
+    FString GetBaseThemeDir() const { return BaseThemeDir; }
     /// Время книги и события ведёт экран (GameScreen), а не такт подсистемы
     void SetScreenDriven(bool bDriven) { bScreenDriven = bDriven; }
     /// Разослать делегаты (достижения, внешние игры, конец) по событиям, которые забрал экран
@@ -163,8 +175,15 @@ private:
     void EmitEvents();
     bool bScreenDriven = false;
     FString ThemeDir;
+    FString BaseThemeDir;
 
     std::unique_ptr<FUnrealAudioBackend, FNLBAudioDeleter> Audio;
+
+    /// Книга на диске: относительный путь — от проекта или Content; на Android пакет копируется из
+    /// APK в хранилище приложения. Пусто — не найдена
+    static FString ResolveBookPath(const FString& BookPath);
+    /// Путь Unreal -> путь для обычного файлового ввода-вывода (на Android — в хранилище приложения)
+    static FString DiskPath(const FString& UePath);
     std::unique_ptr<nlb::presentation::Session, FNLBSessionDeleter> Session;
     uint64 LastRevision = 0;
     UPROPERTY() TMap<FString, TObjectPtr<UTexture2D>> Textures;

@@ -26,12 +26,18 @@ public:
         std::string bookPath;                    ///< каталог книги или .nlbpack (UTF-8)
         PlayerEngine::ExportMode exportMode = PlayerEngine::ExportMode::VN;
         std::string fontPath;                    ///< шрифт проигрывателя (меню; запасной для темы)
-        std::string themeDir;                    ///< каталог темы INSTEAD; пусто — тема по умолчанию
+        std::string themeDir;                    ///< каталог темы игры INSTEAD; пусто — тема по умолчанию
+        std::string baseThemeDir;                ///< базовая тема: оформление по умолчанию
         bool sound = true;
         std::string savesDir;                    ///< пусто — сохранения недоступны
         std::string achievementsPath;
         std::string scriptPath;                  ///< для тестов: команды и снимки экрана
         int windowWidth = 1280, windowHeight = 720;
+        bool fullscreen = false;                 ///< --fullscreen: сразу во весь экран (F11 — переключить)
+        std::string logPath;                     ///< --log: журнал прохождения, как у nlb_main
+        std::vector<std::string> platforms;      ///< --platform steam|epic|log[:файл] (можно несколько)
+        std::string platformConfig;              ///< --platform-config: platform.ini (иначе — из книги)
+        std::vector<std::string> args;           ///< командная строка (EOS: код входа от Epic Games Launcher)
         /// Варианты отдельным экраном: окно показывает только текст, а дочитав его (пробел или
         /// щелчок), игрок видит список вариантов посередине экрана. Иначе — варианты в окне текста
         bool choicesScreen = false;
@@ -52,6 +58,10 @@ public:
     void drawText(const nlb::presentation::FontRef& font, const std::string& text, nlb::presentation::Color c,
                   float x, float y, float alpha) override;
     void setClip(const nlb::presentation::RectF* clip) override;
+    float pixelScale() const override { return m_pixelScale; }
+
+    /// Ошибка запуска: в журнал, а на Android — и окном сообщения
+    static void fatal(const std::string& message);
 
 private:
     bool init();
@@ -74,6 +84,7 @@ private:
     SDL_Renderer* m_renderer = nullptr;
     std::string m_fontPath;
     bool m_quit = false;
+    float m_pixelScale = 1.0f;  ///< пикселей окна на единицу экрана 1920×1080 (текст — в этом масштабе)
     std::unique_ptr<nlb::presentation::IMediaSource> m_media;
     std::unique_ptr<nlb::audio::SdlAudioBackend> m_audio;
     std::unique_ptr<nlb::presentation::Session> m_session;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include <memory>
 #include <optional>
 #include <string>
@@ -7,6 +8,7 @@
 
 #include "nlb/domain/PlayerEngine.h"
 #include "nlb/presentation/ScreenModel.h"
+#include "nlb/platform/PlatformBridge.h"
 
 class NonLinearBookImpl;
 
@@ -37,6 +39,9 @@ public:
         /// Внешние игры, которые есть у фронтенда: имя или «префикс*» (play_bp_*). Вызов ACT/ACTF
         /// с таким именем передаёт управление фронтенду (событие ExternalGame)
         std::vector<std::string> externalGames;
+        /// Языки по предпочтению (язык лаунчера, системы…): включается первый, который есть в
+        /// книге, иначе английский. Выбор игрока в меню (сохраняется в savesDir) — главнее
+        std::vector<std::string> preferredLanguages;
     };
 
     /// audio — бэкенд звука фронтенда (может быть nullptr: без звука)
@@ -70,19 +75,42 @@ public:
     // ---- служебное
     /// Забрать события движка и обновить снимок — после команд, отданных напрямую engine()
     void refresh() { afterCommand(); }
+    /// «Осмотреться»: снова описание сцены (заголовок комнаты в INSTEAD)
+    void look();
+    /// Журнал прохождения, как --log у консольного плеера: что было на экране (заголовок, текст,
+    /// объекты, инвентарь, переходы) и что выбрал игрок — после каждой команды. Пустой путь —
+    /// закрыть журнал. Если книга уже открыта, сразу записывается текущий экран
+    bool setLogFile(const std::string& path, std::string& error);
+    /// Игровые площадки (Steam, Epic, консоли…): достижения, статистика, рекорды книги уходят
+    /// туда после каждой команды. nullptr — отключить
+    void setPlatforms(std::unique_ptr<nlb::platform::PlatformBridge> bridge);
+    nlb::platform::PlatformBridge* platforms() const { return m_platforms.get(); }
+    /// platform.ini книги (рядом с книгой или в пакете), если есть; иначе пусто
+    std::string platformConfigPath() const;
     std::vector<PlayerEngine::Event> takeEvents();
     bool finishExternalGame();
     void restart();
     bool save(int slot, std::string& error);
     bool load(int slot, std::string& error);
     PlayerEngine::SaveInfo saveInfo(int slot) const;
+    /// Режим экспорта, в котором открыта книга (VN или Standard)
+    PlayerEngine::ExportMode exportMode() const { return m_options.exportMode; }
     /// Сохранения доступны (задан каталог сохранений)
     bool savesAvailable() const { return !m_options.savesDir.empty(); }
     void setMuted(bool muted);
+    /// Языки, на которых есть тексты книги (её страниц, со всеми модулями)
+    std::vector<std::string> availableLanguages() const;
+    /// Включить язык книги (из availableLanguages) и описать сцену заново. byPlayer — выбор игрока
+    /// в меню: запоминается и при следующих запусках главнее языка системы и лаунчера
+    bool setLanguage(const std::string& language, bool byPlayer);
+    /// Звук интерфейса (щелчок темы snd.click) — эффектом, если звук не выключен
+    void playUiSound(const std::string& path);
 
 private:
     void afterCommand();
     std::string slotPath(int slot) const;
+    void logAction(const std::string& action);
+    void logScreen();
 
     Options m_options;
     IAudioBackend* m_audio = nullptr;
@@ -94,6 +122,12 @@ private:
     std::vector<PlayerEngine::Event> m_pending;
     std::string m_selected;
     uint64_t m_localRevision = 0;  ///< выбор предмета меняет вид, но не снимок движка
+    std::unique_ptr<std::ofstream> m_log;  ///< журнал прохождения (setLogFile)
+    std::unique_ptr<nlb::platform::PlatformBridge> m_platforms;
+    std::string savedLanguage() const;  ///< выбор игрока из savesDir/settings.ini
+    void applyLanguage(const std::string& language);
+    std::string m_logPage;                 ///< страница, описанная в журнале последней
+    uint64_t m_logRevision = 0;            ///< ревизия снимка, записанного последним
 };
 
 }  // namespace nlb::presentation

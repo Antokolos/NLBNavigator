@@ -190,6 +190,8 @@ set(NLB_DOMAIN_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/Session.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/platform/PlatformBridge.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/NLBPresentation/Private/nlb/presentation/Localization.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerContext.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/ModificationInterpreter.cpp
         ${NLB_READER_SOURCE_DIR}/nlb/domain/PlayerEngine.cpp
@@ -243,10 +245,17 @@ target_include_directories(NLBReader
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# std::filesystem отдельной библиотекой нужен только старому GCC (до 9) с libstdc++; clang с libc++
+# (Android NDK) и новые GCC её не имеют и не требуют
+set(NLB_NEEDS_STDCXXFS OFF)
+if(UNIX AND NOT APPLE AND NOT ANDROID AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9)
+    set(NLB_NEEDS_STDCXXFS ON)
+endif()
+
 # Platform-specific libs
 if(WIN32)
     target_link_libraries(NLBReader PRIVATE shlwapi)
-elseif(UNIX AND NOT APPLE)
+elseif(NLB_NEEDS_STDCXXFS)
     target_link_libraries(NLBReader PRIVATE stdc++fs)
 endif()
 
@@ -277,9 +286,48 @@ if(BUILD_SHARED_LIBS)
 
     if(WIN32)
         target_link_libraries(NLBReaderShared PRIVATE shlwapi)
-    elseif(UNIX AND NOT APPLE)
+    elseif(NLB_NEEDS_STDCXXFS)
         target_link_libraries(NLBReaderShared PRIVATE stdc++fs)
     endif()
+endif()
+
+# Игровые площадки (достижения, статистика, рекорды): журнал есть всегда; Steam и Epic — если указан
+# путь к их SDK (сами SDK в репозиторий не входят: Steamworks — partner.steamgames.com, EOS —
+# dev.epicgames.com). Unreal использует OnlineSubsystem, эта библиотека ему не нужна
+set(STEAMWORKS_SDK_DIR "" CACHE PATH "Steamworks SDK (папка sdk: public/, redistributable_bin/)")
+set(EOS_SDK_DIR "" CACHE PATH "EOS SDK (папка SDK: Include/, Lib/, Bin/)")
+add_library(NLBPlatforms STATIC Source/NLBPlatforms/PlatformFactory.h Source/NLBPlatforms/PlatformFactory.cpp)
+target_include_directories(NLBPlatforms PUBLIC Source/NLBPlatforms ${CPARSE_DIR})
+target_link_libraries(NLBPlatforms PUBLIC NLBReader)
+if(STEAMWORKS_SDK_DIR)
+    target_sources(NLBPlatforms PRIVATE Source/NLBPlatforms/SteamPlatformServices.h Source/NLBPlatforms/SteamPlatformServices.cpp)
+    target_compile_definitions(NLBPlatforms PUBLIC NLB_WITH_STEAMWORKS)
+    target_include_directories(NLBPlatforms PUBLIC ${STEAMWORKS_SDK_DIR}/public)
+    if(WIN32)
+        set(NLB_STEAM_LIB ${STEAMWORKS_SDK_DIR}/redistributable_bin/win64/steam_api64.lib)
+        set(NLB_STEAM_DLL ${STEAMWORKS_SDK_DIR}/redistributable_bin/win64/steam_api64.dll)
+    elseif(APPLE)
+        set(NLB_STEAM_LIB ${STEAMWORKS_SDK_DIR}/redistributable_bin/osx/libsteam_api.dylib)
+    else()
+        set(NLB_STEAM_LIB ${STEAMWORKS_SDK_DIR}/redistributable_bin/linux64/libsteam_api.so)
+    endif()
+    target_link_libraries(NLBPlatforms PUBLIC ${NLB_STEAM_LIB})
+    message(STATUS "NLBNavigator: Steam (Steamworks SDK) enabled")
+endif()
+if(EOS_SDK_DIR)
+    target_sources(NLBPlatforms PRIVATE Source/NLBPlatforms/EosPlatformServices.h Source/NLBPlatforms/EosPlatformServices.cpp)
+    target_compile_definitions(NLBPlatforms PUBLIC NLB_WITH_EOS)
+    target_include_directories(NLBPlatforms PUBLIC ${EOS_SDK_DIR}/Include)
+    if(WIN32)
+        set(NLB_EOS_LIB ${EOS_SDK_DIR}/Lib/EOSSDK-Win64-Shipping.lib)
+        set(NLB_EOS_DLL ${EOS_SDK_DIR}/Bin/EOSSDK-Win64-Shipping.dll)
+    elseif(APPLE)
+        set(NLB_EOS_LIB ${EOS_SDK_DIR}/Bin/libEOSSDK-Mac-Shipping.dylib)
+    else()
+        set(NLB_EOS_LIB ${EOS_SDK_DIR}/Bin/libEOSSDK-Linux-Shipping.so)
+    endif()
+    target_link_libraries(NLBPlatforms PUBLIC ${NLB_EOS_LIB})
+    message(STATUS "NLBNavigator: Epic Online Services (EOS SDK) enabled")
 endif()
 
 # Программы (консоль, SDL3). Встраивание в движки (integrations/godot, Unreal) собирает только
@@ -328,7 +376,11 @@ if(NLB_WITH_SDL3)
                     ${CPARSE_HEADERS}
                     ${CPARSE_SOURCES})
             target_include_directories(nlb_sdl PRIVATE Source ${CPARSE_DIR})
-            target_link_libraries(nlb_sdl PRIVATE NLBAudioSDL SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf)
+            target_link_libraries(nlb_sdl PRIVATE NLBAudioSDL NLBPlatforms SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf)
+            # DLL площадок — рядом с программой
+            foreach(dll IN ITEMS ${NLB_STEAM_DLL} ${NLB_EOS_DLL})
+                add_custom_command(TARGET nlb_sdl POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${dll} $<TARGET_FILE_DIR:nlb_sdl>)
+            endforeach()
             if(WIN32)
                 target_link_libraries(nlb_sdl PRIVATE shell32)
             endif()

@@ -7,6 +7,12 @@
 
 #include "NLBEngineEvents.h"
 #include "UnrealAudioBackend.h"
+#include "NLBOnlinePlatformServices.h"
+#include "Internationalization/Culture.h"
+#include "Internationalization/Internationalization.h"
+#include "nlb/presentation/Localization.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "nlb/util/BookPack.h"
 #include "nlb/util/FileUtils.h"
 #include "nlb/presentation/MediaSource.h"
@@ -47,19 +53,78 @@ void FNLBAudioDeleter::operator()(FUnrealAudioBackend* P) const { delete P; }
 
 bool UNLBPlayerSubsystem::IsBookOpen() const { return Session != nullptr; }
 
+FString UNLBPlayerSubsystem::DiskPath(const FString& UePath) {
+#if PLATFORM_ANDROID
+    // путь Unreal («../../../Проект/Saved/…») -> настоящий путь в хранилище приложения
+    return IFileManager::Get().ConvertToAbsolutePathForExternalAppForWrite(*UePath);
+#else
+    return FPaths::ConvertRelativePathToFull(UePath);
+#endif
+}
+
+FString UNLBPlayerSubsystem::ResolveBookPath(const FString& BookPath) {
+    if (!FPaths::IsRelative(BookPath)) return BookPath;
+    // относительный путь — от каталога проекта, а если там нет — от Content (так книга попадает в
+    // сборку: Content/NLBFiles, «всегда как отдельные файлы» в настройках упаковки)
+    IFileManager& Files = IFileManager::Get();
+    FString Ue = FPaths::ProjectDir() / BookPath;
+    if (!Files.FileExists(*Ue) && !Files.DirectoryExists(*Ue)) Ue = FPaths::ProjectContentDir() / BookPath;
+#if PLATFORM_ANDROID
+    // В APK/OBB файлы игры — внутри архива, а плеер читает книгу обычным вводом-выводом: при первом
+    // запуске (и когда книга в сборке сменилась) пакет копируется в хранилище приложения
+    if (Files.DirectoryExists(*Ue)) {
+        UE_LOG(LogTemp, Error, TEXT("NLB: на Android книга должна быть пакетом .nlbpack (%s)"), *Ue);
+        return FString();
+    }
+    const int64 Size = Files.FileSize(*Ue);
+    if (Size < 0) {
+        UE_LOG(LogTemp, Error, TEXT("NLB: книга не найдена в сборке: %s"), *BookPath);
+        return FString();
+    }
+    const FString Copy = FPaths::ProjectPersistentDownloadDir() / TEXT("NLBNavigator") / FPaths::GetCleanFilename(Ue);
+    if (Files.FileSize(*Copy) != Size) {
+        Files.MakeDirectory(*FPaths::GetPath(Copy), true);
+        if (Files.Copy(*Copy, *Ue) != COPY_OK) {
+            UE_LOG(LogTemp, Error, TEXT("NLB: не удалось скопировать книгу в %s"), *Copy);
+            return FString();
+        }
+        UE_LOG(LogTemp, Log, TEXT("NLB: книга скопирована из сборки (%lld байт)"), Size);
+    }
+    return DiskPath(Copy);
+#else
+    return FPaths::ConvertRelativePathToFull(Ue);
+#endif
+}
+
 bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, const TArray<FString>& ExternalGames) {
     Audio.reset(new FUnrealAudioBackend(this, nullptr));
     Session.reset(new nlb::presentation::Session(Audio.get()));
     Session::Options Options;
-    // относительный путь — от каталога проекта (например, NLBFiles/book.nlbpack)
-    const FString Full = FPaths::IsRelative(BookPath) ? FPaths::ProjectDir() / BookPath : BookPath;
-    Options.bookPath = U(FPaths::ConvertRelativePathToFull(Full));
+    const FString Book = ResolveBookPath(BookPath);
+    if (Book.IsEmpty()) {
+        Session.reset();
+        return false;
+    }
+    Options.bookPath = U(Book);
     Options.exportMode = bVisualNovel ? PlayerEngine::ExportMode::VN : PlayerEngine::ExportMode::Standard;
     const FString SaveDir = FPaths::ProjectSavedDir() / TEXT("NLBNavigator");
     IFileManager::Get().MakeDirectory(*(SaveDir / TEXT("saves")), true);
-    Options.savesDir = U(SaveDir / TEXT("saves"));
-    Options.achievementsPath = U(SaveDir / TEXT("achievements.tsv"));
+    // плеер пишет сохранения и достижения обычным файловым вводом-выводом — нужен путь на диске
+    Options.savesDir = U(DiskPath(SaveDir / TEXT("saves")));
+    Options.achievementsPath = U(DiskPath(SaveDir / TEXT("achievements.tsv")));
     for (const FString& G : ExternalGames) Options.externalGames.push_back(U(G));
+    // язык: ключ запуска (-lang=, -culture=, -epiclocale= от Epic Games Launcher), язык культуры
+    // Unreal (он учитывает -culture) и язык системы; книга включит первый из них, что в ней есть
+    {
+        TArray<FString> Tokens, Switches;
+        FCommandLine::Parse(FCommandLine::Get(), Tokens, Switches);
+        std::vector<std::string> Args;
+        for (const FString& Sw : Switches) Args.push_back("-" + U(Sw));
+        const std::string FromArgs = nlb::presentation::languageFromArgs(Args);
+        if (!FromArgs.empty()) Options.preferredLanguages.push_back(FromArgs);
+        Options.preferredLanguages.push_back(U(FInternationalization::Get().GetCurrentLanguage()->GetTwoLetterISOLanguageName()));
+        Options.preferredLanguages.push_back(U(FPlatformMisc::GetDefaultLanguage()));
+    }
     std::string Error;
     if (!Session->open(Options, Error)) {
         UE_LOG(LogTemp, Error, TEXT("NLB: %s (%s)"), *S(Error), *S(Options.bookPath));
@@ -67,9 +132,27 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
         return false;
     }
     Audio->SetMedia(&Session->media());
+    // Игровая площадка (OnlineSubsystem): если у книги есть platform.ini
+    {
+        const std::string ConfigPath = Session->platformConfigPath();
+        FString PlatformLog;
+        const bool bLog = FParse::Value(FCommandLine::Get(), TEXT("nlbplatformlog="), PlatformLog);
+        if (!ConfigPath.empty() || bLog) {
+            auto Bridge = std::make_unique<nlb::platform::PlatformBridge>(nlb::platform::PlatformConfig::load(ConfigPath));
+            Bridge->add(std::make_unique<FNLBOnlinePlatformServices>(0));
+            if (bLog) Bridge->add(std::make_unique<nlb::platform::LogPlatformServices>(U(PlatformLog)));
+            Session->setPlatforms(std::move(Bridge));
+            UE_LOG(LogTemp, Log, TEXT("NLB: площадка — OnlineSubsystem (%s)"), ConfigPath.empty() ? TEXT("без platform.ini") : *S(ConfigPath));
+        }
+    }
+    // журнал прохождения по ключу запуска -nlblog=<файл>
+    FString LogPath;
+    if (FParse::Value(FCommandLine::Get(), TEXT("nlblog="), LogPath)) SetLogFile(LogPath);
     // тема игры, зашитая в пакет
     const std::string Theme = FileUtils::combinePath(Options.bookPath, BookPack::THEME_DIR);
     ThemeDir = FileUtils::isDirectory(Theme) ? S(Theme) : FString();
+    const std::string BaseTheme = FileUtils::combinePath(Options.bookPath, BookPack::BASE_THEME_DIR);
+    BaseThemeDir = FileUtils::isDirectory(BaseTheme) ? S(BaseTheme) : FString();
     LastRevision = Session->revision();
     EmitEvents();
     OnScreenChanged.Broadcast();
@@ -172,6 +255,26 @@ bool UNLBPlayerSubsystem::FinishExternalGame() { NLB_COMMAND(Session->finishExte
 void UNLBPlayerSubsystem::ClearSelection() { if (Session) { Session->clearSelection(); EmitEvents(); } }
 void UNLBPlayerSubsystem::Restart() { if (Session) { Session->restart(); EmitEvents(); } }
 void UNLBPlayerSubsystem::SetMuted(bool bMuted) { if (Session) Session->setMuted(bMuted); }
+void UNLBPlayerSubsystem::SetAudioPaused(bool bPaused) { if (Audio) Audio->SetPaused(bPaused); }
+
+bool UNLBPlayerSubsystem::IsPlatformAvailable() const {
+    if (!Session || !Session->platforms()) return false;
+    for (const auto& Service : Session->platforms()->services()) if (Service->available()) return true;
+    return false;
+}
+
+bool UNLBPlayerSubsystem::SetLogFile(const FString& Path) {
+    if (!Session) return false;
+    std::string Error;
+    const bool bOk = Session->setLogFile(U(Path), Error);
+    // UE_LOG раскрывается в блок со своими скобками — if/else только в фигурных скобках
+    if (!bOk) {
+        UE_LOG(LogTemp, Warning, TEXT("NLB: %s"), *S(Error));
+    } else if (!Path.IsEmpty()) {
+        UE_LOG(LogTemp, Log, TEXT("NLB: журнал прохождения — %s"), *Path);
+    }
+    return bOk;
+}
 
 bool UNLBPlayerSubsystem::SaveGame(int32 Slot) {
     std::string Error;

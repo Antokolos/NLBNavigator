@@ -108,6 +108,12 @@ struct TextRun {
 /// Абзац ("^" и переводы строк из книги уже разбиты на абзацы)
 struct Paragraph {
     std::vector<TextRun> runs;
+    /// Оформление абзаца (раскладка экрана в духе INSTEAD; снимок движка их не задаёт)
+    enum class Style { Normal, Title, Emphasis };
+    Style style = Style::Normal;   ///< Title — заголовок комнаты (цвет ссылки), Emphasis — курсив (txtem)
+    bool centered = false;         ///< по центру (заголовок, пути — как в INSTEAD)
+    float spacing = 0;             ///< пустой абзац: отступ в пикселях (0 — полстроки)
+    bool joinPrevious = false;     ///< продолжает предыдущий абзац через пробел (следующий ответ)
 };
 
 /// Вариант перехода (ссылка страницы, служебные ссылки модулей и autowired)
@@ -116,6 +122,7 @@ struct Choice {
     std::string text;
     bool enabled = true;      ///< false — ссылка с ограничением: показывается её alt-текст
     bool trivial = false;     ///< текст по умолчанию («Далее»/«Next»): просто «продолжить»
+    bool inlineLink = false;  ///< в стандартной теме — ссылка внизу текста (xact), а не путь
     std::string altText;
 };
 
@@ -173,12 +180,20 @@ struct ScreenModel {
     Layout layout = Layout::Standard;
     std::string pageId;
     std::string caption;            ///< заголовок страницы (если показывается)
+    /// Название комнаты, как nam в экспорте STEAD: заголовок страницы (если показывается), иначе
+    /// название модуля (книги), где она лежит, иначе «...» — INSTEAD выводит его над текстом
+    std::string roomTitle;
 
     ImageRef pageImage;             ///< картинка страницы
     bool imageIsBackground = false; ///< imagebg: картинка — фон всего экрана
 
     std::vector<Paragraph> pageText;      ///< текст страницы и описания объектов
     std::vector<Paragraph> reactionText;  ///< ответ на последнее действие (lasttext)
+    // То же по частям — для раскладки как в INSTEAD (STEAD: сцена = описание комнаты ^^ описания
+    // объектов через пробел; после действия — курсивом ответ ^^ описания объектов)
+    std::vector<Paragraph> roomText;      ///< текст страницы (по строкам)
+    std::vector<Paragraph> objectsText;   ///< описания объектов — одним абзацем, через пробел
+    std::vector<Paragraph> modText;       ///< текст модификаций страницы
     std::vector<Choice> choices;
     std::vector<SceneObject> sceneObjects;
     std::vector<InventoryItem> inventory;

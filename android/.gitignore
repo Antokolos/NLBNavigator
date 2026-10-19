@@ -1,0 +1,11 @@
+deps/
+.gradle/
+build/
+app/build/
+app/.cxx/
+sdl-activity/build/
+local.properties
+.idea/
+*.iml
+# книга самодостаточной игры — своя у каждой игры
+app/src/game/assets/*.nlbpack

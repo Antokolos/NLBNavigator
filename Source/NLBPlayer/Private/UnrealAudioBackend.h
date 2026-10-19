@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/StrongObjectPtr.h"
 #include "UObject/WeakObjectPtr.h"
 #include "UObject/WeakObjectPtrTemplates.h"
 #include "nlb/presentation/AudioBackend.h"
@@ -28,11 +29,20 @@ public:
     void setMusicVolume(float volume) override;
     void setEffectsVolume(float volume) override;
 
+    /// Пауза звука книги (книга скрыта — игрок в шутере): музыка замирает на месте и продолжается
+    /// при возврате; новые звуки во время паузы не начинаются (музыка запустится, но на паузе)
+    void SetPaused(bool bPaused);
+
 private:
     USoundBase* Load(const nlb::presentation::MediaRef& Ref, bool bLoop);
 
     TWeakObjectPtr<UObject> Context;
     const nlb::presentation::IMediaSource* MediaSource;
-    TWeakObjectPtr<UAudioComponent> Music;
+    // Музыка держится сильными ссылками: компонент из SpawnSound2D без владельца-актора и
+    // созданный в коде USoundWaveProcedural иначе ничем не удерживаются, и сборщик мусора
+    // Unreal (раз в ~минуту) удалял их посреди игры — музыка обрывалась «через какое-то время»
+    TStrongObjectPtr<UAudioComponent> Music;
+    TStrongObjectPtr<USoundBase> MusicSound;
     float EffectsVolume = 1.0f;
+    bool bPaused = false;
 };

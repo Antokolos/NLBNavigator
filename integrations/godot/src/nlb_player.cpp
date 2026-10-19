@@ -5,7 +5,11 @@
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+
+#include "PlatformFactory.h"
+#include "nlb/presentation/Localization.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/array.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -105,6 +109,15 @@ void NLBPlayer::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "book_path", PROPERTY_HINT_FILE, "*.nlbpack"), "set_book_path", "get_book_path");
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "visual_novel"), "set_visual_novel", "get_visual_novel");
     ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "external_games"), "set_external_games", "get_external_games");
+    ClassDB::bind_method(D_METHOD("set_language", "language"), &NLBPlayer::set_language);
+    ClassDB::bind_method(D_METHOD("get_language"), &NLBPlayer::get_language);
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "language"), "set_language", "get_language");
+    ClassDB::bind_method(D_METHOD("set_platforms", "platforms"), &NLBPlayer::set_platforms);
+    ClassDB::bind_method(D_METHOD("get_platforms"), &NLBPlayer::get_platforms);
+    ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "platforms"), "set_platforms", "get_platforms");
+    ClassDB::bind_method(D_METHOD("set_log_path", "path"), &NLBPlayer::set_log_path);
+    ClassDB::bind_method(D_METHOD("get_log_path"), &NLBPlayer::get_log_path);
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "log_path", PROPERTY_HINT_GLOBAL_SAVE_FILE, "*.log,*.txt"), "set_log_path", "get_log_path");
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "autostart"), "set_autostart", "get_autostart");
 
     ClassDB::bind_method(D_METHOD("open"), &NLBPlayer::open);
@@ -151,6 +164,15 @@ String NLBPlayer::resolveBookPath() const {
     return ProjectSettings::get_singleton()->globalize_path(cached);
 }
 
+void NLBPlayer::set_log_path(const String& path) {
+    m_logPath = path;
+    if (!m_session) return;
+    std::string error;
+    // res:// и user:// — в путь на диске
+    const String disk = path.begins_with("res://") || path.begins_with("user://") ? ProjectSettings::get_singleton()->globalize_path(path) : path;
+    if (!m_session->setLogFile(std::string(disk.utf8().get_data()), error)) UtilityFunctions::push_warning("NLBPlayer: ", s(error));
+}
+
 bool NLBPlayer::open() {
     if (!m_audio) m_audio = std::make_unique<GodotAudioBackend>(this, nullptr);
     m_session = std::make_unique<Session>(m_audio.get());
@@ -163,6 +185,17 @@ bool NLBPlayer::open() {
     options.savesDir = u(data + String("/saves"));
     options.achievementsPath = u(data + String("/achievements.tsv"));
     for (int64_t i = 0; i < m_externalGames.size(); ++i) options.externalGames.push_back(u(m_externalGames[i]));
+    // язык: ключ запуска (--lang, -epiclocale от Epic Games Launcher…), затем язык системы
+    {
+        std::vector<std::string> args;
+        for (const PackedStringArray& list : {OS::get_singleton()->get_cmdline_args(), OS::get_singleton()->get_cmdline_user_args()}) {
+            for (int64_t i = 0; i < list.size(); ++i) args.emplace_back(list[i].utf8().get_data());
+        }
+        const std::string fromArgs = nlb::presentation::languageFromArgs(args);
+        if (!fromArgs.empty()) options.preferredLanguages.push_back(fromArgs);
+        if (!m_language.is_empty()) options.preferredLanguages.push_back(u(m_language));
+        options.preferredLanguages.push_back(u(OS::get_singleton()->get_locale_language()));
+    }
     std::string error;
     if (!m_session->open(options, error)) {
         UtilityFunctions::push_error("NLBPlayer: ", s(error));
@@ -170,6 +203,22 @@ bool NLBPlayer::open() {
         return false;
     }
     m_audio->setMedia(&m_session->media());
+    if (!m_logPath.is_empty()) set_log_path(m_logPath);  // журнал прохождения — вместе с книгой
+    // игровые площадки: достижения, статистика, рекорды книги (platform.ini книги)
+    if (!m_platforms.is_empty()) {
+        const nlb::platform::PlatformConfig config = nlb::platform::PlatformConfig::load(m_session->platformConfigPath());
+        std::vector<std::string> args;
+        const PackedStringArray cmd = OS::get_singleton()->get_cmdline_args();
+        for (int64_t i = 0; i < cmd.size(); ++i) args.emplace_back(cmd[i].utf8().get_data());
+        auto bridge = std::make_unique<nlb::platform::PlatformBridge>(config);
+        for (int64_t i = 0; i < m_platforms.size(); ++i) {
+            std::string perror;
+            auto services = nlb::platform::createPlatformServices(std::string(m_platforms[i].utf8().get_data()), config, args, perror);
+            if (!perror.empty()) UtilityFunctions::push_warning("NLBPlayer: ", s(perror));
+            bridge->add(std::move(services));
+        }
+        m_session->setPlatforms(std::move(bridge));
+    }
     m_lastRevision = m_session->revision();
     emitEvents();
     emit_signal("screen_changed");
@@ -202,6 +251,12 @@ void NLBPlayer::dispatch_events(const std::vector<PlayerEngine::Event>& events) 
 String NLBPlayer::theme_dir() const {
     if (!m_session) return String();
     const std::string dir = FileUtils::combinePath(m_openedPath, BookPack::THEME_DIR);
+    return FileUtils::isDirectory(dir) ? s(dir) : String();
+}
+
+String NLBPlayer::base_theme_dir() const {
+    if (!m_session) return String();
+    const std::string dir = FileUtils::combinePath(m_openedPath, BookPack::BASE_THEME_DIR);
     return FileUtils::isDirectory(dir) ? s(dir) : String();
 }
 

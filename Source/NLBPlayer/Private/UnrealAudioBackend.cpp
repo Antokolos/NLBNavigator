@@ -71,8 +71,10 @@ void FUnrealAudioBackend::playMusic(const nlb::presentation::MediaRef& track, bo
     USoundBase* Sound = Load(track, loop);
     if (!Ctx || !Sound) return;
     if (Music.IsValid()) Music->Stop();
-    Music = UGameplayStatics::SpawnSound2D(Ctx, Sound, 1.0f, 1.0f, 0.0f, nullptr, true, false);
+    MusicSound.Reset(Sound);
+    Music.Reset(UGameplayStatics::SpawnSound2D(Ctx, Sound, 1.0f, 1.0f, 0.0f, nullptr, true, false));
     if (Music.IsValid() && fadeInMs > 0) Music->FadeIn(fadeInMs / 1000.0f);
+    if (Music.IsValid() && bPaused) Music->SetPaused(true);  // книга скрыта — заиграет при возврате
 }
 
 void FUnrealAudioBackend::stopMusic(int fadeOutMs) {
@@ -83,6 +85,7 @@ void FUnrealAudioBackend::stopMusic(int fadeOutMs) {
 
 void FUnrealAudioBackend::playEffect(const nlb::presentation::MediaRef& sound) {
     UObject* Ctx = Context.Get();
+    if (bPaused) return;  // книга скрыта — эффекты её не слышны
     USoundBase* Sound = Load(sound, false);
     if (Ctx && Sound) UGameplayStatics::PlaySound2D(Ctx, Sound, EffectsVolume);
 }
@@ -93,6 +96,11 @@ void FUnrealAudioBackend::stopEffects() {
 
 void FUnrealAudioBackend::setMusicVolume(float volume) {
     if (Music.IsValid()) Music->SetVolumeMultiplier(volume);
+}
+
+void FUnrealAudioBackend::SetPaused(bool bPause) {
+    bPaused = bPause;
+    if (Music.IsValid()) Music->SetPaused(bPause);
 }
 
 void FUnrealAudioBackend::setEffectsVolume(float volume) {

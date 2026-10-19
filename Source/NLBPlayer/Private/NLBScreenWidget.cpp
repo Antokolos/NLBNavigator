@@ -1,5 +1,10 @@
 #include "NLBScreenWidget.h"
 
+#include "Fonts/CompositeFont.h"
+
+#include "Engine/Engine.h"
+#include "GameFramework/GameUserSettings.h"
+
 #include "Engine/GameInstance.h"
 #include "Engine/Texture2D.h"
 #include "Fonts/FontMeasure.h"
@@ -143,7 +148,7 @@ private:
             File = Copy;
         }
         FSlateFontInfo Info = (!File.IsEmpty() && FPaths::FileExists(File))
-            ? FSlateFontInfo(File, Points)
+            ? FSlateFontInfo(MakeShared<FStandaloneCompositeFont>(NAME_None, File, EFontHinting::Default, EFontLoadingPolicy::LazyLoad), Points)
             : FCoreStyle::GetDefaultFontStyle("Regular", Points);
         return Fonts.emplace(Font, Info).first->second;
     }
@@ -181,7 +186,9 @@ bool UNLBScreenWidget::EnsureScreen() {
     if (!Renderer) Renderer.reset(new FNLBSlateRenderer(this));
     GameScreen::Options O;
     O.themeDir = U(P->GetThemeDir());
-    O.choicesScreen = bChoicesScreen;
+    O.baseThemeDir = U(P->GetBaseThemeDir());
+    // VN — всегда экран вариантов (как paginator в VN-INSTEAD), Standard — по свойству
+    O.choicesScreen = P->GetSession()->exportMode() == PlayerEngine::ExportMode::VN || bChoicesScreen;
     O.soundAvailable = true;
     O.clock = [] { return static_cast<uint64_t>(FPlatformTime::Seconds() * 1000.0); };
     Screen.reset(new GameScreen(*P->GetSession(), O));
@@ -193,16 +200,34 @@ bool UNLBScreenWidget::EnsureScreen() {
     // внешнюю игру ведёт сама игра (OnExternalGame) — сообщение «её нет» не нужно
     Screen->setExternalGameHandler([](const std::string&) {});
     P->SetScreenDriven(true);
+    // Полный экран — пункт меню книги: режим окна игры (UGameUserSettings), как в настройках игры
+    Screen->setFullscreenHandler(
+        [](bool bOn) {
+            if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr) {
+                S->SetFullscreenMode(bOn ? EWindowMode::WindowedFullscreen : EWindowMode::Windowed);
+                S->ApplySettings(false);
+            }
+        },
+        [] {
+            const UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
+            return S && S->GetFullscreenMode() != EWindowMode::Windowed;
+        });
+    UE_LOG(LogTemp, Log, TEXT("NLB: оформление: %s"), UTF8_TO_TCHAR(Screen->describeThemes().c_str()));
     return true;
 }
 
 void UNLBScreenWidget::NativeConstruct() {
     Super::NativeConstruct();
+    if (UNLBPlayerSubsystem* P = Player()) P->SetAudioPaused(false);  // книга снова на экране — звук дальше
     EnsureScreen();
 }
 
 void UNLBScreenWidget::NativeDestruct() {
-    if (UNLBPlayerSubsystem* P = Player()) P->SetScreenDriven(false);
+    // книгу скрыли (выход в шутер, внешняя игра) — её музыка не должна играть в шутере
+    if (UNLBPlayerSubsystem* P = Player()) {
+        P->SetScreenDriven(false);
+        P->SetAudioPaused(true);
+    }
     Screen.reset();
     Super::NativeDestruct();
 }
@@ -283,6 +308,10 @@ void UNLBScreenWidget::NextPage() {
     if (EnsureScreen()) Screen->key(GameScreen::Key::Space);
 }
 
+void UNLBScreenWidget::Back() {
+    if (EnsureScreen()) Screen->key(GameScreen::Key::Escape);
+}
+
 UTexture2D* UNLBScreenWidget::TextureFor(const FString& Path) {
     if (Path.IsEmpty()) return nullptr;
     if (TObjectPtr<UTexture2D>* Found = Textures.Find(Path)) return *Found;
@@ -291,7 +320,7 @@ UTexture2D* UNLBScreenWidget::TextureFor(const FString& Path) {
     std::string Direct;
     std::vector<uint8_t> Bytes;
     // полный путь (картинки темы) — файл с диска или из пакета; иначе — медиа книги
-    if (P.find('/') != std::string::npos && FileUtils::exists(P) && !FileUtils::isDirectory(P) && FileUtils::readFile(P, Direct)) {
+    if (P.find_first_of("/\\") != std::string::npos && FileUtils::exists(P) && !FileUtils::isDirectory(P) && FileUtils::readFile(P, Direct)) {
         Bytes.assign(Direct.begin(), Direct.end());
     } else if (UNLBPlayerSubsystem* Sub = Player(); Sub && Sub->GetSession()) {
         Sub->GetSession()->media().read(MediaRef{P}, Bytes);

@@ -41,6 +41,10 @@ public:
     virtual void drawText(const FontRef& font, const std::string& text, Color c, float x, float y, float alpha) = 0;
     /// Ограничить рисование прямоугольником; nullptr — снять ограничение
     virtual void setClip(const RectF* clip) = 0;
+    /// Сколько пикселей окна приходится на единицу экрана 1920×1080. INSTEAD раскладывает текст
+    /// шрифтом уже в масштабе окна (font_size × scale) и округляет высоту строки в пикселях;
+    /// рендерер, который делает так же, сообщает масштаб, чтобы раскладка совпала (по умолчанию 1)
+    virtual float pixelScale() const { return 1.0f; }
 };
 
 /**
@@ -57,8 +61,10 @@ public:
     enum class Key { Escape, Space, Enter, PageUp, PageDown, Save, Load, Digit };
 
     struct Options {
-        std::string themeDir;            ///< каталог темы INSTEAD (может быть внутри пакета)
-        /// Варианты отдельным экраном (как VN в INSTEAD с модулем paginator): текст выдаётся
+        std::string themeDir;            ///< каталог темы игры INSTEAD (может быть внутри пакета)
+        std::string baseThemeDir;        ///< базовая тема: оформление по умолчанию, тема игры его дополняет
+        /// Варианты отдельным экраном (как VN в INSTEAD с модулем paginator; только на страницах
+        /// с темой VN, на страницах STANDARD — всегда варианты в тексте): текст выдаётся
         /// порциями по абзацам, разделённым пустой строкой, без прокрутки; дочитав последнюю
         /// порцию, игрок видит экран вариантов, а если вариант один и тривиальный («Далее») —
         /// сразу переходит дальше. Иначе — прокрутка и варианты в конце текста
@@ -83,8 +89,18 @@ public:
 
     /// После команд, отданных напрямую session.engine() (сценарии тестов)
     void afterCommand();
+    /// Какие темы подключены и что из них взято (для журнала фронтенда: разобраться с оформлением)
+    std::string describeThemes() const;
+    /// Полноэкранный режим — дело фронтенда: если он умеет, пусть даст переключатель и текущее
+    /// состояние, тогда в меню появится пункт «Полный экран»
+    void setFullscreenHandler(std::function<void(bool)> setFullscreen, std::function<bool()> isFullscreen) {
+        m_setFullscreen = std::move(setFullscreen);
+        m_isFullscreen = std::move(isFullscreen);
+    }
     /// Сейчас показан экран вариантов (режим choicesScreen)
     bool choicesScreenShown() const { return m_showChoices; }
+    /// Показано сообщение (конец игры, внешняя игра, ошибка) — для тестов
+    bool messageShown() const { return m_menu == Menu::Message; }
     /// Игрок выбрал «Выйти» в меню
     bool quitRequested() const { return m_quit; }
     void clearQuitRequest() { m_quit = false; }
@@ -95,6 +111,10 @@ public:
     void setExternalGameHandler(std::function<void(const std::string&)> handler) { m_externalHandler = std::move(handler); }
     /// Центр кликабельной области объекта или предмета на последнем кадре (для тестов)
     bool hitCenter(const std::string& id, bool inventory, float& x, float& y) const;
+    /// Центр пункта меню с номером index на последнем кадре (для тестов)
+    bool menuItemCenter(int index, float& x, float& y) const;
+    /// Центр перехода с номером index (-1 — заголовок комнаты) на последнем кадре (для тестов)
+    bool choiceCenter(int index, float& x, float& y) const;
 
     static constexpr float SCREEN_W = 1920.0f, SCREEN_H = 1080.0f;
 
@@ -106,7 +126,7 @@ private:
         std::string id;
         int index = -1;
     };
-    enum class Menu { None, Main, Save, Load, Message };
+    enum class Menu { None, Main, Save, Load, Message, ConfirmQuit, Language };
     struct Effect {
         uint64_t start = 0;
         int steps = 25;
@@ -154,13 +174,28 @@ private:
 
     std::vector<Hit> m_hits;
     std::string m_hoverObject;
+    std::function<void(bool)> m_setFullscreen;
+    std::function<bool()> m_isFullscreen;
+    /// Пункты главного меню по порядку (полный экран — только если фронтенд его умеет)
+    enum class MainItem { Save, Load, Restart, Sound, Choices, Fullscreen, Language, Quit, Back };
+    std::string tr(int key) const;  ///< текст интерфейса на языке книги (Localization.h, Ui)
+    std::vector<MainItem> mainItems() const;
+    static constexpr int NO_HOVER = -1000000;
+    int m_hoverChoice = NO_HOVER;    ///< переход под курсором (номер варианта; -1 — заголовок комнаты)
+    std::string m_hoverItem;         ///< предмет инвентаря под курсором
     float m_mouseX = 0, m_mouseY = 0;
     float m_scroll = 0, m_contentHeight = 0, m_lineHeight = 30, m_pageHeight = 0;
     RectF m_textWindow{};
     bool m_moreText = false;
     float m_drawTop = -1e9f, m_drawBottom = 1e9f, m_firstHiddenY = -1;
-    bool m_choicesScreen = false, m_showChoices = false;
+    bool m_choicesScreen = false, m_showChoices = false;  ///< m_choicesScreen — выбор игрока (меню)
+    /// Режим «варианты отдельным экраном» действует только на страницах с темой VN (там его вёл
+    /// paginator INSTEAD); на страницах STANDARD — всегда варианты в тексте с прокруткой
+    bool choicesMode() const { return m_choicesScreen && m_screen.layout == Layout::VisualNovel; }
     size_t m_portion = 0;            ///< текущая порция текста (режим экрана вариантов)
+    /// Действие привело на другую страницу (ответ «Изучив панно…» и сразу «Больно вам, больно!»):
+    /// показать и ответ, и описание новой комнаты (INSTEAD показал бы только комнату)
+    bool m_reactionThenRoom = false;
     bool m_morePortions = false;
     Menu m_menu = Menu::None;
     std::string m_message;
@@ -176,7 +211,11 @@ private:
     std::function<void(const std::vector<PlayerEngine::Event>&)> m_eventListener;
     uint64_t m_seenRevision = 0;     ///< ревизия сессии, которую экран уже показал
     void pull();                     ///< забрать события и снимок из сессии
-    uint64_t now() const;
+    uint64_t now() const;          ///< время экрана: стоит, пока открыто меню (пауза)
+    uint64_t rawNow() const;       ///< часы фронтенда
+    void updatePause();            ///< меню открылось — время экрана встаёт; закрылось — идёт дальше
+    uint64_t m_pauseStart = 0;     ///< когда открылось меню (0 — не на паузе)
+    uint64_t m_pausedTotal = 0;    ///< сколько всего простояло на паузе
 };
 
 }  // namespace nlb::presentation

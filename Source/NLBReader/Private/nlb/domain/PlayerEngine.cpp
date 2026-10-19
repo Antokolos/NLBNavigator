@@ -694,6 +694,7 @@ bool PlayerEngine::look() {
     if (!m_page) {
         return false;
     }
+    beginCommand();  // «осмотреться» — новая команда: прежний ответ стирается, сцена описывается заново
     m_shownImages.clear();
     m_preservedImagesShown.clear();  // «осмотреться» показывает экран целиком
     renderPage();
@@ -1097,7 +1098,12 @@ void PlayerEngine::renderPage() {
         }
     }
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Achievement) m_events.push_back({Event::Kind::Achievement, item.text});
+        if (item.kind == PlayerContext::OutputKind::Achievement) {
+            Event e{Event::Kind::Achievement, item.text};
+            const auto colon = item.text.find(": ");  // «Получено достижение: ИМЯ»
+            e.id = colon == std::string::npos ? item.text : item.text.substr(colon + 2);
+            m_events.push_back(e);
+        }
     }
 }
 
@@ -1119,7 +1125,12 @@ void PlayerEngine::flushOutput(bool) {
         }
     }
     for (const auto& item : output) {
-        if (item.kind == PlayerContext::OutputKind::Achievement) m_events.push_back({Event::Kind::Achievement, item.text});
+        if (item.kind == PlayerContext::OutputKind::Achievement) {
+            Event e{Event::Kind::Achievement, item.text};
+            const auto colon = item.text.find(": ");  // «Получено достижение: ИМЯ»
+            e.id = colon == std::string::npos ? item.text : item.text.substr(colon + 2);
+            m_events.push_back(e);
+        }
     }
 }
 
@@ -1358,7 +1369,9 @@ PlayerEngine::PageView PlayerEngine::view() const {
     }
     v.pageId = m_page->getId();
     for (const PlayerLink& link : availableChoices()) {
-        v.choices.push_back({displayText(m_interpreter->expandText(link.text)), link.trivial});
+        // ExportManager.isInlineLink: в стандартной теме такая ссылка — xact в тексте (xdsc), а не путь
+        const bool inlineLink = link.trivial || (!link.text.empty() && (link.text[0] == '-' || link.text[0] == '"' || link.text[0] == '\''));
+        v.choices.push_back({displayText(m_interpreter->expandText(link.text)), link.trivial, inlineLink});
     }
     for (const auto& instanceId : sceneObjects()) {
         const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
@@ -1612,6 +1625,15 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     m.layout = vn ? Layout::VisualNovel : Layout::Standard;
     m.pageId = page->getId();
     if (!vn && page->isUseCaption()) m.caption = trim(displayText(m_interpreter->expandText(page->getCaption())));
+    if (!vn) {
+        // STEADExportManager.decoratePageCaption: nam = заголовок или название модуля
+        // (getNonEmptyTitle: у модуля без названия — название родителя; совсем без — «...»)
+        m.roomTitle = m.caption;
+        for (const NonLinearBook* b = page->getCurrentNLB(); m.roomTitle.empty() && b; b = b->getParentNLB()) {
+            m.roomTitle = trim(b->getTitle());
+        }
+        if (m.roomTitle.empty()) m.roomTitle = "...";
+    }
     if (!m_rootBook->isSuppressMedia()) m.pageImage = imageRefFor(page->getId(), page->isImageAnimated(), true);
     m.imageIsBackground = page->isImageBackground();
 
@@ -1624,6 +1646,7 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     };
     const std::string pageText = displayText(m_interpreter->expandText(page->getText()));
     if (!pageText.empty()) addParagraphs(m.pageText, pageText, "");
+    if (!pageText.empty()) addParagraphs(m.roomText, pageText, "");
 
     const PageView view = this->view();
     const std::vector<std::string> visible = sceneObjects();
@@ -1634,10 +1657,30 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
             if (!obj || obj->isSuppressDsc()) continue;
             const std::string dsc = displayText(m_interpreter->objDscF(instanceId));
             if (!trim(dsc).empty()) addParagraphs(m.pageText, dsc, instanceId);
+            // STEAD: описания объектов идут одним абзацем через пробел (stead.fmt: переводы
+            // строк внутри строки — тоже пробел)
+            if (!trim(dsc).empty()) {
+                if (m.objectsText.empty()) m.objectsText.emplace_back();
+                auto& runs = m.objectsText.back().runs;
+                if (!runs.empty()) runs.push_back({nlb::presentation::TextRun::Kind::Plain, " ", ""});
+                for (const auto& line : splitLines(dsc)) {
+                    if (trim(line).empty()) continue;
+                    for (auto& r : textRuns(trim(line), instanceId)) runs.push_back(std::move(r));
+                    runs.push_back({nlb::presentation::TextRun::Kind::Plain, " ", ""});
+                }
+                if (!runs.empty() && runs.back().text == " ") runs.pop_back();
+            }
         }
     }
     for (const auto& text : m_pageModText) addParagraphs(m.pageText, text, "");
-    for (const auto& text : m_reactionText) addParagraphs(m.reactionText, text, "");
+    for (const auto& text : m_pageModText) addParagraphs(m.modText, text, "");
+    for (const auto& text : m_reactionText) {
+        // следующий ответ продолжает предыдущий через пробел (STEAD: p() — через пробел),
+        // а строки внутри одного ответа — каждая с новой строки
+        const size_t first = m.reactionText.size();
+        addParagraphs(m.reactionText, text, "");
+        if (first > 0 && first < m.reactionText.size()) m.reactionText[first].joinPrevious = true;
+    }
 
     // Варианты: доступные и (в стандартной теме) недоступные с альтернативным текстом
     for (size_t i = 0; i < view.choices.size(); ++i) {
@@ -1645,6 +1688,7 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
         c.index = static_cast<int>(i);
         c.text = view.choices[i].text;
         c.trivial = view.choices[i].trivial;
+        c.inlineLink = view.choices[i].inlineLink;
         m.choices.push_back(c);
     }
     if (!vn) {

@@ -1,5 +1,6 @@
 #include "nlb_screen.h"
 
+#include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/font_file.hpp>
 #include <godot_cpp/classes/image.hpp>
@@ -60,7 +61,9 @@ bool NLBScreen::ensureScreen() {
     m_screenSession = p->session();
     GameScreen::Options o;
     o.themeDir = std::string(p->theme_dir().utf8().get_data());
-    o.choicesScreen = m_choicesScreen;
+    o.baseThemeDir = std::string(p->base_theme_dir().utf8().get_data());
+    // VN — всегда экран вариантов (как paginator в VN-INSTEAD), Standard — по свойству choices_screen
+    o.choicesScreen = p->session()->exportMode() == PlayerEngine::ExportMode::VN || m_choicesScreen;
     o.soundAvailable = true;
     o.clock = [] { return static_cast<uint64_t>(Time::get_singleton()->get_ticks_msec()); };
     m_screen = std::make_unique<GameScreen>(*p->session(), o);
@@ -68,6 +71,15 @@ bool NLBScreen::ensureScreen() {
     m_screen->setEventListener([p](const std::vector<PlayerEngine::Event>& events) { p->dispatch_events(events); });
     // внешнюю игру ведёт сама игра (сигнал external_game) — сообщение «её нет» не нужно
     m_screen->setExternalGameHandler([](const std::string&) {});
+    // Полный экран — пункт меню книги (окно Godot)
+    m_screen->setFullscreenHandler(
+        [](bool on) {
+            DisplayServer::get_singleton()->window_set_mode(on ? DisplayServer::WINDOW_MODE_FULLSCREEN : DisplayServer::WINDOW_MODE_WINDOWED);
+        },
+        [] {
+            const auto mode = DisplayServer::get_singleton()->window_get_mode();
+            return mode == DisplayServer::WINDOW_MODE_FULLSCREEN || mode == DisplayServer::WINDOW_MODE_EXCLUSIVE_FULLSCREEN;
+        });
     p->set_screen_driven(true);
     return true;
 }
@@ -159,7 +171,7 @@ Ref<Texture2D> NLBScreen::texture(const std::string& path) {
     Ref<Texture2D> tex;
     std::string data;
     // полный путь (картинки темы) — с диска или из пакета; иначе — медиа книги через NLBPlayer
-    if (path.find('/') != std::string::npos && FileUtils::exists(path) && !FileUtils::isDirectory(path) && FileUtils::readFile(path, data)) {
+    if (path.find_first_of("/\\") != std::string::npos && FileUtils::exists(path) && !FileUtils::isDirectory(path) && FileUtils::readFile(path, data)) {
         PackedByteArray bytes;
         bytes.resize(static_cast<int64_t>(data.size()));
         memcpy(bytes.ptrw(), data.data(), data.size());

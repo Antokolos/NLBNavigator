@@ -82,10 +82,7 @@ std::filesystem::path FileUtils::nativePath(const std::string& utf8Path) {
 bool FileUtils::readFile(const std::string& path, std::string& content) {
     std::string rel;
     if (BookPack::resolve(path, rel)) {
-        const BookPack::Entry* e = BookPack::mounted()->find(rel);
-        if (!e || e->type != BookPack::Entry::Type::File) return false;
-        content = e->content;
-        return true;
+        return BookPack::mounted()->readContent(rel, content);  // крупные файлы — с диска по запросу
     }
     std::ifstream in(nativePath(path), std::ios::binary);
     if (!in) return false;
@@ -130,7 +127,10 @@ bool FileUtils::renameReplace(const std::string& from, const std::string& to) {
 }
 
 std::filesystem::path FileUtils::pathFromUtf8(const std::string& utf8) {
-#if defined(__cpp_char8_t)
+#ifndef _WIN32
+    // вне Windows пути и так в UTF-8 (а libc++ Android NDK собран без char8_t в filesystem)
+    return std::filesystem::path(utf8);
+#elif defined(__cpp_char8_t)
     return std::filesystem::path(std::u8string(utf8.begin(), utf8.end()));
 #else
     return std::filesystem::u8path(utf8);
@@ -138,7 +138,9 @@ std::filesystem::path FileUtils::pathFromUtf8(const std::string& utf8) {
 }
 
 std::string FileUtils::pathToUtf8(const std::filesystem::path& path) {
-#if defined(__cpp_char8_t)
+#ifndef _WIN32
+    return path.string();
+#elif defined(__cpp_char8_t)
     const std::u8string s = path.u8string();
     return std::string(s.begin(), s.end());
 #else
