@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NLB Navigator</string>
+    <string name="tab_installed">Установленные</string>
+    <string name="tab_catalog">Каталог</string>
+    <string name="open_file">Открыть файл</string>
+    <string name="refresh">Обновить каталог</string>
+    <string name="play">Играть</string>
+    <string name="install">Установить</string>
+    <string name="update">Обновить</string>
+    <string name="delete">Удалить</string>
+    <string name="cancel">Отмена</string>
+    <string name="installed_empty">Игр пока нет. Откройте файл .nlbpack или .nlbz или установите игру из каталога.</string>
+    <string name="catalog_empty">Каталог пуст.</string>
+    <string name="author">Автор: %1$s</string>
+    <string name="version">Версия %1$s</string>
+    <string name="size">%1$s</string>
+    <string name="installing">Установка…</string>
+    <string name="catalog_updated">Каталог обновлён</string>
+    <string name="error">Ошибка: %1$s</string>
+    <string name="installed_label">Установлена: %1$s</string>
+</resources>

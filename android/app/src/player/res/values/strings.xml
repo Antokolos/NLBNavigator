@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NLB Navigator</string>
+    <string name="tab_installed">Installed</string>
+    <string name="tab_catalog">Catalog</string>
+    <string name="open_file">Open file</string>
+    <string name="refresh">Refresh catalog</string>
+    <string name="play">Play</string>
+    <string name="install">Install</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="installed_empty">No games installed yet. Open a .nlbpack or .nlbz file, or install a game from the catalog.</string>
+    <string name="catalog_empty">The catalog is empty.</string>
+    <string name="author">Author: %1$s</string>
+    <string name="version">Version %1$s</string>
+    <string name="size">%1$s</string>
+    <string name="installing">Installing…</string>
+    <string name="catalog_updated">Catalog updated</string>
+    <string name="error">Error: %1$s</string>
+    <string name="installed_label">Installed: %1$s</string>
+</resources>
