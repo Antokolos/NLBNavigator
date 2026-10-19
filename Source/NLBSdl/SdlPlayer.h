@@ -60,6 +60,9 @@ public:
     void setClip(const nlb::presentation::RectF* clip) override;
     float pixelScale() const override { return m_pixelScale; }
 
+    /// Ошибка запуска: в журнал, а на Android — и окном сообщения
+    static void fatal(const std::string& message);
+
 private:
     bool init();
     void shutdown();

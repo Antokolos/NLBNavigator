@@ -22,7 +22,33 @@
 #include "shunting-yard.h"
 #include "builtin-features.inc"
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#endif
+
 namespace {
+#ifdef __ANDROID__
+/// std::cout и std::cerr на Android — в logcat (метка NLBNavigator), построчно
+class LogcatBuf : public std::streambuf {
+public:
+    explicit LogcatBuf(int priority) : m_priority(priority) {}
+protected:
+    int overflow(int c) override {
+        if (c == EOF) return 0;
+        if (c == '\n') flushLine(); else m_line += static_cast<char>(c);
+        return c;
+    }
+    int sync() override { flushLine(); return 0; }
+private:
+    void flushLine() {
+        if (!m_line.empty()) __android_log_write(m_priority, "NLBNavigator", m_line.c_str());
+        m_line.clear();
+    }
+    int m_priority;
+    std::string m_line;
+};
+#endif
+
 /// Каталог данных: ~/.nlbnavigator (как у nlb_main), на Android — хранилище приложения
 std::filesystem::path dataRoot() {
 #ifdef __ANDROID__
@@ -93,6 +119,11 @@ std::string dataPath(const std::string& bookPath, const std::string& suffix, boo
 }
 
 int main(int argc, char** argv) {
+#ifdef __ANDROID__
+    static LogcatBuf outBuf(ANDROID_LOG_INFO), errBuf(ANDROID_LOG_ERROR);
+    std::cout.rdbuf(&outBuf);
+    std::cerr.rdbuf(&errBuf);
+#endif
     SDL_SetMainReady();
     cparse_startup();
     const std::vector<std::string> args = utf8Args(argc, argv);
@@ -131,6 +162,9 @@ int main(int argc, char** argv) {
     options.fullscreen = true;  // на телефоне — весь экран
 #endif
     if (positional.empty()) {
+#ifdef __ANDROID__
+        SdlPlayer::fatal("Книга не найдена: в приложении нет assets/book.nlbpack");
+#endif
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
                      " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--log <file>]"
                      " [--platform steam|epic|log[:file]]... [--platform-config <platform.ini>] [--lang <ru|en|…>]" << std::endl;

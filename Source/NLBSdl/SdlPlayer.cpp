@@ -30,6 +30,18 @@ std::string findFont(const std::string& bookPath) {
         candidates.push_back(std::string(base) + "fonts/default.ttf");
     }
     candidates.push_back(FileUtils::combinePath(bookPath, "fonts/default.ttf"));
+    // шрифт темы из книги или пакета (тема игры, затем базовая) — есть почти у всякой книги с темой
+    for (const char* theme : {"__theme__", "__base_theme__"}) {
+        for (const char* font : {"fonts/sans.ttf", "sans.ttf"}) {
+            candidates.push_back(FileUtils::combinePath(FileUtils::combinePath(bookPath, theme), font));
+        }
+    }
+#ifdef __ANDROID__
+    // системные шрифты Android (с кириллицей)
+    candidates.push_back("/system/fonts/Roboto-Regular.ttf");
+    candidates.push_back("/system/fonts/NotoSans-Regular.ttf");
+    candidates.push_back("/system/fonts/DroidSans.ttf");
+#endif
 #ifdef _WIN32
     candidates.push_back("C:/Windows/Fonts/segoeui.ttf");
     candidates.push_back("C:/Windows/Fonts/arial.ttf");
@@ -44,22 +56,30 @@ std::string findFont(const std::string& bookPath) {
 
 SdlPlayer::SdlPlayer(Options options) : m_options(std::move(options)) {}
 
+void SdlPlayer::fatal(const std::string& message) {
+    // в консоль (на Android — в logcat), а на телефоне ещё и окном: консоли там не видно
+    std::cerr << message << std::endl;
+#ifdef __ANDROID__
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "NLBNavigator", message.c_str(), nullptr);
+#endif
+}
+
 SdlPlayer::~SdlPlayer() {
     shutdown();
 }
 
 bool SdlPlayer::init() {
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
-        std::cerr << "SDL_Init: " << SDL_GetError() << std::endl;
+        fatal(std::string("SDL_Init: ") + SDL_GetError());
         return false;
     }
     if (!TTF_Init()) {
-        std::cerr << "TTF_Init: " << SDL_GetError() << std::endl;
+        fatal(std::string("TTF_Init: ") + SDL_GetError());
         return false;
     }
     m_fontPath = m_options.fontPath.empty() ? findFont(m_options.bookPath) : m_options.fontPath;
     if (m_fontPath.empty()) {
-        std::cerr << "Нет шрифта: укажите --font <файл .ttf>" << std::endl;
+        fatal("Нет шрифта: укажите --font <файл .ttf>");
         return false;
     }
     m_media = std::make_unique<BookMediaSource>(m_options.bookPath);
@@ -88,7 +108,7 @@ bool SdlPlayer::init() {
     }
     std::string error;
     if (!m_session->open(so, error)) {
-        std::cerr << "Cannot load book: " << error << std::endl;
+        fatal("Не удалось открыть книгу: " + error);
         return false;
     }
     // Игровые площадки: достижения, статистика и рекорды книги — в Steam, Epic и т. д.
@@ -111,7 +131,7 @@ bool SdlPlayer::init() {
     const std::string title = "NLBNavigator — " + m_session->title();
     if (!SDL_CreateWindowAndRenderer(title.c_str(), m_options.windowWidth, m_options.windowHeight,
                                      SDL_WINDOW_RESIZABLE, &m_window, &m_renderer)) {
-        std::cerr << "SDL_CreateWindowAndRenderer: " << SDL_GetError() << std::endl;
+        fatal(std::string("SDL_CreateWindowAndRenderer: ") + SDL_GetError());
         return false;
     }
     // Экран экспорта — 1920×1080; в окно он вписывается с полями (letterbox), как в теме INSTEAD
