@@ -1,5 +1,7 @@
 #include "nlb/util/BookPack.h"
 
+#include <cctype>
+
 #include "nlb/util/FileUtils.h"
 
 #include <algorithm>
@@ -34,6 +36,17 @@ bool isMediaPath(const std::string& rel) {
         return rel.compare(0, d.size() + 1, d + "/") == 0 || rel.find("/" + d + "/") != std::string::npos;
     };
     return inDir("images") || inDir("sound");
+}
+
+/// Картинка PNG книги (images/ книги или модуля, не служебный файл .preset/.redirect/…)
+bool isBookPng(const std::string& rel) {
+    const auto slash = rel.find_last_of('/');
+    const std::string dir = slash == std::string::npos ? "" : rel.substr(0, slash);
+    const bool inImages = dir == "images" || (dir.size() > 7 && dir.compare(dir.size() - 7, 7, "/images") == 0);
+    if (!inImages || rel.size() < 4) return false;
+    std::string ext = rel.substr(rel.size() - 4);
+    for (auto& c : ext) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    return ext == ".png";
 }
 
 /// Скрытые каталоги и файлы (.git, .idea и т.п.) к книге не относятся и в пакет не попадают
@@ -85,6 +98,13 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
         } else {
             entry.type = Entry::Type::File;
             entry.length = size;
+            if (isBookPng(rel)) {
+                // пресет экспорта картинки: файл <картинка>.preset рядом (нет — DEFAULT)
+                std::string preset;
+                FileUtils::readFile(FileUtils::combinePath(bookDir, rel + ".preset"), preset);
+                while (!preset.empty() && std::isspace(static_cast<unsigned char>(preset.back()))) preset.pop_back();
+                entry.png = preset == "NOCHANGE" ? Entry::Png::NoChange : preset == "COMPRESSED" ? Entry::Png::Compressed : Entry::Png::Default;
+            }
             if (size > LAZY_THRESHOLD) {
                 entry.sourceFile = FileUtils::combinePath(bookDir, rel);  // прочитается при записи
             } else if (!FileUtils::readFile(FileUtils::combinePath(bookDir, rel), entry.content)) {
@@ -138,7 +158,14 @@ std::unique_ptr<BookPack> BookPack::build(const std::string& bookDir, std::strin
 }
 
 bool BookPack::write(const std::string& packPath, std::string& error) const {
+    return write(packPath, error, WriteOptions{});
+}
+
+bool BookPack::write(const std::string& packPath, std::string& error, const WriteOptions& options, WriteStats* stats) const {
     const std::string tmp = packPath + ".tmp";
+    size_t total = 0, done = 0;
+    for (const auto& [rel, e] : m_entries) if (e.type == Entry::Type::File) ++total;
+    std::string converted;
     {
         std::ofstream f(FileUtils::nativePath(tmp), std::ios::binary | std::ios::trunc);
         if (!f) { error = "не удалось записать " + packPath; return false; }
@@ -164,9 +191,28 @@ bool BookPack::write(const std::string& packPath, std::string& error) const {
                     if (!readContent(e, content)) { error = "не удалось прочитать " + rel + " из пакета"; return false; }
                     data = &content;
                 }
+                // PNG -> JPG по пресету (как экспорт NLBB): DEFAULT — по настройке, COMPRESSED — всегда
+                // (качество 80, прозрачное — на пурпурном), NOCHANGE — как есть. JPG не меньше PNG —
+                // остаётся PNG
+                if (e.png != Entry::Png::No && e.png != Entry::Png::NoChange && options.convertPng
+                    && (e.png == Entry::Png::Compressed || options.convertDefault)) {
+                    const bool compressed = e.png == Entry::Png::Compressed;
+                    converted.clear();
+                    const bool ok = options.convertPng(*data, compressed ? 80 : options.quality, compressed, converted)
+                                    && converted.size() < data->size();
+                    if (stats) {
+                        stats->bytesBefore += data->size();
+                        stats->bytesAfter += ok ? converted.size() : data->size();
+                        ++(ok ? stats->converted : stats->keptPng);
+                    }
+                    if (ok) data = &converted;
+                } else if (e.png == Entry::Png::NoChange && stats) {
+                    ++stats->keptPng;
+                }
                 putU32(rec, static_cast<uint32_t>(data->size()));
                 f.write(rec.data(), static_cast<std::streamsize>(rec.size()));
                 f.write(data->data(), static_cast<std::streamsize>(data->size()));
+                if (options.progress) options.progress(++done, total, rel);
             } else {
                 f.write(rec.data(), static_cast<std::streamsize>(rec.size()));
             }

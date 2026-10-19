@@ -202,6 +202,7 @@ set(NLB_UTIL_SOURCES
         ${NLB_SOURCE_DIR}/nlb/util/FileManipulator.cpp
         ${NLB_SOURCE_DIR}/nlb/util/FileUtils.cpp
         ${NLB_SOURCE_DIR}/nlb/util/BookPack.cpp
+        ${NLB_SOURCE_DIR}/nlb/util/Json.cpp
         ${NLB_SOURCE_DIR}/nlb/util/MultiLangString.cpp
         ${NLB_SOURCE_DIR}/nlb/util/QuotationHelper.cpp
         ${NLB_SOURCE_DIR}/nlb/util/ResourceManager.cpp
@@ -339,6 +340,8 @@ add_executable(nlb_main
         Source/main.cpp
         Source/PlatformPaths.h
         Source/PlatformPaths.cpp
+        Source/ImageConvert.h
+        Source/ImageConvert.cpp
         Source/SessionLog.h
         Source/SessionLog.cpp
         ${CPARSE_HEADERS}
@@ -347,6 +350,7 @@ add_executable(nlb_main
 target_include_directories(nlb_main
         PUBLIC
         $<BUILD_INTERFACE:${CPARSE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Source/thirdparty>
         $<INSTALL_INTERFACE:include>
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}

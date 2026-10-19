@@ -6,6 +6,8 @@
 #include "nlb/api/ConsoleProgressData.h"
 #include "nlb/api/DummyProgressData.h"
 #include "PlatformPaths.h"
+#include "ImageConvert.h"
+#include "nlb/api/PropertyManager.h"
 #include "nlb/util/BookPack.h"
 #ifdef NLB_WITH_SDL3
 #include "nlb/audio/SdlAudioBackend.h"
@@ -17,6 +19,7 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -123,10 +126,6 @@ int main(int argc, char* argv[]) {
 
     cparse_startup();
 
-    GlobalScope::default_global()["x"] = 10;
-    std::cout << calculator::calculate("'Hello ' + 'World'") << std::endl;
-    std::cout << calculator::calculate("x + 1", GlobalScope::default_global()) << std::endl;
-
     // Консоль в UTF-8 (в Windows — без вывода "Active code page", который читал бы диктор)
     setupConsoleUtf8();
     // Аргументы — в UTF-8 (в Windows из UTF-16 командной строки)
@@ -138,6 +137,9 @@ int main(int argc, char* argv[]) {
     // Linux это не быстрее самой загрузки. Для поставки игры — упакованный файл (pack)
     bool useCache = false;
     bool withMedia = false;  // pack: класть в пакет и картинки со звуками
+    std::string configPath;  // nlb.json (настройки экспорта); пусто — в текущем каталоге или у программы
+    int png2jpg = -1;        // pack: PNG -> JPG (-1 — по nlb.json, 0 — нет, 1 — да)
+    int jpgQuality = 0;      // pack: качество JPG (0 — по nlb.json)
     std::string packTheme;   // pack: каталог темы игры (INSTEAD-экспорт), зашивается в пакет
     std::string packBaseTheme;  // pack: каталог базовой темы (оформление по умолчанию)
     bool sound = true;       // звук через SDL3, если плеер собран с ним
@@ -155,6 +157,14 @@ int main(int argc, char* argv[]) {
             packBaseTheme = args[++i];
         } else if (arg == "--with-media") {
             withMedia = true;
+        } else if (arg == "--config" && i + 1 < args.size()) {
+            configPath = args[++i];
+        } else if (arg == "--png2jpg") {
+            png2jpg = 1;
+        } else if (arg == "--no-png2jpg") {
+            png2jpg = 0;
+        } else if (arg == "--quality" && i + 1 < args.size()) {
+            jpgQuality = std::atoi(args[++i].c_str());
         } else if (arg == "--no-sound") {
             sound = false;
         } else if (arg == "--cache") {
@@ -178,6 +188,9 @@ int main(int argc, char* argv[]) {
         std::cout << "  --with-media     - pack: include images and sounds into the .nlbpack file" << std::endl;
         std::cout << "  --theme <dir>    - pack: include the game theme (INSTEAD theme directory) into the .nlbpack file" << std::endl;
         std::cout << "  --base-theme <dir> - pack: include the base theme (default look; the game theme overrides it)" << std::endl;
+        std::cout << "  --config <file>  - export settings (nlb.json); default: ./nlb.json or next to the program" << std::endl;
+        std::cout << "  --png2jpg | --no-png2jpg - pack: convert PNG images to JPG (default: nlb.json, convertpng2jpg)" << std::endl;
+        std::cout << "  --quality <1..100> - pack: JPG quality (default: nlb.json, quality)" << std::endl;
         std::cout << "  --no-sound       - do not play music and sounds" << std::endl;
         return 1;
     }
@@ -191,17 +204,58 @@ int main(int argc, char* argv[]) {
     const std::string nlbPath = positional[0];
     const std::string mode = positional.size() > 1 ? positional[1] : "info";
 
+    // Настройки экспорта (nlb.json): PNG -> JPG, тексты по умолчанию, needs-action-count
+    {
+        std::string error;
+        if (!configPath.empty()) {
+            if (!PropertyManager::loadConfig(configPath, error)) {
+                std::cerr << "Cannot read the settings: " << error << std::endl;
+                return 1;
+            }
+        } else {
+            PropertyManager::loadDefaultConfig(FileUtils::pathToUtf8(FileUtils::pathFromUtf8(args[0]).parent_path()));
+        }
+    }
     if (mode == "pack") {
         // Упаковать каталог книги в один файл: для поставки игры и быстрой загрузки
         const std::string out = positional.size() > 2 ? positional[2]
             : FileUtils::pathToUtf8(FileUtils::pathFromUtf8(nlbPath).lexically_normal()) + ".nlbpack";
         std::string error;
+        std::cout << "Reading " << nlbPath << "..." << std::endl;
         auto pack = BookPack::build(nlbPath, error, withMedia, packTheme, packBaseTheme);
-        if (!pack || !pack->write(out, error)) {
+        if (!pack) {
             std::cerr << "Cannot pack the book: " << error << std::endl;
             return 1;
         }
-        std::cout << "Packed " << pack->fileCount() << " files into " << out << std::endl;
+        const ExportConfig& exp = PropertyManager::getSettings().getDefaultConfig().getExport();
+        BookPack::WriteOptions options;
+        options.convertDefault = png2jpg < 0 ? exp.isConvertpng2jpg() : png2jpg == 1;
+        options.quality = jpgQuality > 0 ? std::min(100, jpgQuality) : exp.getQuality();
+        if (withMedia) options.convertPng = convertPngToJpg;  // без медиа картинок в пакете нет
+        // прогресс: строка, которая переписывается на месте (при каждом новом проценте)
+        int lastPercent = -1;
+        options.progress = [&](size_t done, size_t total, const std::string& rel) {
+            const int percent = total ? static_cast<int>(done * 100 / total) : 100;
+            if (percent == lastPercent && done != total) return;
+            lastPercent = percent;
+            const std::string name = rel.size() > 50 ? "..." + rel.substr(rel.size() - 47) : rel;
+            std::cout << "\r[" << (percent < 10 ? "  " : percent < 100 ? " " : "") << percent << "%] "
+                      << done << "/" << total << " " << name << std::string(50 - std::min<size_t>(50, name.size()), ' ') << std::flush;
+        };
+        if (withMedia) {
+            std::cout << "PNG -> JPG: " << (options.convertDefault ? "yes, quality " + std::to_string(options.quality)
+                                                                 : std::string("no (only COMPRESSED images)")) << std::endl;
+        }
+        BookPack::WriteStats stats;
+        if (!pack->write(out, error, options, &stats)) {
+            std::cerr << std::endl << "Cannot pack the book: " << error << std::endl;
+            return 1;
+        }
+        std::cout << std::endl << "Packed " << pack->fileCount() << " files into " << out << std::endl;
+        if (stats.converted || stats.keptPng) {
+            std::cout << "PNG -> JPG: " << stats.converted << " converted, " << stats.keptPng << " kept as PNG; images "
+                      << (stats.bytesBefore >> 20) << " MB -> " << (stats.bytesAfter >> 20) << " MB" << std::endl;
+        }
         return 0;
     }
     prepareBookSource(nlbPath, useCache);

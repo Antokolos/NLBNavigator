@@ -1,0 +1,20 @@
+{
+  "export": {
+    "convertpng2jpg": true,
+    "quality": 80,
+    "game-forcedsc": false,
+    "needs-action-count": 3,
+    "texts": {
+      "en": {
+        "game-act": "Nothing happens.",
+        "game-inv": "Hm... This is strange thing...",
+        "game-nouse": "Does not work..."
+      },
+      "ru": {
+        "game-act": "Ничего не происходит.",
+        "game-inv": "Хм... Странная штука...",
+        "game-nouse": "Не сработает..."
+      }
+    }
+  }
+}
