@@ -70,6 +70,7 @@ Session.vim
 !/integrations/**
 !/android/**
 !/tools/**
+!/nlb.json
 # ... кроме собранных модулей и каталогов сборки
 /integrations/godot/demo/bin/
 /integrations/godot/demo/.godot/

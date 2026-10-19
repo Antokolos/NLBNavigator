@@ -74,14 +74,10 @@ std::string lwId(const std::string& parentId, const std::string& target,
 PlayerEngine::PlayerEngine(NonLinearBook* rootBook, const Settings& settings)
     : m_rootBook(rootBook), m_settings(settings) {
     createState();
-    // Тексты по умолчанию — из config.xml NLB (export/texts)
-    const bool ru = rootBook && rootBook->getLanguage() == "ru";
-    if (m_settings.gameInvText.empty()) {
-        m_settings.gameInvText = ru ? "Хм... Странная штука..." : "Hm... This is strange thing...";
-    }
-    if (m_settings.gameNouseText.empty()) {
-        m_settings.gameNouseText = ru ? "Не сработает..." : "Does not work...";
-    }
+    // Тексты по умолчанию — из настроек экспорта (nlb.json, как config.xml NLB: export/texts)
+    const auto& texts = PropertyManager::getSettings().getDefaultConfig().getExport().getTexts(rootBook ? rootBook->getLanguage() : "en");
+    if (m_settings.gameInvText.empty()) m_settings.gameInvText = texts.inv;
+    if (m_settings.gameNouseText.empty()) m_settings.gameNouseText = texts.nouse;
 }
 
 void PlayerEngine::createState() {

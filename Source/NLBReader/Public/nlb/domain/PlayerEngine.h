@@ -1,5 +1,7 @@
 #pragma once
 
+#include "nlb/api/PropertyManager.h"
+
 #include <map>
 #include "nlb/presentation/ScreenModel.h"
 
@@ -36,9 +38,9 @@ public:
 
     struct Settings {
         ExportMode exportMode = ExportMode::VN;
-        /// _needs_action_count (config.xml: export/needs-action-count)
-        int needsActionCount = 3;
-        /// Тексты game.inv / game.nouse; пустые — взять по языку книги (config.xml)
+        /// _needs_action_count (nlb.json / config.xml: export/needs-action-count)
+        int needsActionCount = PropertyManager::getSettings().getDefaultConfig().getExport().getNeedsActionCount();
+        /// Тексты game.inv / game.nouse; пустые — взять по языку книги (nlb.json: export/texts)
         std::string gameInvText;
         std::string gameNouseText;
         /// Файл прогресса достижений (prefs INSTEAD); пусто — только в памяти

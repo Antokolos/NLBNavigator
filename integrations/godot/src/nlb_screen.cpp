@@ -177,10 +177,7 @@ Ref<Texture2D> NLBScreen::texture(const std::string& path) {
         memcpy(bytes.ptrw(), data.data(), data.size());
         Ref<Image> img;
         img.instantiate();
-        const String lower = s(path).to_lower();
-        const Error err = lower.ends_with(".png") ? img->load_png_from_buffer(bytes)
-                        : lower.ends_with(".webp") ? img->load_webp_from_buffer(bytes)
-                        : img->load_jpg_from_buffer(bytes);
+        const Error err = nlbLoadImage(img, bytes, s(path));
         if (err == OK) tex = ImageTexture::create_from_image(img);
     } else if (NLBPlayer* p = player()) {
         tex = p->load_texture(s(path));

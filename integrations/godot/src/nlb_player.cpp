@@ -20,6 +20,22 @@
 #include "nlb/util/FileUtils.h"
 
 using namespace godot;
+
+/// Загрузить картинку из байтов: формат по сигнатуре (PNG, JPG, WEBP), иначе — по расширению.
+/// В пакете книги PNG может быть сохранён как JPG под прежним именем (pack, PNG -> JPG)
+Error nlbLoadImage(const Ref<Image>& img, const PackedByteArray& data, const String& path) {
+    const int64_t n = data.size();
+    const uint8_t* b = data.ptr();
+    if (n >= 4 && b[0] == 0x89 && b[1] == 'P' && b[2] == 'N' && b[3] == 'G') return img->load_png_from_buffer(data);
+    if (n >= 3 && b[0] == 0xFF && b[1] == 0xD8 && b[2] == 0xFF) return img->load_jpg_from_buffer(data);
+    if (n >= 12 && b[0] == 'R' && b[1] == 'I' && b[2] == 'F' && b[3] == 'F' && b[8] == 'W' && b[9] == 'E' && b[10] == 'B' && b[11] == 'P') {
+        return img->load_webp_from_buffer(data);
+    }
+    const String lower = path.to_lower();
+    return lower.ends_with(".png") ? img->load_png_from_buffer(data)
+         : lower.ends_with(".webp") ? img->load_webp_from_buffer(data)
+         : img->load_jpg_from_buffer(data);
+}
 using namespace nlb::presentation;
 
 namespace {
@@ -407,10 +423,8 @@ Ref<Texture2D> NLBPlayer::load_texture(const String& path) {
         memcpy(data.ptrw(), bytes.data(), bytes.size());
         Ref<Image> img;
         img.instantiate();
-        const String lower = path.to_lower();
-        Error err = lower.ends_with(".png") ? img->load_png_from_buffer(data)
-                  : lower.ends_with(".webp") ? img->load_webp_from_buffer(data)
-                  : img->load_jpg_from_buffer(data);
+        // формат — по содержимому: в пакете PNG может быть сохранён как JPG под прежним именем
+        const Error err = nlbLoadImage(img, data, path);
         if (err == OK) result = ImageTexture::create_from_image(img);
     }
     m_textures[path] = result;

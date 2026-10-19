@@ -1,5 +1,6 @@
 #pragma once
 
+#include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
@@ -102,3 +103,6 @@ private:
     bool m_screenDriven = false;
     std::string m_openedPath;
 };
+
+/// Картинка из байтов: формат по содержимому (PNG, JPG, WEBP), иначе по расширению
+godot::Error nlbLoadImage(const godot::Ref<godot::Image>& img, const godot::PackedByteArray& data, const godot::String& path);
