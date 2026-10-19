@@ -14,6 +14,8 @@ class UInputAction;
 class UInputMappingContext;
 class UEnhancedInputLocalPlayerSubsystem;
 class ANLBController;
+class UNLBVRModeComponent;
+class UNLBPauseMenuWidget;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -54,6 +56,27 @@ public:
 	void SwitchToVisualNovel(); // Function to switch to visual novel mode
 	void ReturnToShooter();     // Function to return to shooter mode
 
+	/** Режим VR: тот же персонаж, но через шлем и контроллеры (Quest по Link). Выбор сохраняется
+	 *  в настройках; при запуске с ключом -vr включается сразу */
+	bool SetVRMode(bool bEnable, FString& OutError);
+	UFUNCTION(BlueprintCallable, Category = "VR")
+	bool IsVRMode() const;
+	UNLBVRModeComponent* GetVRMode() const { return VRMode; }
+
+	/** Книга: путь от каталога проекта или абсолютный (пусто — по умолчанию контроллера,
+	 *  NLBFiles/book.nlbpack). Задаётся в деталях BP_FirstPersonCharacter */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
+	FString BookPath;
+
+	/** Режим книги: VN (как экспорт в VN-INSTEAD) или STANDARD (как обычный INSTEAD:
+	 *  подложка темы, заголовок и пути над текстом). Задаётся в деталях BP_FirstPersonCharacter */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NLB")
+	bool bBookVisualNovel = true;
+
+	/** Меню паузы (Esc или P; в VR — кнопка меню левого контроллера) */
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void TogglePauseMenu();
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -63,6 +86,7 @@ protected:
 
 protected:
 	// APawn interface
+	virtual void BeginPlay() override;
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
@@ -102,6 +126,20 @@ private:
 	void Interact();
 
 	bool bIsInVisualNovelMode; // Flag to track the current mode
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VR", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UNLBVRModeComponent> VRMode;
+
+	UPROPERTY()
+	TObjectPtr<UNLBPauseMenuWidget> PauseMenu;
+
+	// Меню паузы — свой ввод, созданный в коде (Esc и P)
+	UPROPERTY()
+	TObjectPtr<UInputAction> PauseAction;
+	UPROPERTY()
+	TObjectPtr<UInputMappingContext> PauseContext;
+
+	void OnVRInteract(AActor* Target);
 
 public:	
 	// Called every frame

@@ -6,6 +6,7 @@
 #include "NLBNavigatorCharacter.h"
 #include "NLBPlayerSubsystem.h"
 #include "NLBScreenWidget.h"
+#include "NLBVRModeComponent.h"
 
 ANLBController::ANLBController()
 {
@@ -49,6 +50,10 @@ void ANLBController::LoadCurrentSet()
 		P->OnExternalGame.AddDynamic(this, &ANLBController::HandleExternalGame);
 		P->OnAchievement.AddDynamic(this, &ANLBController::HandleAchievement);
 		bBound = true;
+	}
+	if (!P->IsBookOpen())
+	{
+		UE_LOG(LogTemp, Log, TEXT("NLB: открываю книгу %s в режиме %s"), *BookPath, bVisualNovel ? TEXT("VN") : TEXT("STANDARD"));
 	}
 	if (!P->IsBookOpen() && !P->OpenBook(BookPath, bVisualNovel, ExternalGames))
 	{
@@ -104,6 +109,16 @@ void ANLBController::AddToViewport()
 	{
 		return;
 	}
+	// В VR экран окна в шлеме не виден — книга на панели перед игроком, щелчки лучом
+	if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(GetOwner()))
+	{
+		if (Character->IsVRMode())
+		{
+			Character->GetVRMode()->ShowPanel(ScreenWidget);
+			bIsVisible = true;
+			return;
+		}
+	}
 	ScreenWidget->AddToViewport();
 	ScreenWidget->SetVisibility(ESlateVisibility::Visible);
 	bIsVisible = true;
@@ -120,6 +135,13 @@ void ANLBController::AddToViewport()
 
 void ANLBController::RemoveFromParent()
 {
+	if (ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(GetOwner()))
+	{
+		if (Character->IsVRMode())
+		{
+			Character->GetVRMode()->HidePanel();
+		}
+	}
 	if (ScreenWidget)
 	{
 		ScreenWidget->RemoveFromParent();
