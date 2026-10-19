@@ -31,7 +31,6 @@ android {
             applicationId = prop("nlb.game.applicationId", "com.nlbhub.nlbgame")
             versionCode = prop("nlb.game.versionCode", "1").toInt()
             versionName = prop("nlb.game.versionName", "1.0")
-            resValue("string", "app_name", prop("nlb.game.name", "NLB Game"))
             buildConfigField("String", "NLB_ARGS", "\"" + prop("nlb.game.args").replace("\"", "\\\"") + "\"")
         }
     }

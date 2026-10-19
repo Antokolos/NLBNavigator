@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Название игры под значком. Без перевода на язык телефона — это (английское) -->
+<resources>
+    <string name="app_name">Servant of Ra</string>
+</resources>
