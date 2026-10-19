@@ -15,8 +15,11 @@
    nlb_main <книга> pack android/app/src/game/assets/book.nlbpack --with-media --theme <тема> --base-theme <базовая тема>
    ```
 3. **Параметры игры** — `android/gradle.properties`: идентификатор приложения
-   (`nlb.game.applicationId`, у каждой игры свой), название, режим книги и ключи плеера
+   (`nlb.game.applicationId`, у каждой игры свой), режим книги и ключи плеера
    (`nlb.game.args`, например `standard` или `vn --lang ru`), версия.
+   **Название под значком** — в `android/app/src/game/res/values/strings.xml` (`app_name`;
+   на английском) и в переводах `values-ru/strings.xml` и т. п.: телефон покажет название на
+   своём языке.
 4. **Значок** — свой: `android/app/src/game/res/mipmap-*/ic_launcher.png` (иначе общий).
 5. **Сборка:** откройте папку `android` в Android Studio (нужны SDK Platform 36, NDK
    29.0.14206865 и CMake 3.31 из SDK Manager) и соберите вариант `gameDebug`, или из командной
