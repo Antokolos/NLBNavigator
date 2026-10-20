@@ -157,8 +157,10 @@ private:
     /// «Дальше» (пробел, щелчок мимо ссылок): следующая строка-страница текста, следующая
     /// порция, а после последней — экран вариантов или переход по единственной тривиальной ссылке
     bool advanceText();
-    /// Порции текста (режим экрана вариантов): абзацы между пустыми строками, как paginator.delim
+    /// Порции текста (режим экрана вариантов), как экспорт в VN-INSTEAD: строка текста — порция,
+    /// длинная строка — по предложениям (больше 100 символов в порции, хвост до 330 — к последней)
     std::vector<std::vector<Paragraph>> portions() const;
+    static std::vector<std::vector<Paragraph>> portionsOf(const std::vector<Paragraph>& text);
     /// Единственный доступный вариант и он тривиальный — индекс, иначе -1
     int singleTrivialChoice() const;
     void menuAction(int index);
@@ -193,6 +195,7 @@ private:
     /// paginator INSTEAD); на страницах STANDARD — всегда варианты в тексте с прокруткой
     bool choicesMode() const { return m_choicesScreen && m_screen.layout == Layout::VisualNovel; }
     size_t m_portion = 0;            ///< текущая порция текста (режим экрана вариантов)
+    bool m_scrollByPages = false;    ///< листание страницами: последняя — без повтора прочитанного
     size_t m_voicedPortion = SIZE_MAX;  ///< порция, на которой уже запущена фраза озвучки
     bool m_voiceOnEnter = false;     ///< новая страница без порций: первая фраза — при отрисовке
     /// Действие привело на другую страницу (ответ «Изучив панно…» и сразу «Больно вам, больно!»):

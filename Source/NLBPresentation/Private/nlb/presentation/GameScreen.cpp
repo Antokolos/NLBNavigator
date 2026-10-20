@@ -135,38 +135,112 @@ void GameScreen::pull() {
     } else if (!m_screen.reactionText.empty() && flatten(before.reactionText) != flatten(m_screen.reactionText)) {
         m_reactionThenRoom = false;  // новое действие на той же странице
         // ответ на действие на той же странице — показать его (первая порция ответа)
-        size_t pagePortions = 0;
-        bool any = false;
-        for (const auto& p : m_screen.pageText) {
-            const bool blank = p.runs.empty() || std::all_of(p.runs.begin(), p.runs.end(), [](const TextRun& r) {
-                return r.text.find_first_not_of(" \t") == std::string::npos; });
-            if (blank) { if (any) { ++pagePortions; any = false; } } else any = true;
-        }
-        if (any) ++pagePortions;
-        m_portion = pagePortions;
+        m_portion = portionsOf(m_screen.pageText).size();
         m_scroll = 0;
     }
 }
 
-std::vector<std::vector<Paragraph>> GameScreen::portions() const {
-    // paginator.delim = '\n[ \t]*\n': порция — абзацы до пустой строки; ответ на действие
-    // продолжает порции страницы
-    std::vector<std::vector<Paragraph>> out;
-    std::vector<Paragraph> cur;
-    auto add = [&](const std::vector<Paragraph>& text) {
-        for (const auto& p : text) {
-            const bool blank = p.runs.empty() || std::all_of(p.runs.begin(), p.runs.end(), [](const TextRun& r) {
-                return r.text.find_first_not_of(" \t") == std::string::npos; });
-            if (blank) {
-                if (!cur.empty()) { out.push_back(cur); cur.clear(); }
-            } else {
-                cur.push_back(p);
+namespace {
+size_t codepoints(const std::string& s) {
+    size_t n = 0;
+    for (unsigned char c : s) n += (c & 0xC0) != 0x80;
+    return n;
+}
+
+/// Абзац -> порции, как экспорт в VN-INSTEAD (VNSTEADExportManager.getPreprocessedChunks):
+/// предложения (до . ? ! и закрывающих кавычек) набираются в порцию, пока она не длиннее
+/// PARAGRAPH_THRESHOLD символов; хвост, с которым последняя порция не длиннее
+/// PARAGRAPH_THRESHOLD_WARN, присоединяется к ней. Ссылки и оформление абзаца сохраняются
+std::vector<Paragraph> splitIntoPortions(const Paragraph& p) {
+    const size_t THRESHOLD = 100, THRESHOLD_WARN = 330;
+    std::string all;
+    for (const auto& r : p.runs) all += r.text;
+    // концы предложений (байтовые смещения): SENTENCE_PATTERN NLB — [^.?!]+ [.?!]+ (\")?
+    std::vector<size_t> ends;
+    for (size_t i = 0; i < all.size();) {
+        if (all[i] == '.' || all[i] == '?' || all[i] == '!') {
+            while (i < all.size() && (all[i] == '.' || all[i] == '?' || all[i] == '!')) ++i;
+            // закрывающие кавычки и скобки — к предложению: « …!» », «…?”», «….)»
+            for (bool more = true; more && i < all.size();) {
+                more = false;
+                for (const char* q : {"\"", "'", ")", "\xC2\xBB" /* » */, "\xE2\x80\x9D" /* ” */, "\xE2\x80\x9C" /* “ */}) {
+                    const size_t n = std::char_traits<char>::length(q);
+                    if (all.compare(i, n, q) == 0) { i += n; more = true; break; }
+                }
             }
+            ends.push_back(i);
+        } else {
+            ++i;
         }
-        if (!cur.empty()) { out.push_back(cur); cur.clear(); }
-    };
-    add(m_screen.pageText);
-    add(m_screen.reactionText);
+    }
+    if (ends.empty() || ends.back() != all.size()) ends.push_back(all.size());
+    // порции по алгоритму экспортёра
+    std::vector<std::pair<size_t, size_t>> chunks;  // [начало, конец)
+    size_t start = 0, prevStart = 0, prevEnd = 0;
+    bool hasPrev = false;
+    for (size_t e : ends) {
+        if (codepoints(all.substr(start, e - start)) > THRESHOLD) {
+            if (hasPrev) chunks.push_back({prevStart, prevEnd});
+            prevStart = start; prevEnd = e; hasPrev = true;
+            start = e;
+        }
+    }
+    if (hasPrev && codepoints(all.substr(prevStart, all.size() - prevStart)) <= THRESHOLD_WARN) {
+        chunks.push_back({prevStart, all.size()});
+    } else {
+        if (hasPrev) chunks.push_back({prevStart, prevEnd});
+        if (start < all.size()) chunks.push_back({start, all.size()});
+    }
+    if (chunks.size() <= 1) return {p};
+    // разрезать фрагменты абзаца по границам порций
+    std::vector<Paragraph> out;
+    for (const auto& [b, e] : chunks) {
+        Paragraph part = p;
+        part.runs.clear();
+        size_t pos = 0;
+        for (const auto& r : p.runs) {
+            const size_t rb = pos, re = pos + r.text.size();
+            pos = re;
+            const size_t from = std::max(rb, b), to = std::min(re, e);
+            if (from >= to) continue;
+            TextRun piece = r;
+            piece.text = r.text.substr(from - rb, to - from);
+            part.runs.push_back(piece);
+        }
+        // пробелы на стыке порций — прочь (paginator обрезает их у порции)
+        while (!part.runs.empty()) {
+            auto& t = part.runs.front().text;
+            t.erase(0, t.find_first_not_of(" \t"));
+            if (!t.empty()) break;
+            part.runs.erase(part.runs.begin());
+        }
+        if (!part.runs.empty()) out.push_back(part);
+    }
+    return out;
+}
+
+bool isBlankParagraph(const Paragraph& p) {
+    return p.runs.empty() || std::all_of(p.runs.begin(), p.runs.end(), [](const TextRun& r) {
+        return r.text.find_first_not_of(" \t") == std::string::npos; });
+}
+}
+
+std::vector<std::vector<Paragraph>> GameScreen::portionsOf(const std::vector<Paragraph>& text) {
+    // Как экспорт в VN-INSTEAD: каждая строка текста — отдельная порция пагинатора (перевод
+    // строки становится пустой строкой — paginator.delim), длинная строка — несколько порций по
+    // предложениям (splitIntoPortions); пустые строки только разделяют
+    std::vector<std::vector<Paragraph>> out;
+    for (const auto& p : text) {
+        if (isBlankParagraph(p)) continue;
+        for (auto& part : splitIntoPortions(p)) out.push_back({part});
+    }
+    return out;
+}
+
+std::vector<std::vector<Paragraph>> GameScreen::portions() const {
+    // ответ на действие продолжает порции страницы
+    auto out = portionsOf(m_screen.pageText);
+    for (auto& part : portionsOf(m_screen.reactionText)) out.push_back(std::move(part));
     return out;
 }
 
@@ -358,7 +432,10 @@ void GameScreen::mouseMove(float x, float y) {
 
 void GameScreen::wheel(float lines) {
     // колесо: по 3 строки за щелчок (предел прокрутки — в renderTextWindow)
-    if (m_menu == Menu::None && !m_showChoices) m_scroll = std::max(0.0f, m_scroll - lines * 3 * m_lineHeight);
+    if (m_menu == Menu::None && !m_showChoices) {
+        m_scroll = std::max(0.0f, m_scroll - lines * 3 * m_lineHeight);
+        m_scrollByPages = false;  // колесо — плавно, в пределах текста
+    }
 }
 
 void GameScreen::click(float x, float y, bool rightButton) {
@@ -398,7 +475,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
         advanceText();
         return;
     } else if (!hitSomething && m_menu == Menu::None && m_moreText && contains(m_textWindow, x, y)) {
-        m_scroll += m_pageHeight;
+        m_scroll += m_pageHeight; m_scrollByPages = true;
         return;
     } else if (!hitSomething && m_menu == Menu::None && advanceToChoices()) {
         return;
@@ -421,7 +498,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
         }
         switch (hit.kind) {
             case Hit::Kind::ScrollUp: m_scroll = std::max(0.0f, m_scroll - m_pageHeight); return;
-            case Hit::Kind::ScrollDown: m_scroll += m_pageHeight; return;
+            case Hit::Kind::ScrollDown: m_scroll += m_pageHeight; m_scrollByPages = true; return;
             case Hit::Kind::MenuButton: m_menu = Menu::Main; return;
             case Hit::Kind::Choice:
                 if (hit.index == -1) {
@@ -470,11 +547,11 @@ void GameScreen::key(Key k, int digit) {
     } else if (k == Key::Space || k == Key::Enter) {
         // пробел: следующая часть текста, а когда он дочитан — экран вариантов
         if (choicesMode() && !m_showChoices) advanceText();
-        else if (m_moreText) m_scroll += m_pageHeight;
+        else if (m_moreText) { m_scroll += m_pageHeight; m_scrollByPages = true; }
         else if (m_showChoices) m_showChoices = false;
         else advanceToChoices();
     } else if (k == Key::PageDown) {
-        m_scroll += m_pageHeight;
+        m_scroll += m_pageHeight; m_scrollByPages = true;
     } else if (k == Key::PageUp) {
         m_scroll = std::max(0.0f, m_scroll - m_pageHeight);
     } else if (k == Key::Save) {
@@ -498,7 +575,7 @@ bool GameScreen::hitCenter(const std::string& id, bool inventory, float& x, floa
 bool GameScreen::advanceText() {
     if (m_menu != Menu::None || m_showChoices) return false;
     if (m_moreText) {                       // не уместившиеся строки текущей порции
-        m_scroll += m_pageHeight;
+        m_scroll += m_pageHeight; m_scrollByPages = true;
         return true;
     }
     if (m_morePortions) {                   // следующая порция
@@ -971,7 +1048,9 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     const float lh = std::floor(m_r->fontHeight(font) * m_r->pixelScale() * window.lineHeight) / m_r->pixelScale();
     m_lineHeight = lh;
     const float pageH = std::max(lh, std::floor(r.h / lh) * lh);
-    const float maxScroll = std::max(0.0f, need - pageH);
+    // Листание страницами начинает каждую с первой не уместившейся строки и на последней не
+    // возвращается назад: её окно может быть заполнено не целиком — прочитанное не повторяется
+    const float maxScroll = std::max(0.0f, m_scrollByPages ? need - lh : need - pageH);
     m_scroll = std::min(m_scroll, maxScroll);
     m_textWindow = r;
     m_pageHeight = pageH;
