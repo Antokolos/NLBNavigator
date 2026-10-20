@@ -130,6 +130,8 @@ void GameScreen::pull() {
     if (before.pageId != m_screen.pageId) {
         m_reactionThenRoom = true;  // ответ (если есть) — перед описанием новой комнаты
         m_portion = 0;  // новая страница — текст с первой порции
+        m_voicedPortion = SIZE_MAX;  // озвучка — заново, с первой порции
+        m_voiceOnEnter = true;
     } else if (!m_screen.reactionText.empty() && flatten(before.reactionText) != flatten(m_screen.reactionText)) {
         m_reactionThenRoom = false;  // новое действие на той же странице
         // ответ на действие на той же странице — показать его (первая порция ответа)
@@ -627,6 +629,12 @@ void GameScreen::render(IScreenRenderer& r) {
     m_hits.clear();
     if (m_screen.layout == Layout::VisualNovel) renderVisualNovel();
     else renderStandard();
+    // текст без порций (стандартная тема, VN с вариантами в окне текста): озвучка — только первая
+    // фраза при входе на страницу (snd -> nextsnd NLB без пагинатора)
+    if (m_voiceOnEnter) {
+        m_voiceOnEnter = false;
+        m_session.nextVoice();
+    }
     renderOverlayMessages();
     if (m_menu != Menu::None) renderMenu();
     m_r = nullptr;
@@ -858,6 +866,12 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         if (m_portion >= parts.size()) m_portion = parts.empty() ? 0 : parts.size() - 1;
         if (!parts.empty()) portionText = parts[m_portion];
         m_morePortions = m_portion + 1 < parts.size();
+        // озвучка: каждая новая порция — следующая фраза (paginator text_page -> nextsnd)
+        if (!parts.empty() && m_portion != m_voicedPortion) {
+            m_voicedPortion = m_portion;
+            m_session.nextVoice();
+        }
+        m_voiceOnEnter = false;
     } else {
         m_morePortions = false;
     }

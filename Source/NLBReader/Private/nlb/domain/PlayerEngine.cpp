@@ -510,7 +510,7 @@ void PlayerEngine::followLink(const PlayerLink& link, bool fromPageContext) {
             std::vector<Event> kept(m_events.begin(), m_events.begin() + m_lastRenderStart);
             for (size_t i = m_lastRenderStart; i < m_events.size(); ++i) {
                 const auto k = m_events[i].kind;
-                if (k == Event::Kind::Music || k == Event::Kind::Sound) kept.push_back(m_events[i]);
+                if (k == Event::Kind::Music || k == Event::Kind::Sound || k == Event::Kind::Voice) kept.push_back(m_events[i]);
             }
             m_events.swap(kept);
         }
@@ -1137,6 +1137,7 @@ void PlayerEngine::appendMediaEvents(const std::vector<PlayerContext::OutputItem
             case OK::Image:     m_events.push_back({Event::Kind::Image, item.text}); break;
             case OK::Animation: m_events.push_back({Event::Kind::Animation, item.text, item.frames}); break;
             case OK::Sound:     m_events.push_back({Event::Kind::Sound, item.text}); break;
+            case OK::Voice:     m_events.push_back({Event::Kind::Voice, item.text}); break;
             case OK::Music:     m_events.push_back({Event::Kind::Music, item.text}); m_currentMusic = item.text; break;
             default: break;
         }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <deque>
 #include <fstream>
 #include <memory>
 #include <optional>
@@ -103,6 +104,10 @@ public:
     /// Включить язык книги (из availableLanguages) и описать сцену заново. byPlayer — выбор игрока
     /// в меню: запоминается и при следующих запусках главнее языка системы и лаунчера
     bool setLanguage(const std::string& language, bool byPlayer);
+    /// Озвучка страницы: запустить следующий файл очереди (SFX поля звука страницы, по порядку).
+    /// Вызывает экран — на каждой новой порции текста VN, в стандартной теме — при входе на
+    /// страницу. false — очередь пуста
+    bool nextVoice();
     /// Звук интерфейса (щелчок темы snd.click) — эффектом, если звук не выключен
     void playUiSound(const std::string& path);
 
@@ -124,6 +129,8 @@ private:
     uint64_t m_localRevision = 0;  ///< выбор предмета меняет вид, но не снимок движка
     std::unique_ptr<std::ofstream> m_log;  ///< журнал прохождения (setLogFile)
     std::unique_ptr<nlb::platform::PlatformBridge> m_platforms;
+    std::deque<std::string> m_voices;  ///< очередь озвучки текущей страницы
+    bool m_voicePlayed = false;        ///< на странице звучала озвучка (уход — остановить)
     std::string savedLanguage() const;  ///< выбор игрока из savesDir/settings.ini
     void applyLanguage(const std::string& language);
     std::string m_logPage;                 ///< страница, описанная в журнале последней

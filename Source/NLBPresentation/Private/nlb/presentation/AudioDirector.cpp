@@ -35,4 +35,14 @@ void AudioDirector::apply(const std::vector<PlayerEngine::Event>& events) {
     }
 }
 
+void AudioDirector::playVoice(const std::string& file) {
+    if (m_muted || file.empty()) return;
+    m_backend.stopEffects();
+    m_backend.playEffect(MediaRef{file});
+}
+
+void AudioDirector::stopVoice() {
+    m_backend.stopEffects();
+}
+
 }  // namespace nlb::presentation

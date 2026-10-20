@@ -475,7 +475,9 @@ void ModificationInterpreter::playSound(const std::string& itemId) {
     }
     std::string names, hierarchy;
     bool sfx = false;
+    bool isPage = false;
     if (Page* page = findPage(itemId)) {
+        isPage = true;
         names = page->getSoundFileName();
         hierarchy = page->getExternalHierarchy();
         sfx = page->isSoundSFX();
@@ -509,7 +511,10 @@ void ModificationInterpreter::playSound(const std::string& itemId) {
         }
         auto flag = m_mediaFlags.find(key);
         const bool isSfx = sfx || (flag != m_mediaFlags.end() && flag->second);
-        m_context.emit(isSfx ? PlayerContext::OutputKind::Sound : PlayerContext::OutputKind::Music, file);
+        // SFX страницы — в очередь озвучки (nlb:push страницы, decoratePageSound); у объектов — сразу
+        // (add_sound, decorateObjSound)
+        m_context.emit(!isSfx ? PlayerContext::OutputKind::Music
+                              : isPage ? PlayerContext::OutputKind::Voice : PlayerContext::OutputKind::Sound, file);
     }
 }
 

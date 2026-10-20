@@ -134,7 +134,7 @@ bool NLBExplorer::srPrintEvents() {
                 }
                 break;
             case Kind::Finish:      m_out << "\nКонец игры." << std::endl; break;
-            case Kind::Image: case Kind::Animation: case Kind::Sound: case Kind::Music:
+            case Kind::Image: case Kind::Animation: case Kind::Sound: case Kind::Voice: case Kind::Music:
             case Kind::ExternalGame:
                 break;
         }

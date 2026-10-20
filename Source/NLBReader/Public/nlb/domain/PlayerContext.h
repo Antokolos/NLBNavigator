@@ -33,7 +33,7 @@ public:
     /// Image/Sound — перед текстом страницы, Achievement — после.
     /// Image/Animation — картинка; Sound — звуковой эффект (SFX); Music — фоновая музыка
     /// (пустой text — остановка музыки, VOID в NLB)
-    enum class OutputKind { Text, Image, Animation, Sound, Music, Achievement, Info };
+    enum class OutputKind { Text, Image, Animation, Sound, Music, Achievement, Info, Voice };
 
     struct OutputItem {
         OutputKind kind;
