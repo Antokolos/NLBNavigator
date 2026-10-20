@@ -1194,6 +1194,9 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
     const FontRef font = fontFor(window);
     const RectF r = window.rect;
     if (panel) m_r->fillRect({r.x, r.y, r.w, r.h}, {0, 0, 0, 140});
+    // VN: под инвентарём — сплошная чёрная полоса до низа экрана, иначе подписи предметов
+    // теряются на картинке сцены
+    if (m_screen.layout == Layout::VisualNovel && !panel) m_r->fillRect({0, r.y, SCREEN_W, SCREEN_H - r.y}, {0, 0, 0, 255});
     // высота строки — как у текста (inv.fnt.height), слово — по середине строки
     const float px = m_r->pixelScale();
     const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight) / px;
@@ -1300,20 +1303,60 @@ void GameScreen::renderChoicesScreen() {
     const ScreenTheme::Window& window = m_screen.layout == Layout::VisualNovel ? m_vnTheme.text : m_standardTheme.text;
     const FontRef font{window.fontFile, window.fontSize * 1.25f};
     const float lh = m_r->lineSkip(font);
-    const float step = lh * 1.9f;
+    const float step = lh * 1.9f;  // от начала варианта до начала следующего (однострочного)
     const float panelW = SCREEN_W * 0.675f;
-    const float panelH = std::max(SCREEN_H * 0.46f, step * static_cast<float>(m_screen.choices.size()) + lh);
+    const float textWidth = panelW - 20;
+    // Вариант, не умещающийся в ширину подложки, переносится по словам; продолжение — с отступом
+    // под текстом после номера («2. »)
+    struct Entry { std::vector<std::string> lines; float indent = 0; const Choice* choice; };
+    std::vector<Entry> entries;
+    int number = 0;
+    float total = 0;
+    for (const auto& c : m_screen.choices) {
+        const std::string prefix = c.enabled ? std::to_string(++number) + ". " : "";
+        const std::string body = c.enabled ? c.text : c.altText;
+        Entry e{{}, c.enabled ? textW(font, prefix) : 0.0f, &c};
+        std::string line = prefix;
+        float lineW = textW(font, line);
+        size_t pos = 0;
+        while (pos < body.size()) {
+            size_t end = body.find(' ', pos);
+            if (end == std::string::npos) end = body.size();
+            const std::string word = body.substr(pos, end - pos);
+            const std::string sep = (line.empty() || line == prefix) ? "" : " ";
+            const float limit = e.lines.empty() ? textWidth : textWidth - e.indent;
+            const float ww = textW(font, sep + word);
+            if (lineW + ww > limit && !(line.empty() || line == prefix)) {
+                e.lines.push_back(line);
+                line = word;
+                lineW = textW(font, word);
+            } else {
+                line += sep + word;
+                lineW += ww;
+            }
+            pos = end + 1;
+        }
+        if (!line.empty()) e.lines.push_back(line);
+        if (e.lines.empty()) e.lines.push_back(prefix);
+        total += step + lh * static_cast<float>(e.lines.size() - 1);
+        entries.push_back(std::move(e));
+    }
+    const float panelH = std::max(SCREEN_H * 0.46f, total + lh);
     const RectF panel{(SCREEN_W - panelW) / 2, std::max(20.0f, (SCREEN_H - panelH) / 2 - 80), panelW, panelH};
     m_r->fillRect(panel, {0, 0, 0, 120});
     float y = panel.y + lh * 0.5f;
-    int number = 0;
-    for (const auto& c : m_screen.choices) {
-        const std::string text = c.enabled ? std::to_string(++number) + ". " + c.text : c.altText;
-        const RectF r{panel.x + 10, y, std::min(textW(font, text), panel.w - 20), lh};
+    for (const auto& e : entries) {
+        const Choice& c = *e.choice;
+        float w = 0;
+        for (size_t i = 0; i < e.lines.size(); ++i) w = std::max(w, (i ? e.indent : 0) + textW(font, e.lines[i]));
+        const RectF r{panel.x + 10, y, std::min(w, textWidth), lh * static_cast<float>(e.lines.size())};
         const bool hover = c.enabled && m_menu == Menu::None && contains(r, m_mouseX, m_mouseY);
-        m_r->drawText(font, text, !c.enabled ? window.fg : hover ? window.alink : window.link, r.x, r.y, 1.0f);
+        const Color color = !c.enabled ? window.fg : hover ? window.alink : window.link;
+        for (size_t i = 0; i < e.lines.size(); ++i) {
+            m_r->drawText(font, e.lines[i], color, r.x + (i ? e.indent : 0), y + lh * static_cast<float>(i), 1.0f);
+        }
         if (c.enabled) m_hits.push_back({r, Hit::Kind::Choice, "", c.index});
-        y += step;
+        y += step + lh * static_cast<float>(e.lines.size() - 1);
     }
 }
 
