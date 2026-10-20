@@ -68,7 +68,17 @@ void Session::afterCommand() {
     std::vector<PlayerEngine::Event> events = m_engine->takeEvents();
     if (m_director) m_director->apply(events);
     m_pending.insert(m_pending.end(), events.begin(), events.end());
+    const std::string pageBefore = m_screen.pageId;
     m_screen = m_engine->screen();
+    // Озвучка страницы (как nlb:push/nextsnd/sndout NLB, но по порядку поля звука): новые файлы
+    // озвучки — новая очередь; уход со страницы — очередь прочь, звучащая фраза — стоп
+    std::vector<std::string> voices;
+    for (const auto& e : events) if (e.kind == PlayerEngine::Event::Kind::Voice) voices.push_back(e.text);
+    if (!voices.empty() || pageBefore != m_screen.pageId) {
+        if (m_voicePlayed && m_director) m_director->stopVoice();
+        m_voicePlayed = false;
+        m_voices.assign(voices.begin(), voices.end());
+    }
     if (m_platforms) m_platforms->onCommand(events, *m_engine, m_screen.finished);
     logScreen();
 }
@@ -359,6 +369,15 @@ void Session::setPlatforms(std::unique_ptr<nlb::platform::PlatformBridge> bridge
             if (chosen != m_book->getLanguage()) setLanguage(chosen, false);
         }
     }
+}
+
+bool Session::nextVoice() {
+    if (m_voices.empty()) return false;
+    const std::string file = m_voices.front();
+    m_voices.pop_front();
+    if (m_director) m_director->playVoice(file);
+    m_voicePlayed = true;
+    return true;
 }
 
 void Session::playUiSound(const std::string& path) {

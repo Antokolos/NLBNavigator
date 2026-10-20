@@ -92,6 +92,7 @@ void NLBExplorer::printEvents() {
                 break;
             }
             case Kind::Sound:       m_out << "[SOUND: " << event.text << "]" << std::endl; break;
+            case Kind::Voice:       m_out << "[VOICE: " << event.text << "]" << std::endl; break;
             case Kind::Music:       m_out << (event.text.empty() ? std::string("[MUSIC: стоп]")
                                                                  : "[MUSIC: " + event.text + "]") << std::endl; break;
             case Kind::Achievement: m_out << "*** " << event.text << " ***" << std::endl; break;

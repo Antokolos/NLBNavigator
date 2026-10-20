@@ -24,6 +24,10 @@ public:
     /// События движка после команды игрока или тика времени
     void apply(const std::vector<PlayerEngine::Event>& events);
     void setMuted(bool muted);
+    /// Очередная фраза озвучки страницы (nextsnd NLB): прежний эффект — стоп, новый — играть
+    void playVoice(const std::string& file);
+    /// Уход со страницы с озвучкой (sndout NLB): эффекты — стоп
+    void stopVoice();
     bool muted() const { return m_muted; }
     const std::string& currentMusic() const { return m_currentMusic; }
 

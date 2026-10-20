@@ -193,6 +193,8 @@ private:
     /// paginator INSTEAD); на страницах STANDARD — всегда варианты в тексте с прокруткой
     bool choicesMode() const { return m_choicesScreen && m_screen.layout == Layout::VisualNovel; }
     size_t m_portion = 0;            ///< текущая порция текста (режим экрана вариантов)
+    size_t m_voicedPortion = SIZE_MAX;  ///< порция, на которой уже запущена фраза озвучки
+    bool m_voiceOnEnter = false;     ///< новая страница без порций: первая фраза — при отрисовке
     /// Действие привело на другую страницу (ответ «Изучив панно…» и сразу «Больно вам, больно!»):
     /// показать и ответ, и описание новой комнаты (INSTEAD показал бы только комнату)
     bool m_reactionThenRoom = false;
