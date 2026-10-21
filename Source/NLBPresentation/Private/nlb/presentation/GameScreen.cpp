@@ -5,6 +5,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <sstream>
 
 #include "nlb/util/FileUtils.h"
@@ -117,6 +118,13 @@ GameScreen::GameScreen(Session& session, Options options) : m_session(session), 
     m_vnTheme = ScreenTheme::load(m_options.baseThemeDir, m_options.themeDir, true);
     m_choicesScreen = m_options.choicesScreen;
     m_soundOn = m_options.soundAvailable;
+    // размер текста: выбор игрока (меню, settings.ini), иначе — из параметров фронтенда
+    m_textScale = m_options.textScale > 0 ? m_options.textScale : 1.0f;
+    const std::string saved = m_session.setting("textscale");
+    if (!saved.empty()) {
+        const float v = std::strtof(saved.c_str(), nullptr);
+        if (v >= 0.5f && v <= 3.0f) m_textScale = v;
+    }
     pull();
 }
 
@@ -616,6 +624,7 @@ std::vector<GameScreen::MainItem> GameScreen::mainItems() const {
     std::vector<MainItem> items{MainItem::Save, MainItem::Load, MainItem::Restart, MainItem::Sound, MainItem::Choices};
     if (m_setFullscreen) items.push_back(MainItem::Fullscreen);
     if (m_session.availableLanguages().size() > 1) items.push_back(MainItem::Language);  // язык — если есть выбор
+    items.push_back(MainItem::TextSize);
     items.push_back(MainItem::Quit);
     items.push_back(MainItem::Back);
     return items;
@@ -672,6 +681,18 @@ void GameScreen::menuAction(int index) {
                 if (m_setFullscreen) m_setFullscreen(!(m_isFullscreen && m_isFullscreen()));
                 break;
             case MainItem::Language: m_menu = Menu::Language; break;
+            case MainItem::TextSize: {
+                // 100 % -> 125 % -> … -> 200 % -> 100 %; запоминается для следующих запусков
+                static const float STEPS[] = {1.0f, 1.25f, 1.5f, 1.75f, 2.0f};
+                float next = STEPS[0];
+                for (float st : STEPS) if (st > m_textScale + 0.01f) { next = st; break; }
+                m_textScale = next;
+                char buf[16];
+                std::snprintf(buf, sizeof buf, "%.2f", next);
+                m_session.setSetting("textscale", buf);
+                m_scroll = 0;  // строки текста переразбиваются заново
+                return;        // меню остаётся открытым: видно, как меняется размер
+            }
             case MainItem::Quit: m_menu = Menu::ConfirmQuit; break;  // сначала спросить
             case MainItem::Back: m_menu = Menu::None; break;
         }
@@ -1178,8 +1199,17 @@ void GameScreen::renderVisualNovel() {
         // Каждая VN-страница экспорта вызывает vn:geom(8, 864, 1904, 184, 'dissolve', 240): окно
         // текста — полоса почти во всю ширину, а текст — внутри неё с полями по 240 px.
         // Полоса — полупрозрачная, как на экране INSTEAD (рамки fl/fr там не видны)
-        const RectF band{8, 864, 1904, 184};
-        const float wf = 240, pad = 8;  // vn.lua: textpad = 8
+        // Крупный текст (размер текста > 100 %): полоса выше в той же пропорции (строк в ней
+        // столько же) и с меньшими полями, низ — на месте, но не ниже строки инвентаря
+        float bottom = 864 + 184;
+        if (m_textScale > 1.0f && !m_screen.inventory.empty()) {  // при 100 % — ровно как vn:geom
+            const FontRef invFont = fontFor(t.inventory);
+            const float invLine = m_r->fontHeight(invFont) * t.inventory.lineHeight;
+            bottom = std::min(bottom, std::min(t.inventory.rect.y, SCREEN_H - invLine) - 2);
+        }
+        const float bandH = std::min(184 * m_textScale, SCREEN_H * 0.5f);
+        const RectF band{8, bottom - bandH, 1904, bandH};
+        const float wf = 240 / std::max(1.0f, m_textScale), pad = 8;  // vn.lua: textpad = 8
         m_r->fillRect({0, band.y, SCREEN_W, band.h + 16}, {0, 0, 0, 110});
         ScreenTheme::Window win = t.text;
         win.rect = {band.x + wf, band.y + pad, band.w - 2 * wf, band.h - 2 * pad};
@@ -1192,11 +1222,8 @@ void GameScreen::renderVisualNovel() {
 void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) {
     if (m_screen.inventory.empty()) return;
     const FontRef font = fontFor(window);
-    const RectF r = window.rect;
+    RectF r = window.rect;
     if (panel) m_r->fillRect({r.x, r.y, r.w, r.h}, {0, 0, 0, 140});
-    // VN: под инвентарём — сплошная чёрная полоса до низа экрана, иначе подписи предметов
-    // теряются на картинке сцены
-    if (m_screen.layout == Layout::VisualNovel && !panel) m_r->fillRect({0, r.y, SCREEN_W, SCREEN_H - r.y}, {0, 0, 0, 255});
     // высота строки — как у текста (inv.fnt.height), слово — по середине строки
     const float px = m_r->pixelScale();
     const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight) / px;
@@ -1223,6 +1250,14 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
         if (!m_standardTheme.inventoryHorizontal && !rows.back().empty()) { rows.emplace_back(); rowW = 0; }
         rowW += (rows.back().empty() ? 0 : gap) + it.w;
         rows.back().push_back(it);
+    }
+    // VN: под инвентарём — сплошная чёрная полоса до низа экрана, иначе подписи предметов
+    // теряются на картинке сцены. Крупный текст (размер текста) не уходит за низ экрана: строки
+    // предметов поднимаются, и полоса вместе с ними
+    if (m_screen.layout == Layout::VisualNovel && !panel) {
+        const float need = lineHeight * static_cast<float>(rows.size());
+        if (r.y + need > SCREEN_H) r.y = std::max(0.0f, SCREEN_H - need);
+        m_r->fillRect({0, r.y, SCREEN_W, SCREEN_H - r.y}, {0, 0, 0, 255});
     }
     float y = r.y;
     for (const auto& row : rows) {
@@ -1301,10 +1336,10 @@ void GameScreen::renderChoicesScreen() {
         return h.kind == Hit::Kind::Object || h.kind == Hit::Kind::Inventory;
     }), m_hits.end());
     const ScreenTheme::Window& window = m_screen.layout == Layout::VisualNovel ? m_vnTheme.text : m_standardTheme.text;
-    const FontRef font{window.fontFile, window.fontSize * 1.25f};
+    const FontRef font = scaled(FontRef{window.fontFile, window.fontSize * 1.25f});
     const float lh = m_r->lineSkip(font);
     const float step = lh * 1.9f;  // от начала варианта до начала следующего (однострочного)
-    const float panelW = SCREEN_W * 0.675f;
+    const float panelW = SCREEN_W * std::min(0.95f, 0.675f * std::max(1.0f, m_textScale * 0.8f));  // крупный текст — подложка шире
     const float textWidth = panelW - 20;
     // Вариант, не умещающийся в ширину подложки, переносится по словам; продолжение — с отступом
     // под текстом после номера («2. »)
@@ -1364,9 +1399,9 @@ void GameScreen::renderOverlayMessages() {
     if (!m_toasts.empty() && now() < m_toastUntil) {
         float y = 30;
         for (const auto& t : m_toasts) {
-            const float w = textW(m_options.uiFont, t), h = m_r->fontHeight(m_options.uiFont);
+            const float w = textW(scaled(m_options.uiFont), t), h = m_r->fontHeight(scaled(m_options.uiFont));
             m_r->fillRect({SCREEN_W - w - 70, y - 10, w + 40, h + 20}, SELECTED);
-            m_r->drawText(m_options.uiFont, t, TEXT, SCREEN_W - w - 50, y, 1.0f);
+            m_r->drawText(scaled(m_options.uiFont), t, TEXT, SCREEN_W - w - 50, y, 1.0f);
             y += h + 30;
         }
     } else {
@@ -1375,10 +1410,10 @@ void GameScreen::renderOverlayMessages() {
     if (!m_session.selectedItem().empty() && m_menu == Menu::None) {
         // подсказка — на тёмной плашке, чтобы читалась на любом фоне (светлая подложка темы, картинка)
         const std::string hint = tr(static_cast<int>(Ui::ItemSelected));
-        const float w = textW(m_options.smallFont, hint), h = m_r->fontHeight(m_options.smallFont);
+        const float w = textW(scaled(m_options.smallFont), hint), h = m_r->fontHeight(scaled(m_options.smallFont));
         const float x = 60, y = SCREEN_H - h - 12;
         m_r->fillRect({x - 14, y - 6, w + 28, h + 12}, {0, 0, 0, 190});
-        m_r->drawText(m_options.smallFont, hint, REACTION, x, y, 1.0f);
+        m_r->drawText(scaled(m_options.smallFont), hint, REACTION, x, y, 1.0f);
     }
 }
 
@@ -1411,6 +1446,9 @@ void GameScreen::renderMenu() {
                 case MainItem::Language:
                     items.push_back({T(Ui::Language) + ": " + languageName(m_session.language()), true});
                     break;
+                case MainItem::TextSize:
+                    items.push_back({T(Ui::TextSize) + ": " + std::to_string(static_cast<int>(std::lround(m_textScale * 100))) + "%", true});
+                    break;
                 case MainItem::Quit: items.push_back({T(Ui::Quit), true}); break;
                 case MainItem::Back: items.push_back({T(Ui::BackToGame), true}); break;
             }
@@ -1434,26 +1472,35 @@ void GameScreen::renderMenu() {
             items.push_back({text, m_menu == Menu::Save || (info.exists && info.compatible)});
         }
     } else {
-        const float lh = m_r->lineSkip(m_options.titleFont);
+        const float lh = m_r->lineSkip(scaled(m_options.titleFont));
         std::istringstream lines(m_message);
         std::string line;
         float y = SCREEN_H / 2 - lh;
         while (std::getline(lines, line)) {
-            const float w = textW(m_options.titleFont, line);
-            m_r->drawText(m_options.titleFont, line, TEXT, (SCREEN_W - w) / 2, y, 1.0f);
+            const float w = textW(scaled(m_options.titleFont), line);
+            m_r->drawText(scaled(m_options.titleFont), line, TEXT, (SCREEN_W - w) / 2, y, 1.0f);
             y += lh * 1.2f;
         }
         return;
     }
-    const float lh = m_r->lineSkip(m_options.uiFont) * 1.6f;
-    float y = (SCREEN_H - lh * (static_cast<float>(items.size()) + 2)) / 2;
-    const float tw = textW(m_options.titleFont, title);
-    m_r->drawText(m_options.titleFont, title, TEXT, (SCREEN_W - tw) / 2, y, 1.0f);
+    // крупный текст: меню уменьшается ровно настолько, чтобы целиком поместиться на экране
+    FontRef uiFont = scaled(m_options.uiFont), titleFont = scaled(m_options.titleFont);
+    float lh = m_r->lineSkip(uiFont) * 1.6f;
+    const float rows = static_cast<float>(items.size()) + 2;
+    if (lh * rows > SCREEN_H * 0.95f) {
+        const float k = SCREEN_H * 0.95f / (lh * rows);
+        uiFont.size *= k;
+        titleFont.size *= k;
+        lh = m_r->lineSkip(uiFont) * 1.6f;
+    }
+    float y = (SCREEN_H - lh * rows) / 2;
+    const float tw = textW(titleFont, title);
+    m_r->drawText(titleFont, title, TEXT, (SCREEN_W - tw) / 2, y, 1.0f);
     y += lh * 1.5f;
     for (size_t i = 0; i < items.size(); ++i) {
-        const float w = textW(m_options.uiFont, items[i].first);
+        const float w = textW(uiFont, items[i].first);
         const float x = (SCREEN_W - w) / 2;
-        m_r->drawText(m_options.uiFont, items[i].first, items[i].second ? LINK : DIM, x, y, 1.0f);
+        m_r->drawText(uiFont, items[i].first, items[i].second ? LINK : DIM, x, y, 1.0f);
         // индексы: в главном меню — по порядку; в слотах «Назад» — 0, слоты — 1..9
         if (items[i].second) m_hits.push_back({{x - 20, y, w + 40, lh}, Hit::Kind::Menu, "", static_cast<int>(i)});
         y += lh;

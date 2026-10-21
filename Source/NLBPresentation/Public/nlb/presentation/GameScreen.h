@@ -71,6 +71,10 @@ public:
         bool choicesScreen = false;
         bool soundAvailable = true;      ///< есть звук (пункт меню «звук»)
         FontRef uiFont{"", 32}, titleFont{"", 46}, smallFont{"", 26};  ///< шрифты меню и сообщений
+        /// Масштаб всех шрифтов экрана (текст, варианты, инвентарь, подписи, меню): 1 — как в теме.
+        /// Для маленьких экранов (телефон) — 1.25…2. Выбор игрока в меню («Размер текста»,
+        /// сохраняется в settings.ini) главнее
+        float textScale = 1.0f;
         /// Монотонное время, мс (эффекты появления, всплывающие сообщения); пусто — steady_clock
         std::function<uint64_t()> clock;
     };
@@ -164,7 +168,10 @@ private:
     /// Единственный доступный вариант и он тривиальный — индекс, иначе -1
     int singleTrivialChoice() const;
     void menuAction(int index);
-    FontRef fontFor(const ScreenTheme::Window& w) const { return FontRef{w.fontFile, w.fontSize}; }
+    FontRef fontFor(const ScreenTheme::Window& w) const { return scaled(FontRef{w.fontFile, w.fontSize}); }
+    /// Шрифт в масштабе текста (Options::textScale или выбор игрока)
+    FontRef scaled(const FontRef& f) const { return FontRef{f.file, f.size * m_textScale}; }
+    float m_textScale = 1.0f;
     float textW(const FontRef& f, const std::string& s) { return m_r->textWidth(f, s); }
     bool imageSize(const ImageRef& image, float& w, float& h);
 
@@ -179,7 +186,7 @@ private:
     std::function<void(bool)> m_setFullscreen;
     std::function<bool()> m_isFullscreen;
     /// Пункты главного меню по порядку (полный экран — только если фронтенд его умеет)
-    enum class MainItem { Save, Load, Restart, Sound, Choices, Fullscreen, Language, Quit, Back };
+    enum class MainItem { Save, Load, Restart, Sound, Choices, Fullscreen, Language, TextSize, Quit, Back };
     std::string tr(int key) const;  ///< текст интерфейса на языке книги (Localization.h, Ui)
     std::vector<MainItem> mainItems() const;
     static constexpr int NO_HOVER = -1000000;

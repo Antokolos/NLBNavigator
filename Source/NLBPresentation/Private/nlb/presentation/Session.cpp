@@ -1,6 +1,7 @@
 #include "nlb/presentation/Session.h"
 #include <algorithm>
 #include <set>
+#include <sstream>
 #include "nlb/domain/PageImpl.h"
 #include "nlb/presentation/Localization.h"
 
@@ -334,24 +335,50 @@ void Session::applyLanguage(const std::string& language) {
 }
 
 std::string Session::savedLanguage() const {
+    return setting("language");
+}
+
+std::string Session::setting(const std::string& key) const {
     if (m_options.savesDir.empty()) return "";
     std::string text;
     if (!FileUtils::readFile(FileUtils::combinePath(m_options.savesDir, "settings.ini"), text)) return "";
-    const auto p = text.find("language=");
-    if (p == std::string::npos) return "";
-    std::string v = text.substr(p + 9);
-    return v.substr(0, v.find_first_of("\r\n"));
+    std::istringstream in(text);
+    std::string line;
+    while (std::getline(in, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (line.compare(0, key.size() + 1, key + "=") == 0) return line.substr(key.size() + 1);
+    }
+    return "";
+}
+
+void Session::setSetting(const std::string& key, const std::string& value) {
+    if (m_options.savesDir.empty()) return;
+    const std::string path = FileUtils::combinePath(m_options.savesDir, "settings.ini");
+    std::string text, out;
+    FileUtils::readFile(path, text);
+    std::istringstream in(text);
+    std::string line;
+    bool done = false;
+    while (std::getline(in, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (line.empty()) continue;
+        if (line.compare(0, key.size() + 1, key + "=") == 0) {
+            if (done) continue;
+            line = key + "=" + value;
+            done = true;
+        }
+        out += line + "\n";
+    }
+    if (!done) out += key + "=" + value + "\n";
+    FileUtils::createDirectoryRecursive(m_options.savesDir);
+    std::ofstream(FileUtils::nativePath(path), std::ios::trunc) << out;
 }
 
 bool Session::setLanguage(const std::string& language, bool byPlayer) {
     if (!m_engine) return false;
     const auto langs = availableLanguages();
     if (std::find(langs.begin(), langs.end(), language) == langs.end()) return false;
-    if (byPlayer && !m_options.savesDir.empty()) {
-        FileUtils::createDirectoryRecursive(m_options.savesDir);
-        std::ofstream(FileUtils::nativePath(FileUtils::combinePath(m_options.savesDir, "settings.ini")), std::ios::trunc)
-            << "language=" << language << "\n";
-    }
+    if (byPlayer) setSetting("language", language);
     if (language == m_book->getLanguage()) return true;
     applyLanguage(language);
     m_engine->look();  // сцена заново — на новом языке

@@ -16,7 +16,8 @@
    ```
 3. **Параметры игры** — `android/gradle.properties`: идентификатор приложения
    (`nlb.game.applicationId`, у каждой игры свой), режим книги и ключи плеера
-   (`nlb.game.args`, например `standard` или `vn --lang ru`), версия.
+   (`nlb.game.args`, например `standard`, `vn --lang ru` или `vn --text-scale 1.5` — крупнее
+   текст для экрана телефона; игрок может менять размер и в меню), версия.
    **Название под значком** — в `android/app/src/game/res/values/strings.xml` (`app_name`;
    на английском) и в переводах `values-ru/strings.xml` и т. п.: телефон покажет название на
    своём языке.
