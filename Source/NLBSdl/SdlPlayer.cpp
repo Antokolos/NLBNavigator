@@ -144,6 +144,7 @@ bool SdlPlayer::init() {
     go.themeDir = m_options.themeDir;
     go.baseThemeDir = m_options.baseThemeDir;
     go.choicesScreen = m_options.choicesScreen;
+    go.textScale = m_options.textScale;
     go.soundAvailable = m_audio != nullptr;
     go.clock = [] { return static_cast<uint64_t>(SDL_GetTicks()); };
     m_screen = std::make_unique<GameScreen>(*m_session, go);

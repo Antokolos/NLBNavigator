@@ -132,6 +132,12 @@ private:
     std::deque<std::string> m_voices;  ///< очередь озвучки текущей страницы
     bool m_voicePlayed = false;        ///< на странице звучала озвучка (уход — остановить)
     std::string savedLanguage() const;  ///< выбор игрока из savesDir/settings.ini
+public:
+    /// Настройка игрока из savesDir/settings.ini (строки «ключ=значение»); пусто — нет
+    std::string setting(const std::string& key) const;
+    /// Записать настройку игрока (остальные строки файла сохраняются)
+    void setSetting(const std::string& key, const std::string& value);
+private:
     void applyLanguage(const std::string& language);
     std::string m_logPage;                 ///< страница, описанная в журнале последней
     uint64_t m_logRevision = 0;            ///< ревизия снимка, записанного последним

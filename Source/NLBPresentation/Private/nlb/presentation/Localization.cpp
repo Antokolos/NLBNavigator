@@ -38,6 +38,7 @@ const Row TEXTS[] = {
     {"Failed: ", "Не удалось: "},
     {"Item selected: click what to use it on (right button — cancel)", "Выбран предмет: щёлкните, к чему применить (правая кнопка — отмена)"},
     {"Achievement unlocked: ", "Получено достижение: "},
+    {"Text size", "Размер текста"},
 };
 static_assert(sizeof(TEXTS) / sizeof(TEXTS[0]) == static_cast<size_t>(Ui::Count_), "тексты интерфейса: по строке на ключ");
 

@@ -20,7 +20,7 @@ enum class Ui {
     Menu, SaveGame, SaveForbidden, LoadGame, Restart, SoundOff, SoundOn, SoundUnavailable,
     ChoicesScreen, ChoicesScreenVnOnly, ChoicesInText, FullscreenOff, FullscreenOn, Language,
     Quit, BackToGame, QuitQuestion, QuitYes, QuitNo, SaveToSlot, LoadFromSlot, Back, EmptySlot,
-    GameOver, ExternalGameMissing, Failed, ItemSelected, Achievement,
+    GameOver, ExternalGameMissing, Failed, ItemSelected, Achievement, TextSize,
     Count_
 };
 
