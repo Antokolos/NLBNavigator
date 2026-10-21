@@ -37,7 +37,7 @@ void NLBExplorer::explore() {
                 if (!readLine(line) || line != "1") {
                     break;
                 }
-                m_engine->restart();
+                m_engine->tryAgain();  // к снимку SNAPSHOT, если он есть, иначе сначала
                 continue;
             }
             printView(view);

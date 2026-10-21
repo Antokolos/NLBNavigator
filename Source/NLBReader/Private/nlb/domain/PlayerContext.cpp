@@ -481,34 +481,6 @@ void PlayerContext::countReset() {
     m_state.countsAtReset = m_state.counts;
 }
 
-// ============================================================================ SNAPSHOT
-
-void PlayerContext::makeSnapshot() {
-    m_snapshotVars.clear();
-    for (const auto& [name, value] : m_scope.map()) {
-        m_snapshotVars.emplace(name, value);  // копия packToken клонирует скаляр
-    }
-    m_snapshotState = m_state;
-    m_hasSnapshot = true;
-}
-
-bool PlayerContext::hasSnapshot() const {
-    return m_hasSnapshot;
-}
-
-bool PlayerContext::restoreSnapshot() {
-    if (!m_hasSnapshot) {
-        return false;
-    }
-    m_scope.map().clear();
-    for (const auto& [name, value] : m_snapshotVars) {
-        m_scope.map().emplace(name, value);
-    }
-    m_state = m_snapshotState;
-    m_goto.reset();
-    return true;
-}
-
 // ============================================================================ вывод и навигация
 
 void PlayerContext::emit(OutputKind kind, const std::string& text, int frames) {
@@ -603,7 +575,8 @@ void PlayerContext::initContainers(NonLinearBook* book) {
 //
 // Формат: одна запись на строку, поля через табуляцию (экранирование как в файле достижений).
 // Значения переменных типизированы: b:<0|1>, i:<целое>, r:<вещественное>, s:<строка>, n: (nil).
-// Записи снимка SNAPSHOT отличаются префиксом "S" у вида записи.
+// Снимок SNAPSHOT хранит PlayerEngine (запись "snapshot"); записи с префиксом "S" — снимок
+// в старом формате, при загрузке пропускаются.
 
 namespace {
 std::string encodeValue(const cparse::packToken& value) {
@@ -674,10 +647,6 @@ void PlayerContext::saveState(std::ostream& out) const {
         if (name != "true" && name != "false") vars.emplace(name, value);
     }
     writeGameState(out, "", vars, m_state);
-    if (m_hasSnapshot) {
-        writeRecord(out, {"Shas", "1"});
-        writeGameState(out, "S", m_snapshotVars, m_snapshotState);
-    }
     std::ostringstream rng;
     rng << m_rng;
     writeRecord(out, {"rng", rng.str()});
@@ -686,17 +655,15 @@ void PlayerContext::saveState(std::ostream& out) const {
 
 void PlayerContext::loadState(const std::vector<std::vector<std::string>>& records) {
     // Новое состояние с нуля: всё, что не сохранено, — как в начале игры
-    GameState state, snapState;
-    std::map<std::string, cparse::packToken> vars, snapVars;
-    bool hasSnapshot = false;
+    GameState state;
+    std::map<std::string, cparse::packToken> vars;
     for (const auto& r : records) {
         if (r.empty()) continue;
-        std::string kind = r[0];
-        const bool snap = kind.size() > 1 && kind[0] == 'S' && kind != "Shas";
-        if (kind == "Shas") { hasSnapshot = true; continue; }
-        if (snap) kind = kind.substr(1);
-        GameState& st = snap ? snapState : state;
-        auto& vs = snap ? snapVars : vars;
+        const std::string& kind = r[0];
+        // Снимок SNAPSHOT в старом формате (Shas, Svar, Slist…): он больше не используется
+        if (kind.size() > 1 && kind[0] == 'S') continue;
+        GameState& st = state;
+        auto& vs = vars;
         const std::string key = r.size() > 1 ? r[1] : std::string();
         const std::vector<std::string> rest(r.size() > 2 ? r.begin() + 2 : r.end(), r.end());
         auto toInt = [](const std::string& v) -> int64_t { try { return std::stoll(v); } catch (...) { return 0; } };
@@ -721,9 +688,7 @@ void PlayerContext::loadState(const std::vector<std::vector<std::string>>& recor
     m_scope["false"] = false;
     for (const auto& [name, value] : vars) m_scope.map().emplace(name, value);
     m_state = state;
-    m_snapshotVars = snapVars;
-    m_snapshotState = snapState;
-    m_hasSnapshot = hasSnapshot;
+    m_snapshotRequested = false;
     m_goto.reset();
     m_output.clear();
     // Переменные, появившиеся в книге после сохранения, — значения по умолчанию

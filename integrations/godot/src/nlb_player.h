@@ -62,6 +62,8 @@ public:
     godot::String get_selected_item() const;
     bool finish_external_game();
     void restart();
+    /// «Попробовать ещё раз» в конце игры: к снимку SNAPSHOT, если он есть, иначе restart()
+    void try_again();
     bool save_game(int64_t slot);
     bool load_game(int64_t slot);
     void set_muted(bool muted);

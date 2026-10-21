@@ -276,6 +276,20 @@ void Session::restart() {
     afterCommand();
 }
 
+void Session::tryAgain() {
+    if (!m_engine->hasSnapshot()) {
+        restart();
+        return;
+    }
+    if (m_platforms) m_platforms->reset();
+    logAction("Попробовать ещё раз");
+    m_logPage.clear();
+    m_logRevision = static_cast<uint64_t>(-1);
+    m_selected.clear();
+    m_engine->tryAgain();
+    afterCommand();
+}
+
 std::string Session::slotPath(int slot) const {
     return m_options.savesDir + "/slot" + std::to_string(slot) + ".sav";
 }
