@@ -1484,6 +1484,20 @@ std::vector<PlayerEngine::Event> PlayerEngine::takeEvents() {
     std::vector<Event> result;
     result.swap(m_events);
     m_lastRenderStart = 1;  // события уже отданы интерфейсу
+    // За ход звучит только последняя музыка, как в INSTEAD (set_music только запоминает дорожку,
+    // играет она после хода): при цепочке переходов через страницы без текста музыка каждой
+    // промежуточной страницы иначе успевала бы запуститься на долю секунды
+    const auto last = std::find_if(result.rbegin(), result.rend(),
+                                   [](const Event& e) { return e.kind == Event::Kind::Music; });
+    if (last != result.rend()) {
+        const Event* keep = &*last;
+        std::vector<Event> collapsed;
+        collapsed.reserve(result.size());
+        for (const Event& e : result) {
+            if (e.kind != Event::Kind::Music || &e == keep) collapsed.push_back(e);
+        }
+        result.swap(collapsed);
+    }
     return result;
 }
 
