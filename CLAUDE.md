@@ -33,7 +33,29 @@
 - Тесты — небольшие программы на `Session`/`GameScreen` с подменным рендерером/звуком; снимки
   экрана — `nlb_sdl <книга> vn --script <файл> --window 1920x1080` (`shot:`, `key:`; без `wait:`
   между нажатием и снимком — он вызывает refresh). `--log` — журнал прохождения.
-- Регрессия — эталонные снимки и сверка прохождения с INSTEAD. Тестовые книги — у владельца.
+- Регрессия — эталонные снимки и сверка прохождения с INSTEAD. Тестовые книги — ниже.
+
+## Тестовые книги — github.com/nlbproject
+Книги NLB (каталоги, полный набор картинок) и их экспорты в INSTEAD (эталон для сверки).
+**Внешние модули подключены подмодулями git** — без `--recurse-submodules` их каталоги
+`modules/` пустые, и книга играет неправильно:
+```
+git clone --recurse-submodules https://github.com/nlbproject/<книга>.git
+```
+
+| книга | что проверяет | экспорт INSTEAD |
+|---|---|---|
+| `bookU` | маленькая, внутренний подмодуль; есть сценарий прохождения и сверка с INSTEAD | — |
+| `servant-of-ra` | STANDARD, объекты и инвентарь, применение предметов | `instead-servant-of-ra` |
+| `barbarian_caves_demo` | VN, en+ru, выбор навыков объектами на старте, внешняя игра (`play_bp_*`) | `instead-barbarian_caves_demo` |
+| `wild-island-quest` | VN, en+ru, 6 внутренних модулей, инвентарь, длинные варианты | `instead-wild-island-quest` |
+| `wolfman` | en+ru, 7 внутренних модулей, проходится до конца | — |
+| `chaperonrougehub` | VN-хаб, en+ru, достижения; внешние модули в три уровня: `chaperon_filling_hub` -> `chaperon_forest_hub`, `chaperon_tutorial` (тема STANDARD) | `instead-chaperon_new` |
+| `Frontier` | большая (431 страница, 2838 картинок), ru; внешние модули `frontierwarriors`, `sabotage`, `waspsnest` | `instead-frontier` |
+| — | только экспорт, исходной книги нет | `instead-am_i_a_monster_vn` |
+
+Модули «Шапочки» и «Фронтира» лежат и отдельными репозиториями — то же содержимое, что
+приходит подмодулями.
 
 ## Решения, которые нельзя «исправлять» обратно
 - VN-порции — как `VNSTEADExportManager` (строка — порция, длинная — по предложениям 100/330);
