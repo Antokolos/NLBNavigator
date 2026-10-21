@@ -229,6 +229,8 @@ public:
     };
     /// Все ссылки страницы (включая служебные) в том порядке, в каком их строит экспорт
     std::vector<LinkInfo> linksOf(const std::string& pageId) const;
+    /// События с прошлого вызова (один ход). Музыки среди них — не больше одного события:
+    /// последнего за ход
     std::vector<Event> takeEvents();
     bool isFinished() const;
 
