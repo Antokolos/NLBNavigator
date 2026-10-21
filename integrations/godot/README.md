@@ -25,7 +25,7 @@ cmake --build build
   (абзацы из фрагментов `{kind, text, target}`), `choices`, `objects` (картинка, угол, offset, arm,
   iarm, effect, direction, шаги…), `inventory`, `selected_item`, `finished`, `external_game`;
 - `choose(i)`, `click_object(id)`, `click_item(id)` (правила INSTEAD: выбор предмета, применение,
-  осмотр), `clear_selection()`, `save_game(n)`, `load_game(n)`, `restart()`, `set_muted()`;
+  осмотр), `clear_selection()`, `save_game(n)`, `load_game(n)`, `restart()`, `try_again()` («ещё раз» в конце игры — к снимку SNAPSHOT), `set_muted()`;
 - `get_variable(name)`, `set_variable(name, value)` — состояние новеллы для мини-игр и 3D-сцен;
 - `finish_external_game()` — вернуть управление новелле;
 - `load_texture(path)` — картинка книги как `Texture2D`;

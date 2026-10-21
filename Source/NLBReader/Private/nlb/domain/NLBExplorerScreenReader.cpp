@@ -376,7 +376,7 @@ void NLBExplorer::exploreScreenReader() {
                 m_out << "1. Начать заново. 0. Выход.\nВаш выбор: " << std::flush;
                 std::string line;
                 if (!readLine(line) || line != "1") break;
-                m_engine->restart();
+                m_engine->tryAgain();  // к снимку SNAPSHOT, если он есть, иначе сначала
                 havePrevious = false;
                 continue;
             }

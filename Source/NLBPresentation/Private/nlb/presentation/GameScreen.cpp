@@ -450,7 +450,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
     if (m_menu == Menu::Message) {
         m_menu = Menu::None;
         if (m_screen.externalGame) m_session.finishExternalGame();
-        else if (m_screen.finished) m_session.restart();
+        else if (m_screen.finished) m_session.tryAgain();
         afterCommand();
         return;
     }

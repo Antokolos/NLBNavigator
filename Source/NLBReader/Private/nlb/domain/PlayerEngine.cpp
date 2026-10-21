@@ -104,10 +104,17 @@ void PlayerEngine::createState() {
     m_currentMusic.clear();
     m_preservedRoots.clear();
     m_preservedImagesShown.clear();
+    m_snapshot.clear();
 }
 
 void PlayerEngine::restart() {
+    // Новая игра — в тишине: игравшая музыка останавливается, музыка стартовой страницы
+    // (если есть) придёт следом. Иначе AudioDirector доиграл бы прежнюю дорожку
+    const bool musicPlaying = !m_currentMusic.empty();
     createState();
+    if (musicPlaying) {
+        m_events.push_back({Event::Kind::Music, ""});
+    }
     start();
 }
 
@@ -713,15 +720,7 @@ bool PlayerEngine::canSave() const {
     return m_page && !m_page->isNoSave();
 }
 
-bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
-    if (!m_page) {
-        error = "игра не начата";
-        return false;
-    }
-    if (!canSave()) {
-        error = "здесь сохраняться нельзя";
-        return false;
-    }
+void PlayerEngine::writeSave(std::ostream& out) const {
     // Подпись слота: заголовок страницы, если он показывается игроку, иначе начало текста
     std::string label = m_page->isUseCaption() ? trim(displayText(m_interpreter->expandText(m_page->getCaption()))) : "";
     if (label.empty()) {
@@ -734,6 +733,32 @@ bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
             label = label.substr(0, cut) + "…";
         }
     }
+    PlayerContext::writeSaveRecord(out, {SAVE_MAGIC, SAVE_VERSION});
+    PlayerContext::writeSaveRecord(out, {"book", m_rootBook->getTitle(), m_rootBook->getStartPoint()});
+    PlayerContext::writeSaveRecord(out, {"time", nowString()});
+    PlayerContext::writeSaveRecord(out, {"label", label});
+    PlayerContext::writeSaveRecord(out, {"page", m_page->getId()});
+    PlayerContext::writeSaveRecord(out, {"lasttext", m_interpreter->lastText()});
+    PlayerContext::writeSaveRecord(out, {"actionprev", std::to_string(m_actionCountDiffPrev)});
+    PlayerContext::writeSaveRecord(out, {"music", m_currentMusic});
+    if (m_externalGame) {
+        PlayerContext::writeSaveRecord(out, {"external", m_externalGame->name, m_externalGame->returnPageId});
+    }
+    std::vector<std::string> preserved{"preserved", ""};
+    preserved.insert(preserved.end(), m_preservedRoots.begin(), m_preservedRoots.end());
+    PlayerContext::writeSaveRecord(out, preserved);
+    m_context->saveState(out);
+}
+
+bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
+    if (!m_page) {
+        error = "игра не начата";
+        return false;
+    }
+    if (!canSave()) {
+        error = "здесь сохраняться нельзя";
+        return false;
+    }
     const std::string tmp = path + ".tmp";
     {
         std::ofstream out(FileUtils::nativePath(tmp), std::ios::binary | std::ios::trunc);
@@ -741,21 +766,11 @@ bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
             error = "не удалось создать файл " + path;
             return false;
         }
-        PlayerContext::writeSaveRecord(out, {SAVE_MAGIC, SAVE_VERSION});
-        PlayerContext::writeSaveRecord(out, {"book", m_rootBook->getTitle(), m_rootBook->getStartPoint()});
-        PlayerContext::writeSaveRecord(out, {"time", nowString()});
-        PlayerContext::writeSaveRecord(out, {"label", label});
-        PlayerContext::writeSaveRecord(out, {"page", m_page->getId()});
-        PlayerContext::writeSaveRecord(out, {"lasttext", m_interpreter->lastText()});
-        PlayerContext::writeSaveRecord(out, {"actionprev", std::to_string(m_actionCountDiffPrev)});
-        PlayerContext::writeSaveRecord(out, {"music", m_currentMusic});
-        if (m_externalGame) {
-            PlayerContext::writeSaveRecord(out, {"external", m_externalGame->name, m_externalGame->returnPageId});
+        writeSave(out);
+        // Снимок SNAPSHOT — тоже сохранение игры, целиком в одной записи
+        if (!m_snapshot.empty()) {
+            PlayerContext::writeSaveRecord(out, {"snapshot", m_snapshot});
         }
-        std::vector<std::string> preserved{"preserved", ""};
-        preserved.insert(preserved.end(), m_preservedRoots.begin(), m_preservedRoots.end());
-        PlayerContext::writeSaveRecord(out, preserved);
-        m_context->saveState(out);
         if (!out) {
             error = "ошибка записи в файл " + path;
             return false;
@@ -809,16 +824,31 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
         error = "неподдерживаемая версия сохранения: " + records[0][1];
         return false;
     }
-    std::string pageId, lastText, music;
-    std::optional<ExternalGame> external;
-    std::vector<std::string> preservedRoots;
-    int64_t actionPrev = 0;
+    std::string pageId, snapshot;
     for (const auto& r : records) {
         if (r.size() >= 3 && r[0] == "book"
             && (r[2] != m_rootBook->getStartPoint() || r[1] != m_rootBook->getTitle())) {
             error = "сохранение сделано для другой книги («" + r[1] + "»)";
             return false;
         }
+        if (r.size() >= 2 && r[0] == "page") pageId = r[1];
+        if (r.size() >= 2 && r[0] == "snapshot") snapshot = r[1];
+    }
+    if (!m_interpreter->findPage(pageId)) {
+        error = "в книге нет страницы из сохранения (" + pageId + ")";
+        return false;
+    }
+    applySave(records);
+    m_snapshot = snapshot;
+    return true;
+}
+
+void PlayerEngine::applySave(const std::vector<std::vector<std::string>>& records) {
+    std::string pageId, lastText, music;
+    std::optional<ExternalGame> external;
+    std::vector<std::string> preservedRoots;
+    int64_t actionPrev = 0;
+    for (const auto& r : records) {
         if (r.size() >= 2 && r[0] == "page") pageId = r[1];
         if (r.size() >= 2 && r[0] == "lasttext") lastText = r[1];
         if (r.size() >= 2 && r[0] == "music") music = r[1];
@@ -829,11 +859,8 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
         }
     }
     Page* page = m_interpreter->findPage(pageId);
-    if (!page) {
-        error = "в книге нет страницы из сохранения (" + pageId + ")";
-        return false;
-    }
-    // Состояние мира целиком из файла; страница — без повторного исполнения её модификаций
+    const std::string musicBefore = m_currentMusic;
+    // Состояние мира целиком из сохранения; страница — без повторного исполнения её модификаций
     m_context->loadState(records);
     m_events.clear();
     m_page = page;
@@ -847,7 +874,9 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
     m_currentMusic = music;
     m_preservedRoots = preservedRoots;
     m_preservedImagesShown.clear();  // после загрузки экран рисуется заново
-    if (!music.empty()) {
+    // Музыка — как в сохранении (снимке): в том числе тишина, если тогда ничего не играло,
+    // а сейчас играет (иначе после «ещё раз» к титулу продолжалась бы музыка финала)
+    if (!music.empty() || !musicBefore.empty()) {
         m_events.push_back({Event::Kind::Music, music});
     }
     renderPage();
@@ -859,7 +888,18 @@ bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
     } else if (isFinished()) {
         m_events.push_back({Event::Kind::Finish, ""});
     }
-    return true;
+}
+
+void PlayerEngine::tryAgain() {
+    if (m_snapshot.empty()) {
+        restart();
+        return;
+    }
+    // restore_snapshot в INSTEAD — это загрузка игры, сохранённой в момент SNAPSHOT
+    const std::string snapshot = m_snapshot;
+    std::istringstream in(snapshot);
+    applySave(PlayerContext::readSaveRecords(in));
+    m_snapshot = snapshot;
 }
 
 void PlayerEngine::finishAction(bool playerTurn) {
@@ -930,6 +970,12 @@ void PlayerEngine::settle(bool playerTurn) {
         tick = true;  // следующая итерация — прошёл ещё один тик
     }
     startPendingExternalGame();
+    // make_snapshot в INSTEAD: снимок — в конце хода, когда игра уже пришла в покой
+    if (m_context->takeSnapshotRequest()) {
+        std::ostringstream out;
+        writeSave(out);
+        m_snapshot = out.str();
+    }
     if (!m_externalGame && isFinished()) {
         m_events.push_back({Event::Kind::Finish, ""});
     }

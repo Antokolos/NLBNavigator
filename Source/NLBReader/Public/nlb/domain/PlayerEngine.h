@@ -168,6 +168,11 @@ public:
     void start(const std::string& pageId = std::string());
     /// Новая игра с начала (_try_again в VN-экспорте); прогресс достижений сохраняется
     void restart();
+    /// «Попробовать ещё раз» в конце VN-игры (_try_again в nlb.lua): вернуться к снимку
+    /// SNAPSHOT, если он сделан, иначе начать заново. Прогресс достижений сохраняется
+    void tryAgain();
+    /// Сделан снимок SNAPSHOT — tryAgain() вернётся к нему
+    bool hasSnapshot() const { return !m_snapshot.empty(); }
     /// Страница показывается по правилам VN-экспорта
     bool isVnPage(const Page* page) const;
 
@@ -347,6 +352,11 @@ private:
     /// экране, поэтому повторно выводятся только при изменении
     std::map<std::string, std::string> m_preservedImagesShown;
     std::optional<std::string> m_pendingExternalGame;
+    /// Снимок SNAPSHOT — игра целиком, записанная как сохранение (writeSave); пусто — снимка нет
+    std::string m_snapshot;
+    void writeSave(std::ostream& out) const;
+    /// Ставит игру в состояние из проверенного сохранения (или снимка) и показывает страницу
+    void applySave(const std::vector<std::vector<std::string>>& records);
     std::function<bool(const std::string&)> m_isExternalGame;
     void startPendingExternalGame();
     Placement objPlacement(const std::string& instanceId) const;
