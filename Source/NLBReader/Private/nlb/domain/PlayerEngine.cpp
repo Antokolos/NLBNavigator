@@ -108,7 +108,13 @@ void PlayerEngine::createState() {
 }
 
 void PlayerEngine::restart() {
+    // Новая игра — в тишине: игравшая музыка останавливается, музыка стартовой страницы
+    // (если есть) придёт следом. Иначе AudioDirector доиграл бы прежнюю дорожку
+    const bool musicPlaying = !m_currentMusic.empty();
     createState();
+    if (musicPlaying) {
+        m_events.push_back({Event::Kind::Music, ""});
+    }
     start();
 }
 
@@ -853,6 +859,7 @@ void PlayerEngine::applySave(const std::vector<std::vector<std::string>>& record
         }
     }
     Page* page = m_interpreter->findPage(pageId);
+    const std::string musicBefore = m_currentMusic;
     // Состояние мира целиком из сохранения; страница — без повторного исполнения её модификаций
     m_context->loadState(records);
     m_events.clear();
@@ -867,7 +874,9 @@ void PlayerEngine::applySave(const std::vector<std::vector<std::string>>& record
     m_currentMusic = music;
     m_preservedRoots = preservedRoots;
     m_preservedImagesShown.clear();  // после загрузки экран рисуется заново
-    if (!music.empty()) {
+    // Музыка — как в сохранении (снимке): в том числе тишина, если тогда ничего не играло,
+    // а сейчас играет (иначе после «ещё раз» к титулу продолжалась бы музыка финала)
+    if (!music.empty() || !musicBefore.empty()) {
         m_events.push_back({Event::Kind::Music, music});
     }
     renderPage();
