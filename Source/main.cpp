@@ -143,6 +143,10 @@ int main(int argc, char* argv[]) {
     std::string packTheme;   // pack: каталог темы игры (INSTEAD-экспорт), зашивается в пакет
     std::string packBaseTheme;  // pack: каталог базовой темы (оформление по умолчанию)
     bool sound = true;       // звук через SDL3, если плеер собран с ним
+    // Детерминированная случайность (PlayerContext::setDeterministic): k-й rnd(n) даёт
+    // (k mod n) + 1, SHUFFLE разворачивает список. Для воспроизводимых журналов (сверка с
+    // INSTEAD и Java-плеером NLB); -1 — выключено, иначе начальное значение счётчика
+    int64_t deterministicStart = -1;
     for (size_t i = 1; i < args.size(); ++i) {
         const std::string& arg = args[i];
         if (arg == "--log" && i + 1 < args.size()) {
@@ -167,6 +171,10 @@ int main(int argc, char* argv[]) {
             jpgQuality = std::atoi(args[++i].c_str());
         } else if (arg == "--no-sound") {
             sound = false;
+        } else if (arg == "--deterministic") {
+            deterministicStart = 0;
+        } else if (arg.rfind("--deterministic=", 0) == 0) {
+            deterministicStart = std::atoll(arg.c_str() + 16);
         } else if (arg == "--cache") {
             useCache = true;
         } else if (arg == "--no-cache") {
@@ -192,6 +200,8 @@ int main(int argc, char* argv[]) {
         std::cout << "  --png2jpg | --no-png2jpg - pack: convert PNG images to JPG (default: nlb.json, convertpng2jpg)" << std::endl;
         std::cout << "  --quality <1..100> - pack: JPG quality (default: nlb.json, quality)" << std::endl;
         std::cout << "  --no-sound       - do not play music and sounds" << std::endl;
+        std::cout << "  --deterministic[=<n>] - reproducible random: k-th rnd(n) gives (k mod n) + 1," << std::endl;
+        std::cout << "                     SHUFFLE reverses the list; <n> - start of the counter (default 0)" << std::endl;
         return 1;
     }
 
@@ -287,6 +297,10 @@ int main(int argc, char* argv[]) {
         const std::string exportMode = positional.size() > 2 ? positional[2] : "vn";
         settings.exportMode = (exportMode == "standard")
             ? PlayerEngine::ExportMode::Standard : PlayerEngine::ExportMode::VN;
+        if (deterministicStart >= 0) {
+            settings.deterministic = true;
+            settings.deterministicStart = deterministicStart;
+        }
         NLBExplorer explorer(book.get(), book->getStartPoint(), settings);
         explorer.setScreenReaderMode(screenReader);
         explorer.setSavesDirectory(savesDirectory(FileUtils::pathFromUtf8(nlbPath)));

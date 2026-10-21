@@ -876,7 +876,8 @@ std::string PlayerEngine::imageKey(const PlayerContext::OutputItem& image) {
 
 void PlayerEngine::emitObjectImage(const std::string& instanceId, const PlayerContext::OutputItem& image) {
     const Event::Kind kind = image.kind == PlayerContext::OutputKind::Animation ? Event::Kind::Animation : Event::Kind::Image;
-    m_events.push_back({kind, image.text, image.frames, sceneLabel(instanceId), objPosition(instanceId)});
+    // Поля по порядку: kind, text, frames, id (только у достижений), subject, position
+    m_events.push_back({kind, image.text, image.frames, std::string(), sceneLabel(instanceId), objPosition(instanceId)});
     m_shownImages[instanceId] = imageKey(image);
     m_preservedImagesShown[instanceId] = imageKey(image);
 }
