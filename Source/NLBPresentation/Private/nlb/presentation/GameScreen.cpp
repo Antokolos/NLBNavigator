@@ -979,6 +979,9 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     // описания объектов через пробел; после действия — курсивом ответ, со следующей строки
     // описания объектов (описание комнаты — только при входе: game.forcedsc = false в экспорте)
     const bool instead = m_screen.layout == Layout::Standard && !choicesMode();
+    std::pair<float, float> pictureSize{0, 0};  // картинка в окне текста (scr.gfx.mode fixed/embedded)
+    size_t pictureAt = SIZE_MAX;                // её место: абзац заголовка (fixed) или сцены (embedded)
+    bool pictureEmbedded = false;
     std::vector<Paragraph> composed;
     std::vector<Paragraph> header;  // заголовок и пути — над сценой, не прокручиваются (el_title, el_ways)
     if (instead) {
@@ -1002,6 +1005,33 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             ways.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
         }
         if (!ways.runs.empty() && !st.waysBottom) header.push_back(ways);
+        // Картинка страницы в окне текста (scr.gfx.mode, game.c INSTEAD): fixed — под заголовком,
+        // не прокручивается, ниже — пути (а без них — отступ win_spacing), затем текст; embedded —
+        // в начале текста сцены, за ней пути и сцена, всё прокручивается. Размер — с масштабом
+        // темы, вписан в ширину окна и наибольшую высоту scr.gfx.h (game_pict_scale)
+        float iw = 0, ih = 0;
+        if (st.gfxMode != ScreenTheme::GfxMode::Float && !m_screen.imageIsBackground && imageSize(m_screen.pageImage, iw, ih)) {
+            float pw = iw * st.scale, ph = ih * st.scale;
+            const float maxH = st.gfxMaxHeight >= 0 ? st.gfxMaxHeight : ph;
+            const float k = std::min({1.0f, r.w / pw, maxH / ph});
+            pictureSize = {std::floor(pw * k), std::floor(ph * k)};
+            const float spacing = std::floor(window.fontSize * m_r->pixelScale() * window.lineHeight / 2) / m_r->pixelScale();
+            const bool waysAbove = !ways.runs.empty() && !st.waysBottom;  // пути — последний абзац header
+            Paragraph place;  // место под картинку: пустой абзац её высоты
+            place.spacing = pictureSize.second + (waysAbove ? 0 : spacing);
+            if (st.gfxMode == ScreenTheme::GfxMode::Fixed) {
+                // между заголовком (с его отступом) и путями
+                pictureAt = waysAbove ? header.size() - 1 : header.size();
+                header.insert(header.begin() + static_cast<long>(pictureAt), place);
+            } else {
+                // в начале сцены, а пути — за ней
+                if (waysAbove) header.pop_back();
+                composed.push_back(place);
+                pictureAt = 0;
+                pictureEmbedded = true;
+                if (waysAbove) composed.push_back(ways);
+            }
+        }
         if (!m_screen.reactionText.empty()) {
             // ответ курсивом: строки ответа — с новой строки, а следующий ответ (другой p() в
             // экспорте) продолжает предыдущий через пробел, как stead.fmt
@@ -1048,11 +1078,24 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     const bool showCaption = !instead && !m_screen.caption.empty();
     const bool showChoices = !instead && !choicesMode();
 
-    // Заголовок и пути (INSTEAD: el_title, el_ways) — над прокручиваемой сценой, на месте
+    // Заголовок и пути (INSTEAD: el_title, el_ways) — над прокручиваемой сценой, на месте; при
+    // scr.gfx.mode = fixed между ними — картинка страницы
     if (!header.empty()) {
         m_drawTop = -1e9f;
         m_drawBottom = 1e9f;
-        const float headerH = renderParagraphs(header, r.x, r.y, r.w, font, window, true) - r.y;
+        float hy = r.y;
+        if (pictureAt != SIZE_MAX && !pictureEmbedded) {
+            const std::vector<Paragraph> above(header.begin(), header.begin() + static_cast<long>(pictureAt));
+            const std::vector<Paragraph> below(header.begin() + static_cast<long>(pictureAt) + 1, header.end());
+            hy = renderParagraphs(above, r.x, hy, r.w, font, window, true);
+            m_r->drawImage(framePath(m_screen.pageImage),
+                           {r.x + (r.w - pictureSize.first) / 2, hy, pictureSize.first, pictureSize.second}, 1.0f);
+            hy = renderParagraphs({header[pictureAt]}, r.x, hy, r.w, font, window, true);
+            hy = renderParagraphs(below, r.x, hy, r.w, font, window, true);
+        } else {
+            hy = renderParagraphs(header, r.x, hy, r.w, font, window, true);
+        }
+        const float headerH = hy - r.y;
         r.y += headerH;
         r.h = std::max(0.0f, r.h - headerH);
     }
@@ -1088,6 +1131,12 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         m_r->drawText(font, m_screen.caption, window.fg, r.x, y, 1.0f);
         y += m_r->lineSkip(font) * 1.4f;
     }
+    // scr.gfx.mode = embedded: картинка — в начале сцены, прокручивается с текстом (место под неё —
+    // первый абзац composed)
+    if (pictureEmbedded) {
+        m_r->drawImage(framePath(m_screen.pageImage),
+                       {r.x + (r.w - pictureSize.first) / 2, y, pictureSize.first, pictureSize.second}, 1.0f);
+    }
     y = renderParagraphs(firstText, r.x, y, r.w, font, window, true);
     y = renderParagraphs(secondText, r.x, y, r.w, font, window, true);
     if (showChoices) renderChoices(r.x, y, r.w, font, window, true);
@@ -1111,7 +1160,11 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             aw *= k;
             ah *= k;
         }
-        const RectF ar{r.x + r.w + 6, up ? ay : ay - ah, aw, ah};
+        // места стрелок — win.up.x/y, win.down.x/y темы (левый верхний угол; у нижней по x — как у
+        // верхней, как в INSTEAD), иначе справа от окна: вверху и внизу
+        const float tx = up ? window.upX : (window.downX >= 0 ? window.downX : window.upX);
+        const float ty = up ? window.upY : window.downY;
+        const RectF ar{tx >= 0 ? tx : r.x + r.w + 6, ty >= 0 ? ty : (up ? ay : ay - ah), aw, ah};
         if (img) m_r->drawImage(path, ar, 1.0f);
         else m_r->drawText(font, up ? "▲" : "▼", window.link, ar.x, ar.y, 1.0f);
         m_hits.push_back({{ar.x - 6, ar.y - 6, ar.w + 12, ar.h + 12}, up ? Hit::Kind::ScrollUp : Hit::Kind::ScrollDown, ""});
@@ -1149,25 +1202,31 @@ void GameScreen::renderSceneObjects(const ScreenTheme& t, bool spriteLabels, boo
 
 void GameScreen::renderStandard() {
     const ScreenTheme& t = m_standardTheme;
-    m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.background);
     float w = 0, h = 0;
-    // Фон: у страницы STANDARD без своего фона экспорт ставит bgimg = nlb:std_bg() (gfx/bg.jpg
-    // темы); если его нет — scr.gfx.bg из theme.ini. Своя картинка-фон страницы рисуется ниже
-    const std::string& bg = !t.pageBackground.empty() ? t.pageBackground : t.backgroundImage;
-    if (!bg.empty() && m_r->imageSize(bg, w, h)) {
-        m_r->drawImage(bg, t.screenArea, 1.0f);  // фон темы — на её экран (scr.w×scr.h)
-    }
-    if (imageSize(m_screen.pageImage, w, h)) {
-        RectF dst;
-        if (m_screen.imageIsBackground) {
-            dst = {0, 0, SCREEN_W, SCREEN_H};
-        } else {
-            // scr.gfx: картинка страницы в своей области, вписана и по центру (gfx.mode = float)
+    // Своя картинка-фон страницы (theme.gfx.bg экспорта) заменяет фон темы — как фон INSTEAD
+    // (themes.c): в своём размере с масштабом темы, по центру экрана темы, вокруг — цвет рамки
+    const bool pageBackground = m_screen.imageIsBackground && imageSize(m_screen.pageImage, w, h);
+    // вне экрана темы (scr.w×scr.h, вписан в 1920×1080) — цвет рамки scr.col.brd
+    m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.border);
+    m_r->fillRect(t.screenArea, pageBackground ? t.border : t.background);
+    if (pageBackground) {
+        const RectF a = t.screenArea;
+        const float bw = w * t.scale, bh = h * t.scale;
+        m_r->drawImage(framePath(m_screen.pageImage), {a.x + (a.w - bw) / 2, a.y + (a.h - bh) / 2, bw, bh}, 1.0f);
+    } else {
+        // Фон: у страницы STANDARD без своего фона экспорт ставит bgimg = nlb:std_bg() (gfx/bg.jpg
+        // темы); если его нет — scr.gfx.bg из theme.ini
+        const std::string& bg = !t.pageBackground.empty() ? t.pageBackground : t.backgroundImage;
+        if (!bg.empty() && m_r->imageSize(bg, w, h)) {
+            m_r->drawImage(bg, t.screenArea, 1.0f);  // фон темы — на её экран (scr.w×scr.h)
+        }
+        // scr.gfx.mode = float: картинка страницы в своей области scr.gfx, вписана и по центру;
+        // fixed и embedded — в окне текста (renderTextWindow)
+        if (t.gfxMode == ScreenTheme::GfxMode::Float && imageSize(m_screen.pageImage, w, h)) {
             const RectF a = t.pictureArea;
             const float k = std::min(a.w / w, a.h / h);
-            dst = {a.x + (a.w - w * k) / 2, a.y + (a.h - h * k) / 2, w * k, h * k};
+            m_r->drawImage(framePath(m_screen.pageImage), {a.x + (a.w - w * k) / 2, a.y + (a.h - h * k) / 2, w * k, h * k}, 1.0f);
         }
-        m_r->drawImage(framePath(m_screen.pageImage), dst, 1.0f);
     }
     renderSceneObjects(t, false, false);
     if (m_showChoices) {
@@ -1182,7 +1241,8 @@ void GameScreen::renderStandard() {
 
 void GameScreen::renderVisualNovel() {
     const ScreenTheme& t = m_vnTheme;
-    m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.background);
+    m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.border);
+    m_r->fillRect(t.screenArea, t.background);
     float w = 0, h = 0;
     if (imageSize(m_screen.pageImage, w, h)) m_r->drawImage(framePath(m_screen.pageImage), {0, 0, SCREEN_W, SCREEN_H}, 1.0f);
     // На экране вариантов объектов нет — как в INSTEAD, где на время выбора остаются только фон и кнопка меню
