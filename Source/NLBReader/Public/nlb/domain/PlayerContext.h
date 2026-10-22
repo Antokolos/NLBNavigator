@@ -119,7 +119,7 @@ public:
     }
 
     // ------------------------------------------------------------------ достижения
-    /// Достижения переживают SNAPSHOT/restore (в INSTEAD они в prefs, а не в сохранении игры).
+    /// Достижения переживают снимок SNAPSHOT и загрузку (в INSTEAD они в prefs, а не в сохранении игры).
     void setAchievementMax(const std::string& name, int max);
     /// nlb.lua setAchievement: прогресс = число РАЗНЫХ modificationId.
     /// При первом получении печатает "Получено достижение: NAME"; проверяет perfect game.
@@ -139,10 +139,11 @@ public:
     void countReset();
 
     // ------------------------------------------------------------------ SNAPSHOT
-    void makeSnapshot();
-    bool hasSnapshot() const;
-    /// Восстанавливает игровое состояние; достижения и очередь вывода не трогает
-    bool restoreSnapshot();
+    /// SNAPSHOT: как make_snapshot в INSTEAD, снимок всей игры (то же, что сохранение) делается
+    /// в конце хода — его делает PlayerEngine, забирая запрос takeSnapshotRequest()
+    void makeSnapshot() { m_snapshotRequested = true; }
+    /// Был ли с прошлого вызова исполнен SNAPSHOT
+    bool takeSnapshotRequest() { const bool r = m_snapshotRequested; m_snapshotRequested = false; return r; }
 
     // ------------------------------------------------------------------ вывод
     void emit(OutputKind kind, const std::string& text, int frames = 0);
@@ -166,7 +167,7 @@ public:
 
     // ------------------------------------------------------------------ сохранение игры
     /// Записывает игровое состояние (переменные, списки, инвентарь, контейнеры, клоны, теги,
-    /// счётчики, историю, снимок SNAPSHOT, состояние генератора случайных чисел) построчно в
+    /// счётчики, историю, состояние генератора случайных чисел) построчно в
     /// текстовом формате. Достижения не входят: как и в INSTEAD, они живут отдельно (prefs)
     void saveState(std::ostream& out) const;
     /// Читает строки, записанные saveState (остальные строки пропускает). Текущее состояние
@@ -188,7 +189,7 @@ public:
     }
 
 private:
-    /// Игровое состояние, которое сохраняет SNAPSHOT
+    /// Игровое состояние (без переменных) — то, что попадает в сохранение
     struct GameState {
         std::map<std::string, std::deque<std::string>> lists;
         std::vector<std::string> inventory;
@@ -216,10 +217,8 @@ private:
     cparse::TokenMap m_scope;
     GameState m_state;
 
-    // Снимок: переменные копируются поэлементно (TokenMap имеет ссылочную семантику)
-    bool m_hasSnapshot = false;
-    std::map<std::string, cparse::packToken> m_snapshotVars;
-    GameState m_snapshotState;
+    /// SNAPSHOT исполнен: снимок игры сделает PlayerEngine в конце хода
+    bool m_snapshotRequested = false;
 
     // Достижения (вне снимка)
     std::map<std::string, std::set<std::string>> m_achievementIds;

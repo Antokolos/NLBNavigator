@@ -91,6 +91,8 @@ public:
     std::vector<PlayerEngine::Event> takeEvents();
     bool finishExternalGame();
     void restart();
+    /// «Попробовать ещё раз» в конце игры: к снимку SNAPSHOT, если он есть, иначе restart()
+    void tryAgain();
     bool save(int slot, std::string& error);
     bool load(int slot, std::string& error);
     PlayerEngine::SaveInfo saveInfo(int slot) const;

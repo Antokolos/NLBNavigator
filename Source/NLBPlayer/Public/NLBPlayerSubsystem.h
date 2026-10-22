@@ -125,6 +125,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NLB") void ClearSelection();
     UFUNCTION(BlueprintCallable, Category = "NLB") bool FinishExternalGame();
     UFUNCTION(BlueprintCallable, Category = "NLB") void Restart();
+    /// «Попробовать ещё раз» в конце игры: к снимку SNAPSHOT, если он есть, иначе Restart()
+    UFUNCTION(BlueprintCallable, Category = "NLB") void TryAgain();
     UFUNCTION(BlueprintCallable, Category = "NLB") bool SaveGame(int32 Slot);
     UFUNCTION(BlueprintCallable, Category = "NLB") bool LoadGame(int32 Slot);
     UFUNCTION(BlueprintCallable, Category = "NLB") void SetMuted(bool bMuted);

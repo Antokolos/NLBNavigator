@@ -146,6 +146,7 @@ void NLBPlayer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_selected_item"), &NLBPlayer::get_selected_item);
     ClassDB::bind_method(D_METHOD("finish_external_game"), &NLBPlayer::finish_external_game);
     ClassDB::bind_method(D_METHOD("restart"), &NLBPlayer::restart);
+    ClassDB::bind_method(D_METHOD("try_again"), &NLBPlayer::try_again);
     ClassDB::bind_method(D_METHOD("save_game", "slot"), &NLBPlayer::save_game);
     ClassDB::bind_method(D_METHOD("load_game", "slot"), &NLBPlayer::load_game);
     ClassDB::bind_method(D_METHOD("set_muted", "muted"), &NLBPlayer::set_muted);
@@ -379,6 +380,12 @@ String NLBPlayer::get_selected_item() const { return m_session ? s(m_session->se
 void NLBPlayer::restart() {
     if (!m_session) return;
     m_session->restart();
+    emitEvents();
+}
+
+void NLBPlayer::try_again() {
+    if (!m_session) return;
+    m_session->tryAgain();
     emitEvents();
 }
 

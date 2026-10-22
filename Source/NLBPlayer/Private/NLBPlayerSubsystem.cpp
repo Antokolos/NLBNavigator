@@ -254,6 +254,7 @@ bool UNLBPlayerSubsystem::FinishExternalGame() { NLB_COMMAND(Session->finishExte
 
 void UNLBPlayerSubsystem::ClearSelection() { if (Session) { Session->clearSelection(); EmitEvents(); } }
 void UNLBPlayerSubsystem::Restart() { if (Session) { Session->restart(); EmitEvents(); } }
+void UNLBPlayerSubsystem::TryAgain() { if (Session) { Session->tryAgain(); EmitEvents(); } }
 void UNLBPlayerSubsystem::SetMuted(bool bMuted) { if (Session) Session->setMuted(bMuted); }
 void UNLBPlayerSubsystem::SetAudioPaused(bool bPaused) { if (Audio) Audio->SetPaused(bPaused); }
 
