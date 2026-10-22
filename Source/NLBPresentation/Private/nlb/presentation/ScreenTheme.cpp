@@ -149,6 +149,16 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
     auto col = [&](const std::string& key, Color& c) { if (has(key)) c = color(str(key), c); };
 
     col("scr.col.bg", t.background);
+    col("scr.col.brd", t.border);
+    if (has("scr.gfx.mode")) {
+        // fixed, embedded, float (у float — и выравнивание через «-»: float-top-left)
+        std::string mode = str("scr.gfx.mode");
+        std::transform(mode.begin(), mode.end(), mode.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        mode = mode.substr(0, mode.find('-'));
+        if (mode == "fixed") t.gfxMode = GfxMode::Fixed;
+        else if (mode == "embedded") t.gfxMode = GfxMode::Embedded;
+        else if (mode == "float") t.gfxMode = GfxMode::Float;
+    }
     if (has("scr.gfx.bg")) {
         const std::string bg = str("scr.gfx.bg");
         if (bg.rfind("box:", 0) == 0) {
@@ -160,12 +170,20 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
     }
     posX("scr.gfx.x", t.pictureArea.x); posY("scr.gfx.y", t.pictureArea.y);
     len("scr.gfx.w", t.pictureArea.w); len("scr.gfx.h", t.pictureArea.h);
+    len("scr.gfx.h", t.gfxMaxHeight);  // -1 (без предела) не меняет значение по умолчанию
     for (auto [prefix, w] : {std::pair<std::string, Window*>{"win", &t.text}, {"inv", &t.inventory}}) {
         posX(prefix + ".x", w->rect.x); posY(prefix + ".y", w->rect.y);
         len(prefix + ".w", w->rect.w); len(prefix + ".h", w->rect.h);
         col(prefix + ".col.fg", w->fg); col(prefix + ".col.link", w->link); col(prefix + ".col.alink", w->alink);
         len(prefix + ".fnt.size", w->fontSize);
         num(prefix + ".fnt.height", w->lineHeight);
+        // места стрелок: -1 в theme.ini — по умолчанию
+        auto arrowPos = [&](const std::string& key, float& v, bool isX) {
+            float r;
+            if (raw(key, r) && r >= 0) v = (isX ? ox : oy) + r * k;
+        };
+        arrowPos(prefix + ".up.x", w->upX, true); arrowPos(prefix + ".up.y", w->upY, false);
+        arrowPos(prefix + ".down.x", w->downX, true); arrowPos(prefix + ".down.y", w->downY, false);
         if (has(prefix + ".gfx.up")) w->upImage = path(prefix + ".gfx.up", str(prefix + ".gfx.up"));
         if (has(prefix + ".gfx.down")) w->downImage = path(prefix + ".gfx.down", str(prefix + ".gfx.down"));
         if (has(prefix + ".fnt.name")) {

@@ -34,9 +34,18 @@ struct ScreenTheme {
         std::string upImage, downImage;  ///< gfx.up / gfx.down — стрелки прокрутки
         std::string fontItalicFile;  ///< курсив: третий вариант из fnt.name «{обычный,жирный,курсив,…}»
         std::string fontBoldFile;    ///< полужирный: второй вариант (заголовок комнаты в INSTEAD)
+        /// win.up.x/y, win.down.x/y (inv.…): левый верхний угол стрелок листания на экране
+        /// 1920×1080; -1 — по умолчанию (справа от окна: вверху и внизу)
+        float upX = -1, upY = -1, downX = -1, downY = -1;
     };
     float screenW = 1920, screenH = 1080;
     Color background{0x01, 0x13, 0x22, 255};
+    Color border{0, 0, 0, 255};       ///< scr.col.brd: вокруг экрана темы и вокруг фона меньше экрана
+    /// scr.gfx.mode (game.c INSTEAD): Float — картинка страницы STANDARD в области scr.gfx (pictureArea);
+    /// Fixed — в окне текста под заголовком, не прокручивается; Embedded — в тексте сцены, прокручивается
+    enum class GfxMode { Float, Fixed, Embedded };
+    GfxMode gfxMode = GfxMode::Float;
+    float gfxMaxHeight = -1;          ///< scr.gfx.h для Fixed/Embedded: наибольшая высота картинки; -1 — без предела
     std::string backgroundImage;      ///< scr.gfx.bg, если это картинка (а не box:…)
     /// Фон страниц STANDARD: экспорт задаёт каждой такой странице bgimg = nlb:std_bg() —
     /// gfx/bg.jpg активной темы (темы игры, иначе базовой), если у страницы нет своего фона.
