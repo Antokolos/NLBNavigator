@@ -1015,14 +1015,14 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             const float maxH = st.gfxMaxHeight >= 0 ? st.gfxMaxHeight : ph;
             const float k = std::min({1.0f, r.w / pw, maxH / ph});
             pictureSize = {std::floor(pw * k), std::floor(ph * k)};
-            const float spacing = std::floor(window.fontSize * m_r->pixelScale() * window.lineHeight / 2) / m_r->pixelScale();
+            const float spacing = std::floor(font.size * m_r->pixelScale() * window.lineHeight / 2) / m_r->pixelScale();  // font — с размером текста
             const bool waysAbove = !ways.runs.empty() && !st.waysBottom;  // пути — последний абзац header
             Paragraph place;  // место под картинку: пустой абзац её высоты
             place.spacing = pictureSize.second + (waysAbove ? 0 : spacing);
             if (st.gfxMode == ScreenTheme::GfxMode::Fixed) {
                 // между заголовком (с его отступом) и путями
                 pictureAt = waysAbove ? header.size() - 1 : header.size();
-                header.insert(header.begin() + static_cast<long>(pictureAt), place);
+                header.insert(header.begin() + static_cast<std::ptrdiff_t>(pictureAt), place);
             } else {
                 // в начале сцены, а пути — за ней
                 if (waysAbove) header.pop_back();
@@ -1085,8 +1085,8 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
         m_drawBottom = 1e9f;
         float hy = r.y;
         if (pictureAt != SIZE_MAX && !pictureEmbedded) {
-            const std::vector<Paragraph> above(header.begin(), header.begin() + static_cast<long>(pictureAt));
-            const std::vector<Paragraph> below(header.begin() + static_cast<long>(pictureAt) + 1, header.end());
+            const std::vector<Paragraph> above(header.begin(), header.begin() + static_cast<std::ptrdiff_t>(pictureAt));
+            const std::vector<Paragraph> below(header.begin() + static_cast<std::ptrdiff_t>(pictureAt) + 1, header.end());
             hy = renderParagraphs(above, r.x, hy, r.w, font, window, true);
             m_r->drawImage(framePath(m_screen.pageImage),
                            {r.x + (r.w - pictureSize.first) / 2, hy, pictureSize.first, pictureSize.second}, 1.0f);
