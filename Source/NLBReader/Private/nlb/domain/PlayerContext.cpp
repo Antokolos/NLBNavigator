@@ -562,7 +562,12 @@ void PlayerContext::initContainers(NonLinearBook* book) {
         for (const auto& containedId : obj->getContainedObjIds()) {
             containerAdd(objId, containedId);
         }
-        // Страховка: объект знает свой контейнер, даже если список владельца его не содержит
+    }
+    // Страховка: объект знает свой контейнер, даже если список владельца его не содержит.
+    // Отдельным проходом, после всех списков content: иначе объект, чей id меньше id его
+    // контейнера, попадал в контейнер раньше списка и порядок содержимого ломался
+    // (руки и фон боя «Фронтира» шли не в том порядке, что в экспорте)
+    for (const auto& [objId, obj] : book->getObjs()) {
         const std::string containerId = obj->getContainerId();
         if (!containerId.empty() && !containerHas(containerId, objId)) {
             containerAdd(containerId, objId);
