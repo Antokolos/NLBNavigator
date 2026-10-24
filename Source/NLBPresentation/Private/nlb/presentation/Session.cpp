@@ -205,10 +205,15 @@ bool Session::choose(int choiceIndex) {
 }
 
 bool Session::clickObject(const std::string& objectId) {
+    // при выбранном предмете щелчок по menu INSTEAD игнорирует (game.c: ссылка menu — act,
+    // в режиме use она не срабатывает), выбор остаётся
+    const bool ignored = !m_selected.empty() && m_engine->isMenuItem(objectId);
     if (m_log) {
         const std::string obj = labelOf(m_screen.sceneObjects, objectId);
-        logAction(m_selected.empty() ? obj : labelOf(m_screen.inventory, m_selected) + " → " + obj);
+        logAction(m_selected.empty() ? obj : labelOf(m_screen.inventory, m_selected) + " → " + obj
+                                                 + (ignored ? " (не применяется)" : ""));
     }
+    if (ignored) return false;
     bool ok;
     if (!m_selected.empty()) {
         ok = m_engine->use(m_selected, objectId);
@@ -222,8 +227,13 @@ bool Session::clickObject(const std::string& objectId) {
 
 bool Session::clickItem(const std::string& itemId) {
     // menu (кнопки боя «Фронтира» и т. п.) срабатывает с первого щелчка, как в INSTEAD
-    // (iface.xref: у menu — команда act); применить к нему ничего нельзя — выбор сбрасывается
+    // (iface.xref: у menu — команда act); при выбранном предмете щелчок по нему INSTEAD
+    // игнорирует (game.c: в режиме use ссылка act не срабатывает), выбор остаётся
     const bool menu = m_engine->isMenuItem(itemId);
+    if (menu && !m_selected.empty()) {
+        if (m_log) logAction(labelOf(m_screen.inventory, m_selected) + " → " + labelOf(m_screen.inventory, itemId) + " (не применяется)");
+        return false;
+    }
     if (m_log) {
         const std::string item = labelOf(m_screen.inventory, itemId);
         if (menu) logAction(item);
