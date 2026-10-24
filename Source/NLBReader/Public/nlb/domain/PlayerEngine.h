@@ -343,6 +343,14 @@ private:
     void captureStyle(const std::string& info);
     nlb::presentation::ImageRef imageRefFor(const std::string& itemId, bool animated, bool looped) const;
     std::vector<nlb::presentation::TextRun> textRuns(const std::string& text, const std::string& objectId) const;
+    /// Картинка объекта в его описании (тема STANDARD, картинка «в сцене», не графический объект)
+    nlb::presentation::ImageRef textImage(const std::string& instanceId) const;
+    /// Чьи описания выводит сцена STANDARD, по порядку (STEAD obj_look): объект, затем его
+    /// содержимое; объект, положенный в несколько контейнеров (addf без unique), — в каждом
+    void describedObjects(const std::string& ownerId, std::vector<std::string>& result, int depth) const;
+    /// Описания объектов сцены STANDARD: через пробел (stead.par), «^» и переводы строк — новый
+    /// абзац (пустая строка — пустой абзац); пробелы по краям абзаца отбрасываются
+    std::vector<nlb::presentation::Paragraph> objectsText(const std::vector<std::string>& described) const;
     /// Сохраняемые (preserved) графические объекты, которые VN-движок INSTEAD оставляет на экране
     /// при смене страниц: кнопки «Навыки»/«Инвентарь», свитки. Корни, в порядке появления
     std::vector<std::string> m_preservedRoots;

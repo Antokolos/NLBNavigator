@@ -1251,6 +1251,62 @@ void PlayerEngine::collectSceneObjects(const std::string& ownerId, std::vector<s
     }
 }
 
+namespace {
+std::vector<std::string> splitLines(const std::string& text);
+}
+
+void PlayerEngine::describedObjects(const std::string& ownerId, std::vector<std::string>& result, int depth) const {
+    if (depth > 32) return;  // защита от циклической вложенности
+    for (const auto& instanceId : m_context->containerContents(ownerId)) {
+        if (!m_interpreter->isObjEnabled(instanceId)) continue;  // выключенный скрывает и содержимое
+        result.push_back(instanceId);
+        if (!m_context->isCollapsed(instanceId)) describedObjects(instanceId, result, depth + 1);
+    }
+}
+
+std::vector<nlb::presentation::Paragraph> PlayerEngine::objectsText(const std::vector<std::string>& described) const {
+    using nlb::presentation::Paragraph;
+    using nlb::presentation::TextRun;
+    std::vector<Paragraph> result;
+    bool started = false;
+    for (const auto& instanceId : described) {
+        const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+        if (!obj || obj->isSuppressDsc()) continue;
+        // без displayText: она срезает хвостовые переводы строк, а «^» в конце описания — перевод
+        // строки (у рук в бою «Фронтира» описание — один «^»); экспорт и переводы строк текста
+        // книги выводит как «^»
+        std::string dsc = m_interpreter->objDscF(instanceId);
+        std::replace(dsc.begin(), dsc.end(), '^', '\n');
+        if (dsc.empty()) continue;
+        if (!started) result.emplace_back();
+        else result.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
+        started = true;
+        bool first = true;
+        for (const auto& line : splitLines(dsc)) {
+            if (!first) result.emplace_back();
+            first = false;
+            for (auto& r : textRuns(line, instanceId)) result.back().runs.push_back(std::move(r));
+        }
+    }
+    const auto blank = [](const TextRun& r) {
+        return r.kind == TextRun::Kind::Plain && r.text.find_first_not_of(" \t") == std::string::npos;
+    };
+    for (auto& p : result) {
+        auto& runs = p.runs;
+        while (!runs.empty() && blank(runs.front())) runs.erase(runs.begin());
+        while (!runs.empty() && blank(runs.back())) runs.pop_back();
+        if (!runs.empty() && runs.front().kind == TextRun::Kind::Plain) {
+            runs.front().text.erase(0, runs.front().text.find_first_not_of(" \t"));
+        }
+        if (!runs.empty() && runs.back().kind == TextRun::Kind::Plain) {
+            runs.back().text.erase(runs.back().text.find_last_not_of(" \t") + 1);
+        }
+    }
+    // перевод строки в конце последнего описания пустой строки не даёт
+    while (!result.empty() && result.back().runs.empty()) result.pop_back();
+    return result;
+}
+
 std::vector<std::string> PlayerEngine::inventoryObjects() const {
     std::vector<std::string> result;
     for (const auto& instanceId : m_context->inventory()) {
@@ -1643,9 +1699,21 @@ nlb::presentation::ImageRef PlayerEngine::imageRefFor(const std::string& itemId,
     return ref;
 }
 
+nlb::presentation::ImageRef PlayerEngine::textImage(const std::string& instanceId) const {
+    // decorateObjText: {"..s.imgv(s).."метка}; анимация — кадр time % N + 1, по кругу
+    const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+    if (!obj || obj->isGraphical() || !obj->isImageInScene() || obj->getImageFileName().empty()
+        || m_rootBook->isSuppressMedia() || (m_page && isVnPage(m_page))) {
+        return {};
+    }
+    return imageRefFor(instanceId, obj->isAnimatedImage(), true);
+}
+
 std::vector<nlb::presentation::TextRun> PlayerEngine::textRuns(const std::string& text, const std::string& objectId) const {
-    // {метка} в описании объекта — ссылка на объект; в остальном тексте метки становятся текстом
+    // {метка} в описании объекта — ссылка на объект (с картинкой объекта, если она есть: тогда и
+    // пустая метка {} — ссылка-картинка); в остальном тексте метки становятся текстом
     std::vector<nlb::presentation::TextRun> runs;
+    const nlb::presentation::ImageRef image = objectId.empty() ? nlb::presentation::ImageRef{} : textImage(objectId);
     size_t pos = 0;
     while (pos < text.size()) {
         const size_t open = text.find('{', pos);
@@ -1656,7 +1724,7 @@ std::vector<nlb::presentation::TextRun> PlayerEngine::textRuns(const std::string
         }
         if (open > pos) runs.push_back({nlb::presentation::TextRun::Kind::Plain, text.substr(pos, open - pos), ""});
         const std::string label = text.substr(open + 1, close - open - 1);
-        if (!label.empty()) {
+        if (!label.empty() || !image.empty()) {
             // Метка в тексте ответа или модификаций (PDSCS выводит описания вложенных объектов:
             // «Красная Шапочка может {открыть шкаф}») — ссылка на объект сцены с этой меткой
             std::string target = objectId;
@@ -1666,7 +1734,7 @@ std::vector<nlb::presentation::TextRun> PlayerEngine::textRuns(const std::string
                 }
             }
             runs.push_back({target.empty() ? nlb::presentation::TextRun::Kind::Plain : nlb::presentation::TextRun::Kind::ObjectLink,
-                            label, target});
+                            label, target, image});
         }
         pos = close + 1;
     }
@@ -1715,20 +1783,10 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
             if (!obj || obj->isSuppressDsc()) continue;
             const std::string dsc = displayText(m_interpreter->objDscF(instanceId));
             if (!trim(dsc).empty()) addParagraphs(m.pageText, dsc, instanceId);
-            // STEAD: описания объектов идут одним абзацем через пробел (stead.fmt: переводы
-            // строк внутри строки — тоже пробел)
-            if (!trim(dsc).empty()) {
-                if (m.objectsText.empty()) m.objectsText.emplace_back();
-                auto& runs = m.objectsText.back().runs;
-                if (!runs.empty()) runs.push_back({nlb::presentation::TextRun::Kind::Plain, " ", ""});
-                for (const auto& line : splitLines(dsc)) {
-                    if (trim(line).empty()) continue;
-                    for (auto& r : textRuns(trim(line), instanceId)) runs.push_back(std::move(r));
-                    runs.push_back({nlb::presentation::TextRun::Kind::Plain, " ", ""});
-                }
-                if (!runs.empty() && runs.back().text == " ") runs.pop_back();
-            }
         }
+        std::vector<std::string> described;
+        describedObjects(page->getId(), described, 0);
+        m.objectsText = objectsText(described);
     }
     for (const auto& text : m_pageModText) addParagraphs(m.pageText, text, "");
     for (const auto& text : m_pageModText) addParagraphs(m.modText, text, "");
