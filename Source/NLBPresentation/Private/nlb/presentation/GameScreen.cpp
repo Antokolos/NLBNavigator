@@ -801,15 +801,23 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
     const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
     // glued — слово продолжает предыдущее без пробела («{кран}, испачканный»: запятая сразу за
     // ссылкой) — между ними не добавляется промежуток выравнивания
-    struct Word { std::string text; float w; TextRun::Kind kind; std::string target; bool glued = false; };
+    // Картинка объекта в тексте (img() в {..} экспорта STEAD) — «слово» шириной в картинку; строка
+    // с ней — высотой в самую высокую картинку, текст и картинки — по её середине, как в INSTEAD
+    struct Word {
+        std::string text; float w; TextRun::Kind kind; std::string target; bool glued = false;
+        ImageRef image; float imageW = 0, imageH = 0;
+    };
     // Строка выводится целиком: с выравниванием (win.align; по умолчанию INSTEAD — по ширине;
     // у абзаца «по центру» — по центру, как заголовок и пути в INSTEAD)
     auto flush = [&](std::vector<Word>& line, bool lastInParagraph, const Paragraph& p, const FontRef& pf) {
         if (line.empty()) return;
         // хвостовой пробел последнего слова в ширину строки не входит
-        float total = 0;
-        for (auto& w : line) total += w.w;
-        const float trailing = textW(pf, " ") * (line.back().text.back() == ' ' ? 1 : 0);
+        float total = 0, lineH = lineHeight;
+        for (auto& w : line) {
+            total += w.w;
+            lineH = std::max(lineH, w.imageH);
+        }
+        const float trailing = textW(pf, " ") * (!line.back().text.empty() && line.back().text.back() == ' ' ? 1 : 0);
         total -= trailing;
         float cx = x, gap = 0;
         if (p.centered || theme.align == "center") cx = x + (width - total) / 2;
@@ -819,8 +827,9 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
             for (size_t i = 1; i < line.size(); ++i) gaps += line[i].glued ? 0 : 1;
             if (gaps) gap = (width - total) / static_cast<float>(gaps);
         }
-        const bool visible = y >= m_drawTop - 0.5f && y + lineHeight <= m_drawBottom + 0.5f;
-        if (draw && !visible && y + lineHeight > m_drawBottom + 0.5f && m_firstHiddenY < 0) m_firstHiddenY = y;
+        const bool visible = y >= m_drawTop - 0.5f && y + lineH <= m_drawBottom + 0.5f;
+        if (draw && !visible && y + lineH > m_drawBottom + 0.5f && m_firstHiddenY < 0) m_firstHiddenY = y;
+        const float ty = y + std::floor((lineH - lineHeight) * px / 2) / px;  // строка текста — по середине
         for (auto& w : line) {
             if (draw && visible) {
                 Color c = colors.fg;
@@ -830,20 +839,24 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
                     try { index = std::stoi(w.target); } catch (...) {}
                     c = w.kind == TextRun::Kind::ChoiceLink && index == m_hoverChoice ? colors.alink : colors.link;
                 }
-                m_r->drawText(pf, w.text, c, cx, y + textOffset, 1.0f);
+                if (w.imageH > 0) {
+                    m_r->drawImage(framePath(w.image), {cx, y + std::floor((lineH - w.imageH) * px / 2) / px, w.imageW, w.imageH}, 1.0f);
+                } else {
+                    m_r->drawText(pf, w.text, c, cx, ty + textOffset, 1.0f);
+                }
                 if (w.kind == TextRun::Kind::ObjectLink) {
-                    m_hits.push_back({{cx, y, w.w, lineHeight}, Hit::Kind::Object, w.target});
+                    m_hits.push_back({{cx, y, w.w, lineH}, Hit::Kind::Object, w.target});
                 } else if (w.kind == TextRun::Kind::ChoiceLink) {
                     int index = -1;
                     try { index = std::stoi(w.target); } catch (...) {}
-                    m_hits.push_back({{cx, y, w.w, lineHeight}, Hit::Kind::Choice, "", index});
+                    m_hits.push_back({{cx, y, w.w, lineH}, Hit::Kind::Choice, "", index});
                 }
             }
             const size_t i = static_cast<size_t>(&w - &line[0]);
             cx += w.w + (i + 1 < line.size() && line[i + 1].glued ? 0 : gap);
         }
         line.clear();
-        y += lineHeight;
+        y += lineH;
     };
     for (const auto& p : text) {
         // курсив (txtem) — третьим начертанием шрифта темы, заголовок комнаты — вторым (полужирным),
@@ -855,6 +868,19 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
         float lineW = 0;
         bool any = false;
         for (const auto& run : p.runs) {
+            float iw = 0, ih = 0;
+            if (imageSize(run.image, iw, ih)) {
+                iw *= theme.scale;
+                ih *= theme.scale;
+                if (lineW + iw > width && !line.empty()) {
+                    flush(line, false, p, pf);
+                    lineW = 0;
+                }
+                const bool glued = !line.empty() && (line.back().text.empty() || line.back().text.back() != ' ');
+                line.push_back({"", iw, run.kind, run.target, glued, run.image, iw, ih});
+                lineW += iw;
+                any = true;
+            }
             for (const auto& w : words(quotes(dashes(run.text)))) {
                 const float ww = textW(pf, w);
                 // одни пробелы (на стыке фрагментов: «{кран} с водой») — к предыдущему слову, а в
@@ -871,7 +897,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
                     lineW = 0;
                 }
                 // без пробела после предыдущего слова (стык фрагментов) — продолжение того же слова
-                const bool glued = !line.empty() && line.back().text.back() != ' ';
+                const bool glued = !line.empty() && (line.back().text.empty() || line.back().text.back() != ' ');
                 line.push_back({w, ww, run.kind, run.target, glued});
                 lineW += ww;
                 any = true;
