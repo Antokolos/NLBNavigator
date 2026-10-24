@@ -203,6 +203,11 @@ bool PlayerEngine::actOnObject(const std::string& instanceId) {
     return true;
 }
 
+bool PlayerEngine::isMenuItem(const std::string& instanceId) const {
+    const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+    return obj && objKind(obj) == ObjKind::Menu;
+}
+
 bool PlayerEngine::clickInventory(const std::string& instanceId) {
     if (m_externalGame || !m_page || !isInInventoryTree(instanceId)) {
         return false;

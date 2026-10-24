@@ -418,7 +418,8 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     } else if (starts("i:")) {
         const std::string id = findObj(v.inventory, line.substr(2));
         m_session->clearSelection();
-        ok = !id.empty() && m_session->clickItem(id) && m_session->clickItem(id);  // выбрать и осмотреть
+        // menu срабатывает с первого щелчка; остальное — выбрать и осмотреть
+        ok = !id.empty() && m_session->clickItem(id) && (engine.isMenuItem(id) || m_session->clickItem(id));
     } else if (starts("u:")) {
         const auto gt = line.find('>');
         const std::string a = findObj(v.inventory, line.substr(2, gt - 2));

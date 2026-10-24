@@ -221,14 +221,18 @@ bool Session::clickObject(const std::string& objectId) {
 }
 
 bool Session::clickItem(const std::string& itemId) {
+    // menu (кнопки боя «Фронтира» и т. п.) срабатывает с первого щелчка, как в INSTEAD
+    // (iface.xref: у menu — команда act); применить к нему ничего нельзя — выбор сбрасывается
+    const bool menu = m_engine->isMenuItem(itemId);
     if (m_log) {
         const std::string item = labelOf(m_screen.inventory, itemId);
-        if (m_selected == itemId) logAction(item + " (осмотреть)");
+        if (menu) logAction(item);
+        else if (m_selected == itemId) logAction(item + " (осмотреть)");
         else if (!m_selected.empty()) logAction(labelOf(m_screen.inventory, m_selected) + " → " + item);
         else logAction(item + " (выбран — дальше щёлкните, к чему применить)");
     }
     bool ok = true;
-    if (m_selected == itemId) {           // второй щелчок по тому же — осмотр (inv)
+    if (menu || m_selected == itemId) {   // menu — действие; второй щелчок по тому же — осмотр (inv)
         m_selected.clear();
         ok = m_engine->clickInventory(itemId);
     } else if (!m_selected.empty()) {     // предмет к предмету

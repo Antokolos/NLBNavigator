@@ -182,6 +182,9 @@ public:
     bool actOnObject(const std::string& instanceId);
     /// Клик по объекту в инвентаре: use(s, s), иначе game.inv
     bool clickInventory(const std::string& instanceId);
+    /// Предмет — menu экспорта (ExportManager.getObjType: takable, без своих ссылок-применений и
+    /// без применений к нему): в INSTEAD срабатывает по щелчку (menu = act), не выбирается для use
+    bool isMenuItem(const std::string& instanceId) const;
     /// Применить объект инвентаря к объекту страницы или инвентаря
     bool use(const std::string& sourceInstanceId, const std::string& targetInstanceId);
     /// Подождать: один тик таймера страницы (в INSTEAD — раз в 200 мс) и проверка auto-ссылок
