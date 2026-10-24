@@ -1074,8 +1074,14 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             }
             // действие привело на новую страницу: после ответа — и её описание, чтобы не потерять
             // ни то, ни другое (INSTEAD показал бы только комнату, а ответ пропал бы)
-            if (m_reactionThenRoom) composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
+            if (m_reactionThenRoom) {
+                composed.insert(composed.end(), m_screen.modText.begin(), m_screen.modText.end());
+                composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
+            }
         } else {
+            // текст модификаций страницы — вывод enter: stead.go выводит его перед сценой. После
+            // действия на той же странице его уже нет — только ответ и сцена
+            composed.insert(composed.end(), m_screen.modText.begin(), m_screen.modText.end());
             composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
         }
         if (!m_screen.objectsText.empty()) {
@@ -1095,7 +1101,6 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
             link.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
             composed.push_back(link);
         }
-        composed.insert(composed.end(), m_screen.modText.begin(), m_screen.modText.end());
         if (!ways.runs.empty() && st.waysBottom) composed.push_back(ways);
     }
     const std::vector<Paragraph>& firstText = instead ? composed : choicesMode() ? portionText : m_screen.pageText;
