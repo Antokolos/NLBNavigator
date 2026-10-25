@@ -41,6 +41,19 @@ std::string displayText(const std::string& s) {
     return e == std::string::npos ? std::string() : r.substr(0, e + 1);
 }
 
+/// Часть сцены STANDARD (описание комнаты, ответ, вывод enter): как displayText, но «^» в конце
+/// остаются переводами строк — пустыми абзацами в конце. INSTEAD склеивает части сцены через «^»
+/// (iface.fmt, stead.go), и текст, кончающийся на «^», даёт пустую строку перед следующей частью;
+/// следующий ответ (p() через пробел) продолжает с новой строки
+std::string sceneText(const std::string& s) {
+    std::string r = s;
+    std::replace(r.begin(), r.end(), '^', '\n');
+    const auto e = r.find_last_not_of(" \t\r\n");
+    if (e == std::string::npos) return std::string();
+    const size_t breaks = std::count(r.begin() + e + 1, r.end(), '\n');
+    return r.substr(0, e + 1) + std::string(breaks, '\n');
+}
+
 /// STEAD_OBJ_PATTERN = \{(.*)\} (жадный): в dsc объекта ссылка-метка {текст} — то, по чему щёлкают
 bool findInteractionMark(const std::string& s, size_t& open, size_t& close) {
     open = s.find('{');
@@ -1167,9 +1180,9 @@ void PlayerEngine::renderPage() {
             const std::string text = displayText(replaceInteractionMarks(item.text));
             if (!trim(text).empty()) {
                 m_events.push_back({Event::Kind::Text, text});
-                m_pageModText.push_back(displayText(item.text));
+                m_pageModText.push_back(sceneText(item.text));
             } else if (isImageOnlyMark(item.text)) {
-                m_pageModText.push_back(displayText(item.text));
+                m_pageModText.push_back(sceneText(item.text));
             }
         }
         if (item.kind == PlayerContext::OutputKind::Info) {
@@ -1196,11 +1209,11 @@ void PlayerEngine::flushOutput(bool) {
             const std::string text = displayText(replaceInteractionMarks(item.text));
             if (!trim(text).empty()) {
                 m_events.push_back({Event::Kind::Text, text});
-                m_reactionText.push_back(displayText(item.text));  // для снимка: с {метками}
+                m_reactionText.push_back(sceneText(item.text));  // для снимка: с {метками}
             } else if (isImageOnlyMark(item.text)) {
                 // одна метка без текста ({id|} вывода PDSC) — ссылка-картинка: на экране она есть
                 // (значок подсказки карты «Фронтира»), в текстовом выводе — нет
-                m_reactionText.push_back(displayText(item.text));
+                m_reactionText.push_back(sceneText(item.text));
             }
         }
         if (item.kind == PlayerContext::OutputKind::Info) {
@@ -1822,7 +1835,7 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     };
     const std::string pageText = displayText(m_interpreter->expandText(page->getText()));
     if (!pageText.empty()) addParagraphs(m.pageText, pageText, "");
-    if (!pageText.empty()) addParagraphs(m.roomText, pageText, "");
+    if (!pageText.empty()) addParagraphs(m.roomText, sceneText(m_interpreter->expandText(page->getText())), "");
 
     const PageView view = this->view();
     const std::vector<std::string> visible = sceneObjects();

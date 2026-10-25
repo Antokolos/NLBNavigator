@@ -144,8 +144,10 @@ private:
     EffectState effectState(const std::string& id, const RectF& r);
     void drawObject(const SceneObject& o, const RectF& r, const FontRef& labelFont, Color labelColor, bool spriteLabel);
     RectF objectRect(size_t index);
+    /// blankLine — высота пустого абзаца в строках: в STANDARD — целая строка (txt_layout INSTEAD),
+    /// в VN — полстроки (там пустая строка лишь разделяет порции)
     float renderParagraphs(const std::vector<Paragraph>& text, float x, float y, float width, const FontRef& font,
-                           const ScreenTheme::Window& colors, bool draw);
+                           const ScreenTheme::Window& colors, bool draw, float blankLine = 0.5f);
     float renderChoices(float x, float y, float width, const FontRef& font, const ScreenTheme::Window& colors, bool draw);
     void renderTextWindow(const ScreenTheme::Window& window);
     void renderStandard();
