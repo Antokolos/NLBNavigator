@@ -190,6 +190,9 @@ struct ScreenModel {
 
     ImageRef pageImage;             ///< картинка страницы
     bool imageIsBackground = false; ///< imagebg: картинка — фон всего экрана
+    /// game.forcedsc экспорта STEAD (свойство книги forcedsc или export/game-forcedsc): после
+    /// действия на странице STANDARD описание комнаты показывается снова — перед ответом
+    bool forceDsc = false;
 
     std::vector<Paragraph> pageText;      ///< текст страницы и описания объектов
     std::vector<Paragraph> reactionText;  ///< ответ на последнее действие (lasttext)

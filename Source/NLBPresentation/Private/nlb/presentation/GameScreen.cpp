@@ -1003,7 +1003,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     // цветом ссылки (щелчок — «осмотреться»), под ним пути через « | » по центру (или под
     // текстом: win.ways.mode = bottom), затем сцена: описание комнаты, со следующей строки
     // описания объектов через пробел; после действия — курсивом ответ, со следующей строки
-    // описания объектов (описание комнаты — только при входе: game.forcedsc = false в экспорте)
+    // описания объектов (описание комнаты — только при входе, а с game.forcedsc — и перед ответом)
     const bool instead = m_screen.layout == Layout::Standard && !choicesMode();
     std::pair<float, float> pictureSize{0, 0};  // картинка в окне текста (scr.gfx.mode fixed/embedded)
     size_t pictureAt = SIZE_MAX;                // её место: абзац заголовка (fixed) или сцены (embedded)
@@ -1059,6 +1059,11 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
             }
         }
         if (!m_screen.reactionText.empty()) {
+            // game.forcedsc: после действия на той же странице STEAD2 (iface.fmt) выводит сначала
+            // me():look() — описание комнаты без вывода enter, — затем ответ
+            if (!m_reactionThenRoom && m_screen.forceDsc) {
+                composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
+            }
             // ответ курсивом: строки ответа — с новой строки, а следующий ответ (другой p() в
             // экспорте) продолжает предыдущий через пробел, как stead.fmt
             for (const auto& p : m_screen.reactionText) {
