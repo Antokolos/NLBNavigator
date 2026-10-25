@@ -147,11 +147,11 @@ private:
     float renderParagraphs(const std::vector<Paragraph>& text, float x, float y, float width, const FontRef& font,
                            const ScreenTheme::Window& colors, bool draw);
     float renderChoices(float x, float y, float width, const FontRef& font, const ScreenTheme::Window& colors, bool draw);
-    void renderTextWindow(const ScreenTheme::Window& window, bool panel);
+    void renderTextWindow(const ScreenTheme::Window& window);
     void renderStandard();
     void renderVisualNovel();
     void renderSceneObjects(const ScreenTheme& theme, bool spriteLabels, bool hidden);
-    void renderInventory(const ScreenTheme::Window& window, bool panel);
+    void renderInventory(const ScreenTheme::Window& window);
     void renderVanishing(const FontRef& labelFont, Color labelColor, bool spriteLabel);
     void renderMenuButton(const ScreenTheme& theme);
     void renderChoicesScreen();

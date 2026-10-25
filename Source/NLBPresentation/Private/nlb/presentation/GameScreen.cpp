@@ -980,7 +980,7 @@ RectF GameScreen::objectRect(size_t index) {
     return finish(x, y);
 }
 
-void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel) {
+void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     const FontRef font = fontFor(window);
     RectF r = window.rect;
     // Режим экрана вариантов: текст порциями (как paginator), без стрелок прокрутки
@@ -1150,7 +1150,6 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window, bool panel)
     m_textWindow = r;
     m_pageHeight = pageH;
     m_moreText = m_scroll < maxScroll;
-    if (panel) m_r->fillRect({r.x - 16, r.y - 10, r.w + 32, r.h + 20}, {0, 0, 0, 140});
     const RectF clip{std::trunc(r.x - 8), std::trunc(r.y), std::trunc(r.w + 16), std::trunc(r.h)};
     m_r->setClip(&clip);
     const size_t firstHit = m_hits.size();
@@ -1265,8 +1264,9 @@ void GameScreen::renderStandard() {
         renderMenuButton(t);
         return;
     }
-    renderTextWindow(t.text, m_screen.imageIsBackground);
-    renderInventory(t.inventory, false);
+    // картинка-фон страницы — как в INSTEAD: под окном текста без подложки
+    renderTextWindow(t.text);
+    renderInventory(t.inventory);
     renderMenuButton(t);
 }
 
@@ -1304,17 +1304,16 @@ void GameScreen::renderVisualNovel() {
         m_r->fillRect({0, band.y, SCREEN_W, band.h + 16}, {0, 0, 0, 110});
         ScreenTheme::Window win = t.text;
         win.rect = {band.x + wf, band.y + pad, band.w - 2 * wf, band.h - 2 * pad};
-        renderTextWindow(win, false);
+        renderTextWindow(win);
     }
     renderMenuButton(t);
-    renderInventory(t.inventory, false);
+    renderInventory(t.inventory);
 }
 
-void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) {
+void GameScreen::renderInventory(const ScreenTheme::Window& window) {
     if (m_screen.inventory.empty()) return;
     const FontRef font = fontFor(window);
     RectF r = window.rect;
-    if (panel) m_r->fillRect({r.x, r.y, r.w, r.h}, {0, 0, 0, 140});
     // высота строки — как у текста (inv.fnt.height), слово — по середине строки
     const float px = m_r->pixelScale();
     const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight) / px;
@@ -1345,7 +1344,7 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window, bool panel) 
     // VN: под инвентарём — сплошная чёрная полоса до низа экрана, иначе подписи предметов
     // теряются на картинке сцены. Крупный текст (размер текста) не уходит за низ экрана: строки
     // предметов поднимаются, и полоса вместе с ними
-    if (m_screen.layout == Layout::VisualNovel && !panel) {
+    if (m_screen.layout == Layout::VisualNovel) {
         const float need = lineHeight * static_cast<float>(rows.size());
         if (r.y + need > SCREEN_H) r.y = std::max(0.0f, SCREEN_H - need);
         m_r->fillRect({0, r.y, SCREEN_W, SCREEN_H - r.y}, {0, 0, 0, 255});
