@@ -40,6 +40,7 @@ public:
     bool isFullAutowire() const override;
     bool isSuppressMedia() const override;
     bool isSuppressSound() const override;
+    bool isForceDsc() const override;
     std::string getTitle() const override;
     std::string getAuthor() const override;
     std::string getVersion() const override;

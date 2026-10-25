@@ -40,6 +40,8 @@ public:
         ExportMode exportMode = ExportMode::VN;
         /// _needs_action_count (nlb.json / config.xml: export/needs-action-count)
         int needsActionCount = PropertyManager::getSettings().getDefaultConfig().getExport().getNeedsActionCount();
+        /// game.forcedsc для всех книг (nlb.json / config.xml: export/game-forcedsc); иначе — свойство книги
+        bool gameForceDsc = PropertyManager::getSettings().getDefaultConfig().getExport().isGameForceDsc();
         /// Тексты game.inv / game.nouse; пустые — взять по языку книги (nlb.json: export/texts)
         std::string gameInvText;
         std::string gameNouseText;

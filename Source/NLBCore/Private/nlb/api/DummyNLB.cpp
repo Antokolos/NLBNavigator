@@ -44,6 +44,10 @@ bool DummyNLB::isSuppressSound() const {
     return DEFAULT_SUPPRESS_SOUND;
 }
 
+bool DummyNLB::isForceDsc() const {
+    return DEFAULT_FORCEDSC;
+}
+
 std::string DummyNLB::getTitle() const {
     return DEFAULT_TITLE;
 }

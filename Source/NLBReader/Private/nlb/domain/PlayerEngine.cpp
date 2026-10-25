@@ -1811,6 +1811,7 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     }
     if (!m_rootBook->isSuppressMedia()) m.pageImage = imageRefFor(page->getId(), page->isImageAnimated(), true);
     m.imageIsBackground = page->isImageBackground();
+    m.forceDsc = m_rootBook->isForceDsc() || m_settings.gameForceDsc;
 
     auto addParagraphs = [&](std::vector<nlb::presentation::Paragraph>& out, const std::string& text, const std::string& objectId) {
         for (const auto& line : splitLines(text)) {
