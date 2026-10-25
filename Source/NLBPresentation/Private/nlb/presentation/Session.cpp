@@ -205,6 +205,13 @@ bool Session::choose(int choiceIndex) {
 }
 
 bool Session::clickObject(const std::string& objectId) {
+    // scene_use (спецспособность карты) — выбирается, как предмет; повторный щелчок — отмена
+    if (m_engine->isSceneUse(objectId) && (m_selected.empty() || m_selected == objectId)) {
+        if (m_log) logAction(labelOf(m_screen.sceneObjects, objectId) + (m_selected.empty() ? " (выбран — дальше щёлкните, к чему применить)" : " (отмена)"));
+        m_selected = m_selected.empty() ? objectId : "";
+        ++m_localRevision;
+        return true;
+    }
     // при выбранном предмете щелчок по menu INSTEAD игнорирует (game.c: ссылка menu — act,
     // в режиме use она не срабатывает), выбор остаётся
     const bool ignored = !m_selected.empty() && m_engine->isMenuItem(objectId);

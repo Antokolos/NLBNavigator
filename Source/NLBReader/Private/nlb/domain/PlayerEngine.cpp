@@ -55,8 +55,19 @@ std::string replaceInteractionMarks(const std::string& s) {
     if (!findInteractionMark(s, open, close)) {
         return s;
     }
-    const std::string label = trim(s.substr(open + 1, close - open - 1));
+    std::string label = trim(s.substr(open + 1, close - open - 1));
+    // {id|метка} (вывод PDSC) — показывается только метка
+    const size_t bar = label.find('|');
+    if (bar != std::string::npos && bar > 0 && label.substr(0, bar).find(' ') == std::string::npos) {
+        label = trim(label.substr(bar + 1));
+    }
     return s.substr(0, open) + (label.empty() ? "" : "[" + label + "]") + s.substr(close + 1);
+}
+
+/// Текст — одна метка без текста ({id|} вывода PDSC): ссылка-картинка
+bool isImageOnlyMark(const std::string& s) {
+    const size_t open = s.find('{');
+    return open != std::string::npos && s.find('}', open) != std::string::npos;
 }
 
 /// ExportManager.determineTrivialStatus(Link)
@@ -153,7 +164,7 @@ bool PlayerEngine::choose(size_t choiceIndex) {
 }
 
 bool PlayerEngine::actOnObject(const std::string& instanceId) {
-    if (m_externalGame || !m_page || !isOnScene(instanceId)) {
+    if (m_externalGame || !m_page || !(isOnScene(instanceId) || isLinkedInText(instanceId))) {
         return false;
     }
     std::string target = instanceId;
@@ -246,12 +257,31 @@ bool PlayerEngine::clickInventory(const std::string& instanceId) {
     return true;
 }
 
+bool PlayerEngine::isSceneUse(const std::string& instanceId) const {
+    const Obj* obj = m_interpreter->findObj(m_context->protoOf(instanceId));
+    if (!obj || obj->isTakable()) return false;
+    for (const Link* link : obj->getLinks()) {
+        if (!link->isDeleted()) return true;
+    }
+    return false;
+}
+
+bool PlayerEngine::isLinkedInText(const std::string& instanceId) const {
+    const std::string mark = "{" + instanceId + "|";
+    for (const auto* texts : {&m_reactionText, &m_pageModText}) {
+        for (const auto& text : *texts) {
+            if (text.find(mark) != std::string::npos) return true;
+        }
+    }
+    return false;
+}
+
 bool PlayerEngine::use(const std::string& sourceInstanceId, const std::string& targetInstanceId) {
-    if (m_externalGame || !m_page || !isInInventoryTree(sourceInstanceId)) {
+    if (m_externalGame || !m_page || !(isInInventoryTree(sourceInstanceId) || isSceneUse(sourceInstanceId))) {
         return false;
     }
     const bool targetVisible = isInInventoryTree(targetInstanceId)
-        || isOnScene(targetInstanceId);
+        || isOnScene(targetInstanceId) || isLinkedInText(targetInstanceId);
     const Obj* source = m_interpreter->findObj(m_context->protoOf(sourceInstanceId));
     const Obj* target = m_interpreter->findObj(m_context->protoOf(targetInstanceId));
     if (!targetVisible || !source || !target) {
@@ -1138,6 +1168,8 @@ void PlayerEngine::renderPage() {
             if (!trim(text).empty()) {
                 m_events.push_back({Event::Kind::Text, text});
                 m_pageModText.push_back(displayText(item.text));
+            } else if (isImageOnlyMark(item.text)) {
+                m_pageModText.push_back(displayText(item.text));
             }
         }
         if (item.kind == PlayerContext::OutputKind::Info) {
@@ -1165,6 +1197,10 @@ void PlayerEngine::flushOutput(bool) {
             if (!trim(text).empty()) {
                 m_events.push_back({Event::Kind::Text, text});
                 m_reactionText.push_back(displayText(item.text));  // для снимка: с {метками}
+            } else if (isImageOnlyMark(item.text)) {
+                // одна метка без текста ({id|} вывода PDSC) — ссылка-картинка: на экране она есть
+                // (значок подсказки карты «Фронтира»), в текстовом выводе — нет
+                m_reactionText.push_back(displayText(item.text));
             }
         }
         if (item.kind == PlayerContext::OutputKind::Info) {
@@ -1728,18 +1764,26 @@ std::vector<nlb::presentation::TextRun> PlayerEngine::textRuns(const std::string
             break;
         }
         if (open > pos) runs.push_back({nlb::presentation::TextRun::Kind::Plain, text.substr(pos, open - pos), ""});
-        const std::string label = text.substr(open + 1, close - open - 1);
-        if (!label.empty() || !image.empty()) {
+        std::string label = text.substr(open + 1, close - open - 1);
+        nlb::presentation::ImageRef runImage = image;
+        std::string target = objectId;
+        // {id|метка} — вывод PDSC: ссылка на объект id (с его картинкой)
+        const size_t bar = label.find('|');
+        if (bar != std::string::npos && bar > 0 && m_interpreter->findObj(m_context->protoOf(label.substr(0, bar)))) {
+            target = label.substr(0, bar);
+            label = label.substr(bar + 1);
+            runImage = textImage(target);
+        }
+        if (!label.empty() || !runImage.empty()) {
             // Метка в тексте ответа или модификаций (PDSCS выводит описания вложенных объектов:
             // «Красная Шапочка может {открыть шкаф}») — ссылка на объект сцены с этой меткой
-            std::string target = objectId;
             if (target.empty()) {
                 for (const auto& id : sceneObjects()) {
                     if (trim(sceneLabel(id)) == trim(label)) { target = id; break; }
                 }
             }
             runs.push_back({target.empty() ? nlb::presentation::TextRun::Kind::Plain : nlb::presentation::TextRun::Kind::ObjectLink,
-                            label, target, image});
+                            label, target, runImage});
         }
         pos = close + 1;
     }

@@ -133,6 +133,26 @@ std::optional<std::string> PlayerContext::listEject(const std::string& list) {
     return value;
 }
 
+void PlayerContext::listRemoveSameObj(const std::string& list, const std::string& value) {
+    // nlb:rmv сравнивает nlbid: клон и его прототип — один объект (спецспособность карты
+    // «Фронтира» убирает из руки карту-шаблон, а в руке лежит её клон)
+    auto it = m_state.lists.find(list);
+    if (it == m_state.lists.end()) {
+        return;
+    }
+    auto& items = it->second;
+    const std::string proto = protoOf(value);
+    for (auto pos = items.begin(); pos != items.end(); ++pos) {
+        if (protoOf(*pos) == proto) {
+            items.erase(pos);
+            break;
+        }
+    }
+    if (items.empty()) {
+        m_state.lists.erase(it);
+    }
+}
+
 void PlayerContext::listRemove(const std::string& list, const std::string& value) {
     auto it = m_state.lists.find(list);
     if (it == m_state.lists.end()) {

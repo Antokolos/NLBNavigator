@@ -186,6 +186,10 @@ public:
     /// без применений к нему; не графический). Его ссылка в INSTEAD — команда act (iface.xref):
     /// щелчок — действие, а при выбранном предмете щелчок игнорируется (game.c: menu_mode)
     bool isMenuItem(const std::string& instanceId) const;
+    /// Объект — scene_use экспорта (STEADExportManager: не берётся, но у него есть применения). В
+    /// INSTEAD его ссылка — команда use (iface.xref): щелчок выбирает его, как предмет инвентаря, а
+    /// щелчок по цели применяет (спецспособность карты «Фронтира» -> карта врага)
+    bool isSceneUse(const std::string& instanceId) const;
     /// Применить объект инвентаря к объекту страницы или инвентаря
     bool use(const std::string& sourceInstanceId, const std::string& targetInstanceId);
     /// Подождать: один тик таймера страницы (в INSTEAD — раз в 200 мс) и проверка auto-ссылок
@@ -318,6 +322,9 @@ private:
     std::vector<std::string> sceneObjects() const;
     void collectSceneObjects(const std::string& ownerId, std::vector<std::string>& result, int depth) const;
     bool isOnScene(const std::string& instanceId) const;
+    /// На объект есть ссылка в показанном тексте ({id|метка} вывода PDSC): в INSTEAD по ней можно
+    /// щёлкнуть, даже если объекта нет на сцене (спецспособность внутри карты «Фронтира»)
+    bool isLinkedInText(const std::string& instanceId) const;
     /// Предметы инвентаря вместе с содержимым предметов-контейнеров: INSTEAD показывает
     /// вложенные объекты инвентаря в панели (так в Frontier устроены кнопки действий боя)
     std::vector<std::string> inventoryObjects() const;
