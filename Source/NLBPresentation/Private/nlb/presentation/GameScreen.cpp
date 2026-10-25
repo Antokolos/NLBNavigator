@@ -1323,19 +1323,34 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
     const std::string delim = " | ";
     const float gap = textW(font, horizontal ? delim : "    ");
     const std::string& selected = m_session.selectedItem();
-    struct Item { const InventoryItem* item; std::string label; float w; };
+    // Подпись предмета из нескольких строк («^» в disp: «Слава: 0^Боеспособность: 45») — как в
+    // INSTEAD, каждая строка с новой строки инвентаря; кусок — одна строка подписи (картинка —
+    // у первой, разделитель « | » — после последней)
+    struct Item { const InventoryItem* item; std::string label; float w; bool first; bool last; };
     std::vector<Item> items;
     for (const auto& item : m_screen.inventory) {
-        std::string label = item.label;
-        std::replace(label.begin(), label.end(), '\n', ' ');
+        std::vector<std::string> lines;
+        std::string line;
+        for (char c : item.label) {
+            if (c == '\n') { lines.push_back(line); line.clear(); } else line += c;
+        }
+        lines.push_back(line);
         float iw = 0, ih = 0;
-        float w = textW(font, label) + (imageSize(item.icon, iw, ih) ? lineHeight + 6 : 0);
-        items.push_back({&item, label, w});
+        const float icon = imageSize(item.icon, iw, ih) ? lineHeight + 6 : 0;
+        for (size_t i = 0; i < lines.size(); ++i) {
+            items.push_back({&item, lines[i], textW(font, lines[i]) + (i == 0 ? icon : 0), i == 0, i + 1 == lines.size()});
+        }
     }
     // inv.mode = horizontal-center: строки предметов по центру области; vertical — столбиком
     std::vector<std::vector<Item>> rows(1);
     float rowW = 0;
     for (const auto& it : items) {
+        if (!it.first && !rows.back().empty()) { rows.emplace_back(); rowW = 0; }
+        if (!it.first) {
+            rowW += it.w;
+            rows.back().push_back(it);
+            continue;
+        }
         if (m_standardTheme.inventoryHorizontal && !rows.back().empty() && rowW + gap + it.w > r.w) { rows.emplace_back(); rowW = 0; }
         if (!m_standardTheme.inventoryHorizontal && !rows.back().empty()) { rows.emplace_back(); rowW = 0; }
         rowW += (rows.back().empty() ? 0 : gap) + it.w;
@@ -1362,7 +1377,7 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
             // выбранный предмет — на тёмной плашке: светлая на светлой подложке темы была не видна
             if (it.item->id == selected) m_r->fillRect({cell.x - 6, cell.y, cell.w + 12, cell.h}, {0, 0, 0, 150});
             float tx = x, iw = 0, ih = 0;
-            if (imageSize(it.item->icon, iw, ih)) {
+            if (it.first && imageSize(it.item->icon, iw, ih)) {
                 m_r->drawImage(framePath(it.item->icon), {x, y, lineHeight, lineHeight}, 1.0f);
                 tx += lineHeight + 6;
             }
@@ -1370,7 +1385,7 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
             const bool hovered = it.item->id == m_hoverItem;
             m_r->drawText(font, it.label, !it.item->active ? window.fg : isSelected || hovered ? window.alink : window.link, tx, y + textOffset, 1.0f);
             if (it.item->active) m_hits.push_back({cell, Hit::Kind::Inventory, it.item->id});
-            if (horizontal && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y + textOffset, 1.0f);
+            if (horizontal && it.last && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y + textOffset, 1.0f);
             x += it.w + gap;
         }
         y += lineHeight;
