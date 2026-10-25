@@ -792,7 +792,7 @@ void GameScreen::drawObject(const SceneObject& o, const RectF& r, const FontRef&
 }
 
 float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, float y, float width,
-                                   const FontRef& font, const ScreenTheme::Window& colors, bool draw) {
+                                   const FontRef& font, const ScreenTheme::Window& colors, bool draw, float blankLine) {
     // Как txt_layout INSTEAD (graphics.c): высота строки — целая часть высоты шрифта × fnt.height,
     // слово — по середине строки: (высота строки − высота шрифта) / 2
     const float px = m_r->pixelScale();  // округления — в пикселях окна, как у INSTEAD
@@ -904,7 +904,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
             }
         }
         if (any) flush(line, true, p, pf);
-        else y += p.spacing > 0 ? p.spacing : lineHeight * 0.5f;
+        else y += p.spacing > 0 ? p.spacing : lineHeight * blankLine;
     }
     return y;
 }
@@ -1065,11 +1065,12 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
                 composed.insert(composed.end(), m_screen.roomText.begin(), m_screen.roomText.end());
             }
             // ответ курсивом: строки ответа — с новой строки, а следующий ответ (другой p() в
-            // экспорте) продолжает предыдущий через пробел, как stead.fmt
+            // экспорте) продолжает предыдущий через пробел, как stead.fmt. Пустой абзац — пустая
+            // строка («^^» внутри ответа, «^» в конце перед следующей частью сцены); после «^» в
+            // конце следующий ответ начинается с новой строки — продолжает этот пустой абзац
             for (const auto& p : m_screen.reactionText) {
-                if (p.runs.empty()) continue;
                 if (p.joinPrevious && !composed.empty() && composed.back().style == Paragraph::Style::Emphasis) {
-                    composed.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
+                    if (!composed.back().runs.empty()) composed.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
                     composed.back().runs.insert(composed.back().runs.end(), p.runs.begin(), p.runs.end());
                 } else {
                     Paragraph em = p;
@@ -1106,6 +1107,8 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
             link.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
             composed.push_back(link);
         }
+        // переводы строк в конце всей сцены не видны (INSTEAD)
+        while (!composed.empty() && composed.back().runs.empty() && composed.back().spacing <= 0) composed.pop_back();
         if (!ways.runs.empty() && st.waysBottom) composed.push_back(ways);
     }
     const std::vector<Paragraph>& firstText = instead ? composed : choicesMode() ? portionText : m_screen.pageText;
@@ -1139,8 +1142,9 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     // Сколько места занимает текст (для прокрутки)
     float need = 0;
     if (showCaption) need += m_r->lineSkip(font) * 1.4f;
-    need = renderParagraphs(firstText, r.x, need, r.w, font, window, false);
-    need = renderParagraphs(secondText, r.x, need, r.w, font, window, false);
+    const float blankLine = instead ? 1.0f : 0.5f;
+    need = renderParagraphs(firstText, r.x, need, r.w, font, window, false, blankLine);
+    need = renderParagraphs(secondText, r.x, need, r.w, font, window, false, blankLine);
     if (showChoices) need = renderChoices(r.x, need, r.w, font, window, false);
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
@@ -1172,8 +1176,8 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
         m_r->drawImage(framePath(m_screen.pageImage),
                        {r.x + (r.w - pictureSize.first) / 2, y, pictureSize.first, pictureSize.second}, 1.0f);
     }
-    y = renderParagraphs(firstText, r.x, y, r.w, font, window, true);
-    y = renderParagraphs(secondText, r.x, y, r.w, font, window, true);
+    y = renderParagraphs(firstText, r.x, y, r.w, font, window, true, blankLine);
+    y = renderParagraphs(secondText, r.x, y, r.w, font, window, true, blankLine);
     if (showChoices) renderChoices(r.x, y, r.w, font, window, true);
     m_r->setClip(nullptr);
     m_drawTop = -1e9f;
