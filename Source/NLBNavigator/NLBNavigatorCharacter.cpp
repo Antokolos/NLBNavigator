@@ -21,12 +21,16 @@
 #include "InteractableInterface.h"
 #include "PLDInteractableActor.h"
 #include "Engine/World.h"
+#include "Engine/Engine.h"
+#include "IXRTrackingSystem.h"
 #include "DrawDebugHelpers.h"
 #include "Misc/CommandLine.h"
 #include "Misc/ConfigCacheIni.h"
 #include "TimerManager.h"
 #include "NLBVRModeComponent.h"
 #include "NLBPauseMenuWidget.h"
+#include "NLBTouchControlsComponent.h"
+#include "NLBNavigatorWeaponComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -41,6 +45,7 @@ ANLBNavigatorCharacter::ANLBNavigatorCharacter()
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	VRMode = CreateDefaultSubobject<UNLBVRModeComponent>(TEXT("VRMode"));
+	TouchControls = CreateDefaultSubobject<UNLBTouchControlsComponent>(TEXT("TouchControls"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
@@ -75,7 +80,9 @@ void ANLBNavigatorCharacter::BeginPlay()
 	// поэтому включаем на следующем такте
 	bool bWantVR = FParse::Param(FCommandLine::Get(), TEXT("vr"));
 #if PLATFORM_ANDROID
-	bWantVR = true;  // автономный шлем (Quest): обычного режима нет
+	// Android: сборка для шлема (Quest, с OpenXR) — только VR; сборка для телефона (без OpenXR,
+	// tools/ue/package_android.ps1 -Target phone) — обычный режим с экранным управлением
+	bWantVR = GEngine && GEngine->XRSystem.IsValid();
 #endif
 	if (!bWantVR && GConfig)
 	{
@@ -89,7 +96,45 @@ void ANLBNavigatorCharacter::BeginPlay()
 			{
 				UE_LOG(LogTemplateCharacter, Warning, TEXT("VR: %s"), *Error);
 			}
+			UpdateTouchControls();
 		});
+	}
+
+	// Экранное управление (телефон): кнопки вызывают то же, что клавиши и геймпад
+	TouchControls->OnMenu = [this]() { TogglePauseMenu(); };
+	TouchControls->OnInteract = [this]() { Interact(); };
+	TouchControls->OnJumpStart = [this]() { Jump(); };
+	TouchControls->OnJumpStop = [this]() { StopJumping(); };
+	// оружие шаблона — компонент подобранного актора, прикреплённого к персонажу
+	auto FindWeapon = [this]() -> UNLBNavigatorWeaponComponent* {
+		TArray<AActor*> Attached;
+		GetAttachedActors(Attached);
+		for (AActor* A : Attached)
+		{
+			if (UNLBNavigatorWeaponComponent* W = A ? A->FindComponentByClass<UNLBNavigatorWeaponComponent>() : nullptr) return W;
+		}
+		return FindComponentByClass<UNLBNavigatorWeaponComponent>();
+	};
+	TouchControls->CanFire = [FindWeapon]() { return FindWeapon() != nullptr; };
+	TouchControls->OnFire = [FindWeapon]() { if (UNLBNavigatorWeaponComponent* W = FindWeapon()) W->Fire(); };
+	TouchControls->OnLeaveBook = [this]() { if (bIsInVisualNovelMode) ReturnToShooter(); };
+	GetWorldTimerManager().SetTimerForNextTick([this]() { UpdateTouchControls(); });
+}
+
+void ANLBNavigatorCharacter::UpdateTouchControls()
+{
+	if (!TouchControls)
+	{
+		return;
+	}
+	using EMode = UNLBTouchControlsComponent::EMode;
+	if (IsVRMode() || PauseMenu)
+	{
+		TouchControls->SetMode(EMode::Hidden);  // в VR — контроллеры; меню паузы — касаниями
+	}
+	else
+	{
+		TouchControls->SetMode(bIsInVisualNovelMode ? EMode::Book : EMode::Shooter);
 	}
 }
 
@@ -108,6 +153,7 @@ bool ANLBNavigatorCharacter::SetVRMode(bool bEnable, FString& OutError)
 	{
 		return false;
 	}
+	UpdateTouchControls();
 	if (GConfig)
 	{
 		GConfig->SetBool(TEXT("NLBNavigator"), TEXT("VRMode"), bEnable, GGameUserSettingsIni);
@@ -324,6 +370,7 @@ void ANLBNavigatorCharacter::SwitchToVisualNovel()
 		DisableCharacterInput();
 		ActivateVisualNovelInput();
 		bIsInVisualNovelMode = true;
+		UpdateTouchControls();  // экранное управление — кнопка «В игру»
 	}
 }
 
@@ -409,6 +456,7 @@ void ANLBNavigatorCharacter::DisableCharacterInput()
 			Subsystem->RemoveMappingContext(DefaultMappingContext);
 		}
 	}
+	UpdateTouchControls();  // книга или меню паузы — джойстики прочь
 }
 
 void ANLBNavigatorCharacter::EnableCharacterInput()
@@ -420,6 +468,7 @@ void ANLBNavigatorCharacter::EnableCharacterInput()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0); // Priority = 0
 		}
 	}
+	UpdateTouchControls();
 }
 
 UEnhancedInputLocalPlayerSubsystem* ANLBNavigatorCharacter::GetEnhancedInputSubsystem() const

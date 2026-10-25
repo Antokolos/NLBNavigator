@@ -16,6 +16,7 @@ class UEnhancedInputLocalPlayerSubsystem;
 class ANLBController;
 class UNLBVRModeComponent;
 class UNLBPauseMenuWidget;
+class UNLBTouchControlsComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -129,6 +130,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VR", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNLBVRModeComponent> VRMode;
+
+	/// Экранное управление на телефоне: джойстики и кнопки (не в VR)
+	UPROPERTY(VisibleAnywhere, Category = "Input")
+	TObjectPtr<UNLBTouchControlsComponent> TouchControls;
+	/// Показать нужное экранное управление: игра, книга или ничего (VR, меню паузы)
+	void UpdateTouchControls();
 
 	UPROPERTY()
 	TObjectPtr<UNLBPauseMenuWidget> PauseMenu;
