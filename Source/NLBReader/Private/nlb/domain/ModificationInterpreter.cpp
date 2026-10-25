@@ -599,11 +599,23 @@ void ModificationInterpreter::addf(const std::optional<std::string>& target,
     }
 }
 
+namespace {
+/// Метка {…} в описании объекта, выведенном PDSC/PDSCS, — ссылка на этот объект: как
+/// expandInteractionMarks экспорта ({имя|метка}), здесь — {id экземпляра|метка}. Объект может и не
+/// лежать на сцене (спецспособность карты «Фронтира» лежит в самой карте)
+std::string markObjectLabel(const std::string& text, const std::string& instanceId) {
+    const size_t open = text.find('{');
+    const size_t close = text.rfind('}');
+    if (open == std::string::npos || close == std::string::npos || close <= open) return text;
+    return text.substr(0, open + 1) + instanceId + "|" + text.substr(open + 1);
+}
+}
+
 void ModificationInterpreter::pdscf(const std::string& instanceId) {
     if (!isObjEnabled(instanceId)) {
         return;
     }
-    const std::string text = objDscF(instanceId);
+    const std::string text = markObjectLabel(objDscF(instanceId), instanceId);
     if (!text.empty()) {
         m_context.emit(PlayerContext::OutputKind::Text, text);
         m_lastText += " " + text;
@@ -730,7 +742,7 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             if (destination) {
                 m_context.containerRemove(*destination, *obj);
             } else if (var) {
-                m_context.listRemove(varList, *obj);       // nlb:rmv(список, obj)
+                m_context.listRemoveSameObj(varList, *obj);  // nlb:rmv(список, obj)
                 m_context.containerRemove(EMPTY, *obj);    // obj.container = nil
             } else {
                 m_context.containerRemove(m_context.currentPageId(), *obj);  // objs():del — текущая комната
