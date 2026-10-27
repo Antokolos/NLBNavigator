@@ -17,7 +17,10 @@
 #include <vector>
 
 #include "PlatformPaths.h"
+#include "nlb/api/Theme.h"
+#include "nlb/domain/NonLinearBookImpl.h"
 #include "nlb/util/BookPack.h"
+#include "nlb/util/FileManipulator.h"
 #include "nlb/util/FileUtils.h"
 #include "shunting-yard.h"
 #include "builtin-features.inc"
@@ -169,20 +172,20 @@ int main(int argc, char** argv) {
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
                      " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--text-scale 1.5] [--log <file>]"
                      " [--platform steam|epic|log[:file]]... [--platform-config <platform.ini>] [--lang <ru|en|…>]" << std::endl;
-        std::cout << "  vn (default)  - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
+        std::cout << "  vn            - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
         std::cout << "  standard      - as exported to INSTEAD; choices at the end of the text by default" << std::endl;
+        std::cout << "  (no mode)     - by the book theme: standard for a STANDARD book, otherwise vn" << std::endl;
         return 1;
     }
     options.bookPath = positional[0];
     // режим: «vn» или «standard» (как у nlb_main explore; само слово explore можно указывать)
+    bool modeGiven = false;
     for (size_t i = 1; i < positional.size(); ++i) {
         if (positional[i] == "standard") options.exportMode = PlayerEngine::ExportMode::Standard;
         else if (positional[i] == "vn") options.exportMode = PlayerEngine::ExportMode::VN;
+        else continue;
+        modeGiven = true;
     }
-    // Варианты по умолчанию — как в соответствующем экспорте: в VN-INSTEAD текст порциями и экран
-    // вариантов, в обычном INSTEAD — ссылки в конце текста. Ключи --choices-screen / --choices-in-text
-    // задают явно; в меню режим можно переключить
-    options.choicesScreen = choicesScreen >= 0 ? choicesScreen == 1 : options.exportMode == PlayerEngine::ExportMode::VN;
     // Пакет .nlbpack — монтируется как каталог книги
     if (FileUtils::exists(options.bookPath) && !FileUtils::isDirectory(options.bookPath)) {
         std::string error;
@@ -200,6 +203,19 @@ int main(int argc, char** argv) {
         const std::string packed = FileUtils::combinePath(options.bookPath, BookPack::BASE_THEME_DIR);
         if (FileUtils::isDirectory(packed)) options.baseThemeDir = packed;
     }
+    // Режим не указан — по теме книги, как веб-плеер NLB (BookLibrary.defaultMode): книга с темой
+    // STANDARD — standard (так её страницы и страницы её модулей с темой DEFAULT выглядят, как в
+    // экспорте в INSTEAD), иначе vn. Файл theme читается и из пакета (он уже смонтирован)
+    if (!modeGiven) {
+        const std::string theme = FileManipulator::getOptionalFileAsString(
+            options.bookPath, NonLinearBookImpl::THEME_FILE_NAME, ThemeUtils::toString(Theme::DEFAULT));
+        options.exportMode = ThemeUtils::fromString(theme) == Theme::STANDARD
+            ? PlayerEngine::ExportMode::Standard : PlayerEngine::ExportMode::VN;
+    }
+    // Варианты по умолчанию — как в соответствующем экспорте: в VN-INSTEAD текст порциями и экран
+    // вариантов, в обычном INSTEAD — ссылки в конце текста. Ключи --choices-screen / --choices-in-text
+    // задают явно; в меню режим можно переключить
+    options.choicesScreen = choicesScreen >= 0 ? choicesScreen == 1 : options.exportMode == PlayerEngine::ExportMode::VN;
     options.savesDir = dataPath(options.bookPath, ".saves", true);
     options.achievementsPath = dataPath(options.bookPath, ".achievements", false);
     SdlPlayer player(options);
