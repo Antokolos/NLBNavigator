@@ -359,9 +359,12 @@ float SdlPlayer::textWidth(const FontRef& ref, const std::string& text) {
 
 float SdlPlayer::fontHeight(const FontRef& ref) {
     TTF_Font* f = font(ref);
-    // Высота шрифта как в SDL2_ttf, которым собран INSTEAD: ascent − descent + 1 (строка с базовой
-    // линией). SDL3_ttf считает её на 1 пиксель меньше, и строки INSTEAD выходили бы ниже наших
-    return f ? static_cast<float>(TTF_GetFontAscent(f) - TTF_GetFontDescent(f) + 1) / m_pixelScale : 0.0f;
+    // Высота строки — как в SDL2_ttf 2.22, которым собран INSTEAD (txt_layout: высота слова из
+    // TTF_SizeUTF8 = TTF_FontHeight): FT_CEIL(ascender − descender). TTF_GetFontHeight SDL3_ttf
+    // считает так же (сверено на 22 шрифтах тестовых экспортов, размеры 12–45: совпадает везде);
+    // прежняя формула «ascent − descent + 1» давала на 1 px больше на части размеров («Фронтир»
+    // 25 px: 29 вместо 28 — текст расползался вниз)
+    return f ? static_cast<float>(TTF_GetFontHeight(f)) / m_pixelScale : 0.0f;
 }
 
 float SdlPlayer::lineSkip(const FontRef& ref) {
