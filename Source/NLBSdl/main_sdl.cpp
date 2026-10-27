@@ -193,15 +193,18 @@ int main(int argc, char** argv) {
         if (!pack) { std::cerr << error << std::endl; return 1; }
         BookPack::mount(std::shared_ptr<BookPack>(std::move(pack)), options.bookPath);
     }
-    // Тема, зашитая в пакет (pack --theme), если другая не указана
-    if (options.themeDir.empty() && BookPack::mounted()) {
-        const std::string packed = FileUtils::combinePath(options.bookPath, BookPack::THEME_DIR);
-        if (FileUtils::isDirectory(packed)) options.themeDir = packed;
+    // Тема игры книги, если другая не указана: __theme__ каталога книги или пакета (pack --theme) —
+    // как в веб-плеере NLB и в сборке экспорта в INSTEAD. Раньше бралась только из пакета, и книга-
+    // каталог шла со встроенной темой (у «Фронтира» окно текста маленькое — картинки боя уходили
+    // на следующую страницу)
+    if (options.themeDir.empty()) {
+        const std::string own = FileUtils::combinePath(options.bookPath, BookPack::THEME_DIR);
+        if (FileUtils::isDirectory(own)) options.themeDir = own;
     }
-    // Базовая тема, зашитая в пакет (pack --base-theme), если другая не указана
-    if (options.baseThemeDir.empty() && BookPack::mounted()) {
-        const std::string packed = FileUtils::combinePath(options.bookPath, BookPack::BASE_THEME_DIR);
-        if (FileUtils::isDirectory(packed)) options.baseThemeDir = packed;
+    // Базовая тема книги (__base_theme__ каталога книги или пакета: pack --base-theme), если другая не указана
+    if (options.baseThemeDir.empty()) {
+        const std::string own = FileUtils::combinePath(options.bookPath, BookPack::BASE_THEME_DIR);
+        if (FileUtils::isDirectory(own)) options.baseThemeDir = own;
     }
     // Режим не указан — по теме книги, как веб-плеер NLB (BookLibrary.defaultMode): книга с темой
     // STANDARD — standard (так её страницы и страницы её модулей с темой DEFAULT выглядят, как в
