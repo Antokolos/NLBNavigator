@@ -41,6 +41,23 @@ std::string displayText(const std::string& s) {
     return e == std::string::npos ? std::string() : r.substr(0, e + 1);
 }
 
+/// Слова текста через один пробел ('^' и любые пробелы между ними — один пробел): для сравнения
+/// текстов без учёта разметки строк
+std::string plainWords(const std::string& s) {
+    std::string r;
+    bool space = false;
+    for (char c : s) {
+        if (c == '^' || c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+            space = !r.empty();
+        } else {
+            if (space) r += ' ';
+            space = false;
+            r += c;
+        }
+    }
+    return r;
+}
+
 /// Часть сцены STANDARD (описание комнаты, ответ, вывод enter): как displayText, но «^» в конце
 /// остаются переводами строк — пустыми абзацами в конце. INSTEAD склеивает части сцены через «^»
 /// (iface.fmt, stead.go), и текст, кончающийся на «^», даёт пустую строку перед следующей частью;
@@ -1853,7 +1870,15 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
     }
     for (const auto& text : m_pageModText) addParagraphs(m.pageText, text, "");
     for (const auto& text : m_pageModText) addParagraphs(m.modText, text, "");
-    for (const auto& text : m_reactionText) {
+    // Ответ на действие показывается и после перехода на другую страницу (автоссылкой или GOTO):
+    // так игрок успевает прочитать результат своего действия (улучшение по сравнению с INSTEAD,
+    // где ответ терялся; в VN-INSTEAD пагинатор вообще не выводит ответы). Но ответ, дословно
+    // совпадающий с текстом новой страницы, не повторяется («Шапочка»: «Шапочка поставила цветы
+    // в вазу. Красиво!» — и ответ на применение, и текст VN-страницы, куда ведёт GOTO)
+    std::string reactionWords;
+    for (const auto& text : m_reactionText) reactionWords += text + " ";
+    const bool reactionIsPageText = !pageText.empty() && plainWords(reactionWords) == plainWords(pageText);
+    for (const auto& text : reactionIsPageText ? std::vector<std::string>() : m_reactionText) {
         // следующий ответ продолжает предыдущий через пробел (STEAD: p() — через пробел),
         // а строки внутри одного ответа — каждая с новой строки
         const size_t first = m.reactionText.size();
