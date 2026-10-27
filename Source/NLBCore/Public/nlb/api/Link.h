@@ -22,6 +22,11 @@ public:
     inline static const bool DEFAULT_AUTO = false;
     inline static const bool DEFAULT_NEEDS_ACTION = false;
     inline static const bool DEFAULT_ONCE = false;
+
+    /// Вид ссылки на странице STANDARD (файл kind; как Link.Kind в NLB): переход между локациями
+    /// (ways INSTEAD, над текстом) или выбор после текста (xact). Auto — по книге
+    /// (NonLinearBook::isChoiceLinks). Реплики («-», кавычки) и «Далее» — всегда выборы
+    enum class Kind { Auto, Way, Choice };
     inline static const bool DEFAULT_TECHNICAL = false;
 
     virtual ~Link() = default;
@@ -97,6 +102,9 @@ public:
      * @return true if one-time use, false otherwise
      */
     virtual bool isOnce() const = 0;
+
+    /// Вид ссылки; у созданных на лету (вход в модуль, возврат, автоссылки) — Auto
+    virtual Kind getKind() const { return Kind::Auto; }
 
     /*!
      * @brief If true, constraint is fulfilled if its expression is true.

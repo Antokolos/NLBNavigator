@@ -1,5 +1,6 @@
 #pragma once
 
+#include "nlb/api/Link.h"
 #include "nlb/api/PropertyManager.h"
 
 #include <map>
@@ -263,6 +264,8 @@ private:
         bool autoFlag = false;
         bool needsAction = false;
         bool once = false;
+        /// Вид ссылки (Link::getKind): переход ways или выбор после текста; созданные на лету — Auto
+        Link::Kind display = Link::Kind::Auto;
         bool positive = true;
         bool obeyModule = false;
         /// determineTrivialStatus: текст и alt-текст по умолчанию либо auto

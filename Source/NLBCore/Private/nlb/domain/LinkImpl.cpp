@@ -14,6 +14,7 @@ const std::string LinkImpl::STROKE_FILE_NAME = "stroke";
 const std::string LinkImpl::AUTO_FILE_NAME = "auto";
 const std::string LinkImpl::NEEDS_ACTION_FILE_NAME = "needsact";
 const std::string LinkImpl::ONCE_FILE_NAME = "once";
+const std::string LinkImpl::KIND_FILE_NAME = "kind";
 const std::string LinkImpl::TRAVERSAL_FILE_NAME = "traversal";
 const std::string LinkImpl::RETURN_FILE_NAME = "return";
 const std::string LinkImpl::TECHNICAL_FILE_NAME = "technical";
@@ -55,6 +56,7 @@ LinkImpl::LinkImpl(const NodeItem* parent, const Link* sourceLink)
     m_auto = sourceLink->isAuto();
     m_needsAction = sourceLink->isNeedsAction();
     m_once = sourceLink->isOnce();
+    m_kind = sourceLink->getKind();
 }
 
 LinkImpl::LinkImpl(const NodeItem* parent, const std::string& target)
@@ -169,6 +171,8 @@ void LinkImpl::writeLink(const FileManipulator* fileManipulator,
             m_once ? "true" : "false",
             DEFAULT_ONCE ? "true" : "false"
         );
+        fileManipulator->writeOptionalString(linkDir, KIND_FILE_NAME,
+            m_kind == Kind::Way ? "WAY" : m_kind == Kind::Choice ? "CHOICE" : "AUTO", "AUTO");
         
         // Добавляем сохранение дополнительных флагов
         fileManipulator->writeOptionalString(
@@ -262,6 +266,9 @@ void LinkImpl::readLink(const std::string& linkDir) {
         ONCE_FILE_NAME,
         DEFAULT_ONCE ? "true" : "false"
     ) == "true";
+    // WAY / CHOICE; нет файла или неизвестное значение — AUTO
+    const std::string kind = FileManipulator::getOptionalFileAsString(linkDir, KIND_FILE_NAME, "AUTO");
+    m_kind = kind.rfind("WAY", 0) == 0 ? Kind::Way : kind.rfind("CHOICE", 0) == 0 ? Kind::Choice : Kind::Auto;
     
     // Добавляем чтение дополнительных флагов
     m_isTraversalLink = FileManipulator::getOptionalFileAsString(

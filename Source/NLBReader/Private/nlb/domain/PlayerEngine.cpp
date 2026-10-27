@@ -387,6 +387,7 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks(Page* page) const
         pl.autoFlag = link->isAuto();
         pl.needsAction = link->isNeedsAction();
         pl.once = link->isOnce();
+        pl.display = link->getKind();
         pl.positive = link->isPositiveConstraint();
         pl.obeyModule = link->isObeyToModuleConstraint();
         pl.modifications = static_cast<const ModifyingItem*>(link)->getModifications();
@@ -426,6 +427,7 @@ std::vector<PlayerEngine::PlayerLink> PlayerEngine::buildLinks(Page* page) const
                 pl.autoFlag = link->isAuto();
                 pl.needsAction = link->isNeedsAction();
                 pl.once = link->isOnce();
+                pl.display = link->getKind();
                 pl.positive = link->isPositiveConstraint();
                 pl.modifications = static_cast<const ModifyingItem*>(link)->getModifications();
                 pl.trivial = isTrivial(link->getTexts(), link->getAltTexts(), pl.autoFlag);
@@ -1539,9 +1541,14 @@ PlayerEngine::PageView PlayerEngine::view() const {
         return v;
     }
     v.pageId = m_page->getId();
+    const NonLinearBook* pageBook = m_interpreter->bookOfPage(m_page->getId());
+    const bool choiceLinks = pageBook && pageBook->isChoiceLinks();
     for (const PlayerLink& link : availableChoices()) {
-        // ExportManager.isInlineLink: в стандартной теме такая ссылка — xact в тексте (xdsc), а не путь
-        const bool inlineLink = link.trivial || (!link.text.empty() && (link.text[0] == '-' || link.text[0] == '"' || link.text[0] == '\''));
+        // ExportManager.isInlineLink: в стандартной теме такая ссылка — xact в тексте (xdsc), а не путь.
+        // Реплики и «Далее» — всегда выборы, остальное — по виду ссылки, «авто» — по книге
+        const bool dialogOrTrivial = link.trivial || (!link.text.empty() && (link.text[0] == '-' || link.text[0] == '"' || link.text[0] == '\''));
+        const bool inlineLink = link.display == Link::Kind::Choice || dialogOrTrivial
+                                || (link.display == Link::Kind::Auto && choiceLinks);
         v.choices.push_back({displayText(m_interpreter->expandText(link.text)), link.trivial, inlineLink});
     }
     for (const auto& instanceId : sceneObjects()) {

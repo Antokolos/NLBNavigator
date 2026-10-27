@@ -39,6 +39,7 @@ public:
     inline static constexpr bool DEFAULT_SUPPRESS_MEDIA = false;
     inline static constexpr bool DEFAULT_SUPPRESS_SOUND = false;
     inline static constexpr bool DEFAULT_FORCEDSC = false;
+    inline static constexpr bool DEFAULT_CHOICE_LINKS = false;
     inline static const std::string DEFAULT_TITLE = "";
     inline static const std::string DEFAULT_AUTHOR = "";
     inline static const std::string DEFAULT_VERSION = "";
@@ -157,6 +158,9 @@ public:
     virtual bool isSuppressSound() const = 0;
     /// game.forcedsc экспорта STEAD: описание комнаты показывается и после действий (файл forcedsc)
     virtual bool isForceDsc() const = 0;
+    /// Ссылки вида «авто» (Link::Kind::Auto) — выборы после текста (xact), а не переходы ways
+    /// (файл choicelnk; модули наследуют). Реплики («-», кавычки) и «Далее» — всегда выборы
+    virtual bool isChoiceLinks() const = 0;
     virtual std::string getTitle() const = 0;
     virtual std::string getAuthor() const = 0;
     virtual std::string getVersion() const = 0;
