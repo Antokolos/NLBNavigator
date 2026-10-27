@@ -57,6 +57,7 @@ public:
     static const std::string SUPPRESS_MEDIA_FILE_NAME;
     static const std::string SUPPRESS_SOUND_FILE_NAME;
     static const std::string FORCEDSC_FILE_NAME;
+    static const std::string CHOICE_LINKS_FILE_NAME;
     static const std::string AUTOWIRED_PAGES_FILE_NAME;
     static const std::string MODULES_DIR_NAME;
     static const std::string MEDIA_CONSTRID_EXT;
@@ -109,6 +110,7 @@ public:
     bool isSuppressMedia() const override;
     bool isSuppressSound() const override;
     bool isForceDsc() const override;
+    bool isChoiceLinks() const override;
     std::string getTitle() const override;
     std::string getAuthor() const override;
     std::string getVersion() const override;
@@ -234,6 +236,7 @@ public:
     void setSuppressMedia(bool suppressMedia);
     void setSuppressSound(bool suppressSound);
     void setForceDsc(bool forceDsc);
+    void setChoiceLinks(bool choiceLinks);
     void setRootDir(const std::string& rootDir);
     int getEffectivePagesCountForSave() const;
     NLBCommand* createUpdateBookPropertiesCommand(const std::string& license, Theme theme, const std::string& language, const std::string& title, const std::string& author, const std::string& version, const std::string& perfectGameAchievementName, bool fullAutowire, bool suppressMedia, bool suppressSound, bool propagateToSubmodules);
@@ -314,6 +317,7 @@ private:
     bool m_suppressMedia;
     bool m_suppressSound;
     bool m_forceDsc;
+    bool m_choiceLinks;
     std::string m_rootDir;
     
     std::map<std::string, PageImpl*> m_pages;

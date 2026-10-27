@@ -48,6 +48,10 @@ bool DummyNLB::isForceDsc() const {
     return DEFAULT_FORCEDSC;
 }
 
+bool DummyNLB::isChoiceLinks() const {
+    return DEFAULT_CHOICE_LINKS;
+}
+
 std::string DummyNLB::getTitle() const {
     return DEFAULT_TITLE;
 }

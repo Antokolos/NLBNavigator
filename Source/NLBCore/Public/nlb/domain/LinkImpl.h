@@ -43,6 +43,7 @@ public:
     bool isAuto() const override { return m_auto; }
     bool isNeedsAction() const override { return m_needsAction; }
     bool isOnce() const override { return m_once; }
+    Kind getKind() const override { return m_kind; }
     bool isPositiveConstraint() const override { return m_isPositiveConstraint; }
     bool isObeyToModuleConstraint() const override { return m_isObeyToModuleConstraint; }
     bool isTraversalLink() const override { return m_isTraversalLink; }
@@ -61,6 +62,7 @@ public:
     void setAuto(bool auto_) { m_auto = auto_; }
     void setNeedsAction(bool needsAction) { m_needsAction = needsAction; }
     void setOnce(bool once) { m_once = once; }
+    void setKind(Kind kind) { m_kind = kind; }
     void setPositiveConstraint(bool positiveConstraint) { m_isPositiveConstraint = positiveConstraint; }
     void setObeyToModuleConstraint(bool obeyToModuleConstraint) { m_isObeyToModuleConstraint = obeyToModuleConstraint; }
     void setTraversalLink(bool traversalLink) { m_isTraversalLink = traversalLink; }
@@ -89,6 +91,7 @@ private:
     static const std::string AUTO_FILE_NAME;
     static const std::string NEEDS_ACTION_FILE_NAME;
     static const std::string ONCE_FILE_NAME;
+    static const std::string KIND_FILE_NAME;
     static const std::string TRAVERSAL_FILE_NAME;
     static const std::string RETURN_FILE_NAME;
     static const std::string TECHNICAL_FILE_NAME;
@@ -109,6 +112,7 @@ private:
     bool m_auto{DEFAULT_AUTO};
     bool m_needsAction{DEFAULT_NEEDS_ACTION};
     bool m_once{DEFAULT_ONCE};
+    Kind m_kind{Kind::Auto};
     ObserverHandler m_observerHandler;
     bool m_isPositiveConstraint{true};
     bool m_isObeyToModuleConstraint{true};
