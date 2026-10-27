@@ -1105,7 +1105,15 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
             composed.insert(composed.end(), m_screen.objectsText.begin(), m_screen.objectsText.end());
         }
         // xdsc экспорта: после описаний объектов — с новой строки alt-тексты недоступных ссылок,
-        // затем ссылки в тексте (реплики диалога, «Далее»), каждая отдельной строкой
+        // затем ссылки в тексте (реплики диалога, «Далее»), каждая отдельной строкой. xdsc
+        // начинается с «^», если у страницы есть текст или объекты: после текста — пустая строка
+        // (части сцены STEAD склеиваются через «^»), после описаний объектов — только новая строка
+        const bool xdscLines = std::any_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) {
+            return c.enabled ? c.inlineLink : !c.altText.empty();
+        });
+        if (xdscLines && !m_screen.roomText.empty() && m_screen.objectsText.empty() && !composed.empty()) {
+            composed.emplace_back();
+        }
         for (const auto& c : m_screen.choices) {
             if (c.enabled || c.altText.empty()) continue;
             Paragraph alt;
