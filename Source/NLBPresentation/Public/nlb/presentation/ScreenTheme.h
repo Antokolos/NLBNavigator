@@ -60,6 +60,9 @@ struct ScreenTheme {
     bool waysBottom = false;          ///< win.ways.mode = bottom: пути под текстом (по умолчанию — над ним)
     std::string menuButton;           ///< menu.gfx.button
     float menuButtonX = 0, menuButtonY = 0;  ///< menu.button.x/y
+    /// fonts/STEINEMU.ttf темы игры — шрифт подписей графических объектов (hudFont vn.lua: 29 px
+    /// экрана темы, строка «== … ==» — 45 px, цвет hud_color = black); пусто — шрифт окна текста
+    std::string hudFont;
     std::string frameLeft, frameRight;       ///< gfx/fl.png, gfx/fr.png — рамки окна текста VN
     /// Кнопка меню, которую ставит игра NLB (nlb.lua, _syscall_showmenubtn): gfx/menubtn.png и
     /// gfx/menubtn_ru.png активной темы, в правом верхнем углу (scr.w − ширина, 0)
