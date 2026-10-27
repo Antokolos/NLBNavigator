@@ -1316,23 +1316,24 @@ void GameScreen::renderVisualNovel() {
     if (m_showChoices) {
         renderChoicesScreen();
     } else if (hasText) {
-        // Каждая VN-страница экспорта вызывает vn:geom(8, 864, 1904, 184, 'dissolve', 240): окно
-        // текста — полоса почти во всю ширину, а текст — внутри неё с полями по 240 px.
-        // Полоса — полупрозрачная, как на экране INSTEAD (рамки fl/fr там не видны)
+        // Окно текста — как vn:auto_geom экспорта: theme.win.geom из theme_vn.lua темы игры (тема
+        // NLB по умолчанию — 248, 838, 1424, 204), вокруг — textpad vn.lua (8 px) и боковины fl/fr
+        // до краёв экрана. Полоса — полупрозрачная, как на экране INSTEAD.
         // Крупный текст (размер текста > 100 %): полоса выше в той же пропорции (строк в ней
         // столько же) и с меньшими полями, низ — на месте, но не ниже строки инвентаря
-        float bottom = 864 + 184;
-        if (m_textScale > 1.0f && !m_screen.inventory.empty()) {  // при 100 % — ровно как vn:geom
+        const RectF tw = t.vnTextGeom ? t.text.rect : RectF{248, 838, 1424, 204};
+        const float pad = 8;  // vn.lua: textpad = 8
+        float bottom = tw.y + tw.h;
+        if (m_textScale > 1.0f && !m_screen.inventory.empty()) {  // при 100 % — ровно как в теме
             const FontRef invFont = fontFor(t.inventory);
             const float invLine = m_r->fontHeight(invFont) * t.inventory.lineHeight;
-            bottom = std::min(bottom, std::min(t.inventory.rect.y, SCREEN_H - invLine) - 2);
+            bottom = std::min(bottom, std::min(t.inventory.rect.y, SCREEN_H - invLine) - 2 - pad);
         }
-        const float bandH = std::min(184 * m_textScale, SCREEN_H * 0.5f);
-        const RectF band{8, bottom - bandH, 1904, bandH};
-        const float wf = 240 / std::max(1.0f, m_textScale), pad = 8;  // vn.lua: textpad = 8
-        m_r->fillRect({0, band.y, SCREEN_W, band.h + 16}, {0, 0, 0, 110});
+        const float textH = std::min(tw.h * m_textScale, SCREEN_H * 0.5f);
+        const float shrink = m_textScale > 1.0f ? tw.x * (1 - 1 / m_textScale) : 0.0f;
+        m_r->fillRect({0, bottom - textH - pad, SCREEN_W, textH + 2 * pad}, {0, 0, 0, 110});
         ScreenTheme::Window win = t.text;
-        win.rect = {band.x + wf, band.y + pad, band.w - 2 * wf, band.h - 2 * pad};
+        win.rect = {tw.x - shrink, bottom - textH, tw.w + 2 * shrink, textH};
         renderTextWindow(win);
     }
     renderMenuButton(t);

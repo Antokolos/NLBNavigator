@@ -271,6 +271,11 @@ TTF_Font* SdlPlayer::font(const FontRef& ref) {
     if (it != m_fonts.end()) return it->second;
     TTF_Font* f = openFont(file, size);
     if (!f && file != m_fontPath) f = TTF_OpenFont(m_fontPath.c_str(), size);
+    // Лёгкий хинтинг, как у INSTEAD по умолчанию (fnt_load: hinting_sw = 1 -> TTF_HINTING_LIGHT):
+    // с обычным хинтингом ширины глифов и пробела округляются вверх, строка выходит шире на 1–3 %,
+    // и переносы расходятся с INSTEAD (wolfman: «светила» уходило на вторую строку). Задаётся до
+    // первого измерения: смена хинтинга у шрифта с уже загруженными глифами на размеры не влияет
+    if (f) TTF_SetFontHinting(f, TTF_HINTING_LIGHT);
     m_fonts[key] = f;
     return f;
 }
