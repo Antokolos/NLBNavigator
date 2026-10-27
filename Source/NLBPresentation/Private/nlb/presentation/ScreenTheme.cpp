@@ -224,6 +224,7 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
         const std::regex geom(R"(theme\.(win|inv)\.geom\(\s*([-0-9.]+)\s*,\s*([-0-9.]+)\s*,\s*([-0-9.]+)\s*,\s*([-0-9.]+)\s*\))");
         for (auto it = std::sregex_iterator(lua.begin(), lua.end(), geom); it != std::sregex_iterator(); ++it) {
             Window& w = (*it)[1] == "win" ? t.text : t.inventory;
+            if (visualNovel && (*it)[1] == "win") t.vnTextGeom = true;
             w.rect = {ox + std::stof((*it)[2]) * k, oy + std::stof((*it)[3]) * k, std::stof((*it)[4]) * k, std::stof((*it)[5]) * k};
         }
         const std::regex colors(R"(theme\.(win|inv)\.color\(\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*\))");
