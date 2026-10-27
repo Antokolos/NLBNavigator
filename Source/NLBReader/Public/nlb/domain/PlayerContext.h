@@ -70,6 +70,8 @@ public:
     std::optional<std::string> listEject(const std::string& list);
     /// Удаляет первое вхождение (nlb.lua rmv)
     void listRemove(const std::string& list, const std::string& value);
+    /// nlb:rmv(список, obj): первый элемент с тем же прототипом, что у obj (клон = прототип)
+    void listRemoveSameObj(const std::string& list, const std::string& value);
     void listShuffle(const std::string& list);
     void listClear(const std::string& list);
     size_t listSize(const std::string& list) const;

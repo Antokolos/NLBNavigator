@@ -103,6 +103,10 @@ struct TextRun {
     Kind kind = Kind::Plain;
     std::string text;
     std::string target;
+    /// У метки объекта с картинкой (тема STANDARD, не графический объект) — картинка объекта
+    /// перед текстом метки, как img() в {..} экспорта STEAD (decorateObjText); у метки {} —
+    /// только картинка. Пусто — нет
+    ImageRef image;
 };
 
 /// Абзац ("^" и переводы строк из книги уже разбиты на абзацы)
@@ -186,13 +190,16 @@ struct ScreenModel {
 
     ImageRef pageImage;             ///< картинка страницы
     bool imageIsBackground = false; ///< imagebg: картинка — фон всего экрана
+    /// game.forcedsc экспорта STEAD (свойство книги forcedsc или export/game-forcedsc): после
+    /// действия на странице STANDARD описание комнаты показывается снова — перед ответом
+    bool forceDsc = false;
 
     std::vector<Paragraph> pageText;      ///< текст страницы и описания объектов
     std::vector<Paragraph> reactionText;  ///< ответ на последнее действие (lasttext)
     // То же по частям — для раскладки как в INSTEAD (STEAD: сцена = описание комнаты ^^ описания
     // объектов через пробел; после действия — курсивом ответ ^^ описания объектов)
     std::vector<Paragraph> roomText;      ///< текст страницы (по строкам)
-    std::vector<Paragraph> objectsText;   ///< описания объектов — одним абзацем, через пробел
+    std::vector<Paragraph> objectsText;   ///< описания объектов — через пробел, «^» — новый абзац
     std::vector<Paragraph> modText;       ///< текст модификаций страницы
     std::vector<Choice> choices;
     std::vector<SceneObject> sceneObjects;

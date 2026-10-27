@@ -37,6 +37,8 @@ const std::string NonLinearBookImpl::PERFECTGAMEACHIEVEMENTNAME_FILE_NAME = "per
 const std::string NonLinearBookImpl::FULL_AUTOWIRE_FILE_NAME = "fullauto";
 const std::string NonLinearBookImpl::SUPPRESS_MEDIA_FILE_NAME = "suppmed";
 const std::string NonLinearBookImpl::SUPPRESS_SOUND_FILE_NAME = "suppsou";
+const std::string NonLinearBookImpl::FORCEDSC_FILE_NAME = "forcedsc";
+const std::string NonLinearBookImpl::CHOICE_LINKS_FILE_NAME = "choicelnk";
 // Метаданные медиафайла — файлы-спутники <имя файла><расширение> в каталогах images/ и sound/
 const std::string NonLinearBookImpl::MEDIA_CONSTRID_EXT = ".constrid";
 const std::string NonLinearBookImpl::MEDIA_FLAG_EXT = ".flag";
@@ -80,7 +82,9 @@ NonLinearBookImpl::NonLinearBookImpl()
       m_perfectGameAchievementName(DEFAULT_PERFECT_GAME_ACHIEVEMENT_NAME),
       m_fullAutowire(DEFAULT_FULL_AUTOWIRE),
       m_suppressMedia(DEFAULT_SUPPRESS_MEDIA),
-      m_suppressSound(DEFAULT_SUPPRESS_SOUND) {
+      m_suppressSound(DEFAULT_SUPPRESS_SOUND),
+      m_forceDsc(DEFAULT_FORCEDSC),
+      m_choiceLinks(DEFAULT_CHOICE_LINKS) {
 }
 
 NonLinearBookImpl::~NonLinearBookImpl() = default;
@@ -98,7 +102,9 @@ NonLinearBookImpl::NonLinearBookImpl(NonLinearBook* parentNLB, Page* parentPage)
       m_perfectGameAchievementName(DEFAULT_PERFECT_GAME_ACHIEVEMENT_NAME),
       m_fullAutowire(parentNLB ? parentNLB->isFullAutowire() : DEFAULT_FULL_AUTOWIRE),
       m_suppressMedia(parentNLB ? parentNLB->isSuppressMedia() : DEFAULT_SUPPRESS_MEDIA),
-      m_suppressSound(parentNLB ? parentNLB->isSuppressSound() : DEFAULT_SUPPRESS_SOUND) {
+      m_suppressSound(parentNLB ? parentNLB->isSuppressSound() : DEFAULT_SUPPRESS_SOUND),
+      m_forceDsc(parentNLB ? parentNLB->isForceDsc() : DEFAULT_FORCEDSC),
+      m_choiceLinks(parentNLB ? parentNLB->isChoiceLinks() : DEFAULT_CHOICE_LINKS) {
 }
 
 NonLinearBookImpl::NonLinearBookImpl(const NonLinearBook* source,
@@ -180,6 +186,14 @@ bool NonLinearBookImpl::isSuppressMedia() const {
 
 bool NonLinearBookImpl::isSuppressSound() const {
     return m_suppressSound;
+}
+
+bool NonLinearBookImpl::isForceDsc() const {
+    return m_forceDsc;
+}
+
+bool NonLinearBookImpl::isChoiceLinks() const {
+    return m_choiceLinks;
 }
 
 std::string NonLinearBookImpl::getTitle() const {
@@ -809,6 +823,8 @@ void NonLinearBookImpl::overwriteBookProperties(const NonLinearBook* source, boo
     m_fullAutowire = source->isFullAutowire();
     m_suppressMedia = source->isSuppressMedia();
     m_suppressSound = source->isSuppressSound();
+    m_forceDsc = source->isForceDsc();
+    m_choiceLinks = source->isChoiceLinks();
     m_title = source->getTitle();
     m_author = source->getAuthor();
     m_version = source->getVersion();
@@ -1288,6 +1304,11 @@ void NonLinearBookImpl::readBookProperties(const std::string& rootDir) {
     const bool suppressSoundDefault = parent ? parent->isSuppressSound() : DEFAULT_SUPPRESS_SOUND;
     std::string suppressSoundStr = FileManipulator::getOptionalFileAsString(rootDir, SUPPRESS_SOUND_FILE_NAME, suppressSoundDefault ? "true" : "false");
     m_suppressSound = (suppressSoundStr == "true");
+
+    const bool forceDscDefault = parent ? parent->isForceDsc() : DEFAULT_FORCEDSC;
+    m_forceDsc = FileManipulator::getOptionalFileAsString(rootDir, FORCEDSC_FILE_NAME, forceDscDefault ? "true" : "false") == "true";
+    const bool choiceLinksDefault = parent ? parent->isChoiceLinks() : DEFAULT_CHOICE_LINKS;
+    m_choiceLinks = FileManipulator::getOptionalFileAsString(rootDir, CHOICE_LINKS_FILE_NAME, choiceLinksDefault ? "true" : "false") == "true";
     
     // Читаем тему
     std::string themeStr = FileManipulator::getOptionalFileAsString(rootDir, THEME_FILE_NAME, ThemeUtils::toString(DEFAULT_THEME));
@@ -1311,6 +1332,10 @@ void NonLinearBookImpl::writeBookProperties(FileManipulator* fileManipulator, co
         m_suppressMedia ? "true" : "false", DEFAULT_SUPPRESS_MEDIA ? "true" : "false");
     fileManipulator->writeOptionalString(rootDir, SUPPRESS_SOUND_FILE_NAME,
         m_suppressSound ? "true" : "false", DEFAULT_SUPPRESS_SOUND ? "true" : "false");
+    fileManipulator->writeOptionalString(rootDir, FORCEDSC_FILE_NAME,
+        m_forceDsc ? "true" : "false", DEFAULT_FORCEDSC ? "true" : "false");
+    fileManipulator->writeOptionalString(rootDir, CHOICE_LINKS_FILE_NAME,
+        m_choiceLinks ? "true" : "false", DEFAULT_CHOICE_LINKS ? "true" : "false");
     
     // Записываем тему
     fileManipulator->writeOptionalString(rootDir, THEME_FILE_NAME, 
@@ -2176,6 +2201,14 @@ void NonLinearBookImpl::setSuppressMedia(bool suppressMedia) {
 
 void NonLinearBookImpl::setSuppressSound(bool suppressSound) {
     m_suppressSound = suppressSound;
+}
+
+void NonLinearBookImpl::setForceDsc(bool forceDsc) {
+    m_forceDsc = forceDsc;
+}
+
+void NonLinearBookImpl::setChoiceLinks(bool choiceLinks) {
+    m_choiceLinks = choiceLinks;
 }
 
 void NonLinearBookImpl::setRootDir(const std::string& rootDir) {

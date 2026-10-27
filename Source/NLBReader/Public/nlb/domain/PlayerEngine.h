@@ -1,5 +1,6 @@
 #pragma once
 
+#include "nlb/api/Link.h"
 #include "nlb/api/PropertyManager.h"
 
 #include <map>
@@ -40,6 +41,8 @@ public:
         ExportMode exportMode = ExportMode::VN;
         /// _needs_action_count (nlb.json / config.xml: export/needs-action-count)
         int needsActionCount = PropertyManager::getSettings().getDefaultConfig().getExport().getNeedsActionCount();
+        /// game.forcedsc для всех книг (nlb.json / config.xml: export/game-forcedsc); иначе — свойство книги
+        bool gameForceDsc = PropertyManager::getSettings().getDefaultConfig().getExport().isGameForceDsc();
         /// Тексты game.inv / game.nouse; пустые — взять по языку книги (nlb.json: export/texts)
         std::string gameInvText;
         std::string gameNouseText;
@@ -182,6 +185,14 @@ public:
     bool actOnObject(const std::string& instanceId);
     /// Клик по объекту в инвентаре: use(s, s), иначе game.inv
     bool clickInventory(const std::string& instanceId);
+    /// Объект — menu экспорта (ExportManager.getObjType: takable, без своих ссылок-применений и
+    /// без применений к нему; не графический). Его ссылка в INSTEAD — команда act (iface.xref):
+    /// щелчок — действие, а при выбранном предмете щелчок игнорируется (game.c: menu_mode)
+    bool isMenuItem(const std::string& instanceId) const;
+    /// Объект — scene_use экспорта (STEADExportManager: не берётся, но у него есть применения). В
+    /// INSTEAD его ссылка — команда use (iface.xref): щелчок выбирает его, как предмет инвентаря, а
+    /// щелчок по цели применяет (спецспособность карты «Фронтира» -> карта врага)
+    bool isSceneUse(const std::string& instanceId) const;
     /// Применить объект инвентаря к объекту страницы или инвентаря
     bool use(const std::string& sourceInstanceId, const std::string& targetInstanceId);
     /// Подождать: один тик таймера страницы (в INSTEAD — раз в 200 мс) и проверка auto-ссылок
@@ -253,6 +264,8 @@ private:
         bool autoFlag = false;
         bool needsAction = false;
         bool once = false;
+        /// Вид ссылки (Link::getKind): переход ways или выбор после текста; созданные на лету — Auto
+        Link::Kind display = Link::Kind::Auto;
         bool positive = true;
         bool obeyModule = false;
         /// determineTrivialStatus: текст и alt-текст по умолчанию либо auto
@@ -314,6 +327,9 @@ private:
     std::vector<std::string> sceneObjects() const;
     void collectSceneObjects(const std::string& ownerId, std::vector<std::string>& result, int depth) const;
     bool isOnScene(const std::string& instanceId) const;
+    /// На объект есть ссылка в показанном тексте ({id|метка} вывода PDSC): в INSTEAD по ней можно
+    /// щёлкнуть, даже если объекта нет на сцене (спецспособность внутри карты «Фронтира»)
+    bool isLinkedInText(const std::string& instanceId) const;
     /// Предметы инвентаря вместе с содержимым предметов-контейнеров: INSTEAD показывает
     /// вложенные объекты инвентаря в панели (так в Frontier устроены кнопки действий боя)
     std::vector<std::string> inventoryObjects() const;
@@ -343,6 +359,14 @@ private:
     void captureStyle(const std::string& info);
     nlb::presentation::ImageRef imageRefFor(const std::string& itemId, bool animated, bool looped) const;
     std::vector<nlb::presentation::TextRun> textRuns(const std::string& text, const std::string& objectId) const;
+    /// Картинка объекта в его описании (тема STANDARD, картинка «в сцене», не графический объект)
+    nlb::presentation::ImageRef textImage(const std::string& instanceId) const;
+    /// Чьи описания выводит сцена STANDARD, по порядку (STEAD obj_look): объект, затем его
+    /// содержимое; объект, положенный в несколько контейнеров (addf без unique), — в каждом
+    void describedObjects(const std::string& ownerId, std::vector<std::string>& result, int depth) const;
+    /// Описания объектов сцены STANDARD: через пробел (stead.par), «^» и переводы строк — новый
+    /// абзац (пустая строка — пустой абзац); пробелы по краям абзаца отбрасываются
+    std::vector<nlb::presentation::Paragraph> objectsText(const std::vector<std::string>& described) const;
     /// Сохраняемые (preserved) графические объекты, которые VN-движок INSTEAD оставляет на экране
     /// при смене страниц: кнопки «Навыки»/«Инвентарь», свитки. Корни, в порядке появления
     std::vector<std::string> m_preservedRoots;
