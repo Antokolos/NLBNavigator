@@ -54,6 +54,16 @@ std::string flatten(const std::vector<Paragraph>& text) {
     return out;
 }
 
+/// Строка подписи «== текст ==» — заголовок: draw_hud vn.lua рисует её шрифтом hudFont_H1 (45 px
+/// вместо 29) без знаков «==»
+FontRef hudLine(const FontRef& font, std::string& line) {
+    if (line.size() > 6 && line.compare(0, 3, "== ") == 0 && line.compare(line.size() - 3, 3, " ==") == 0) {
+        line = line.substr(3, line.size() - 6);
+        return FontRef{font.file, font.size * 45.0f / 29.0f};
+    }
+    return font;
+}
+
 /// Строки подписи объекта (как texts в vn.lua: каждая строка — отдельно)
 std::vector<std::string> labelLines(const std::string& label) {
     std::vector<std::string> lines;
@@ -763,12 +773,12 @@ void GameScreen::drawObject(const SceneObject& o, const RectF& r, const FontRef&
             // строки по одной (пустая строка — отступ hud_indent_spacing), блок справа от точки
             // объекта на default_label_extent + default_tooltip_offset (4 + 5 px). Прямоугольник
             // объекта (objectRect) уже охватывает блок подписи
-            const float lh = m_r->fontHeight(labelFont);
             float ty = dst.y;
-            for (const auto& line : labelLines(o.label)) {
+            for (std::string line : labelLines(o.label)) {
                 if (line.empty()) { ty += 25; continue; }
-                m_r->drawText(labelFont, line, labelColor, dst.x + 4 + 5, ty, st.alpha);
-                ty += lh;
+                const FontRef lf = hudLine(labelFont, line);
+                m_r->drawText(lf, line, labelColor, dst.x + 4 + 5, ty, st.alpha);
+                ty += m_r->fontHeight(lf);
             }
             return;
         }
@@ -914,7 +924,7 @@ float GameScreen::renderChoices(float x, float y, float width, const FontRef& fo
     y += lineHeight * 0.3f;
     int number = 0;
     for (const auto& c : m_screen.choices) {
-        const std::string text = c.enabled ? std::to_string(++number) + ". " + c.text : c.altText;
+        const std::string text = quotes(dashes(c.enabled ? std::to_string(++number) + ". " + c.text : c.altText));
         const float w = textW(font, text);
         if (draw && y >= m_drawTop - 0.5f && y + lineHeight <= m_drawBottom + 0.5f) {
             m_r->drawText(font, text, !c.enabled ? colors.fg : c.index == m_hoverChoice ? colors.alink : colors.link, x, y, 1.0f);
@@ -937,11 +947,12 @@ RectF GameScreen::objectRect(size_t index) {
     const bool textOnly = !imageSize(o.image, w, h) && isHumanLabel(o.label);
     if (textOnly) {
         const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
-        const FontRef font = fontFor(theme.text);
-        for (const auto& line : labelLines(o.label)) {
+        const FontRef font = labelFontFor(theme);
+        for (std::string line : labelLines(o.label)) {
             if (line.empty()) { labelH += 25; continue; }  // hud_indent_spacing
-            labelW = std::max(labelW, textW(font, line) + 4 + 5);
-            labelH += m_r->fontHeight(font);
+            const FontRef lf = hudLine(font, line);
+            labelW = std::max(labelW, textW(lf, line) + 4 + 5);
+            labelH += m_r->fontHeight(lf);
         }
         const int row = static_cast<int>(o.placement.anchor) / 3;
         labelCoef = !o.parentId.empty() ? 0.5f : row == 0 ? 0.0f : row == 1 ? 0.5f : 1.0f;
@@ -1216,7 +1227,8 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
 void GameScreen::renderSceneObjects(const ScreenTheme& t, bool spriteLabels, bool hidden) {
     // Графические объекты в порядке обхода сцены (родитель раньше детей)
     m_objectRects.clear();
-    const FontRef labelFont = fontFor(t.text);
+    const FontRef labelFont = labelFontFor(t);
+    const Color labelColor = labelColorFor(t);
     for (size_t i = 0; i < (hidden ? 0 : m_screen.sceneObjects.size()); ++i) {
         const SceneObject& o = m_screen.sceneObjects[i];
         if (!o.graphical || !o.visible) continue;
@@ -1227,16 +1239,16 @@ void GameScreen::renderSceneObjects(const ScreenTheme& t, bool spriteLabels, boo
                 const RectF r = objectRect(i);
                 m_objectRects[o.id] = r;
                 const ScreenTheme& lt = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
-                drawObject(o, r, fontFor(lt.text), lt.text.fg, m_screen.layout == Layout::VisualNovel);
+                drawObject(o, r, labelFontFor(lt), labelColorFor(lt), m_screen.layout == Layout::VisualNovel);
             }
             continue;
         }
         const RectF r = objectRect(i);
         m_objectRects[o.id] = r;
-        drawObject(o, r, labelFont, t.text.fg, spriteLabels);
+        drawObject(o, r, labelFont, labelColor, spriteLabels);
         if (o.active) m_hits.push_back({r, Hit::Kind::Object, o.id});
     }
-    renderVanishing(labelFont, t.text.fg, spriteLabels);
+    renderVanishing(labelFont, labelColor, spriteLabels);
 }
 
 void GameScreen::renderStandard() {
@@ -1463,7 +1475,8 @@ void GameScreen::renderChoicesScreen() {
     float total = 0;
     for (const auto& c : m_screen.choices) {
         const std::string prefix = c.enabled ? std::to_string(++number) + ". " : "";
-        const std::string body = c.enabled ? c.text : c.altText;
+        // кавычки и тире — как в тексте страницы (модули quotes и dash экспорта): «…», —
+        const std::string body = quotes(dashes(c.enabled ? c.text : c.altText));
         Entry e{{}, c.enabled ? textW(font, prefix) : 0.0f, &c};
         std::string line = prefix;
         float lineW = textW(font, line);

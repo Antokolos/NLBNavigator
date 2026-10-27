@@ -171,6 +171,12 @@ private:
     int singleTrivialChoice() const;
     void menuAction(int index);
     FontRef fontFor(const ScreenTheme::Window& w) const { return scaled(FontRef{w.fontFile, w.fontSize}); }
+    /// Подписи графических объектов — как draw_hud vn.lua: шрифт hudFont темы (29 px экрана темы),
+    /// цвет black; без него — шрифт и цвет окна текста
+    FontRef labelFontFor(const ScreenTheme& t) const {
+        return t.hudFont.empty() ? fontFor(t.text) : scaled(FontRef{t.hudFont, 29.0f * t.scale});
+    }
+    static Color labelColorFor(const ScreenTheme& t) { return t.hudFont.empty() ? t.text.fg : Color{0, 0, 0, 255}; }
     /// Шрифт в масштабе текста (Options::textScale или выбор игрока)
     FontRef scaled(const FontRef& f) const { return FontRef{f.file, f.size * m_textScale}; }
     float m_textScale = 1.0f;

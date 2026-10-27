@@ -217,6 +217,7 @@ ScreenTheme ScreenTheme::load(const std::string& baseDir, const std::string& gam
         if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/menubtn.png"))) t.nlbMenuButton = FileUtils::combinePath(dir, "gfx/menubtn.png");
         if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/menubtn_ru.png"))) t.nlbMenuButtonRu = FileUtils::combinePath(dir, "gfx/menubtn_ru.png");
         if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/fl.png"))) t.frameLeft = FileUtils::combinePath(dir, "gfx/fl.png");
+        if (FileUtils::exists(FileUtils::combinePath(dir, "fonts/STEINEMU.ttf"))) t.hudFont = FileUtils::combinePath(dir, "fonts/STEINEMU.ttf");
         if (FileUtils::exists(FileUtils::combinePath(dir, "gfx/fr.png"))) t.frameRight = FileUtils::combinePath(dir, "gfx/fr.png");
         // вызовы theme.win.geom(…), theme.win.color(…), theme.set(…) — в координатах экрана темы
         const std::string lua = readText(FileUtils::combinePath(dir, visualNovel ? "theme_vn.lua" : "theme_standard.lua"));
