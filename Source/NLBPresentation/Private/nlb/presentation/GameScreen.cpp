@@ -37,6 +37,8 @@ std::vector<std::string> words(const std::string& text) {
     std::vector<std::string> out;
     std::string cur;
     for (char c : text) {
+        // пробелы подряд — один, как txt_layout INSTEAD (get_word пропускает пробелы между словами)
+        if (c == ' ' && cur.empty() && !out.empty() && out.back().back() == ' ') continue;
         cur += c;
         if (c == ' ') { out.push_back(cur); cur.clear(); }
     }
@@ -806,7 +808,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
     // Как txt_layout INSTEAD (graphics.c): высота строки — целая часть высоты шрифта × fnt.height,
     // слово — по середине строки: (высота строки − высота шрифта) / 2
     const float px = m_r->pixelScale();  // округления — в пикселях окна, как у INSTEAD
-    const float lineHeight = std::floor(m_r->fontHeight(font) * px * colors.lineHeight) / px;
+    const float lineHeight = std::floor(m_r->fontHeight(font) * px * colors.lineHeight + 1e-3f) / px;  // +1e-3: (h / px) * px — не ровно h
     const float textOffset = std::floor((lineHeight - m_r->fontHeight(font)) * px / 2) / px;
     const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
     // glued — слово продолжает предыдущее без пробела («{кран}, испачканный»: запятая сразу за
@@ -892,16 +894,24 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
                 any = true;
             }
             for (const auto& w : words(quotes(dashes(run.text)))) {
-                const float ww = textW(pf, w);
+                // ширина — как txt_layout INSTEAD: слово без пробелов плюс ширина пробела, измеренная
+                // отдельно (txt_size(" ")), а не «слово с пробелом» одной строкой: при лёгком
+                // хинтинге они расходятся на 1–2 px, и переносы уходили от INSTEAD
+                const size_t lastChar = w.find_last_not_of(' ');
+                const size_t spaces = lastChar == std::string::npos ? w.size() : w.size() - lastChar - 1;
+                const float ww = (lastChar == std::string::npos ? 0.0f : textW(pf, w.substr(0, lastChar + 1)))
+                                 + static_cast<float>(spaces) * textW(pf, " ");
                 // одни пробелы (на стыке фрагментов: «{кран} с водой») — к предыдущему слову, а в
                 // начале строки — не нужны: иначе выравнивание по ширине удваивает промежутки
                 if (w.find_first_not_of(' ') == std::string::npos) {
-                    if (!line.empty()) { line.back().text += w; line.back().w += ww; lineW += ww; }
+                    // после слова, уже кончающегося пробелом, — не нужны (пробелы подряд — один)
+                    if (!line.empty() && (line.back().text.empty() || line.back().text.back() != ' ')) {
+                        line.back().text += " "; line.back().w += textW(pf, " "); lineW += textW(pf, " ");
+                    }
                     continue;
                 }
                 // перенос — как txt_layout INSTEAD: слово (без пробела после него) не помещается
-                const std::string bare = w.substr(0, w.find_last_not_of(' ') + 1);
-                const float bareW = bare.size() == w.size() ? ww : textW(pf, bare);
+                const float bareW = ww - static_cast<float>(spaces) * textW(pf, " ");
                 if (lineW + bareW > width && !line.empty()) {
                     flush(line, false, p, pf);
                     lineW = 0;
@@ -1105,7 +1115,15 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
             composed.insert(composed.end(), m_screen.objectsText.begin(), m_screen.objectsText.end());
         }
         // xdsc экспорта: после описаний объектов — с новой строки alt-тексты недоступных ссылок,
-        // затем ссылки в тексте (реплики диалога, «Далее»), каждая отдельной строкой
+        // затем ссылки в тексте (реплики диалога, «Далее»), каждая отдельной строкой. xdsc
+        // начинается с «^», если у страницы есть текст или объекты: после текста — пустая строка
+        // (части сцены STEAD склеиваются через «^»), после описаний объектов — только новая строка
+        const bool xdscLines = std::any_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) {
+            return c.enabled ? c.inlineLink : !c.altText.empty();
+        });
+        if (xdscLines && !m_screen.roomText.empty() && m_screen.objectsText.empty() && !composed.empty()) {
+            composed.emplace_back();
+        }
         for (const auto& c : m_screen.choices) {
             if (c.enabled || c.altText.empty()) continue;
             Paragraph alt;
@@ -1160,7 +1178,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     m_contentHeight = need;
     // Окно показывает целое число строк; не уместившийся текст листается страницами, как
     // paginator в INSTEAD: щелчок по окну (или колесо, PgDn) — следующая часть
-    const float lh = std::floor(m_r->fontHeight(font) * m_r->pixelScale() * window.lineHeight) / m_r->pixelScale();
+    const float lh = std::floor(m_r->fontHeight(font) * m_r->pixelScale() * window.lineHeight + 1e-3f) / m_r->pixelScale();
     m_lineHeight = lh;
     const float pageH = std::max(lh, std::floor(r.h / lh) * lh);
     // Листание страницами начинает каждую с первой не уместившейся строки и на последней не
@@ -1308,23 +1326,24 @@ void GameScreen::renderVisualNovel() {
     if (m_showChoices) {
         renderChoicesScreen();
     } else if (hasText) {
-        // Каждая VN-страница экспорта вызывает vn:geom(8, 864, 1904, 184, 'dissolve', 240): окно
-        // текста — полоса почти во всю ширину, а текст — внутри неё с полями по 240 px.
-        // Полоса — полупрозрачная, как на экране INSTEAD (рамки fl/fr там не видны)
+        // Окно текста — как vn:auto_geom экспорта: theme.win.geom из theme_vn.lua темы игры (тема
+        // NLB по умолчанию — 248, 838, 1424, 204), вокруг — textpad vn.lua (8 px) и боковины fl/fr
+        // до краёв экрана. Полоса — полупрозрачная, как на экране INSTEAD.
         // Крупный текст (размер текста > 100 %): полоса выше в той же пропорции (строк в ней
         // столько же) и с меньшими полями, низ — на месте, но не ниже строки инвентаря
-        float bottom = 864 + 184;
-        if (m_textScale > 1.0f && !m_screen.inventory.empty()) {  // при 100 % — ровно как vn:geom
+        const RectF tw = t.vnTextGeom ? t.text.rect : RectF{248, 838, 1424, 204};
+        const float pad = 8;  // vn.lua: textpad = 8
+        float bottom = tw.y + tw.h;
+        if (m_textScale > 1.0f && !m_screen.inventory.empty()) {  // при 100 % — ровно как в теме
             const FontRef invFont = fontFor(t.inventory);
             const float invLine = m_r->fontHeight(invFont) * t.inventory.lineHeight;
-            bottom = std::min(bottom, std::min(t.inventory.rect.y, SCREEN_H - invLine) - 2);
+            bottom = std::min(bottom, std::min(t.inventory.rect.y, SCREEN_H - invLine) - 2 - pad);
         }
-        const float bandH = std::min(184 * m_textScale, SCREEN_H * 0.5f);
-        const RectF band{8, bottom - bandH, 1904, bandH};
-        const float wf = 240 / std::max(1.0f, m_textScale), pad = 8;  // vn.lua: textpad = 8
-        m_r->fillRect({0, band.y, SCREEN_W, band.h + 16}, {0, 0, 0, 110});
+        const float textH = std::min(tw.h * m_textScale, SCREEN_H * 0.5f);
+        const float shrink = m_textScale > 1.0f ? tw.x * (1 - 1 / m_textScale) : 0.0f;
+        m_r->fillRect({0, bottom - textH - pad, SCREEN_W, textH + 2 * pad}, {0, 0, 0, 110});
         ScreenTheme::Window win = t.text;
-        win.rect = {band.x + wf, band.y + pad, band.w - 2 * wf, band.h - 2 * pad};
+        win.rect = {tw.x - shrink, bottom - textH, tw.w + 2 * shrink, textH};
         renderTextWindow(win);
     }
     renderMenuButton(t);
@@ -1337,7 +1356,7 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
     RectF r = window.rect;
     // высота строки — как у текста (inv.fnt.height), слово — по середине строки
     const float px = m_r->pixelScale();
-    const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight) / px;
+    const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight + 1e-3f) / px;
     const float textOffset = std::floor((lineHeight - m_r->fontHeight(font)) * px / 2) / px;
     // Предметы в строку разделяются « | », как hinv_delim в INSTEAD (game.gui)
     const bool horizontal = m_standardTheme.inventoryHorizontal;
@@ -1353,7 +1372,10 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
         std::vector<std::string> lines;
         std::string line;
         for (char c : item.label) {
-            if (c == '\n') { lines.push_back(line); line.clear(); } else line += c;
+            if (c == '\n') { lines.push_back(line); line.clear(); }
+            // пробелы подряд — один, как в раскладке текста INSTEAD (wolfman: «Волчность: 0    Жизнь: 3»)
+            else if ((c == ' ' || c == '\t') && (line.empty() ? false : line.back() == ' ')) continue;
+            else line += (c == '\t' ? ' ' : c);
         }
         lines.push_back(line);
         float iw = 0, ih = 0;

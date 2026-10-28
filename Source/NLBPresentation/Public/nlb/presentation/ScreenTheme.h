@@ -53,6 +53,8 @@ struct ScreenTheme {
     std::string pageBackground;
     RectF pictureArea{40, 30, 1787, 640};  ///< scr.gfx.x/y/w/h — картинка страницы (STANDARD)
     Window text;                      ///< win.*
+    /// theme.win.geom(…) задан в theme_vn.lua: окно текста VN — оттуда (vn:auto_geom экспорта)
+    bool vnTextGeom = false;
     Window inventory;                 ///< inv.*
     bool inventoryHorizontal = true;  ///< inv.mode = horizontal-*
     std::string inventoryAlign = "center";  ///< inv.mode = …-left / -center / -right

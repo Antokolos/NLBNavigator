@@ -271,6 +271,11 @@ TTF_Font* SdlPlayer::font(const FontRef& ref) {
     if (it != m_fonts.end()) return it->second;
     TTF_Font* f = openFont(file, size);
     if (!f && file != m_fontPath) f = TTF_OpenFont(m_fontPath.c_str(), size);
+    // Лёгкий хинтинг, как у INSTEAD по умолчанию (fnt_load: hinting_sw = 1 -> TTF_HINTING_LIGHT):
+    // с обычным хинтингом ширины глифов и пробела округляются вверх, строка выходит шире на 1–3 %,
+    // и переносы расходятся с INSTEAD (wolfman: «светила» уходило на вторую строку). Задаётся до
+    // первого измерения: смена хинтинга у шрифта с уже загруженными глифами на размеры не влияет
+    if (f) TTF_SetFontHinting(f, TTF_HINTING_LIGHT);
     m_fonts[key] = f;
     return f;
 }
@@ -354,9 +359,12 @@ float SdlPlayer::textWidth(const FontRef& ref, const std::string& text) {
 
 float SdlPlayer::fontHeight(const FontRef& ref) {
     TTF_Font* f = font(ref);
-    // Высота шрифта как в SDL2_ttf, которым собран INSTEAD: ascent − descent + 1 (строка с базовой
-    // линией). SDL3_ttf считает её на 1 пиксель меньше, и строки INSTEAD выходили бы ниже наших
-    return f ? static_cast<float>(TTF_GetFontAscent(f) - TTF_GetFontDescent(f) + 1) / m_pixelScale : 0.0f;
+    // Высота строки — как в SDL2_ttf 2.22, которым собран INSTEAD (txt_layout: высота слова из
+    // TTF_SizeUTF8 = TTF_FontHeight): FT_CEIL(ascender − descender). TTF_GetFontHeight SDL3_ttf
+    // считает так же (сверено на 22 шрифтах тестовых экспортов, размеры 12–45: совпадает везде);
+    // прежняя формула «ascent − descent + 1» давала на 1 px больше на части размеров («Фронтир»
+    // 25 px: 29 вместо 28 — текст расползался вниз)
+    return f ? static_cast<float>(TTF_GetFontHeight(f)) / m_pixelScale : 0.0f;
 }
 
 float SdlPlayer::lineSkip(const FontRef& ref) {

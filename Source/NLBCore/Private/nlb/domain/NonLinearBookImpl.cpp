@@ -824,7 +824,9 @@ void NonLinearBookImpl::overwriteBookProperties(const NonLinearBook* source, boo
     m_suppressMedia = source->isSuppressMedia();
     m_suppressSound = source->isSuppressSound();
     m_forceDsc = source->isForceDsc();
-    m_choiceLinks = source->isChoiceLinks();
+    // внешний модуль читается как отдельная книга (без родителя), и без своего файла choicelnk у
+    // него false; ссылки в нём — выборы, если так настроены книга-родитель или сам модуль
+    m_choiceLinks = source->isChoiceLinks() || (m_parentNLB && m_parentNLB->isChoiceLinks());
     m_title = source->getTitle();
     m_author = source->getAuthor();
     m_version = source->getVersion();
