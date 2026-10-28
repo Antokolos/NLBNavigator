@@ -1362,7 +1362,10 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
         std::vector<std::string> lines;
         std::string line;
         for (char c : item.label) {
-            if (c == '\n') { lines.push_back(line); line.clear(); } else line += c;
+            if (c == '\n') { lines.push_back(line); line.clear(); }
+            // пробелы подряд — один, как в раскладке текста INSTEAD (wolfman: «Волчность: 0    Жизнь: 3»)
+            else if ((c == ' ' || c == '\t') && (line.empty() ? false : line.back() == ' ')) continue;
+            else line += (c == '\t' ? ' ' : c);
         }
         lines.push_back(line);
         float iw = 0, ih = 0;
