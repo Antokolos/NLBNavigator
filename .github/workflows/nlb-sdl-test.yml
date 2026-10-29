@@ -124,70 +124,75 @@ jobs:
       - name: Capture INSTEAD reference screenshots
         run: |
           mkdir -p test-results
-          set +e
-          timeout --signal=TERM 25s xvfb-run -a -s "-screen 0 1920x1080x24" bash -lc '
-            set -eu
-            workspace="$PWD"
-            game="$workspace/test-data/instead-am_i_a_monster_vn"
-            bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
-            test -s "$game/luapassing.lua"
-            test -s "$game/module_ru.lua"
-            # INSTEAD loads main.lua as the game entry point. Use the standalone Russian story
-            # module as main.lua in this disposable CI checkout, bypassing the menu wrapper.
-            cp "$game/main.lua" "$workspace/test-results/instead-menu-main.lua"
-            cp "$game/module_ru.lua" "$game/main.lua"
-            cd "$game"
-            export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
-            printf "Running standalone Russian game module: module_ru.lua\\n" > "$workspace/test-results/instead-reference.log"
-            "$bin" -nosound "$game" >> "$workspace/test-results/instead-reference.log" 2>&1 &
-            pid=$!
-            # This CI window manager does not publish _NET_ACTIVE_WINDOW; select the largest
-            # visible X11 window directly instead of asking for the active window.
-            find_game_window() {
-              local win geometry width height area best="" best_area=0
-              while IFS= read -r win; do
-                [ -n "$win" ] || continue
-                geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
-                [ -n "$geometry" ] || continue
-                read -r width height <<< "$geometry"
-                area=$((width * height))
-                if [ "$width" -ge 640 ] && [ "$height" -ge 400 ] && [ "$area" -gt "$best_area" ]; then
-                  best="$win"
-                  best_area="$area"
-                fi
-              done < <(xdotool search --onlyvisible --name '.*' 2>/dev/null || true)
-              printf '%s' "$best"
-            }
-            win=""
-            for attempt in $(seq 1 30); do
-              win="$(find_game_window)"
-              [ -n "$win" ] && break
-              if ! kill -0 "$pid" 2>/dev/null; then
-                echo "INSTEAD exited before creating a window"
-                cat "$workspace/test-results/instead-reference.log"
-                exit 1
-              fi
-              sleep 0.5
-            done
-            if [ -z "$win" ]; then
-              echo "Could not find visible INSTEAD window; X11 tree follows:"
-              xwininfo -root -tree || true
-              cat "$workspace/test-results/instead-reference.log" || true
-              exit 1
-            fi
-            sleep 3
-            import -window "$win" "$workspace/test-results/instead-initial.png"
-            xdotool key --window "$win" --clearmodifiers space
-            sleep 1
-            import -window "$win" "$workspace/test-results/instead-after-space.png"
+          cat > test-results/capture-instead.sh <<'SCRIPT'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          workspace="${GITHUB_WORKSPACE:-$PWD}"
+          game="$workspace/test-data/instead-am_i_a_monster_vn"
+          bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
+          test -s "$game/luapassing.lua"
+          test -s "$game/module_ru.lua"
+          # Replace main.lua only in this disposable CI checkout to bypass the menu wrapper.
+          cp "$game/main.lua" "$workspace/test-results/instead-menu-main.lua"
+          cp "$game/module_ru.lua" "$game/main.lua"
+          cd "$game"
+          export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
+          printf 'Running standalone Russian game module: module_ru.lua\n' > "$workspace/test-results/instead-reference.log"
+          "$bin" -nosound "$game" >> "$workspace/test-results/instead-reference.log" 2>&1 &
+          pid=$!
+          cleanup() {
             kill "$pid" 2>/dev/null || true
             wait "$pid" 2>/dev/null || true
-          '
+          }
+          trap cleanup EXIT
+          find_game_window() {
+            local win geometry width height area best="" best_area=0
+            while IFS= read -r win; do
+              [ -n "$win" ] || continue
+              geometry="$(xwininfo -id "$win" 2>/dev/null | awk "/Width:/{w=\\$2} /Height:/{h=\\$2} END{if(w&&h) print w, h}")"
+              [ -n "$geometry" ] || continue
+              read -r width height <<< "$geometry"
+              area=$((width * height))
+              if [ "$width" -ge 640 ] && [ "$height" -ge 400 ] && [ "$area" -gt "$best_area" ]; then
+                best="$win"
+                best_area="$area"
+              fi
+            done < <(xdotool search --onlyvisible --name ".*" 2>/dev/null || true)
+            printf '%s' "$best"
+          }
+          win=""
+          for attempt in $(seq 1 30); do
+            win="$(find_game_window)"
+            [ -n "$win" ] && break
+            if ! kill -0 "$pid" 2>/dev/null; then
+              echo "INSTEAD exited before creating a window"
+              cat "$workspace/test-results/instead-reference.log"
+              exit 1
+            fi
+            sleep 0.5
+          done
+          if [ -z "$win" ]; then
+            echo "Could not find visible INSTEAD window; X11 tree follows:"
+            xwininfo -root -tree || true
+            cat "$workspace/test-results/instead-reference.log" || true
+            exit 1
+          fi
+          echo "Capturing INSTEAD window id: $win"
+          sleep 3
+          import -window "$win" "$workspace/test-results/instead-initial.png"
+          xdotool key --window "$win" --clearmodifiers space
+          sleep 1
+          import -window "$win" "$workspace/test-results/instead-after-space.png"
+          SCRIPT
+          chmod +x test-results/capture-instead.sh
+          set +e
+          timeout --signal=TERM 25s xvfb-run -a -s "-screen 0 1920x1080x24" bash test-results/capture-instead.sh
           result=$?
           set -e
           if [ "$result" -ne 0 ]; then
             echo "INSTEAD reference capture failed with exit code $result"
             cat test-results/instead-reference.log || true
+            xwininfo -root -tree || true
             exit "$result"
           fi
           python3 - <<'PY'
