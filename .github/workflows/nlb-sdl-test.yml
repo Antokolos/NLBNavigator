@@ -110,6 +110,8 @@ jobs:
             https://github.com/nlbproject/instead-am_i_a_monster_vn.git test-data/instead-am_i_a_monster_vn
           git -C test-data/instead-am_i_a_monster_vn submodule update --init --recursive
           test -d test-data/instead-am_i_a_monster_vn
+          test -s test-data/instead-am_i_a_monster_vn/luapassing.lua
+          git -C test-data/instead-am_i_a_monster_vn log -1 --format='INSTEAD reference commit: %H %s'
           find test-data/instead-am_i_a_monster_vn -maxdepth 2 -type f | head -n 30
 
       - name: Check out INSTEAD base theme
@@ -125,9 +127,13 @@ jobs:
           set +e
           timeout --signal=TERM 25s xvfb-run -a -s "-screen 0 1920x1080x24" bash -lc '
             set -eu
-            game="$PWD/test-data/instead-am_i_a_monster_vn"
+            workspace="$PWD"
+            game="$workspace/test-data/instead-am_i_a_monster_vn"
             bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
-            "$bin" -nosound "$game" > "$PWD/test-results/instead-reference.log" 2>&1 &
+            test -s "$game/luapassing.lua"
+            cd "$game"
+            export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
+            "$bin" -nosound "$game" > "$workspace/test-results/instead-reference.log" 2>&1 &
             pid=$!
             for attempt in $(seq 1 20); do
               win="$(xdotool getactivewindow 2>/dev/null || true)"
@@ -136,10 +142,10 @@ jobs:
             done
             sleep 3
             win="$(xdotool getactivewindow)"
-            import -window "$win" "$PWD/test-results/instead-initial.png"
+            import -window "$win" "$workspace/test-results/instead-initial.png"
             xdotool key --window "$win" --clearmodifiers space
             sleep 1
-            import -window "$win" "$PWD/test-results/instead-after-space.png"
+            import -window "$win" "$workspace/test-results/instead-after-space.png"
             kill "$pid" 2>/dev/null || true
             wait "$pid" 2>/dev/null || true
           '
