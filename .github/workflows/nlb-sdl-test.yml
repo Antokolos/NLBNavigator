@@ -253,12 +253,12 @@ jobs:
           # blocked keyboard event cannot prevent the mouse-input test from running.
           set +e
           timeout --signal=TERM --kill-after=3s 35s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            bash test-results/capture-instead.sh space test-results/instead-space
+            bash test-results/capture-instead.sh space instead-space
           space_result=$?
           echo "$space_result" > test-results/space-process-result.txt
           echo "Space test process exit code: $space_result"
           timeout --signal=TERM --kill-after=3s 35s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            bash test-results/capture-instead.sh click test-results/instead-click
+            bash test-results/capture-instead.sh click instead-click
           click_result=$?
           echo "$click_result" > test-results/click-process-result.txt
           echo "Mouse click test process exit code: $click_result"
