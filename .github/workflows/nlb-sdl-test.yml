@@ -18,6 +18,9 @@ name: NLB SDL manual test
       - ci/nlb-sdl-wolfman
     paths:
       - .github/workflows/nlb-sdl-test.yml
+      - CMakeLists.txt
+      - Source/NLBSdl/**
+      - Source/NLBAudioSDL/**
 
 permissions:
   contents: read
