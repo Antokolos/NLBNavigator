@@ -370,6 +370,8 @@ if(NLB_WITH_SDL3)
         message(STATUS "NLBNavigator: SDL3 audio backend enabled")
         # Графический проигрыватель — если есть ещё SDL3_image и SDL3_ttf
         find_package(SDL3_image CONFIG QUIET)
+        # Ensure the imported ZLIB::ZLIB target exists for vcpkg FreeType/PNG configs.
+        find_package(ZLIB REQUIRED)
         find_package(SDL3_ttf CONFIG QUIET)
         if(SDL3_image_FOUND AND SDL3_ttf_FOUND)
             add_executable(nlb_sdl
