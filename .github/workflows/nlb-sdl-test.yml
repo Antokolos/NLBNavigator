@@ -149,7 +149,7 @@ jobs:
             local win geometry width height area best="" best_area=0
             while IFS= read -r win; do
               [ -n "$win" ] || continue
-              geometry="$(xwininfo -id "$win" 2>/dev/null | awk "/Width:/{w=\\$2} /Height:/{h=\\$2} END{if(w&&h) print w, h}")"
+              geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
               [ -n "$geometry" ] || continue
               read -r width height <<< "$geometry"
               area=$((width * height))
