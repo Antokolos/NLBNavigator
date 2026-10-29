@@ -156,6 +156,8 @@ jobs:
 
           find_game_window() {
             local win geometry width height area best="" best_area=0
+            # Restrict candidates to windows owned by the INSTEAD process. Matching every
+            # visible X11 window can select an unrelated full-screen/root-like window.
             while IFS= read -r win; do
               [ -n "$win" ] || continue
               geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
@@ -166,7 +168,7 @@ jobs:
                 best="$win"
                 best_area="$area"
               fi
-            done < <(xdotool search --onlyvisible --name ".*" 2>/dev/null || true)
+            done < <(xdotool search --onlyvisible --pid "$pid" 2>/dev/null || true)
             printf '%s' "$best"
           }
 
@@ -194,38 +196,46 @@ jobs:
           xdotool getwindowname "$win" || true
           activate_game() {
             # Direct XSetInputFocus avoids waiting for EWMH activation support in headless Xvfb.
-            xdotool windowfocus --sync "$win"
+            timeout 5s xdotool windowfocus --sync "$win"
             echo "Focused X11 window: $(xdotool getwindowfocus 2>/dev/null || true)"
           }
           park_pointer() {
-            xdotool mousemove --sync 1910 1070
+            timeout 5s xdotool mousemove --sync 1910 1070
             sleep 0.2
+          }
+          capture_screen() {
+            local path="$1"
+            echo "Capturing Xvfb root screen to $path"
+            timeout 5s import -window root "$path"
+            test -s "$path"
           }
 
           # Allow the startup dissolve to settle before taking the baseline screenshot.
           activate_game
           sleep 2
           park_pointer
-          import -window "$win" "$workspace/test-results/instead-initial.png"
+          capture_screen "$workspace/test-results/instead-initial.png"
 
           # First input path: keyboard Space.
           activate_game
-          xdotool key --clearmodifiers space
+          echo "Sending Space to INSTEAD"
+          timeout 5s xdotool key --clearmodifiers space
           sleep 2
           park_pointer
-          import -window "$win" "$workspace/test-results/instead-after-space.png"
+          capture_screen "$workspace/test-results/instead-after-space.png"
 
           # Second input path: click in the middle of the game viewport.
           activate_game
-          xdotool mousemove --sync 960 540
-          xdotool click --clearmodifiers 1
+          echo "Sending mouse click to INSTEAD at Xvfb coordinates 960,540"
+          timeout 5s xdotool mousemove --sync 960 540
+          timeout 5s xdotool click --clearmodifiers 1
           sleep 2
           park_pointer
-          import -window "$win" "$workspace/test-results/instead-after-click.png"
+          capture_screen "$workspace/test-results/instead-after-click.png"
           SCRIPT
           chmod +x test-results/capture-instead.sh
           set +e
-          timeout --signal=TERM 25s xvfb-run -a -s "-screen 0 1920x1080x24" bash test-results/capture-instead.sh
+          timeout --signal=TERM 45s xvfb-run -a -s "-screen 0 1920x1080x24" bash test-results/capture-instead.sh
           result=$?
           set -e
           if [ "$result" -ne 0 ]; then
