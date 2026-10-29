@@ -1,6 +1,6 @@
 name: NLB SDL manual test
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       game_ref:
