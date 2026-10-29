@@ -193,8 +193,9 @@ jobs:
           echo "INSTEAD window id: $win"
           xdotool getwindowname "$win" || true
           activate_game() {
-            xdotool windowactivate --sync "$win"
+            # Direct XSetInputFocus avoids waiting for EWMH activation support in headless Xvfb.
             xdotool windowfocus --sync "$win"
+            echo "Focused X11 window: $(xdotool getwindowfocus 2>/dev/null || true)"
           }
           park_pointer() {
             xdotool mousemove --sync 1910 1070
