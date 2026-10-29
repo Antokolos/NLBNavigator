@@ -138,7 +138,7 @@ jobs:
             cp "$game/module_ru.lua" "$game/main.lua"
             cd "$game"
             export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
-            printf 'Running standalone Russian game module: module_ru.lua\n' > "$workspace/test-results/instead-reference.log"
+            printf "Running standalone Russian game module: module_ru.lua\\n" > "$workspace/test-results/instead-reference.log"
             "$bin" -nosound "$game" >> "$workspace/test-results/instead-reference.log" 2>&1 &
             pid=$!
             for attempt in $(seq 1 20); do
