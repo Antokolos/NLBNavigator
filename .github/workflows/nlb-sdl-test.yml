@@ -1,0 +1,114 @@
+name: NLB SDL manual test
+
+on:
+  workflow_dispatch:
+    inputs:
+      game_ref:
+        description: "Branch, tag, or commit of nlbproject/wolfman"
+        required: true
+        default: "master"
+        type: string
+      reference_ref:
+        description: "Branch, tag, or commit of nlbproject/instead-am_i_a_monster_vn"
+        required: true
+        default: "main"
+        type: string
+  push:
+    branches:
+      - ci/nlb-sdl-wolfman
+    paths:
+      - .github/workflows/nlb-sdl-test.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nlb-sdl-manual-test-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-prepare:
+    name: Build nlb_sdl and prepare test books
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+      GAME_REF: ${{ inputs.game_ref || 'master' }}
+      REFERENCE_REF: ${{ inputs.reference_ref || 'main' }}
+    steps:
+      - name: Check out NLBNavigator
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build tools and Linux graphics dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake ninja-build pkg-config git curl zip unzip tar \
+            autoconf automake libtool libltdl-dev \
+            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev \
+            libxinerama-dev libxss-dev libxt-dev libxv-dev \
+            libwayland-dev libxkbcommon-dev wayland-protocols \
+            libegl1-mesa-dev libgl1-mesa-dev libdbus-1-dev libibus-1.0-dev \
+            libudev-dev libasound2-dev libpulse-dev libsndio-dev libdecor-0-dev \
+            libfreetype-dev xvfb xauth
+
+      - name: Install SDL3 dependencies with vcpkg
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+          "$VCPKG_ROOT/vcpkg" install \
+            sdl3 sdl3-image sdl3-ttf sdl3-mixer \
+            --triplet x64-linux
+
+      - name: Configure NLBNavigator
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
+            -DVCPKG_TARGET_TRIPLET=x64-linux \
+            -DNLB_BUILD_APPS=ON \
+            -DNLB_WITH_SDL3=ON
+
+      - name: Build nlb_sdl
+        run: |
+          cmake --build build --target nlb_sdl --parallel 2
+          test -x build/nlb_sdl
+
+      - name: Smoke-test executable
+        run: |
+          set +e
+          ./build/nlb_sdl > nlb_sdl-usage.log 2>&1
+          result=$?
+          set -e
+          test "$result" -eq 1
+          grep -q "Usage: nlb_sdl" nlb_sdl-usage.log
+          cat nlb_sdl-usage.log
+
+      - name: Check out wolfman with all nested modules
+        run: |
+          git clone --recurse-submodules --depth 1 --branch "$GAME_REF" \
+            https://github.com/nlbproject/wolfman.git test-data/wolfman
+          git -C test-data/wolfman submodule update --init --recursive
+          test -d test-data/wolfman
+          find test-data/wolfman -maxdepth 2 -type f | head -n 30
+
+      - name: Check out INSTEAD reference export
+        run: |
+          git clone --recurse-submodules --depth 1 --branch "$REFERENCE_REF" \
+            https://github.com/nlbproject/instead-am_i_a_monster_vn.git test-data/instead-am_i_a_monster_vn
+          git -C test-data/instead-am_i_a_monster_vn submodule update --init --recursive
+          test -d test-data/instead-am_i_a_monster_vn
+          find test-data/instead-am_i_a_monster_vn -maxdepth 2 -type f | head -n 30
+
+      - name: Upload build and preparation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nlb-sdl-test-logs
+          path: |
+            nlb_sdl-usage.log
+            build/CMakeCache.txt
+          if-no-files-found: warn
+          retention-days: 14
