@@ -322,9 +322,9 @@ SDL_Texture* SdlPlayer::textureFor(const std::string& path) {
         }
     }
     if (!tex) {
-        const std::string resolved = fullPath ? path : m_media->resolve(MediaRef{path});
+        const std::string resolved = fullPath ? path : file;
         std::cerr << "[SDL image] Failed to load requested='" << path
-                  << "' resolved='" << (resolved.empty() ? "<not found>" : resolved)
+                  << "' resolved='" << (resolved.empty() ? "<media source lookup or read failed>" : resolved)
                   << "' file='" << (file.empty() ? "<no direct file path>" : file)
                   << "' error='" << SDL_GetError() << "'" << std::endl;
     }
