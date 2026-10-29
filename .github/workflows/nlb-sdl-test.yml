@@ -54,7 +54,7 @@ jobs:
             libwayland-dev libxkbcommon-dev wayland-protocols \
             libegl1-mesa-dev libgl1-mesa-dev libdbus-1-dev libibus-1.0-dev \
             libudev-dev libasound2-dev libpulse-dev libsndio-dev libdecor-0-dev \
-            libfreetype-dev xvfb xauth
+            libfreetype-dev python3-pil xvfb xauth
 
       - name: Install SDL3 dependencies with vcpkg
         env:
@@ -98,6 +98,9 @@ jobs:
             https://github.com/nlbproject/wolfman.git test-data/wolfman
           git -C test-data/wolfman submodule update --init --recursive
           test -d test-data/wolfman
+          test -s test-data/wolfman/images/title.png
+          test -s test-data/wolfman/images/1.png
+          file test-data/wolfman/images/title.png test-data/wolfman/images/1.png
           find test-data/wolfman -maxdepth 2 -type f | head -n 30
 
       - name: Check out INSTEAD reference export
@@ -141,6 +144,16 @@ jobs:
           test -s test-results/wolfman-initial.png
           test -s test-results/wolfman-after-space.png
           ! grep -q '\\[НЕ ВЫПОЛНЕНО\\]' test-results/wolfman-script.log
+          python3 - <<'PY'
+          from PIL import Image
+          import sys
+          for path in ("test-results/wolfman-initial.png", "test-results/wolfman-after-space.png"):
+              with Image.open(path) as image:
+                  colors = len(image.convert("RGB").getcolors(maxcolors=2_000_000) or [])
+              print(f"{path}: {colors} distinct RGB colors")
+              if colors < 1000:
+                  sys.exit(f"Screenshot appears blank or is missing the scene artwork: {path}")
+          PY
           grep -q 'title.png' test-results/wolfman-game.log || true
           grep -q 'gfx/bg.jpg' test-results/wolfman-script.log || true
 
