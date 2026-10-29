@@ -33,8 +33,8 @@ jobs:
     timeout-minutes: 60
     env:
       VCPKG_ROOT: ${{ runner.temp }}/vcpkg
-      GAME_REF: ${{ inputs.game_ref || 'master' }}
-      REFERENCE_REF: ${{ inputs.reference_ref || 'main' }}
+      GAME_REF: ${{ github.event.inputs.game_ref || 'master' }}
+      REFERENCE_REF: ${{ github.event.inputs.reference_ref || 'main' }}
     steps:
       - name: Check out NLBNavigator
         uses: actions/checkout@v4
