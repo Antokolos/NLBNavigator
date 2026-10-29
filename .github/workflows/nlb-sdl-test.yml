@@ -127,24 +127,28 @@ jobs:
           cat > test-results/capture-instead.sh <<'SCRIPT'
           #!/usr/bin/env bash
           set -euo pipefail
+          if [ "$#" -lt 2 ]; then echo "Usage: capture-instead.sh space|click prefix" >&2; exit 2; fi
           workspace="${GITHUB_WORKSPACE:-$PWD}"
           game="$workspace/test-data/instead-am_i_a_monster_vn"
           bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
+          action="$1"
+          prefix="$2"
           test -s "$game/luapassing.lua"
           test -s "$game/module_ru.lua"
 
-          # Replace main.lua only in this disposable CI checkout to bypass the menu wrapper.
-          cp "$game/main.lua" "$workspace/test-results/instead-menu-main.lua"
+          # Preserve the original wrapper only once; the working checkout is disposable.
+          if [ ! -s "$workspace/test-results/instead-menu-main.lua" ]; then
+            cp "$game/main.lua" "$workspace/test-results/instead-menu-main.lua"
+          fi
           cp "$game/module_ru.lua" "$game/main.lua"
           cd "$game"
           export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
-          printf 'Running standalone Russian game module: module_ru.lua\n' > "$workspace/test-results/instead-reference.log"
+          printf 'Standalone Russian INSTEAD input test: %s\n' "$action" > "$workspace/test-results/instead-$action.log"
 
-          # Use a real window manager so the game can receive keyboard focus reliably.
-          openbox --sm-disable > "$workspace/test-results/openbox.log" 2>&1 &
+          openbox --sm-disable > "$workspace/test-results/openbox-$action.log" 2>&1 &
           wm_pid=$!
           sleep 1
-          "$bin" -nosound "$game" >> "$workspace/test-results/instead-reference.log" 2>&1 &
+          "$bin" -nosound "$game" >> "$workspace/test-results/instead-$action.log" 2>&1 &
           pid=$!
           cleanup() {
             kill "$pid" 2>/dev/null || true
@@ -156,8 +160,6 @@ jobs:
 
           find_game_window() {
             local win geometry width height area best="" best_area=0
-            # Restrict candidates to windows owned by the INSTEAD process. Matching every
-            # visible X11 window can select an unrelated full-screen/root-like window.
             while IFS= read -r win; do
               [ -n "$win" ] || continue
               geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
@@ -177,112 +179,139 @@ jobs:
             win="$(find_game_window)"
             [ -n "$win" ] && break
             if ! kill -0 "$pid" 2>/dev/null; then
-              echo "INSTEAD exited before creating a visible window"
-              cat "$workspace/test-results/instead-reference.log"
-              cat "$workspace/test-results/openbox.log" || true
+              echo "INSTEAD exited before creating a visible window" >&2
+              cat "$workspace/test-results/instead-$action.log" >&2
               exit 1
             fi
             sleep 0.5
           done
           if [ -z "$win" ]; then
-            echo "Could not find visible INSTEAD window; X11 tree follows:"
+            echo "Could not find visible INSTEAD window for action $action" >&2
             xwininfo -root -tree || true
-            cat "$workspace/test-results/instead-reference.log" || true
-            cat "$workspace/test-results/openbox.log" || true
+            cat "$workspace/test-results/instead-$action.log" >&2 || true
             exit 1
           fi
 
-          echo "INSTEAD window id: $win"
+          echo "Action: $action; INSTEAD window id: $win"
           xdotool getwindowname "$win" || true
-          activate_game() {
-            # Direct XSetInputFocus avoids waiting for EWMH activation support in headless Xvfb.
-            timeout 5s xdotool windowfocus --sync "$win"
-            echo "Focused X11 window: $(xdotool getwindowfocus 2>/dev/null || true)"
-          }
-          park_pointer() {
-            timeout 5s xdotool mousemove --sync 1910 1070
-            sleep 0.2
-          }
-          capture_screen() {
-            local path="$1"
-            echo "Capturing Xvfb root screen to $path"
-            timeout 5s import -window root "$path"
-            test -s "$path"
-          }
-
-          # Allow the startup dissolve to settle before taking the baseline screenshot.
-          activate_game
+          echo "Setting X11 focus"
+          timeout --kill-after=1s 3s xdotool windowfocus --sync "$win"
+          echo "Focused X11 window: $(xdotool getwindowfocus 2>/dev/null || true)"
           sleep 2
-          park_pointer
-          capture_screen "$workspace/test-results/instead-initial.png"
 
-          # First input path: keyboard Space. Avoid --clearmodifiers: it invokes extra
-          # X11 keymap operations and is unnecessary for this test's unmodified Space key.
-          activate_game
-          echo "Sending Space keydown to INSTEAD"
-          timeout --kill-after=1s 3s xdotool keydown --delay 0 space
-          echo "Space keydown sent; holding briefly"
-          sleep 0.1
-          echo "Sending Space keyup to INSTEAD"
-          timeout --kill-after=1s 3s xdotool keyup --delay 0 space
-          echo "Space press/release completed"
-          sleep 2
-          park_pointer
-          capture_screen "$workspace/test-results/instead-after-space.png"
+          # Capture the whole Xvfb screen: importing an OpenGL child window can block.
+          timeout --kill-after=1s 5s import -window root "$workspace/test-results/$prefix-initial.png"
+          test -s "$workspace/test-results/$prefix-initial.png"
 
-          # Second input path: click in the middle of the game viewport.
-          activate_game
-          echo "Sending mouse click to INSTEAD at Xvfb coordinates 960,540"
-          timeout --kill-after=1s 3s xdotool mousemove --sync 960 540
-          timeout --kill-after=1s 3s xdotool click --delay 0 1
-          echo "Mouse click completed"
+          input_result=0
+          if [ "$action" = "space" ]; then
+            echo "Sending Space keydown"
+            set +e
+            timeout --kill-after=1s 3s xdotool keydown --delay 0 space
+            keydown_result=$?
+            echo "Space keydown exit code: $keydown_result"
+            sleep 0.1
+            echo "Sending Space keyup"
+            timeout --kill-after=1s 3s xdotool keyup --delay 0 space
+            keyup_result=$?
+            echo "Space keyup exit code: $keyup_result"
+            set -e
+            if [ "$keydown_result" -ne 0 ] || [ "$keyup_result" -ne 0 ]; then
+              input_result=1
+            fi
+          elif [ "$action" = "click" ]; then
+            echo "Sending mouse click at Xvfb coordinates 960,540"
+            set +e
+            timeout --kill-after=1s 3s xdotool mousemove --sync 960 540
+            move_result=$?
+            echo "Mouse move exit code: $move_result"
+            timeout --kill-after=1s 3s xdotool click --delay 0 1
+            click_result=$?
+            echo "Mouse click exit code: $click_result"
+            set -e
+            if [ "$move_result" -ne 0 ] || [ "$click_result" -ne 0 ]; then
+              input_result=1
+            fi
+          else
+            echo "Unsupported input action: $action" >&2
+            exit 2
+          fi
+
           sleep 2
-          park_pointer
-          capture_screen "$workspace/test-results/instead-after-click.png"
+          echo "Capturing frame after $action"
+          timeout --kill-after=1s 5s import -window root "$workspace/test-results/$prefix-after.png"
+          test -s "$workspace/test-results/$prefix-after.png"
+          echo "$input_result" > "$workspace/test-results/$action-input-result.txt"
+          if [ "$input_result" -ne 0 ]; then
+            echo "INSTEAD $action input command did not complete successfully" >&2
+            exit 10
+          fi
           SCRIPT
           chmod +x test-results/capture-instead.sh
+
+          # Run Space and mouse click in separate INSTEAD and Xvfb sessions so a
+          # blocked keyboard event cannot prevent the mouse-input test from running.
           set +e
-          timeout --signal=TERM --kill-after=3s 45s xvfb-run -a -s "-screen 0 1920x1080x24" bash test-results/capture-instead.sh
-          result=$?
+          timeout --signal=TERM --kill-after=3s 35s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            bash test-results/capture-instead.sh space test-results/instead-space
+          space_result=$?
+          echo "$space_result" > test-results/space-process-result.txt
+          echo "Space test process exit code: $space_result"
+          timeout --signal=TERM --kill-after=3s 35s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            bash test-results/capture-instead.sh click test-results/instead-click
+          click_result=$?
+          echo "$click_result" > test-results/click-process-result.txt
+          echo "Mouse click test process exit code: $click_result"
           set -e
-          if [ "$result" -ne 0 ]; then
-            echo "INSTEAD reference capture failed with exit code $result"
-            cat test-results/instead-reference.log || true
-            exit "$result"
-          fi
+
           python3 - <<'PY'
           from PIL import Image, ImageChops
+          from pathlib import Path
           import sys
 
-          paths = (
-              "test-results/instead-initial.png",
-              "test-results/instead-after-space.png",
-              "test-results/instead-after-click.png",
-          )
-          images = {}
-          for path in paths:
-              with Image.open(path) as image:
-                  rgb = image.convert("RGB")
-                  colors = len(rgb.getcolors(maxcolors=2_000_000) or [])
-                  images[path] = rgb.copy()
-              print(f"{path}: {colors} distinct RGB colors")
-              if colors < 1000:
-                  sys.exit(f"INSTEAD screenshot appears blank: {path}")
-
           transitions = (
-              ("Space", paths[0], paths[1]),
-              ("mouse click", paths[1], paths[2]),
+              ("Space", "test-results/instead-space-initial.png", "test-results/instead-space-after.png",
+               "test-results/space-process-result.txt"),
+              ("mouse click", "test-results/instead-click-initial.png", "test-results/instead-click-after.png",
+               "test-results/click-process-result.txt"),
           )
-          for action, before_path, after_path in transitions:
-              diff = ImageChops.difference(images[before_path], images[after_path])
+          failed = False
+          for action, before_path, after_path, process_result_path in transitions:
+              try:
+                  with Image.open(before_path) as image:
+                      before = image.convert("RGB")
+                  with Image.open(after_path) as image:
+                      after = image.convert("RGB")
+              except OSError as error:
+                  print(f"INSTEAD {action}: screenshot missing or unreadable: {error}")
+                  failed = True
+                  continue
+
+              before_colors = len(before.getcolors(maxcolors=2_000_000) or [])
+              after_colors = len(after.getcolors(maxcolors=2_000_000) or [])
+              diff = ImageChops.difference(before, after)
               changed_pixels = sum(1 for pixel in diff.getdata() if pixel != (0, 0, 0))
-              fraction = changed_pixels / (images[before_path].width * images[before_path].height)
-              print(f"INSTEAD {action}: {changed_pixels} changed pixels ({fraction:.3%})")
+              fraction = changed_pixels / (before.width * before.height)
+              print(
+                  f"INSTEAD {action}: before={before_colors} colors, after={after_colors} colors, "
+                  f"{changed_pixels} changed pixels ({fraction:.3%})"
+              )
+              if before_colors < 1000 or after_colors < 1000:
+                  print(f"INSTEAD {action}: one screenshot appears blank")
+                  failed = True
               if changed_pixels < 1000:
-                  sys.exit(
-                      f"INSTEAD did not visibly advance after {action}: "
-                      f"only {changed_pixels} pixels changed"
-                  )
+                  print(f"INSTEAD {action}: no meaningful visible scene change")
+                  failed = True
+              try:
+                  process_result = int(Path(process_result_path).read_text().strip())
+              except (OSError, ValueError):
+                  process_result = 1
+              if process_result != 0:
+                  print(f"INSTEAD {action}: input-session process failed with {process_result}")
+                  failed = True
+
+          if failed:
+              sys.exit(1)
           PY
 
       - name: Run scripted wolfman smoke test
