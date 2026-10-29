@@ -127,7 +127,7 @@ jobs:
           cat > test-results/capture-instead.sh <<'SCRIPT'
           #!/usr/bin/env bash
           set -euo pipefail
-          workspace="\${GITHUB_WORKSPACE:-$PWD}"
+          workspace="${GITHUB_WORKSPACE:-$PWD}"
           game="$workspace/test-data/instead-am_i_a_monster_vn"
           bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
           test -s "$game/luapassing.lua"
@@ -235,7 +235,7 @@ jobs:
           read -r window_width window_height <<< "$geometry"
           click_x=$((window_width / 2))
           click_y=$((window_height / 2))
-          echo "Sending mouse click at window-relative coordinates $click_x,$click_y (\${window_width}x\${window_height})"
+          echo "Sending mouse click at window-relative coordinates $click_x,$click_y (${window_width}x${window_height})"
           set +e
           timeout --kill-after=1s 3s xdotool mousemove --window "$win" "$click_x" "$click_y"
           move_result=$?
