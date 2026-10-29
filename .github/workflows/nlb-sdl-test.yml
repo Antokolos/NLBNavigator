@@ -131,9 +131,15 @@ jobs:
             game="$workspace/test-data/instead-am_i_a_monster_vn"
             bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
             test -s "$game/luapassing.lua"
+            test -s "$game/module_ru.lua"
+            # INSTEAD loads main.lua as the game entry point. Use the standalone Russian story
+            # module as main.lua in this disposable CI checkout, bypassing the menu wrapper.
+            cp "$game/main.lua" "$workspace/test-results/instead-menu-main.lua"
+            cp "$game/module_ru.lua" "$game/main.lua"
             cd "$game"
             export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
-            "$bin" -nosound "$game" > "$workspace/test-results/instead-reference.log" 2>&1 &
+            printf 'Running standalone Russian game module: module_ru.lua\n' > "$workspace/test-results/instead-reference.log"
+            "$bin" -nosound "$game" >> "$workspace/test-results/instead-reference.log" 2>&1 &
             pid=$!
             for attempt in $(seq 1 20); do
               win="$(xdotool getactivewindow 2>/dev/null || true)"
