@@ -127,12 +127,9 @@ jobs:
           cat > test-results/capture-instead.sh <<'SCRIPT'
           #!/usr/bin/env bash
           set -euo pipefail
-          if [ "$#" -lt 2 ]; then echo "Usage: capture-instead.sh space|click prefix" >&2; exit 2; fi
-          workspace="${GITHUB_WORKSPACE:-$PWD}"
+          workspace="\${GITHUB_WORKSPACE:-$PWD}"
           game="$workspace/test-data/instead-am_i_a_monster_vn"
           bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
-          action="$1"
-          prefix="$2"
           test -s "$game/luapassing.lua"
           test -s "$game/module_ru.lua"
 
@@ -143,12 +140,21 @@ jobs:
           cp "$game/module_ru.lua" "$game/main.lua"
           cd "$game"
           export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
-          printf 'Standalone Russian INSTEAD input test: %s\n' "$action" > "$workspace/test-results/instead-$action.log"
 
-          openbox --sm-disable > "$workspace/test-results/openbox-$action.log" 2>&1 &
+          # Keep INSTEAD's save/config state isolated so each CI run starts cleanly.
+          session_home="$workspace/test-results/instead-home"
+          rm -rf "$session_home"
+          mkdir -p "$session_home/.config" "$session_home/.local/share" "$session_home/.cache"
+          export HOME="$session_home"
+          export XDG_CONFIG_HOME="$session_home/.config"
+          export XDG_DATA_HOME="$session_home/.local/share"
+          export XDG_CACHE_HOME="$session_home/.cache"
+
+          printf 'INSTEAD single-session regression: initial -> Space -> click\n' > "$workspace/test-results/instead-session.log"
+          openbox --sm-disable > "$workspace/test-results/openbox-session.log" 2>&1 &
           wm_pid=$!
           sleep 1
-          "$bin" -nosound "$game" >> "$workspace/test-results/instead-$action.log" 2>&1 &
+          "$bin" -nosound "$game" >> "$workspace/test-results/instead-session.log" 2>&1 &
           pid=$!
           cleanup() {
             kill "$pid" 2>/dev/null || true
@@ -180,19 +186,19 @@ jobs:
             [ -n "$win" ] && break
             if ! kill -0 "$pid" 2>/dev/null; then
               echo "INSTEAD exited before creating a visible window" >&2
-              cat "$workspace/test-results/instead-$action.log" >&2
+              cat "$workspace/test-results/instead-session.log" >&2
               exit 1
             fi
             sleep 0.5
           done
           if [ -z "$win" ]; then
-            echo "Could not find visible INSTEAD window for action $action" >&2
+            echo "Could not find visible INSTEAD window" >&2
             xwininfo -root -tree || true
-            cat "$workspace/test-results/instead-$action.log" >&2 || true
+            cat "$workspace/test-results/instead-session.log" >&2 || true
             exit 1
           fi
 
-          echo "Action: $action; INSTEAD window id: $win"
+          echo "INSTEAD window id: $win"
           xdotool getwindowname "$win" || true
           echo "Setting X11 focus"
           timeout --kill-after=1s 3s xdotool windowfocus --sync "$win"
@@ -200,90 +206,69 @@ jobs:
           sleep 2
 
           # Capture the whole Xvfb screen: importing an OpenGL child window can block.
-          timeout --kill-after=1s 5s import -window root "$workspace/test-results/$prefix-initial.png"
-          test -s "$workspace/test-results/$prefix-initial.png"
+          timeout --kill-after=1s 5s import -window root "$workspace/test-results/instead-session-initial.png"
+          test -s "$workspace/test-results/instead-session-initial.png"
 
-          input_result=0
-          if [ "$action" = "space" ]; then
-            echo "Sending Space keydown"
-            set +e
-            timeout --kill-after=1s 3s xdotool keydown --delay 0 space
-            keydown_result=$?
-            echo "Space keydown exit code: $keydown_result"
-            sleep 0.1
-            echo "Sending Space keyup"
-            timeout --kill-after=1s 3s xdotool keyup --delay 0 space
-            keyup_result=$?
-            echo "Space keyup exit code: $keyup_result"
-            set -e
-            if [ "$keydown_result" -ne 0 ] || [ "$keyup_result" -ne 0 ]; then
-              input_result=1
-            fi
-          elif [ "$action" = "click" ]; then
-            # Calculate the target from the game's client-window geometry. Do not use
-            # mousemove --sync here: SDL/OpenGL may continuously warp/grab the pointer,
-            # making xdotool wait indefinitely even though it issued the move request.
-            geometry="$(xwininfo -id "$win" | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
-            read -r window_width window_height <<< "$geometry"
-            click_x=$((window_width / 2))
-            click_y=$((window_height / 2))
-            echo "Sending mouse click at window-relative coordinates $click_x,$click_y (${window_width}x${window_height})"
-            set +e
-            timeout --kill-after=1s 3s xdotool mousemove --window "$win" "$click_x" "$click_y"
-            move_result=$?
-            echo "Mouse move exit code: $move_result"
-            timeout --kill-after=1s 3s xdotool click --delay 0 1
-            click_result=$?
-            echo "Mouse click exit code: $click_result"
-            set -e
-            if [ "$move_result" -ne 0 ] || [ "$click_result" -ne 0 ]; then
-              input_result=1
-            fi
-          else
-            echo "Unsupported input action: $action" >&2
-            exit 2
+          echo "Sending Space keydown"
+          set +e
+          timeout --kill-after=1s 3s xdotool keydown --delay 0 space
+          keydown_result=$?
+          sleep 0.1
+          echo "Sending Space keyup"
+          timeout --kill-after=1s 3s xdotool keyup --delay 0 space
+          keyup_result=$?
+          set -e
+          echo "Space keydown exit code: $keydown_result; keyup exit code: $keyup_result"
+          if [ "$keydown_result" -ne 0 ] || [ "$keyup_result" -ne 0 ]; then
+            echo "INSTEAD Space input command failed" >&2
+            exit 10
           fi
 
           sleep 2
-          echo "Capturing frame after $action"
-          timeout --kill-after=1s 5s import -window root "$workspace/test-results/$prefix-after.png"
-          test -s "$workspace/test-results/$prefix-after.png"
-          echo "$input_result" > "$workspace/test-results/$action-input-result.txt"
-          if [ "$input_result" -ne 0 ]; then
-            echo "INSTEAD $action input command did not complete successfully" >&2
-            exit 10
+          echo "Capturing frame after Space"
+          timeout --kill-after=1s 5s import -window root "$workspace/test-results/instead-session-after-space.png"
+          test -s "$workspace/test-results/instead-session-after-space.png"
+
+          # Calculate the target from the game's client-window geometry. Do not use
+          # mousemove --sync: SDL/OpenGL can continuously grab the pointer and hang it.
+          geometry="$(xwininfo -id "$win" | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
+          read -r window_width window_height <<< "$geometry"
+          click_x=$((window_width / 2))
+          click_y=$((window_height / 2))
+          echo "Sending mouse click at window-relative coordinates $click_x,$click_y (\${window_width}x\${window_height})"
+          set +e
+          timeout --kill-after=1s 3s xdotool mousemove --window "$win" "$click_x" "$click_y"
+          move_result=$?
+          echo "Mouse move exit code: $move_result"
+          timeout --kill-after=1s 3s xdotool click --delay 0 1
+          click_result=$?
+          echo "Mouse click exit code: $click_result"
+          set -e
+          if [ "$move_result" -ne 0 ] || [ "$click_result" -ne 0 ]; then
+            echo "INSTEAD mouse-click command failed" >&2
+            exit 11
           fi
+
+          sleep 2
+          echo "Capturing frame after mouse click"
+          timeout --kill-after=1s 5s import -window root "$workspace/test-results/instead-session-after-click.png"
+          test -s "$workspace/test-results/instead-session-after-click.png"
           SCRIPT
           chmod +x test-results/capture-instead.sh
 
-          # Run Space and mouse click in separate INSTEAD and Xvfb sessions so a
-          # blocked keyboard event cannot prevent the mouse-input test from running.
-          set +e
-          timeout --signal=TERM --kill-after=3s 35s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            bash test-results/capture-instead.sh space instead-space
-          space_result=$?
-          echo "$space_result" > test-results/space-process-result.txt
-          echo "Space test process exit code: $space_result"
-          timeout --signal=TERM --kill-after=3s 35s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            bash test-results/capture-instead.sh click instead-click
-          click_result=$?
-          echo "$click_result" > test-results/click-process-result.txt
-          echo "Mouse click test process exit code: $click_result"
-          set -e
+          timeout --signal=TERM --kill-after=3s 60s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            bash test-results/capture-instead.sh
 
           python3 - <<'PY'
           from PIL import Image, ImageChops
-          from pathlib import Path
           import sys
 
           transitions = (
-              ("Space", "test-results/instead-space-initial.png", "test-results/instead-space-after.png",
-               "test-results/space-process-result.txt"),
-              ("mouse click", "test-results/instead-click-initial.png", "test-results/instead-click-after.png",
-               "test-results/click-process-result.txt"),
+              ("Space", "test-results/instead-session-initial.png", "test-results/instead-session-after-space.png"),
+              ("mouse click", "test-results/instead-session-after-space.png", "test-results/instead-session-after-click.png"),
           )
           failed = False
-          for action, before_path, after_path, process_result_path in transitions:
+          for action, before_path, after_path in transitions:
               try:
                   with Image.open(before_path) as image:
                       before = image.convert("RGB")
@@ -291,6 +276,11 @@ jobs:
                       after = image.convert("RGB")
               except OSError as error:
                   print(f"INSTEAD {action}: screenshot missing or unreadable: {error}")
+                  failed = True
+                  continue
+
+              if before.size != after.size:
+                  print(f"INSTEAD {action}: screenshot sizes differ: {before.size} vs {after.size}")
                   failed = True
                   continue
 
@@ -308,13 +298,6 @@ jobs:
                   failed = True
               if changed_pixels < 1000:
                   print(f"INSTEAD {action}: no meaningful visible scene change")
-                  failed = True
-              try:
-                  process_result = int(Path(process_result_path).read_text().strip())
-              except (OSError, ValueError):
-                  process_result = 1
-              if process_result != 0:
-                  print(f"INSTEAD {action}: input-session process failed with {process_result}")
                   failed = True
 
           if failed:
