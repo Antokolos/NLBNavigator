@@ -55,7 +55,7 @@ jobs:
             libegl1-mesa-dev libgl1-mesa-dev libdbus-1-dev libibus-1.0-dev \
             libudev-dev libasound2-dev libpulse-dev libsndio-dev libdecor-0-dev \
             libfreetype-dev python3-pil xvfb xauth \
-            instead xdotool imagemagick
+            instead xdotool imagemagick x11-utils
 
       - name: Install SDL3 dependencies with vcpkg
         env:
@@ -141,13 +141,41 @@ jobs:
             printf "Running standalone Russian game module: module_ru.lua\\n" > "$workspace/test-results/instead-reference.log"
             "$bin" -nosound "$game" >> "$workspace/test-results/instead-reference.log" 2>&1 &
             pid=$!
-            for attempt in $(seq 1 20); do
-              win="$(xdotool getactivewindow 2>/dev/null || true)"
-              if [ -n "$win" ]; then break; fi
+            # This CI window manager does not publish _NET_ACTIVE_WINDOW; select the largest
+            # visible X11 window directly instead of asking for the active window.
+            find_game_window() {
+              local win geometry width height area best="" best_area=0
+              while IFS= read -r win; do
+                [ -n "$win" ] || continue
+                geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
+                [ -n "$geometry" ] || continue
+                read -r width height <<< "$geometry"
+                area=$((width * height))
+                if [ "$width" -ge 640 ] && [ "$height" -ge 400 ] && [ "$area" -gt "$best_area" ]; then
+                  best="$win"
+                  best_area="$area"
+                fi
+              done < <(xdotool search --onlyvisible --name '.*' 2>/dev/null || true)
+              printf '%s' "$best"
+            }
+            win=""
+            for attempt in $(seq 1 30); do
+              win="$(find_game_window)"
+              [ -n "$win" ] && break
+              if ! kill -0 "$pid" 2>/dev/null; then
+                echo "INSTEAD exited before creating a window"
+                cat "$workspace/test-results/instead-reference.log"
+                exit 1
+              fi
               sleep 0.5
             done
+            if [ -z "$win" ]; then
+              echo "Could not find visible INSTEAD window; X11 tree follows:"
+              xwininfo -root -tree || true
+              cat "$workspace/test-results/instead-reference.log" || true
+              exit 1
+            fi
             sleep 3
-            win="$(xdotool getactivewindow)"
             import -window "$win" "$workspace/test-results/instead-initial.png"
             xdotool key --window "$win" --clearmodifiers space
             sleep 1
