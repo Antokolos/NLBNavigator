@@ -32,7 +32,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
-      VCPKG_ROOT: ${{ runner.temp }}/vcpkg
       GAME_REF: ${{ github.event.inputs.game_ref || 'master' }}
       REFERENCE_REF: ${{ github.event.inputs.reference_ref || 'main' }}
     steps:
@@ -55,6 +54,8 @@ jobs:
             libfreetype-dev xvfb xauth
 
       - name: Install SDL3 dependencies with vcpkg
+        env:
+          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
         run: |
           git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
           "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
@@ -63,6 +64,8 @@ jobs:
             --triplet x64-linux
 
       - name: Configure NLBNavigator
+        env:
+          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
         run: |
           cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
