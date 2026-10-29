@@ -108,6 +108,38 @@ jobs:
           test -d test-data/instead-am_i_a_monster_vn
           find test-data/instead-am_i_a_monster_vn -maxdepth 2 -type f | head -n 30
 
+      - name: Run scripted wolfman smoke test
+        run: |
+          mkdir -p test-results
+          cat > test-data/wolfman-smoke.txt <<'EOF'
+          # Verify the initial scene renders and the player processes a next-page input.
+          wait:250
+          shot:test-results/wolfman-initial.png
+          key:space
+          wait:250
+          shot:test-results/wolfman-after-space.png
+          EOF
+          set +e
+          timeout 60s xvfb-run -a env SDL_AUDIODRIVER=dummy \
+            ./build/nlb_sdl test-data/wolfman vn --no-sound \
+            --window 1280x720 --script test-data/wolfman-smoke.txt \
+            > test-results/wolfman-script.log 2>&1
+          result=$?
+          set -e
+          cat test-results/wolfman-script.log
+          test "$result" -eq 0
+          test -s test-results/wolfman-initial.png
+          test -s test-results/wolfman-after-space.png
+          ! grep -q '\\[НЕ ВЫПОЛНЕНО\\]' test-results/wolfman-script.log
+
+      - name: Validate INSTEAD reference export
+        run: |
+          test -s test-data/instead-am_i_a_monster_vn/main.lua
+          test -d test-data/instead-am_i_a_monster_vn/images
+          test -d test-data/instead-am_i_a_monster_vn/themes
+          find test-data/instead-am_i_a_monster_vn/images -type f | grep -q .
+          printf 'Reference export structure OK\\n' | tee test-results/reference-validation.log
+
       - name: Upload build and preparation logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -116,5 +148,6 @@ jobs:
           path: |
             nlb_sdl-usage.log
             build/CMakeCache.txt
+            test-results/
           if-no-files-found: warn
           retention-days: 14
