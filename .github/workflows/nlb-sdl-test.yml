@@ -145,44 +145,21 @@ jobs:
             wait "$pid" 2>/dev/null || true
           }
           trap cleanup EXIT
-          find_game_window() {
-            local win geometry width height area best="" best_area=0
-            while IFS= read -r win; do
-              [ -n "$win" ] || continue
-              geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
-              [ -n "$geometry" ] || continue
-              read -r width height <<< "$geometry"
-              area=$((width * height))
-              if [ "$width" -ge 640 ] && [ "$height" -ge 400 ] && [ "$area" -gt "$best_area" ]; then
-                best="$win"
-                best_area="$area"
-              fi
-            done < <(xdotool search --onlyvisible --name ".*" 2>/dev/null || true)
-            printf '%s' "$best"
-          }
-          win=""
+          echo "DISPLAY=${DISPLAY:-<unset>}"
           for attempt in $(seq 1 30); do
-            win="$(find_game_window)"
-            [ -n "$win" ] && break
             if ! kill -0 "$pid" 2>/dev/null; then
-              echo "INSTEAD exited before creating a window"
+              echo "INSTEAD exited before screenshot capture"
               cat "$workspace/test-results/instead-reference.log"
               exit 1
             fi
             sleep 0.5
           done
-          if [ -z "$win" ]; then
-            echo "Could not find visible INSTEAD window; X11 tree follows:"
-            xwininfo -root -tree || true
-            cat "$workspace/test-results/instead-reference.log" || true
-            exit 1
-          fi
-          echo "Capturing INSTEAD window id: $win"
-          sleep 3
-          import -window "$win" "$workspace/test-results/instead-initial.png"
-          xdotool key --window "$win" --clearmodifiers space
+          # Capture the Xvfb root screen instead of depending on window IDs or a window manager.
+          sleep 2
+          import -window root "$workspace/test-results/instead-initial.png"
+          xdotool key --clearmodifiers space
           sleep 1
-          import -window "$win" "$workspace/test-results/instead-after-space.png"
+          import -window root "$workspace/test-results/instead-after-space.png"
           SCRIPT
           chmod +x test-results/capture-instead.sh
           set +e
@@ -192,7 +169,6 @@ jobs:
           if [ "$result" -ne 0 ]; then
             echo "INSTEAD reference capture failed with exit code $result"
             cat test-results/instead-reference.log || true
-            xwininfo -root -tree || true
             exit "$result"
           fi
           python3 - <<'PY'
