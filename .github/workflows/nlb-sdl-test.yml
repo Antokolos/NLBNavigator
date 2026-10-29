@@ -55,7 +55,7 @@ jobs:
             libegl1-mesa-dev libgl1-mesa-dev libdbus-1-dev libibus-1.0-dev \
             libudev-dev libasound2-dev libpulse-dev libsndio-dev libdecor-0-dev \
             libfreetype-dev python3-pil xvfb xauth \
-            instead xdotool imagemagick x11-utils
+            instead xdotool imagemagick x11-utils openbox
 
       - name: Install SDL3 dependencies with vcpkg
         env:
@@ -127,40 +127,102 @@ jobs:
           cat > test-results/capture-instead.sh <<'SCRIPT'
           #!/usr/bin/env bash
           set -euo pipefail
-          workspace="${GITHUB_WORKSPACE:-$PWD}"
+          workspace="\${GITHUB_WORKSPACE:-$PWD}"
           game="$workspace/test-data/instead-am_i_a_monster_vn"
           bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
           test -s "$game/luapassing.lua"
           test -s "$game/module_ru.lua"
+
           # Replace main.lua only in this disposable CI checkout to bypass the menu wrapper.
           cp "$game/main.lua" "$workspace/test-results/instead-menu-main.lua"
           cp "$game/module_ru.lua" "$game/main.lua"
           cd "$game"
           export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
           printf 'Running standalone Russian game module: module_ru.lua\n' > "$workspace/test-results/instead-reference.log"
+
+          # Use a real window manager so the game can receive keyboard focus reliably.
+          openbox --sm-disable > "$workspace/test-results/openbox.log" 2>&1 &
+          wm_pid=$!
+          sleep 1
           "$bin" -nosound "$game" >> "$workspace/test-results/instead-reference.log" 2>&1 &
           pid=$!
           cleanup() {
             kill "$pid" 2>/dev/null || true
             wait "$pid" 2>/dev/null || true
+            kill "$wm_pid" 2>/dev/null || true
+            wait "$wm_pid" 2>/dev/null || true
           }
           trap cleanup EXIT
-          echo "DISPLAY=${DISPLAY:-<unset>}"
+
+          find_game_window() {
+            local win geometry width height area best="" best_area=0
+            while IFS= read -r win; do
+              [ -n "$win" ] || continue
+              geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
+              [ -n "$geometry" ] || continue
+              read -r width height <<< "$geometry"
+              area=$((width * height))
+              if [ "$width" -ge 640 ] && [ "$height" -ge 400 ] && [ "$area" -gt "$best_area" ]; then
+                best="$win"
+                best_area="$area"
+              fi
+            done < <(xdotool search --onlyvisible --name ".*" 2>/dev/null || true)
+            printf '%s' "$best"
+          }
+
+          win=""
           for attempt in $(seq 1 30); do
+            win="$(find_game_window)"
+            [ -n "$win" ] && break
             if ! kill -0 "$pid" 2>/dev/null; then
-              echo "INSTEAD exited before screenshot capture"
+              echo "INSTEAD exited before creating a visible window"
               cat "$workspace/test-results/instead-reference.log"
+              cat "$workspace/test-results/openbox.log" || true
               exit 1
             fi
             sleep 0.5
           done
-          # Capture the Xvfb root screen instead of depending on window IDs or a window manager.
+          if [ -z "$win" ]; then
+            echo "Could not find visible INSTEAD window; X11 tree follows:"
+            xwininfo -root -tree || true
+            cat "$workspace/test-results/instead-reference.log" || true
+            cat "$workspace/test-results/openbox.log" || true
+            exit 1
+          fi
+
+          echo "INSTEAD window id: $win"
+          xdotool getwindowname "$win" || true
+          activate_game() {
+            xdotool windowactivate --sync "$win"
+            xdotool windowfocus --sync "$win"
+          }
+          park_pointer() {
+            xdotool mousemove --sync 1910 1070
+            sleep 0.2
+          }
+
+          # Allow the startup dissolve to settle before taking the baseline screenshot.
+          activate_game
           sleep 2
-          import -window root "$workspace/test-results/instead-initial.png"
+          park_pointer
+          import -window "$win" "$workspace/test-results/instead-initial.png"
+
+          # First input path: keyboard Space.
+          activate_game
           xdotool key --clearmodifiers space
-          sleep 1
-          import -window root "$workspace/test-results/instead-after-space.png"
+          sleep 2
+          park_pointer
+          import -window "$win" "$workspace/test-results/instead-after-space.png"
+
+          # Second input path: click in the middle of the game viewport.
+          activate_game
+          xdotool mousemove --sync 960 540
+          xdotool click --clearmodifiers 1
+          sleep 2
+          park_pointer
+          import -window "$win" "$workspace/test-results/instead-after-click.png"
           SCRIPT
+          chmod +x test-results/capture-instead.sh
           chmod +x test-results/capture-instead.sh
           set +e
           timeout --signal=TERM 25s xvfb-run -a -s "-screen 0 1920x1080x24" bash test-results/capture-instead.sh
@@ -172,14 +234,38 @@ jobs:
             exit "$result"
           fi
           python3 - <<'PY'
-          from PIL import Image
+          from PIL import Image, ImageChops
           import sys
-          for path in ("test-results/instead-initial.png", "test-results/instead-after-space.png"):
+
+          paths = (
+              "test-results/instead-initial.png",
+              "test-results/instead-after-space.png",
+              "test-results/instead-after-click.png",
+          )
+          images = {}
+          for path in paths:
               with Image.open(path) as image:
-                  colors = len(image.convert("RGB").getcolors(maxcolors=2_000_000) or [])
+                  rgb = image.convert("RGB")
+                  colors = len(rgb.getcolors(maxcolors=2_000_000) or [])
+                  images[path] = rgb.copy()
               print(f"{path}: {colors} distinct RGB colors")
               if colors < 1000:
                   sys.exit(f"INSTEAD screenshot appears blank: {path}")
+
+          transitions = (
+              ("Space", paths[0], paths[1]),
+              ("mouse click", paths[1], paths[2]),
+          )
+          for action, before_path, after_path in transitions:
+              diff = ImageChops.difference(images[before_path], images[after_path])
+              changed_pixels = sum(1 for pixel in diff.getdata() if pixel != (0, 0, 0))
+              fraction = changed_pixels / (images[before_path].width * images[before_path].height)
+              print(f"INSTEAD {action}: {changed_pixels} changed pixels ({fraction:.3%})")
+              if changed_pixels < 1000:
+                  sys.exit(
+                      f"INSTEAD did not visibly advance after {action}: "
+                      f"only {changed_pixels} pixels changed"
+                  )
           PY
 
       - name: Run scripted wolfman smoke test
