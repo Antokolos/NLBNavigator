@@ -122,6 +122,7 @@ jobs:
           set +e
           timeout 60s xvfb-run -a env SDL_AUDIODRIVER=dummy \
             ./build/nlb_sdl test-data/wolfman vn --no-sound \
+            --theme test-data/instead-am_i_a_monster_vn/themes/default \
             --window 1280x720 --script test-data/wolfman-smoke.txt \
             > test-results/wolfman-script.log 2>&1
           result=$?
