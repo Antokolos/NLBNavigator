@@ -220,9 +220,16 @@ jobs:
               input_result=1
             fi
           elif [ "$action" = "click" ]; then
-            echo "Sending mouse click at Xvfb coordinates 960,540"
+            # Calculate the target from the game's client-window geometry. Do not use
+            # mousemove --sync here: SDL/OpenGL may continuously warp/grab the pointer,
+            # making xdotool wait indefinitely even though it issued the move request.
+            geometry="$(xwininfo -id "$win" | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
+            read -r window_width window_height <<< "$geometry"
+            click_x=$((window_width / 2))
+            click_y=$((window_height / 2))
+            echo "Sending mouse click at window-relative coordinates $click_x,$click_y (${window_width}x${window_height})"
             set +e
-            timeout --kill-after=1s 3s xdotool mousemove --sync 960 540
+            timeout --kill-after=1s 3s xdotool mousemove --window "$win" "$click_x" "$click_y"
             move_result=$?
             echo "Mouse move exit code: $move_result"
             timeout --kill-after=1s 3s xdotool click --delay 0 1
