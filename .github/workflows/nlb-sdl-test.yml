@@ -216,10 +216,16 @@ jobs:
           park_pointer
           capture_screen "$workspace/test-results/instead-initial.png"
 
-          # First input path: keyboard Space.
+          # First input path: keyboard Space. Avoid --clearmodifiers: it invokes extra
+          # X11 keymap operations and is unnecessary for this test's unmodified Space key.
           activate_game
-          echo "Sending Space to INSTEAD"
-          timeout 5s xdotool key --clearmodifiers space
+          echo "Sending Space keydown to INSTEAD"
+          timeout --kill-after=1s 3s xdotool keydown --delay 0 space
+          echo "Space keydown sent; holding briefly"
+          sleep 0.1
+          echo "Sending Space keyup to INSTEAD"
+          timeout --kill-after=1s 3s xdotool keyup --delay 0 space
+          echo "Space press/release completed"
           sleep 2
           park_pointer
           capture_screen "$workspace/test-results/instead-after-space.png"
@@ -227,15 +233,16 @@ jobs:
           # Second input path: click in the middle of the game viewport.
           activate_game
           echo "Sending mouse click to INSTEAD at Xvfb coordinates 960,540"
-          timeout 5s xdotool mousemove --sync 960 540
-          timeout 5s xdotool click --clearmodifiers 1
+          timeout --kill-after=1s 3s xdotool mousemove --sync 960 540
+          timeout --kill-after=1s 3s xdotool click --delay 0 1
+          echo "Mouse click completed"
           sleep 2
           park_pointer
           capture_screen "$workspace/test-results/instead-after-click.png"
           SCRIPT
           chmod +x test-results/capture-instead.sh
           set +e
-          timeout --signal=TERM 45s xvfb-run -a -s "-screen 0 1920x1080x24" bash test-results/capture-instead.sh
+          timeout --signal=TERM --kill-after=3s 45s xvfb-run -a -s "-screen 0 1920x1080x24" bash test-results/capture-instead.sh
           result=$?
           set -e
           if [ "$result" -ne 0 ]; then
