@@ -21,6 +21,7 @@ name: NLB SDL manual test
       - CMakeLists.txt
       - Source/NLBSdl/**
       - Source/NLBAudioSDL/**
+      - tests/differential/**
 
 permissions:
   contents: read
