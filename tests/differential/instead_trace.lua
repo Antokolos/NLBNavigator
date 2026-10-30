@@ -43,23 +43,19 @@ iface.fmt = function(self, command, state_changed, moved, room_text, action_text
     end
 
     local fields = {
-        os.time(),
-        command,
-        location and location.nlbid or "",
-        location and location.nam or "",
-        background,
-        rendered,
-        room_text,
-        action_text,
-        objects_text,
-        player_text,
-        _wolfiness,
-        _hp
+        encode_field(os.time()),
+        encode_field(command),
+        encode_field(location and location.nlbid or ""),
+        encode_field(location and location.nam or ""),
+        encode_field(background),
+        encode_field(rendered),
+        encode_field(room_text),
+        encode_field(action_text),
+        encode_field(objects_text),
+        encode_field(player_text),
+        encode_field(_wolfiness),
+        encode_field(_hp)
     }
-
-    for index = 1, #fields do
-        fields[index] = encode_field(fields[index])
-    end
     trace:write(table.concat(fields, "\t") .. "\n")
     trace:flush()
     return rendered
