@@ -12,6 +12,7 @@ if not trace then
 end
 
 local original_format = iface.fmt
+local last_story_rendered = ""
 
 local function page_id(location)
     if location and location.nlbid then
@@ -41,21 +42,22 @@ trace:write("# epoch\tcommand\tpage_id\tpage_name\tbackground\trendered\troom_te
 trace:flush()
 
 iface.fmt = function(self, command, state_changed, moved, room_text, action_text, objects_text, player_text)
+    -- Preserve the exact return value from INSTEAD. The trace adapter must
+    -- never alter the text that the game displays.
     local rendered, extra = original_format(
         self, command, state_changed, moved,
         room_text, action_text, objects_text, player_text
     )
 
-    -- iface.fmt may be called for inventory refreshes after the VN text was rendered.
-    -- Capture the paginator output, not the inventory window returned by original_format.
-    local displayed_text = game and game._lastdisp
-    if type(displayed_text) == "string" and displayed_text ~= "" then
-        rendered = displayed_text
-    elseif nlb and nlb.lasttext then
-        local story_text = nlb:lasttext()
-        if story_text ~= "" then
-            rendered = story_text
-        end
+    -- Inventory refreshes happen after the VN text was rendered. Keep the
+    -- last non-empty story output so an inventory update cannot replace it.
+    if command ~= "inv" and type(rendered) == "string" and rendered:match("%S") then
+        last_story_rendered = rendered
+    end
+
+    local trace_rendered = rendered
+    if command == "inv" and last_story_rendered ~= "" then
+        trace_rendered = last_story_rendered
     end
 
     local location = nlb:curloc()
@@ -77,7 +79,7 @@ iface.fmt = function(self, command, state_changed, moved, room_text, action_text
         encode_field(page_id(location)),
         encode_field(location and location.nam or ""),
         encode_field(background),
-        encode_field(rendered),
+        encode_field(trace_rendered),
         encode_field(room_text),
         encode_field(action_text),
         encode_field(objects_text),
