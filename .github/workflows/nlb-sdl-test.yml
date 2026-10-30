@@ -138,9 +138,10 @@ jobs:
 
       - name: Validate differential test definitions
         run: |
-          python3 -m py_compile tests/differential/run_route.py
+          python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py
           python3 -m json.tool tests/differential/catalog.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-opening.json > /dev/null
+          python3 tests/differential/validate_catalog.py
           python3 tests/differential/run_route.py --help
 
       - name: Run shared route in INSTEAD
