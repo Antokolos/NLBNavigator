@@ -453,6 +453,7 @@ def run_instead(args, route, output_dir):
         if focus.returncode != 0:
             raise RuntimeError("Не удалось передать фокус окну INSTEAD")
 
+        last_trace_count = 0
         for step in route["steps"]:
             if player.poll() is not None:
                 raise RuntimeError("INSTEAD завершился на шаге " + step["id"])
@@ -464,10 +465,12 @@ def run_instead(args, route, output_dir):
             capture_root(path, window)
             records.append({"id": step["id"], "screenshot": str(path)})
             latest_trace = read_instead_trace(trace_path)
-            if latest_trace:
+            if len(latest_trace) > last_trace_count:
                 state_record = dict(latest_trace[-1])
                 state_record["step_id"] = step["id"]
+                state_record["trace_count"] = len(latest_trace)
                 state_records.append(state_record)
+                last_trace_count = len(latest_trace)
     finally:
         if player is not None and player.poll() is None:
             player.terminate()
