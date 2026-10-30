@@ -122,6 +122,13 @@ jobs:
           git -C test-data/instead sparse-checkout set themes/default
           test -s test-data/instead/themes/default/theme.ini
 
+      - name: Validate differential test definitions
+        run: |
+          python3 -m py_compile tests/differential/run_route.py
+          python3 -m json.tool tests/differential/catalog.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-opening.json > /dev/null
+          python3 tests/differential/run_route.py --help
+
       - name: Run shared route in INSTEAD
         run: |
           mkdir -p test-results
