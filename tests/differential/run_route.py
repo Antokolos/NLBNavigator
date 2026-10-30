@@ -420,7 +420,9 @@ def run_instead(args, route, output_dir):
         shutil.copy2(original_main, game / "main.lua")
 
     report = validate_run(route, output_dir, "instead", [], None)
-    report["steps"] = records
+    record_by_id = {record["id"]: record for record in records}
+    for step_result in report["steps"]:
+        step_result.update(record_by_id.get(step_result["id"], {}))
     report["state_validation"] = (
         "not available: INSTEAD test adapter currently captures screenshots and input only"
     )
