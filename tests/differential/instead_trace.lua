@@ -13,6 +13,23 @@ end
 
 local original_format = iface.fmt
 
+local function page_id(location)
+    if location and location.nlbid then
+        return tostring(location.nlbid)
+    end
+    -- STEAD2 exports UUID page names as globals such as v_f124...; the room
+    -- object itself does not necessarily expose the UUID as an nlbid field.
+    for name, value in pairs(_G) do
+        if value == location then
+            local id = tostring(name):match("^v_([%x]+_[%x]+_[%x]+_[%x]+_[%x]+)$")
+            if id then
+                return (id:gsub("_", "-"))
+            end
+        end
+    end
+    return ""
+end
+
 local function encode_field(value)
     local text = value == nil and "" or tostring(value)
     return (text:gsub("[%%\t\r\n]", function(character)
