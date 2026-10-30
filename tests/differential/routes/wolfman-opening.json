@@ -56,7 +56,8 @@
         "image_suffix": "1.png",
         "min_changed_pixels": 1000,
         "instead_background_suffix": "1.jpg",
-        "instead_text_contains": "Интересно, сколько я тут валяюсь"
+        "instead_text_contains": "Интересно, сколько я тут валяюсь",
+        "text_contains": "Интересно, сколько я тут валяюсь"
       }
     }
   ],
