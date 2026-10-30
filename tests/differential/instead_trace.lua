@@ -62,7 +62,7 @@ iface.fmt = function(self, command, state_changed, moved, room_text, action_text
     local fields = {
         encode_field(os.time()),
         encode_field(command),
-        encode_field(location and location.nlbid or ""),
+        encode_field(page_id(location)),
         encode_field(location and location.nam or ""),
         encode_field(background),
         encode_field(rendered),
