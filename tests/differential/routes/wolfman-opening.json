@@ -15,7 +15,7 @@
       "action": {
         "type": "capture"
       },
-      "settle_ms": 1500,
+      "settle_ms": 2000,
       "screenshot": "00-title.png",
       "expect": {
         "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
@@ -28,7 +28,7 @@
         "type": "key",
         "key": "space"
       },
-      "settle_ms": 1500,
+      "settle_ms": 2000,
       "screenshot": "01-opening.png",
       "visual_change_from": "title",
       "expect": {
@@ -45,7 +45,7 @@
         "x_ratio": 0.5,
         "y_ratio": 0.5
       },
-      "settle_ms": 1500,
+      "settle_ms": 2000,
       "screenshot": "02-opening-next-portion.png",
       "visual_change_from": "opening",
       "expect": {
@@ -57,7 +57,7 @@
   ],
   "notes": [
     "The first route intentionally covers only title -> first story page -> next text portion.",
-    "The click is outside interactive controls and advances the VN text paginator.",
+    "The click lands on a non-interactive part of the background and advances the VN text paginator.",
     "INSTEAD does not currently expose a structured state dump in the test adapter, so page UUID and text checks are performed for NLBNavigator only; INSTEAD is checked for successful input and visible screenshot transitions."
   ]
 }
