@@ -77,7 +77,7 @@ def main():
             "REFERENCE_REF": "reference_ref",
             "BASE_THEME_REF": "base_theme_ref",
         }[variable]
-        default_pattern = r"{}\s*:\s*\n\s*description:.*\n\s*required:\s*true\n\s*default:\s*'?" + re.escape(sha)
+        default_pattern = r"{}\s*:\s*\n\s*description:.*\n\s*required:\s*true\n\s*default:\s*[\"']?".format(input_name) + re.escape(sha)
         if not re.search(default_pattern, workflow):
             return fail("workflow_dispatch input {} не использует тот же pinned SHA".format(input_name))
 
