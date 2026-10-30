@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-opening",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — начальные переходы",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "steps": [
+    {
+      "id": "title",
+      "action": {
+        "type": "capture"
+      },
+      "settle_ms": 1500,
+      "screenshot": "00-title.png",
+      "expect": {
+        "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "image_suffix": "title.png"
+      }
+    },
+    {
+      "id": "opening",
+      "action": {
+        "type": "key",
+        "key": "space"
+      },
+      "settle_ms": 1500,
+      "screenshot": "01-opening.png",
+      "visual_change_from": "title",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "text_contains": "Вы очнулись лежащим посреди тротуара",
+        "min_changed_pixels": 1000
+      }
+    },
+    {
+      "id": "opening-next-portion",
+      "action": {
+        "type": "click",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5
+      },
+      "settle_ms": 1500,
+      "screenshot": "02-opening-next-portion.png",
+      "visual_change_from": "opening",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "min_changed_pixels": 1000
+      }
+    }
+  ],
+  "notes": [
+    "The first route intentionally covers only title -> first story page -> next text portion.",
+    "The click is outside interactive controls and advances the VN text paginator.",
+    "INSTEAD does not currently expose a structured state dump in the test adapter, so page UUID and text checks are performed for NLBNavigator only; INSTEAD is checked for successful input and visible screenshot transitions."
+  ]
+}
