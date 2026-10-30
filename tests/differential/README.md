@@ -39,6 +39,7 @@ python3 tests/differential/run_route.py \
   --runtime instead \
   --route tests/differential/routes/wolfman-opening.json \
   --game test-data/instead-am_i_a_monster_vn \
+  --base-theme test-data/instead/themes/default \
   --output test-results/instead
 ~~~
 
