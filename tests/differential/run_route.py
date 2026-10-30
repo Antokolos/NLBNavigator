@@ -125,6 +125,7 @@ def screenshot_path(output_dir, step):
 def validate_run(route, output_dir, runtime, screen_records, log_path=None, state_records=None):
     errors = []
     step_results = []
+    text_checks = []
     by_id = {step["id"]: step for step in route["steps"]}
     for step in route["steps"]:
         path = screenshot_path(output_dir, step)
@@ -198,8 +199,15 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                     )
                 )
             fragment = expected.get("text_contains")
-            if fragment and fragment not in log_text:
-                errors.append("{}: в журнале нет ожидаемого текста {!r}".format(step["id"], fragment))
+            if fragment:
+                passed = fragment in log_text
+                text_checks.append({
+                    "step_id": step["id"],
+                    "expected_fragment": fragment,
+                    "passed": passed,
+                })
+                if not passed:
+                    errors.append("{}: в журнале нет ожидаемого текста {!r}".format(step["id"], fragment))
 
     if runtime == "instead":
         state_by_id = {record["step_id"]: record for record in (state_records or [])}
@@ -223,10 +231,24 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                     )
                 )
             fragment = expected.get("instead_text_contains")
-            if fragment and fragment not in record.get("rendered", ""):
-                errors.append("{}: INSTEAD в отображённом тексте нет {!r}".format(step["id"], fragment))
+            if fragment:
+                passed = fragment in record.get("rendered", "")
+                text_checks.append({
+                    "step_id": step["id"],
+                    "expected_fragment": fragment,
+                    "passed": passed,
+                    "rendered_text": record.get("rendered", ""),
+                })
+                if not passed:
+                    errors.append("{}: INSTEAD в отображённом тексте нет {!r}".format(step["id"], fragment))
 
-    return {"runtime": runtime, "ok": not errors, "steps": step_results, "errors": errors}
+    return {
+        "runtime": runtime,
+        "ok": not errors,
+        "steps": step_results,
+        "text_checks": text_checks,
+        "errors": errors,
+    }
 
 
 def script_for_nlbnavigator(route, output_dir):
@@ -601,10 +623,37 @@ def compare_runtimes(route, output_dir):
             with report_path.open("r", encoding="utf-8") as source:
                 runtime_reports[runtime_name] = json.load(source).get("metadata", {})
 
+    runtime_checks = {}
+    for runtime_name in ("instead", "nlbnavigator"):
+        report_path = output_dir / runtime_name / "route-report.json"
+        if report_path.is_file():
+            with report_path.open("r", encoding="utf-8") as source:
+                runtime_checks[runtime_name] = json.load(source).get("text_checks", [])
+
+    text_comparison = []
+    for step in route["steps"]:
+        expected_instead = step.get("expect", {}).get("instead_text_contains")
+        expected_nlb = step.get("expect", {}).get("text_contains")
+        if expected_instead or expected_nlb:
+            text_comparison.append({
+                "step_id": step["id"],
+                "instead_expected_fragment": expected_instead,
+                "nlbnavigator_expected_fragment": expected_nlb,
+                "instead_check": next(
+                    (item for item in runtime_checks.get("instead", []) if item["step_id"] == step["id"]),
+                    None,
+                ),
+                "nlbnavigator_check": next(
+                    (item for item in runtime_checks.get("nlbnavigator", []) if item["step_id"] == step["id"]),
+                    None,
+                ),
+            })
+
     report = {
         "route": route["id"],
         "comparison_is_advisory": True,
         "runtime_metadata": runtime_reports,
+        "text_comparison": text_comparison,
         "ok": not errors,
         "steps": results,
         "errors": errors,
