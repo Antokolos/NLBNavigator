@@ -401,7 +401,7 @@ def capture_root(path, window_bounds):
         root_path.unlink(missing_ok=True)
 
 
-def execute_instead_action(action, window_id, window_size):
+def execute_instead_action(action, window_bounds):
     kind = action["type"]
     if kind == "capture":
         return
@@ -415,21 +415,35 @@ def execute_instead_action(action, window_id, window_size):
             timeout_command(["xdotool", "keyup", "--delay", "0", key], 3), 5
         )
         if down.returncode != 0 or up.returncode != 0:
-            raise RuntimeError("INSTEAD: не удалось отправить нажатие {}".format(key))
+            raise RuntimeError(
+                "INSTEAD: не удалось отправить нажатие {} (keydown={}, keyup={})".format(
+                    key, down.stdout.strip(), up.stdout.strip()
+                )
+            )
         return
     if kind == "click":
-        width, height = window_size
-        x = round(float(action["x_ratio"]) * width)
-        y = round(float(action["y_ratio"]) * height)
-        # Не использовать --sync: SDL/OpenGL может удерживать указатель и блокировать ожидание.
+        _, _, window_x, window_y, width, height = window_bounds
+        x = window_x + min(width - 1, round(float(action["x_ratio"]) * width))
+        y = window_y + min(height - 1, round(float(action["y_ratio"]) * height))
+        # Use absolute X11 screen coordinates; --window can hang with SDL/OpenGL windows.
         move = run_command(
-            timeout_command(["xdotool", "mousemove", "--window", window_id, str(x), str(y)], 3), 5
+            timeout_command(["xdotool", "mousemove", str(x), str(y)], 3), 5
         )
+        if move.returncode != 0:
+            raise RuntimeError(
+                "INSTEAD: не удалось переместить указатель в ({}, {}): {}".format(
+                    x, y, move.stdout.strip() or "exit code {}".format(move.returncode)
+                )
+            )
         click = run_command(
             timeout_command(["xdotool", "click", "--delay", "0", "1"], 3), 5
         )
-        if move.returncode != 0 or click.returncode != 0:
-            raise RuntimeError("INSTEAD: не удалось выполнить щелчок")
+        if click.returncode != 0:
+            raise RuntimeError(
+                "INSTEAD: не удалось отправить щелчок в ({}, {}): {}".format(
+                    x, y, click.stdout.strip() or "exit code {}".format(click.returncode)
+                )
+            )
         return
     raise ValueError("Неизвестное действие INSTEAD: " + kind)
 
@@ -543,7 +557,7 @@ def run_instead(args, route, output_dir):
         for step in route["steps"]:
             if player.poll() is not None:
                 raise RuntimeError("INSTEAD завершился на шаге " + step["id"])
-            execute_instead_action(step["action"], window_id, (window_width, window_height))
+            execute_instead_action(step["action"], window)
             delay = int(step.get("settle_ms", 0))
             if delay > 0:
                 time.sleep(delay / 1000.0)
