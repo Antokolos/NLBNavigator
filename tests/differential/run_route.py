@@ -428,8 +428,11 @@ def read_instead_trace(path):
 
 def run_instead(args, route, output_dir):
     game = Path(args.game).resolve()
+    base_theme = Path(args.base_theme).resolve()
     if not (game / "module_ru.lua").is_file() or not (game / "main.lua").is_file():
         raise RuntimeError("В каталоге игры нужны main.lua и module_ru.lua: " + str(game))
+    if not (base_theme / "theme.ini").is_file():
+        raise RuntimeError("В каталоге базовой темы нет theme.ini: " + str(base_theme))
 
     output_dir.mkdir(parents=True, exist_ok=True)
     isolated_home = output_dir / "isolated-home"
@@ -472,7 +475,13 @@ def run_instead(args, route, output_dir):
         wm = subprocess.Popen(["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env)
         time.sleep(1)
         player = subprocess.Popen(
-            [binary, "-nosound", str(game)], cwd=game, env=env,
+            [
+                binary, "-nosound",
+                "-themespath", str(base_theme.parent),
+                "-theme", "default",
+                str(game),
+            ],
+            cwd=game, env=env,
             stdout=session_log, stderr=subprocess.STDOUT
         )
 
@@ -541,6 +550,7 @@ def run_instead(args, route, output_dir):
     report["state_validation"] = "INSTEAD Lua trace captures page UUID, background, rendered text and selected story variables."
     report["metadata"] = route_metadata(args.route, route, __file__)
     report["metadata"]["instead_export_commit"] = git_commit(game)
+    report["metadata"]["base_theme_commit"] = git_commit(base_theme)
     write_json(output_dir / "route-report.json", report)
     if not report["ok"]:
         raise RuntimeError("Проверка INSTEAD не прошла: " + "; ".join(report["errors"]))
@@ -616,6 +626,7 @@ def parse_args():
     parser.add_argument("--theme", help="Тема книги для NLBNavigator")
     parser.add_argument("--base-theme", help="Базовая тема INSTEAD для NLBNavigator")
     parser.add_argument("--game", help="Каталог экспорта INSTEAD")
+    parser.add_argument("--base-theme", help="Каталог базовой темы INSTEAD (theme.ini)")
     parser.add_argument("--instead-binary", help="Путь к sdl-instead")
     parser.add_argument("--timeout", type=int, default=90)
     return parser.parse_args()
@@ -635,6 +646,8 @@ def main():
     elif args.runtime == "instead":
         if not args.game:
             raise ValueError("Для instead требуется --game")
+        if not args.base_theme:
+            raise ValueError("Для instead требуется --base-theme")
         report = run_instead(args, route, output_dir)
     else:
         report = compare_runtimes(route, output_dir)
