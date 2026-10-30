@@ -97,6 +97,15 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None):
         try:
             stats = screenshot_stats(path)
             result.update(stats)
+            expected_window = route.get("window", {})
+            expected_size = (int(expected_window.get("width", 0)), int(expected_window.get("height", 0)))
+            actual_size = (stats["width"], stats["height"])
+            if expected_size != (0, 0) and actual_size != expected_size:
+                errors.append(
+                    "{}: размер кадра {}x{}, ожидался {}x{}".format(
+                        step["id"], actual_size[0], actual_size[1], expected_size[0], expected_size[1]
+                    )
+                )
             if stats["colors"] < 1000:
                 errors.append("{}: кадр пустой или почти одноцветный".format(step["id"]))
         except (OSError, RuntimeError) as error:
@@ -260,20 +269,34 @@ def find_instead_window(pid):
     candidates = []
     for window_id in result.stdout.split():
         info = run_command(["xwininfo", "-id", window_id], 3)
+        x_match = re.search(r"Absolute upper-left X:\s+(-?\d+)", info.stdout)
+        y_match = re.search(r"Absolute upper-left Y:\s+(-?\d+)", info.stdout)
         width_match = re.search(r"Width:\s+(\d+)", info.stdout)
         height_match = re.search(r"Height:\s+(\d+)", info.stdout)
-        if not width_match or not height_match:
+        if not x_match or not y_match or not width_match or not height_match:
             continue
+        x, y = int(x_match.group(1)), int(y_match.group(1))
         width, height = int(width_match.group(1)), int(height_match.group(1))
         if width >= 640 and height >= 400:
-            candidates.append((width * height, window_id, width, height))
+            candidates.append((width * height, window_id, x, y, width, height))
     return max(candidates) if candidates else None
 
 
-def capture_root(path):
-    result = run_command(timeout_command(["import", "-window", "root", str(path)], 5), 7)
-    if result.returncode != 0 or not path.is_file() or path.stat().st_size == 0:
+def capture_root(path, window_bounds):
+    Image, _, _ = image_api()
+    root_path = path.with_suffix(path.suffix + ".root.png")
+    result = run_command(timeout_command(["import", "-window", "root", str(root_path)], 5), 7)
+    if result.returncode != 0 or not root_path.is_file() or root_path.stat().st_size == 0:
         raise RuntimeError("Не удалось снять X11-экран {}: {}".format(path, result.stdout))
+    _, _, x, y, width, height = window_bounds
+    try:
+        with Image.open(root_path) as root_image:
+            frame = root_image.convert("RGB").crop((x, y, x + width, y + height))
+            if frame.size != (width, height):
+                raise RuntimeError("Не удалось обрезать INSTEAD кадр по геометрии окна")
+            frame.save(path)
+    finally:
+        root_path.unlink(missing_ok=True)
 
 
 def execute_instead_action(action, window_id, window_size):
@@ -359,7 +382,7 @@ def run_instead(args, route, output_dir):
             time.sleep(0.5)
         if not window:
             raise RuntimeError("Не удалось найти окно INSTEAD")
-        _, window_id, window_width, window_height = window
+        _, window_id, window_x, window_y, window_width, window_height = window
 
         focus = run_command(
             timeout_command(["xdotool", "windowfocus", "--sync", window_id], 3), 5
@@ -375,7 +398,7 @@ def run_instead(args, route, output_dir):
             if delay > 0:
                 time.sleep(delay / 1000.0)
             path = screenshot_path(output_dir, step)
-            capture_root(path)
+            capture_root(path, window)
             records.append({"id": step["id"], "screenshot": str(path)})
     finally:
         if player is not None and player.poll() is None:
