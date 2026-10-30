@@ -41,7 +41,7 @@ trace:write("# epoch\tcommand\tpage_id\tpage_name\tbackground\trendered\troom_te
 trace:flush()
 
 iface.fmt = function(self, command, state_changed, moved, room_text, action_text, objects_text, player_text)
-    local rendered = original_format(
+    local rendered, extra = original_format(
         self, command, state_changed, moved,
         room_text, action_text, objects_text, player_text
     )
@@ -75,5 +75,5 @@ iface.fmt = function(self, command, state_changed, moved, room_text, action_text
     }
     trace:write(table.concat(fields, "\t") .. "\n")
     trace:flush()
-    return rendered
+    return rendered, extra
 end
