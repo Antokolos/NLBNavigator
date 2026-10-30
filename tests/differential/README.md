@@ -43,6 +43,12 @@ python3 tests/differential/run_route.py \
   --output test-results/instead
 ~~~
 
+Перед запуском проверить согласованность каталога и pinned refs:
+
+~~~bash
+python3 tests/differential/validate_catalog.py
+~~~
+
 После обоих запусков сформировать сопоставительный отчёт:
 
 ~~~bash
@@ -51,6 +57,8 @@ python3 tests/differential/run_route.py \
   --route tests/differential/routes/wolfman-opening.json \
   --output test-results
 ~~~
+
+Отчёт сохраняет результаты общих текстовых проверок и SHA-256 маршрута/runner, а также commit SHA книги, экспорта, обеих тем и NLBNavigator. Для INSTEAD дополнительно записывается версия установленного Debian-пакета.
 
 Для двух движков требуется одинаковое разрешение из маршрута. Сравнение кадров
 между разными рендерерами пока информационное: оно сохраняет карту различий и
