@@ -497,9 +497,9 @@ def run_instead(args, route, output_dir):
     shutil.copy2(game / "module_ru.lua", game / "main.lua")
     with (game / "main.lua").open("a", encoding="utf-8") as modified_main:
         modified_main.write(
-            "\\n-- Test-only adapter; the disposable checkout is restored after the run.\\n"
-            "local adapter_path = os.getenv('NLB_TEST_TRACE_ADAPTER')\\n"
-            "if adapter_path then dofile(adapter_path) end\\n"
+            "\n-- Test-only adapter; the disposable checkout is restored after the run.\n"
+            "local adapter_path = os.getenv('NLB_TEST_TRACE_ADAPTER')\n"
+            "if adapter_path then dofile(adapter_path) end\n"
         )
     openbox_log = (output_dir / "openbox.log").open("w", encoding="utf-8")
     session_log = (output_dir / "session.log").open("w", encoding="utf-8")
