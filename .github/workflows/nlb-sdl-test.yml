@@ -99,6 +99,7 @@ jobs:
           git clone --recurse-submodules --depth 1 --branch "$GAME_REF" \
             https://github.com/nlbproject/wolfman.git test-data/wolfman
           git -C test-data/wolfman submodule update --init --recursive
+          git -C test-data/wolfman log -1 --format='NLB book commit: %H %s'
           test -d test-data/wolfman
           test -s test-data/wolfman/images/title.png
           test -s test-data/wolfman/images/1.png
@@ -120,6 +121,7 @@ jobs:
           git clone --depth 1 --filter=blob:none --sparse \
             https://github.com/instead-hub/instead.git test-data/instead
           git -C test-data/instead sparse-checkout set themes/default
+          git -C test-data/instead log -1 --format='INSTEAD base theme commit: %H %s'
           test -s test-data/instead/themes/default/theme.ini
 
       - name: Validate differential test definitions
