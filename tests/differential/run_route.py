@@ -99,6 +99,20 @@ def git_commit(path):
     return None
 
 
+def package_version(package_name):
+    try:
+        result = subprocess.run(
+            ["dpkg-query", "-W", "-f=${Version}", package_name],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            text=True, encoding="utf-8", timeout=5
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+    return None
+
+
 def file_sha256(path):
     digest = hashlib.sha256()
     try:
@@ -573,6 +587,8 @@ def run_instead(args, route, output_dir):
     report["metadata"] = route_metadata(args.route, route, __file__)
     report["metadata"]["instead_export_commit"] = git_commit(game)
     report["metadata"]["base_theme_commit"] = git_commit(base_theme)
+    report["metadata"]["instead_binary"] = str(Path(binary).resolve())
+    report["metadata"]["instead_package_version"] = package_version("instead")
     write_json(output_dir / "route-report.json", report)
     if not report["ok"]:
         raise RuntimeError("Проверка INSTEAD не прошла: " + "; ".join(report["errors"]))
