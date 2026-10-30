@@ -155,7 +155,7 @@
       "mode": "vn",
       "nlb": {
         "repository": "nlbproject/bookU",
-        "reference_commit": "ba39652"
+        "reference_commit": "ba396526af70b198b7364cc2c40d2232f55b1915"
       },
       "instead": null,
       "coverage": [
