@@ -498,7 +498,10 @@ def run_instead(args, route, output_dir):
     env["XDG_CACHE_HOME"] = str(isolated_home / ".cache")
     env["LUA_PATH"] = "{};{};;".format(str(game / "?.lua"), str(game / "?/init.lua"))
     env["SDL_AUDIODRIVER"] = "dummy"
-    trace_path = (output_dir / "instead-state.tsv").resolve()
+    # INSTEAD restricts Lua file writes to the active game directory.
+    # Keep the temporary trace there, then copy it to the test-results directory.
+    trace_path = (game / ".nlb-test-trace.tsv").resolve()
+    trace_path.unlink(missing_ok=True)
     env["NLB_TEST_TRACE"] = str(trace_path)
     env["NLB_TEST_TRACE_ADAPTER"] = str(Path(__file__).resolve().with_name("instead_trace.lua"))
 
@@ -589,6 +592,10 @@ def run_instead(args, route, output_dir):
         session_log.close()
         openbox_log.close()
         shutil.copy2(original_main, game / "main.lua")
+
+    if trace_path.is_file():
+        shutil.copy2(trace_path, output_dir / "instead-state.tsv")
+        trace_path.unlink(missing_ok=True)
 
     report = validate_run(route, output_dir, "instead", [], None, state_records)
     record_by_id = {record["id"]: record for record in records}
