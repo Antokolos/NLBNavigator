@@ -4,14 +4,18 @@ name: NLB SDL manual test
   workflow_dispatch:
     inputs:
       game_ref:
-        description: "Branch, tag, or commit of nlbproject/wolfman"
+        description: "Commit SHA, branch, or tag of nlbproject/wolfman (default: pinned NLB reference)"
         required: true
-        default: "master"
+        default: "888b4b7a7a564693274f53341728ee9f3b4c2879"
         type: string
       reference_ref:
-        description: "Branch, tag, or commit of nlbproject/instead-am_i_a_monster_vn"
+        description: "Commit SHA, branch, or tag of INSTEAD export (default: pinned export)"
         required: true
-        default: "main"
+        default: "5f8cd646905a25800afab46bd2ce17616f0d6494"
+      base_theme_ref:
+        description: "Commit SHA, branch, or tag of instead-hub/instead base theme"
+        required: true
+        default: "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
         type: string
   push:
     branches:
@@ -36,8 +40,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
-      GAME_REF: ${{ github.event.inputs.game_ref || 'master' }}
-      REFERENCE_REF: ${{ github.event.inputs.reference_ref || 'main' }}
+      GAME_REF: ${{ github.event.inputs.game_ref || '888b4b7a7a564693274f53341728ee9f3b4c2879' }}
+      REFERENCE_REF: ${{ github.event.inputs.reference_ref || '5f8cd646905a25800afab46bd2ce17616f0d6494' }}
+      BASE_THEME_REF: ${{ github.event.inputs.base_theme_ref || '1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e' }}
     steps:
       - name: Check out NLBNavigator
         uses: actions/checkout@v4
@@ -96,8 +101,10 @@ jobs:
 
       - name: Check out wolfman with all nested modules
         run: |
-          git clone --recurse-submodules --depth 1 --branch "$GAME_REF" \
+          git clone --no-checkout --filter=blob:none \
             https://github.com/nlbproject/wolfman.git test-data/wolfman
+          git -C test-data/wolfman fetch --depth 1 origin "$GAME_REF"
+          git -C test-data/wolfman checkout --detach FETCH_HEAD
           git -C test-data/wolfman submodule update --init --recursive
           git -C test-data/wolfman log -1 --format='NLB book commit: %H %s'
           test -d test-data/wolfman
@@ -108,8 +115,10 @@ jobs:
 
       - name: Check out INSTEAD reference export
         run: |
-          git clone --recurse-submodules --depth 1 --branch "$REFERENCE_REF" \
+          git clone --no-checkout --filter=blob:none \
             https://github.com/nlbproject/instead-am_i_a_monster_vn.git test-data/instead-am_i_a_monster_vn
+          git -C test-data/instead-am_i_a_monster_vn fetch --depth 1 origin "$REFERENCE_REF"
+          git -C test-data/instead-am_i_a_monster_vn checkout --detach FETCH_HEAD
           git -C test-data/instead-am_i_a_monster_vn submodule update --init --recursive
           test -d test-data/instead-am_i_a_monster_vn
           test -s test-data/instead-am_i_a_monster_vn/luapassing.lua
@@ -118,9 +127,12 @@ jobs:
 
       - name: Check out INSTEAD base theme
         run: |
-          git clone --depth 1 --filter=blob:none --sparse \
+          git clone --no-checkout --filter=blob:none \
             https://github.com/instead-hub/instead.git test-data/instead
+          git -C test-data/instead sparse-checkout init --cone
           git -C test-data/instead sparse-checkout set themes/default
+          git -C test-data/instead fetch --depth 1 origin "$BASE_THEME_REF"
+          git -C test-data/instead checkout --detach FETCH_HEAD
           git -C test-data/instead log -1 --format='INSTEAD base theme commit: %H %s'
           test -s test-data/instead/themes/default/theme.ini
 
