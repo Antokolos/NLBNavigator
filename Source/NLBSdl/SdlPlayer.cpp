@@ -321,6 +321,13 @@ SDL_Texture* SdlPlayer::textureFor(const std::string& path) {
             if (io) tex = IMG_LoadTexture_IO(m_renderer, io, true);
         }
     }
+    if (!tex) {
+        const std::string resolved = fullPath ? path : file;
+        std::cerr << "[SDL image] Failed to load requested='" << path
+                  << "' resolved='" << (resolved.empty() ? "<media source lookup or read failed>" : resolved)
+                  << "' file='" << (file.empty() ? "<no direct file path>" : file)
+                  << "' error='" << SDL_GetError() << "'" << std::endl;
+    }
     if (m_images.size() > 600) {  // анимации из сотен кадров: держим в памяти не всё
         for (auto& [k, t] : m_images) if (t) SDL_DestroyTexture(t);
         m_images.clear();
@@ -511,6 +518,13 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         m_screen->afterCommand();
     }
     std::cout << (ok ? "" : "[НЕ ВЫПОЛНЕНО] ") << line << std::endl;
+    const auto screen = engine.screen();
+    const std::string image = screen.pageImage.framePattern.empty()
+        ? screen.pageImage.file.path : screen.pageImage.framePattern;
+    std::cout << "[screen] page='" << screen.pageId
+              << "' image='" << (image.empty() ? "<empty>" : image)
+              << "' imageIsBackground=" << (screen.imageIsBackground ? "true" : "false")
+              << std::endl;
     return ok;
 }
 

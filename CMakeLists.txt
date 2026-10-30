@@ -368,6 +368,9 @@ if(NLB_WITH_SDL3)
         target_include_directories(NLBAudioSDL PUBLIC Source/NLBAudioSDL/Public)
         target_link_libraries(NLBAudioSDL PUBLIC NLBReader SDL3::SDL3 SDL3_mixer::SDL3_mixer)
         message(STATUS "NLBNavigator: SDL3 audio backend enabled")
+        # Use CMake's FindZLIB module to define the standard ZLIB::ZLIB target.
+        # Some vcpkg PNG/FreeType configs reference this target without loading it.
+        find_package(ZLIB MODULE REQUIRED)
         # Графический проигрыватель — если есть ещё SDL3_image и SDL3_ttf
         find_package(SDL3_image CONFIG QUIET)
         find_package(SDL3_ttf CONFIG QUIET)
