@@ -10,6 +10,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.parse import unquote
 
 
 SCREEN_RE = re.compile(
@@ -87,7 +88,7 @@ def screenshot_path(output_dir, step):
     return output_dir / step["screenshot"]
 
 
-def validate_run(route, output_dir, runtime, screen_records, log_path=None):
+def validate_run(route, output_dir, runtime, screen_records, log_path=None, state_records=None):
     errors = []
     step_results = []
     by_id = {step["id"]: step for step in route["steps"]}
@@ -155,17 +156,41 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None):
                         )
                     )
             suffix = expected.get("image_suffix")
-            if suffix:
-                if record is None or not record["image"].endswith(suffix):
-                    actual_image = "<нет записи>" if record is None else record["image"]
-                    errors.append(
-                        "{}: ожидалось изображение *{}, получено {}".format(
-                            step["id"], suffix, actual_image
-                        )
+            if suffix and (record is None or not record["image"].endswith(suffix)):
+                actual_image = "<нет записи>" if record is None else record["image"]
+                errors.append(
+                    "{}: ожидалось изображение *{}, получено {}".format(
+                        step["id"], suffix, actual_image
                     )
+                )
             fragment = expected.get("text_contains")
             if fragment and fragment not in log_text:
                 errors.append("{}: в журнале нет ожидаемого текста {!r}".format(step["id"], fragment))
+
+    if runtime == "instead":
+        state_by_id = {record["step_id"]: record for record in (state_records or [])}
+        for step in route["steps"]:
+            expected = step.get("expect", {})
+            record = state_by_id.get(step["id"])
+            if record is None:
+                errors.append("{}: отсутствует Lua state trace для контрольной точки".format(step["id"]))
+                continue
+            if expected.get("page_id") and record.get("page_id") != expected["page_id"]:
+                errors.append(
+                    "{}: INSTEAD ожидалась страница {}, получена {}".format(
+                        step["id"], expected["page_id"], record.get("page_id", "")
+                    )
+                )
+            suffix = expected.get("instead_background_suffix")
+            if suffix and not record.get("background", "").endswith(suffix):
+                errors.append(
+                    "{}: INSTEAD ожидался фон *{}, получен {}".format(
+                        step["id"], suffix, record.get("background", "")
+                    )
+                )
+            fragment = expected.get("instead_text_contains")
+            if fragment and fragment not in record.get("rendered", ""):
+                errors.append("{}: INSTEAD в отображённом тексте нет {!r}".format(step["id"], fragment))
 
     return {"runtime": runtime, "ok": not errors, "steps": step_results, "errors": errors}
 
@@ -332,6 +357,34 @@ def execute_instead_action(action, window_id, window_size):
     raise ValueError("Неизвестное действие INSTEAD: " + kind)
 
 
+def read_instead_trace(path):
+    if not path.exists():
+        return []
+    records = []
+    with path.open("r", encoding="utf-8", errors="replace") as source:
+        for line in source:
+            if not line.strip() or line.startswith("#"):
+                continue
+            fields = [unquote(value) for value in line.rstrip("\n").split("\t")]
+            if len(fields) != 12:
+                continue
+            records.append({
+                "epoch": fields[0],
+                "command": fields[1],
+                "page_id": fields[2],
+                "page_name": fields[3],
+                "background": fields[4],
+                "rendered": fields[5],
+                "room_text": fields[6],
+                "action_text": fields[7],
+                "objects_text": fields[8],
+                "player_text": fields[9],
+                "wolfiness": fields[10],
+                "hp": fields[11],
+            })
+    return records
+
+
 def run_instead(args, route, output_dir):
     game = Path(args.game).resolve()
     if not (game / "module_ru.lua").is_file() or not (game / "main.lua").is_file():
@@ -351,6 +404,9 @@ def run_instead(args, route, output_dir):
     env["XDG_CACHE_HOME"] = str(isolated_home / ".cache")
     env["LUA_PATH"] = "{};{};;".format(str(game / "?.lua"), str(game / "?/init.lua"))
     env["SDL_AUDIODRIVER"] = "dummy"
+    trace_path = (output_dir / "instead-state.tsv").resolve()
+    env["NLB_TEST_TRACE"] = str(trace_path)
+    env["NLB_TEST_TRACE_ADAPTER"] = str(Path(__file__).resolve().with_name("instead_trace.lua"))
 
     binary = args.instead_binary or shutil.which("sdl-instead") or "/usr/games/sdl-instead"
     if not Path(binary).exists() and shutil.which(binary) is None:
@@ -359,11 +415,18 @@ def run_instead(args, route, output_dir):
     original_main = output_dir / "original-main.lua"
     shutil.copy2(game / "main.lua", original_main)
     shutil.copy2(game / "module_ru.lua", game / "main.lua")
+    with (game / "main.lua").open("a", encoding="utf-8") as modified_main:
+        modified_main.write(
+            "\\n-- Test-only adapter; the disposable checkout is restored after the run.\\n"
+            "local adapter_path = os.getenv('NLB_TEST_TRACE_ADAPTER')\\n"
+            "if adapter_path then dofile(adapter_path) end\\n"
+        )
     openbox_log = (output_dir / "openbox.log").open("w", encoding="utf-8")
     session_log = (output_dir / "session.log").open("w", encoding="utf-8")
     wm = None
     player = None
     records = []
+    state_records = []
     try:
         wm = subprocess.Popen(["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env)
         time.sleep(1)
@@ -400,6 +463,11 @@ def run_instead(args, route, output_dir):
             path = screenshot_path(output_dir, step)
             capture_root(path, window)
             records.append({"id": step["id"], "screenshot": str(path)})
+            latest_trace = read_instead_trace(trace_path)
+            if latest_trace:
+                state_record = dict(latest_trace[-1])
+                state_record["step_id"] = step["id"]
+                state_records.append(state_record)
     finally:
         if player is not None and player.poll() is None:
             player.terminate()
@@ -419,13 +487,14 @@ def run_instead(args, route, output_dir):
         openbox_log.close()
         shutil.copy2(original_main, game / "main.lua")
 
-    report = validate_run(route, output_dir, "instead", [], None)
+    report = validate_run(route, output_dir, "instead", [], None, state_records)
     record_by_id = {record["id"]: record for record in records}
+    state_by_id = {record["step_id"]: record for record in state_records}
     for step_result in report["steps"]:
         step_result.update(record_by_id.get(step_result["id"], {}))
-    report["state_validation"] = (
-        "not available: INSTEAD test adapter currently captures screenshots and input only"
-    )
+        step_result["state_trace"] = state_by_id.get(step_result["id"])
+    report["state_records"] = state_records
+    report["state_validation"] = "INSTEAD Lua trace captures page UUID, background, rendered text and selected story variables."
     write_json(output_dir / "route-report.json", report)
     if not report["ok"]:
         raise RuntimeError("Проверка INSTEAD не прошла: " + "; ".join(report["errors"]))
