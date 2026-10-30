@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "description": "Тестовые книги NLBNavigator и парные экспорты INSTEAD; одна запись соответствует одной истории.",
+  "source_catalog": {
+    "repository": "Antokolos/NLB",
+    "path": "tools/player-reference/books.txt",
+    "purpose": "Зафиксированные версии книг и режимы прохождения для эталонных тестов"
+  },
+  "books": [
+    {
+      "id": "wolfman",
+      "title": "Am I a Monster? / Я — монстр",
+      "mode": "vn",
+      "nlb": {
+        "repository": "nlbproject/wolfman",
+        "reference_commit": "888b4b7"
+      },
+      "instead": {
+        "repository": "nlbproject/instead-am_i_a_monster_vn",
+        "default_branch": "main"
+      },
+      "coverage": ["vn", "en", "ru", "seven internal modules", "full story"],
+      "status": "paired",
+      "notes": "Одна история в двух упаковках; подтверждено владельцем проекта."
+    },
+    {
+      "id": "barbarian_caves_demo",
+      "title": "Barbarian Caves Demo",
+      "mode": "vn",
+      "nlb": {
+        "repository": "nlbproject/barbarian_caves_demo",
+        "reference_commit": "d3c9f35"
+      },
+      "instead": {
+        "repository": "nlbproject/instead-barbarian_caves_demo",
+        "default_branch": "main"
+      },
+      "coverage": ["vn", "en", "ru", "startup skill-object choices", "external game play_bp_*"],
+      "status": "paired"
+    },
+    {
+      "id": "chaperonrougehub",
+      "title": "Chaperon Rouge Hub",
+      "mode": "vn",
+      "nlb": {
+        "repository": "nlbproject/chaperonrougehub",
+        "reference_commit": "a1086d1"
+      },
+      "instead": {
+        "repository": "nlbproject/instead-chaperon_new",
+        "default_branch": "main"
+      },
+      "coverage": ["vn", "achievements", "three-level external modules", "STANDARD tutorial theme"],
+      "status": "paired",
+      "notes": "External module chain includes chaperon_filling_hub -> chaperon_forest_hub and chaperon_tutorial."
+    },
+    {
+      "id": "servant-of-ra",
+      "title": "Servant of Ra",
+      "mode": "standard",
+      "nlb": {
+        "repository": "nlbproject/servant-of-ra",
+        "reference_commit": "0962f13"
+      },
+      "instead": {
+        "repository": "nlbproject/instead-servant-of-ra",
+        "default_branch": "main"
+      },
+      "coverage": ["standard", "objects", "inventory", "item use", "autowired"],
+      "status": "paired"
+    },
+    {
+      "id": "Frontier",
+      "title": "Frontier",
+      "mode": "standard",
+      "nlb": {
+        "repository": "nlbproject/Frontier",
+        "reference_commit": "58fdeb5"
+      },
+      "instead": {
+        "repository": "nlbproject/instead-frontier",
+        "default_branch": "main"
+      },
+      "coverage": ["standard", "431 pages", "2838 images", "Russian", "three external modules"],
+      "status": "paired",
+      "notes": "External modules: frontierwarriors, sabotage, waspsnest."
+    },
+    {
+      "id": "wild-island-quest",
+      "title": "Wild Island Quest",
+      "mode": "vn",
+      "nlb": {
+        "repository": "nlbproject/wild-island-quest",
+        "reference_commit": "0aba4c7"
+      },
+      "instead": {
+        "repository": "nlbproject/instead-wild-island-quest",
+        "default_branch": "main"
+      },
+      "coverage": ["vn", "en", "ru", "six internal modules", "inventory", "long choices", "tagged image redirects"],
+      "status": "paired"
+    },
+    {
+      "id": "bookU",
+      "title": "bookU (small synthetic/regression book)",
+      "mode": "vn",
+      "nlb": {
+        "repository": "nlbproject/bookU",
+        "reference_commit": "ba39652"
+      },
+      "instead": null,
+      "coverage": ["small book", "internal module", "author walkthrough"],
+      "status": "nlb-only-unpaired",
+      "notes": "В каталоге парных INSTEAD-экспортов отдельный репозиторий для bookU не указан; не считать его парой для одной из остальных историй."
+    }
+  ],
+  "limitations": [
+    "Reference commits listed for NLB packages are the short pins from Antokolos/NLB/tools/player-reference/books.txt.",
+    "INSTEAD export refs are currently branch names; full SHA alignment and version matching are still required before declaring the catalog fully reproducible.",
+    "Only wolfman has an initial shared UI route at this stage; the other books still need authored walkthroughs."
+  ]
+}
