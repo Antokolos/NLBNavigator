@@ -13,13 +13,21 @@
       "mode": "vn",
       "nlb": {
         "repository": "nlbproject/wolfman",
-        "reference_commit": "888b4b7"
+        "reference_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879"
       },
       "instead": {
         "repository": "nlbproject/instead-am_i_a_monster_vn",
-        "default_branch": "main"
+        "default_branch": "main",
+        "reference_branch": "main",
+        "reference_commit": "5f8cd646905a25800afab46bd2ce17616f0d6494"
       },
-      "coverage": ["vn", "en", "ru", "seven internal modules", "full story"],
+      "coverage": [
+        "vn",
+        "en",
+        "ru",
+        "seven internal modules",
+        "full story"
+      ],
       "status": "paired",
       "notes": "Одна история в двух упаковках; подтверждено владельцем проекта."
     },
@@ -29,13 +37,21 @@
       "mode": "vn",
       "nlb": {
         "repository": "nlbproject/barbarian_caves_demo",
-        "reference_commit": "d3c9f35"
+        "reference_commit": "d3c9f356d6d37a98b03c94887a99b5e68f97cdcc"
       },
       "instead": {
         "repository": "nlbproject/instead-barbarian_caves_demo",
-        "default_branch": "main"
+        "default_branch": "main",
+        "reference_branch": "main",
+        "reference_commit": "9296200e484feb2f948ece3a072ff8e088230d50"
       },
-      "coverage": ["vn", "en", "ru", "startup skill-object choices", "external game play_bp_*"],
+      "coverage": [
+        "vn",
+        "en",
+        "ru",
+        "startup skill-object choices",
+        "external game play_bp_*"
+      ],
       "status": "paired"
     },
     {
@@ -44,13 +60,20 @@
       "mode": "vn",
       "nlb": {
         "repository": "nlbproject/chaperonrougehub",
-        "reference_commit": "a1086d1"
+        "reference_commit": "a1086d1578a3fae365a001da2b40fdfa9e03a607"
       },
       "instead": {
         "repository": "nlbproject/instead-chaperon_new",
-        "default_branch": "main"
+        "default_branch": "main",
+        "reference_branch": "main",
+        "reference_commit": "5cff5388322fb12595a3abb7f6c017cc0154545a"
       },
-      "coverage": ["vn", "achievements", "three-level external modules", "STANDARD tutorial theme"],
+      "coverage": [
+        "vn",
+        "achievements",
+        "three-level external modules",
+        "STANDARD tutorial theme"
+      ],
       "status": "paired",
       "notes": "External module chain includes chaperon_filling_hub -> chaperon_forest_hub and chaperon_tutorial."
     },
@@ -60,13 +83,21 @@
       "mode": "standard",
       "nlb": {
         "repository": "nlbproject/servant-of-ra",
-        "reference_commit": "0962f13"
+        "reference_commit": "0962f13dd99b43a4fa9e96be97e0a47a73140dff"
       },
       "instead": {
         "repository": "nlbproject/instead-servant-of-ra",
-        "default_branch": "main"
+        "default_branch": "main",
+        "reference_branch": "main",
+        "reference_commit": "0f3a415458e15de534372e49685dcdf106f4c4b3"
       },
-      "coverage": ["standard", "objects", "inventory", "item use", "autowired"],
+      "coverage": [
+        "standard",
+        "objects",
+        "inventory",
+        "item use",
+        "autowired"
+      ],
       "status": "paired"
     },
     {
@@ -75,13 +106,21 @@
       "mode": "standard",
       "nlb": {
         "repository": "nlbproject/Frontier",
-        "reference_commit": "58fdeb5"
+        "reference_commit": "58fdeb5f8d0ff865e8d88dbfc1927bdadfd7ebfb"
       },
       "instead": {
         "repository": "nlbproject/instead-frontier",
-        "default_branch": "main"
+        "default_branch": "main",
+        "reference_branch": "main",
+        "reference_commit": "4dd81854d8fe62aacc1834474d66e4f181f2f479"
       },
-      "coverage": ["standard", "431 pages", "2838 images", "Russian", "three external modules"],
+      "coverage": [
+        "standard",
+        "431 pages",
+        "2838 images",
+        "Russian",
+        "three external modules"
+      ],
       "status": "paired",
       "notes": "External modules: frontierwarriors, sabotage, waspsnest."
     },
@@ -91,13 +130,23 @@
       "mode": "vn",
       "nlb": {
         "repository": "nlbproject/wild-island-quest",
-        "reference_commit": "0aba4c7"
+        "reference_commit": "0aba4c795cd5cfa8dbf9d101d69bd9cfb12ac1e6"
       },
       "instead": {
         "repository": "nlbproject/instead-wild-island-quest",
-        "default_branch": "main"
+        "default_branch": "main",
+        "reference_branch": "main",
+        "reference_commit": "321ab21a14ef79ad20fc3813938be80be523726b"
       },
-      "coverage": ["vn", "en", "ru", "six internal modules", "inventory", "long choices", "tagged image redirects"],
+      "coverage": [
+        "vn",
+        "en",
+        "ru",
+        "six internal modules",
+        "inventory",
+        "long choices",
+        "tagged image redirects"
+      ],
       "status": "paired"
     },
     {
@@ -109,14 +158,25 @@
         "reference_commit": "ba39652"
       },
       "instead": null,
-      "coverage": ["small book", "internal module", "author walkthrough"],
+      "coverage": [
+        "small book",
+        "internal module",
+        "author walkthrough"
+      ],
       "status": "nlb-only-unpaired",
       "notes": "В каталоге парных INSTEAD-экспортов отдельный репозиторий для bookU не указан; не считать его парой для одной из остальных историй."
     }
   ],
   "limitations": [
-    "Reference commits listed for NLB packages are the short pins from Antokolos/NLB/tools/player-reference/books.txt.",
-    "INSTEAD export refs are currently branch names; full SHA alignment and version matching are still required before declaring the catalog fully reproducible.",
-    "Only wolfman has an initial shared UI route at this stage; the other books still need authored walkthroughs."
-  ]
+    "NLB reference commits are pinned to the exact commits from Antokolos/NLB/tools/player-reference/books.txt.",
+    "INSTEAD exports and the base theme are pinned to the repository heads observed on 2026-10-30; equivalence of game content/version with each NLB package still needs route-level and full-playthrough verification.",
+    "Only wolfman currently has an authored shared route; all other paired books still need route authoring and branch coverage.",
+    "bookU has no separate INSTEAD export listed in the source reference catalog and remains NLB-only/unpaired."
+  ],
+  "catalog_snapshot_date": "2026-10-30",
+  "base_theme": {
+    "repository": "instead-hub/instead",
+    "reference_branch": "master",
+    "reference_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  }
 }
