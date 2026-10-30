@@ -46,6 +46,18 @@ iface.fmt = function(self, command, state_changed, moved, room_text, action_text
         room_text, action_text, objects_text, player_text
     )
 
+    -- iface.fmt may be called for inventory refreshes after the VN text was rendered.
+    -- Capture the paginator output, not the inventory window returned by original_format.
+    local displayed_text = game and game._lastdisp
+    if type(displayed_text) == "string" and displayed_text ~= "" then
+        rendered = displayed_text
+    elseif nlb and nlb.lasttext then
+        local story_text = nlb:lasttext()
+        if story_text ~= "" then
+            rendered = story_text
+        end
+    end
+
     local location = nlb:curloc()
     if not location then
         location = here()
