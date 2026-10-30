@@ -512,7 +512,7 @@ def run_instead(args, route, output_dir):
         time.sleep(1)
         player = subprocess.Popen(
             [
-                binary, "-nosound",
+                binary, "-nosound", "-noautosave",
                 "-themespath", str(base_theme.parent),
                 "-theme", "default",
                 str(game),
