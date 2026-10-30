@@ -121,229 +121,36 @@ jobs:
           git -C test-data/instead sparse-checkout set themes/default
           test -s test-data/instead/themes/default/theme.ini
 
-      - name: Capture INSTEAD reference screenshots
+      - name: Run shared route in INSTEAD
         run: |
           mkdir -p test-results
-          cat > test-results/capture-instead.sh <<'SCRIPT'
-          #!/usr/bin/env bash
-          set -euo pipefail
-          workspace="${GITHUB_WORKSPACE:-$PWD}"
-          game="$workspace/test-data/instead-am_i_a_monster_vn"
-          bin="$(command -v sdl-instead || printf /usr/games/sdl-instead)"
-          test -s "$game/luapassing.lua"
-          test -s "$game/module_ru.lua"
-
-          # Preserve the original wrapper only once; the working checkout is disposable.
-          if [ ! -s "$workspace/test-results/instead-menu-main.lua" ]; then
-            cp "$game/main.lua" "$workspace/test-results/instead-menu-main.lua"
-          fi
-          cp "$game/module_ru.lua" "$game/main.lua"
-          cd "$game"
-          export LUA_PATH="$game/?.lua;$game/?/init.lua;;"
-
-          # Keep INSTEAD's save/config state isolated so each CI run starts cleanly.
-          session_home="$workspace/test-results/instead-home"
-          rm -rf "$session_home"
-          mkdir -p "$session_home/.config" "$session_home/.local/share" "$session_home/.cache"
-          export HOME="$session_home"
-          export XDG_CONFIG_HOME="$session_home/.config"
-          export XDG_DATA_HOME="$session_home/.local/share"
-          export XDG_CACHE_HOME="$session_home/.cache"
-
-          printf 'INSTEAD single-session regression: initial -> Space -> click\n' > "$workspace/test-results/instead-session.log"
-          openbox --sm-disable > "$workspace/test-results/openbox-session.log" 2>&1 &
-          wm_pid=$!
-          sleep 1
-          "$bin" -nosound "$game" >> "$workspace/test-results/instead-session.log" 2>&1 &
-          pid=$!
-          cleanup() {
-            kill "$pid" 2>/dev/null || true
-            wait "$pid" 2>/dev/null || true
-            kill "$wm_pid" 2>/dev/null || true
-            wait "$wm_pid" 2>/dev/null || true
-          }
-          trap cleanup EXIT
-
-          find_game_window() {
-            local win geometry width height area best="" best_area=0
-            while IFS= read -r win; do
-              [ -n "$win" ] || continue
-              geometry="$(xwininfo -id "$win" 2>/dev/null | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
-              [ -n "$geometry" ] || continue
-              read -r width height <<< "$geometry"
-              area=$((width * height))
-              if [ "$width" -ge 640 ] && [ "$height" -ge 400 ] && [ "$area" -gt "$best_area" ]; then
-                best="$win"
-                best_area="$area"
-              fi
-            done < <(xdotool search --onlyvisible --pid "$pid" 2>/dev/null || true)
-            printf '%s' "$best"
-          }
-
-          win=""
-          for attempt in $(seq 1 30); do
-            win="$(find_game_window)"
-            [ -n "$win" ] && break
-            if ! kill -0 "$pid" 2>/dev/null; then
-              echo "INSTEAD exited before creating a visible window" >&2
-              cat "$workspace/test-results/instead-session.log" >&2
-              exit 1
-            fi
-            sleep 0.5
-          done
-          if [ -z "$win" ]; then
-            echo "Could not find visible INSTEAD window" >&2
-            xwininfo -root -tree || true
-            cat "$workspace/test-results/instead-session.log" >&2 || true
-            exit 1
-          fi
-
-          echo "INSTEAD window id: $win"
-          xdotool getwindowname "$win" || true
-          echo "Setting X11 focus"
-          timeout --kill-after=1s 3s xdotool windowfocus --sync "$win"
-          echo "Focused X11 window: $(xdotool getwindowfocus 2>/dev/null || true)"
-          sleep 2
-
-          # Capture the whole Xvfb screen: importing an OpenGL child window can block.
-          timeout --kill-after=1s 5s import -window root "$workspace/test-results/instead-session-initial.png"
-          test -s "$workspace/test-results/instead-session-initial.png"
-
-          echo "Sending Space keydown"
-          set +e
-          timeout --kill-after=1s 3s xdotool keydown --delay 0 space
-          keydown_result=$?
-          sleep 0.1
-          echo "Sending Space keyup"
-          timeout --kill-after=1s 3s xdotool keyup --delay 0 space
-          keyup_result=$?
-          set -e
-          echo "Space keydown exit code: $keydown_result; keyup exit code: $keyup_result"
-          if [ "$keydown_result" -ne 0 ] || [ "$keyup_result" -ne 0 ]; then
-            echo "INSTEAD Space input command failed" >&2
-            exit 10
-          fi
-
-          sleep 2
-          echo "Capturing frame after Space"
-          timeout --kill-after=1s 5s import -window root "$workspace/test-results/instead-session-after-space.png"
-          test -s "$workspace/test-results/instead-session-after-space.png"
-
-          # Calculate the target from the game's client-window geometry. Do not use
-          # mousemove --sync: SDL/OpenGL can continuously grab the pointer and hang it.
-          geometry="$(xwininfo -id "$win" | awk '/Width:/{w=$2} /Height:/{h=$2} END{if(w&&h) print w, h}')"
-          read -r window_width window_height <<< "$geometry"
-          click_x=$((window_width / 2))
-          click_y=$((window_height / 2))
-          echo "Sending mouse click at window-relative coordinates $click_x,$click_y (${window_width}x${window_height})"
-          set +e
-          timeout --kill-after=1s 3s xdotool mousemove --window "$win" "$click_x" "$click_y"
-          move_result=$?
-          echo "Mouse move exit code: $move_result"
-          timeout --kill-after=1s 3s xdotool click --delay 0 1
-          click_result=$?
-          echo "Mouse click exit code: $click_result"
-          set -e
-          if [ "$move_result" -ne 0 ] || [ "$click_result" -ne 0 ]; then
-            echo "INSTEAD mouse-click command failed" >&2
-            exit 11
-          fi
-
-          sleep 2
-          echo "Capturing frame after mouse click"
-          timeout --kill-after=1s 5s import -window root "$workspace/test-results/instead-session-after-click.png"
-          test -s "$workspace/test-results/instead-session-after-click.png"
-          SCRIPT
-          chmod +x test-results/capture-instead.sh
-
           timeout --signal=TERM --kill-after=3s 60s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            bash test-results/capture-instead.sh
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-opening.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --output test-results/instead
 
-          python3 - <<'PY'
-          from PIL import Image, ImageChops
-          import sys
-
-          transitions = (
-              ("Space", "test-results/instead-session-initial.png", "test-results/instead-session-after-space.png"),
-              ("mouse click", "test-results/instead-session-after-space.png", "test-results/instead-session-after-click.png"),
-          )
-          failed = False
-          for action, before_path, after_path in transitions:
-              try:
-                  with Image.open(before_path) as image:
-                      before = image.convert("RGB")
-                  with Image.open(after_path) as image:
-                      after = image.convert("RGB")
-              except OSError as error:
-                  print(f"INSTEAD {action}: screenshot missing or unreadable: {error}")
-                  failed = True
-                  continue
-
-              if before.size != after.size:
-                  print(f"INSTEAD {action}: screenshot sizes differ: {before.size} vs {after.size}")
-                  failed = True
-                  continue
-
-              before_colors = len(before.getcolors(maxcolors=2_000_000) or [])
-              after_colors = len(after.getcolors(maxcolors=2_000_000) or [])
-              diff = ImageChops.difference(before, after)
-              changed_pixels = sum(1 for pixel in diff.getdata() if pixel != (0, 0, 0))
-              fraction = changed_pixels / (before.width * before.height)
-              print(
-                  f"INSTEAD {action}: before={before_colors} colors, after={after_colors} colors, "
-                  f"{changed_pixels} changed pixels ({fraction:.3%})"
-              )
-              if before_colors < 1000 or after_colors < 1000:
-                  print(f"INSTEAD {action}: one screenshot appears blank")
-                  failed = True
-              if changed_pixels < 1000:
-                  print(f"INSTEAD {action}: no meaningful visible scene change")
-                  failed = True
-
-          if failed:
-              sys.exit(1)
-          PY
-
-      - name: Run scripted wolfman smoke test
+      - name: Run shared route in NLBNavigator
         run: |
           mkdir -p test-results
-          cat > test-data/wolfman-smoke.txt <<'EOF'
-          # Verify the initial scene renders and the player processes a next-page input.
-          wait:250
-          shot:test-results/wolfman-initial.png
-          key:space
-          wait:250
-          shot:test-results/wolfman-after-space.png
-          EOF
-          set +e
-          timeout 60s xvfb-run -a env SDL_AUDIODRIVER=dummy \
-            ./build/nlb_sdl test-data/wolfman explore vn --no-sound \
-            --theme test-data/instead-am_i_a_monster_vn/themes/default \
-            --base-theme test-data/instead/themes/default \
-            --lang ru \
-            --log test-results/wolfman-game.log \
-            --window 1280x720 --script test-data/wolfman-smoke.txt \
-            > test-results/wolfman-script.log 2>&1
-          result=$?
-          set -e
-          cat test-results/wolfman-script.log
-          test "$result" -eq 0
-          test -s test-results/wolfman-initial.png
-          test -s test-results/wolfman-after-space.png
-          ! grep -q '\\[НЕ ВЫПОЛНЕНО\\]' test-results/wolfman-script.log
-          grep -q 'Вы очнулись лежащим посреди тротуара' test-results/wolfman-game.log
-          python3 - <<'PY'
-          from PIL import Image
-          import sys
-          for path in ("test-results/wolfman-initial.png", "test-results/wolfman-after-space.png"):
-              with Image.open(path) as image:
-                  colors = len(image.convert("RGB").getcolors(maxcolors=2_000_000) or [])
-              print(f"{path}: {colors} distinct RGB colors")
-              if colors < 1000:
-                  sys.exit(f"Screenshot appears blank or is missing the scene artwork: {path}")
-          PY
-          grep -q 'title.png' test-results/wolfman-game.log || true
-          grep -q 'gfx/bg.jpg' test-results/wolfman-script.log || true
+          timeout --signal=TERM --kill-after=3s 90s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --route tests/differential/routes/wolfman-opening.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output test-results/nlbnavigator
+
+      - name: Compare INSTEAD and NLBNavigator screenshots
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-opening.json \
+            --output test-results
 
       - name: Validate INSTEAD reference export
         run: |
