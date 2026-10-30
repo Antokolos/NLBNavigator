@@ -19,7 +19,8 @@
       "screenshot": "00-title.png",
       "expect": {
         "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
-        "image_suffix": "title.png"
+        "image_suffix": "title.png",
+        "instead_background_suffix": "title.jpg"
       }
     },
     {
@@ -35,7 +36,9 @@
         "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
         "image_suffix": "1.png",
         "text_contains": "Вы очнулись лежащим посреди тротуара",
-        "min_changed_pixels": 1000
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Вы очнулись лежащим посреди тротуара"
       }
     },
     {
@@ -51,7 +54,9 @@
       "expect": {
         "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
         "image_suffix": "1.png",
-        "min_changed_pixels": 1000
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Интересно, сколько я тут валяюсь"
       }
     }
   ],
