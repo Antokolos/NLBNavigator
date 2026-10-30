@@ -127,31 +127,36 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None):
         step_results.append(result)
 
     if runtime == "nlbnavigator":
-        expected_ids = {
-            step.get("expect", {}).get("page_id")
-            for step in route["steps"]
-            if step.get("expect", {}).get("page_id")
-        }
-        actual_ids = {record["page_id"] for record in screen_records}
-        for page_id in sorted(expected_ids - actual_ids):
-            errors.append("NLBNavigator: в диагностике не встретилась ожидаемая страница " + page_id)
-
+        log_text = ""
+        if log_path and log_path.exists():
+            log_text = log_path.read_text(encoding="utf-8", errors="replace")
         for step in route["steps"]:
             expected = step.get("expect", {})
-            suffix = expected.get("image_suffix")
-            if suffix and not any(record["image"].endswith(suffix) for record in screen_records):
-                errors.append(
-                    "{}: в диагностике не найден файл изображения с окончанием {}".format(
-                        step["id"], suffix
+            record = next(
+                (item for item in screen_records if item.get("screenshot") == step["screenshot"]),
+                None,
+            )
+            if expected.get("page_id"):
+                if record is None:
+                    errors.append("{}: нет диагностической записи для этого снимка".format(step["id"]))
+                elif record["page_id"] != expected["page_id"]:
+                    errors.append(
+                        "{}: ожидалась страница {}, получена {}".format(
+                            step["id"], expected["page_id"], record["page_id"]
+                        )
                     )
-                )
+            suffix = expected.get("image_suffix")
+            if suffix:
+                if record is None or not record["image"].endswith(suffix):
+                    actual_image = "<нет записи>" if record is None else record["image"]
+                    errors.append(
+                        "{}: ожидалось изображение *{}, получено {}".format(
+                            step["id"], suffix, actual_image
+                        )
+                    )
             fragment = expected.get("text_contains")
-            if fragment:
-                text = ""
-                if log_path and log_path.exists():
-                    text = log_path.read_text(encoding="utf-8", errors="replace")
-                if fragment not in text:
-                    errors.append("{}: в журнале нет ожидаемого текста {!r}".format(step["id"], fragment))
+            if fragment and fragment not in log_text:
+                errors.append("{}: в журнале нет ожидаемого текста {!r}".format(step["id"], fragment))
 
     return {"runtime": runtime, "ok": not errors, "steps": step_results, "errors": errors}
 
@@ -212,14 +217,23 @@ def run_nlbnavigator(args, route, output_dir):
         raise RuntimeError("nlb_sdl сообщил о невыполненной команде сценария")
 
     records = []
+    pending_screenshot = None
     for line in completed.stdout.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("shot:"):
+            pending_screenshot = Path(stripped[5:].strip()).name
+            continue
         match = SCREEN_RE.search(line)
         if match:
-            records.append({
+            record = {
                 "page_id": match.group(1),
                 "image": match.group(2),
                 "image_is_background": match.group(3) == "true",
-            })
+            }
+            if pending_screenshot:
+                record["screenshot"] = pending_screenshot
+                pending_screenshot = None
+            records.append(record)
 
     report = validate_run(route, output_dir, "nlbnavigator", records, log_path)
     report["command"] = command
@@ -312,7 +326,7 @@ def run_instead(args, route, output_dir):
     env["XDG_CONFIG_HOME"] = str(isolated_home / ".config")
     env["XDG_DATA_HOME"] = str(isolated_home / ".local/share")
     env["XDG_CACHE_HOME"] = str(isolated_home / ".cache")
-    env["LUA_PATH"] = "{};{}/? /init.lua;;".format(str(game / "?.lua"), str(game)).replace("? /", "?/")
+    env["LUA_PATH"] = "{};{};;".format(str(game / "?.lua"), str(game / "?/init.lua"))
     env["SDL_AUDIODRIVER"] = "dummy"
 
     binary = args.instead_binary or shutil.which("sdl-instead") or "/usr/games/sdl-instead"
