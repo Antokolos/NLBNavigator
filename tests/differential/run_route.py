@@ -2,6 +2,7 @@
 """Исполняет общий JSON-маршрут в INSTEAD или NLBNavigator и сравнивает кадры."""
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -82,6 +83,39 @@ def write_json(path, value):
     with path.open("w", encoding="utf-8") as target:
         json.dump(value, target, ensure_ascii=False, indent=2)
         target.write("\n")
+
+
+def git_commit(path):
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(path), "rev-parse", "HEAD"],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            text=True, encoding="utf-8", timeout=5
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+    return None
+
+
+def file_sha256(path):
+    digest = hashlib.sha256()
+    try:
+        with Path(path).open("rb") as source:
+            for chunk in iter(lambda: source.read(1024 * 1024), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
+    except OSError:
+        return None
+
+
+def route_metadata(route_path, route, runner_path):
+    return {
+        "route_id": route["id"],
+        "route_sha256": file_sha256(route_path),
+        "runner_sha256": file_sha256(runner_path),
+    }
 
 
 def screenshot_path(output_dir, step):
@@ -272,6 +306,13 @@ def run_nlbnavigator(args, route, output_dir):
     report = validate_run(route, output_dir, "nlbnavigator", records, log_path)
     report["command"] = command
     report["screen_records"] = records
+    report["metadata"] = route_metadata(args.route, route, __file__)
+    report["metadata"].update({
+        "navigator_commit": git_commit(Path.cwd()),
+        "book_commit": git_commit(args.book),
+        "theme_commit": git_commit(args.theme),
+        "base_theme_commit": git_commit(args.base_theme),
+    })
     write_json(output_dir / "route-report.json", report)
     if not report["ok"]:
         raise RuntimeError("Проверка NLBNavigator не прошла: " + "; ".join(report["errors"]))
@@ -498,6 +539,8 @@ def run_instead(args, route, output_dir):
         step_result["state_trace"] = state_by_id.get(step_result["id"])
     report["state_records"] = state_records
     report["state_validation"] = "INSTEAD Lua trace captures page UUID, background, rendered text and selected story variables."
+    report["metadata"] = route_metadata(args.route, route, __file__)
+    report["metadata"]["instead_export_commit"] = git_commit(game)
     write_json(output_dir / "route-report.json", report)
     if not report["ok"]:
         raise RuntimeError("Проверка INSTEAD не прошла: " + "; ".join(report["errors"]))
@@ -541,9 +584,17 @@ def compare_runtimes(route, output_dir):
         result["diff_image"] = str(diff_path)
         results.append(result)
 
+    runtime_reports = {}
+    for runtime_name in ("instead", "nlbnavigator"):
+        report_path = output_dir / runtime_name / "route-report.json"
+        if report_path.is_file():
+            with report_path.open("r", encoding="utf-8") as source:
+                runtime_reports[runtime_name] = json.load(source).get("metadata", {})
+
     report = {
         "route": route["id"],
         "comparison_is_advisory": True,
+        "runtime_metadata": runtime_reports,
         "ok": not errors,
         "steps": results,
         "errors": errors,
