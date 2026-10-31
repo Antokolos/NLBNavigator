@@ -20,6 +20,7 @@ name: NLB SDL manual test
   push:
     branches:
       - ci/nlb-sdl-wolfman
+      - ci/nlb-sdl-wolfman-state-trace
     paths:
       - .github/workflows/nlb-sdl-test.yml
       - CMakeLists.txt
