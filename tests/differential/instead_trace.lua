@@ -82,7 +82,7 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
                 for _ in prefix:gmatch(delimiter) do prefix_count = prefix_count + 1 end
             end)
             portion_count = total + 1
-            portion_index = prefix_count
+            portion_index = math.max(0, prefix_count - 1)
         end
         more = not pg._last
     end
@@ -124,6 +124,7 @@ iface.cmd = function(self, command, ...)
     if command_name ~= "user_timer" then
         local result = returns[1]
         local kind = command_name == "inv" and "inventory"
+            or command_name == "way" and "event"
             or type(result) == "string" and "scene"
             or "event"
         local argument_text = {}
