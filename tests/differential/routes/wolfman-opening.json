@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "wolfman-opening",
   "story_id": "am-i-a-monster",
-  "title": "Am I a Monster? — начальные переходы",
+  "title": "Am I a Monster? — начальные переходы и первый выбор",
   "mode": "vn",
   "language": "ru",
   "window": {
@@ -59,11 +59,38 @@
         "instead_text_contains": "Интересно, сколько я тут валяюсь",
         "text_contains": "Интересно, сколько я тут валяюсь"
       }
+    },
+    {
+      "id": "opening-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 13,
+          "nlbnavigator": 9
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "03-opening-choices.png",
+      "visual_change_from": "opening-next-portion",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "instead_background_suffix": "1.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Попытаться прорваться сквозь полицию",
+          "Перепрыгнуть через забор"
+        ]
+      }
     }
   ],
   "notes": [
     "The first route intentionally covers only title -> first story page -> next text portion.",
     "The click lands on a non-interactive part of the background and advances the VN text paginator.",
-    "INSTEAD trace records the outer iface.cmd result (the paginator-visible VN portion), page UUID, paginator position and story variables. Every key/click must have a fresh input event followed by a changed scene snapshot."
+    "INSTEAD trace records the outer iface.cmd result (the paginator-visible VN portion), page UUID, paginator position and story variables. Every key/click must have a fresh input event followed by a changed scene snapshot.",
+    "The same semantic action advances to the first choice screen. At the pinned references the INSTEAD paginator has 14 portions and NLBNavigator has 10; from portion index 1 this requires 13 and 9 clicks respectively. The differing segmentation is recorded and remains a separate comparison item."
   ]
 }
