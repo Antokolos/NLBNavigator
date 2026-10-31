@@ -234,6 +234,12 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                 errors.append("{}: ожидался экран {}, получен {}".format(
                     step["id"], expected["screen"], record.get("screen")
                 ))
+            portion = record.get("portion", {})
+            for expected_key, actual_key in (("portion_index", "index"), ("portion_count", "count")):
+                if expected_key in expected and portion.get(actual_key) != expected[expected_key]:
+                    errors.append("{}: portion.{}={}, ожидалось {}".format(
+                        step["id"], actual_key, portion.get(actual_key), expected[expected_key]
+                    ))
 
             expected_choices = expected.get("choices_contains", [])
             if expected_choices:
@@ -299,6 +305,14 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                 errors.append("{}: INSTEAD ожидался экран {}, получен {}".format(
                     step["id"], expected["instead_screen_kind"], record.get("screen_kind")
                 ))
+            for expected_key, actual_key in (
+                ("instead_portion_index", "portion_index"),
+                ("instead_portion_count", "portion_count"),
+            ):
+                if expected_key in expected and record.get(actual_key) != expected[expected_key]:
+                    errors.append("{}: INSTEAD {}={}, ожидалось {}".format(
+                        step["id"], actual_key, record.get(actual_key), expected[expected_key]
+                    ))
             suffix = expected.get("instead_background_suffix")
             if suffix and not record.get("background", "").endswith(suffix):
                 errors.append(
