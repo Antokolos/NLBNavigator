@@ -103,6 +103,16 @@ public:
     }
     /// Сейчас показан экран вариантов (режим choicesScreen)
     bool choicesScreenShown() const { return m_showChoices; }
+    /// Порции текста VN (режим экрана вариантов) — для тестов и диагностики, только чтение:
+    /// номер показанной порции (с 0), сколько их, есть ли ещё и текст показанной.
+    /// Вне режима экрана вариантов (STANDARD, варианты в тексте) порций нет: count = 0
+    struct PortionState {
+        size_t index = 0;
+        size_t count = 0;
+        bool more = false;
+        std::vector<Paragraph> visible;
+    };
+    PortionState portionState() const;
     /// Показано сообщение (конец игры, внешняя игра, ошибка) — для тестов
     bool messageShown() const { return m_menu == Menu::Message; }
     /// Игрок выбрал «Выйти» в меню

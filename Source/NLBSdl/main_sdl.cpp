@@ -149,6 +149,14 @@ int main(int argc, char** argv) {
         else if (a == "--log" && i + 1 < args.size()) options.logPath = args[++i];
         else if (a.rfind("--log=", 0) == 0) options.logPath = a.substr(6);
         else if (a == "--script" && i + 1 < args.size()) options.scriptPath = args[++i];
+        else if (a == "--state-log" && i + 1 < args.size()) options.stateLogPath = args[++i];
+        else if (a == "--state-vars" && i + 1 < args.size()) {
+            std::string list = args[++i], item;
+            for (char c : list + ",") {
+                if (c == ',') { if (!item.empty()) options.stateVars.push_back(item); item.clear(); }
+                else if (c != ' ') item += c;
+            }
+        }
         else if (a == "--window" && i + 1 < args.size()) std::sscanf(args[++i].c_str(), "%dx%d", &options.windowWidth, &options.windowHeight);
         else positional.push_back(a);
     }
@@ -171,7 +179,8 @@ int main(int argc, char** argv) {
 #endif
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
                      " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--text-scale 1.5] [--log <file>]"
-                     " [--platform steam|epic|log[:file]]... [--platform-config <platform.ini>] [--lang <ru|en|…>]" << std::endl;
+                     " [--platform steam|epic|log[:file]]... [--platform-config <platform.ini>] [--lang <ru|en|…>]"
+                     " [--script <file> [--state-log <file.jsonl>] [--state-vars <a,b|*>]]" << std::endl;
         std::cout << "  vn            - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
         std::cout << "  standard      - as exported to INSTEAD; choices at the end of the text by default" << std::endl;
         std::cout << "  (no mode)     - by the book theme: standard for a STANDARD book, otherwise vn" << std::endl;
