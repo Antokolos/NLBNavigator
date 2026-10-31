@@ -30,6 +30,19 @@ $EditorCmd = Join-Path $Engine "Engine\Binaries\Win64\UnrealEditor-Cmd.exe"
 if (-not (Test-Path $RunUAT)) { throw "Нет $RunUAT — укажите -Engine или переменную UE_ROOT" }
 
 $EngineIni = Join-Path $ProjectDir "Config\DefaultEngine.ini"
+
+# Книга попадает в APK только из Content\NLBFiles (отдельными файлами, DefaultGame.ini). Если она
+# лежит в NLBFiles в корне проекта (так её находит игра на ПК) — скопировать в Content\NLBFiles
+$BookInContent = Join-Path $ProjectDir "Content\NLBFiles"
+$BookInRoot = Join-Path $ProjectDir "NLBFiles"
+if (-not (Get-ChildItem $BookInContent -ErrorAction SilentlyContinue)) {
+    if (Get-ChildItem $BookInRoot -ErrorAction SilentlyContinue) {
+        Write-Host "Книга: копирую NLBFiles -> Content\NLBFiles (в APK попадает только оттуда)"
+        Copy-Item $BookInRoot $BookInContent -Recurse -Force
+    } else {
+        throw "Нет книги: положите её в Content\NLBFiles (например, Content\NLBFiles\book.nlbpack)"
+    }
+}
 $Backups = @()
 function Backup($path) {
     $copy = "$path.nlbbak"
