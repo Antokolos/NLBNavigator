@@ -36,14 +36,20 @@ def load_route(path):
         if not screenshot or Path(screenshot).name != screenshot:
             raise ValueError("screenshot должен быть именем файла без каталогов")
         action = step.get("action", {})
-        if action.get("type") not in ("capture", "key", "click"):
-            raise ValueError("Поддерживаются действия capture, key и click")
+        if action.get("type") not in ("capture", "key", "click", "advance"):
+            raise ValueError("Поддерживаются действия capture, key, click и advance")
         if action.get("type") == "key" and not action.get("key"):
             raise ValueError("Для действия key не задан key")
-        if action.get("type") == "click":
+        if action.get("type") in ("click", "advance"):
             for key in ("x_ratio", "y_ratio"):
                 if key not in action or not 0.0 <= float(action[key]) <= 1.0:
-                    raise ValueError("Координаты click задаются x_ratio/y_ratio от 0 до 1")
+                    raise ValueError("Координаты click/advance задаются x_ratio/y_ratio от 0 до 1")
+        if action.get("type") == "advance":
+            clicks = action.get("clicks", {})
+            for runtime in ("instead", "nlbnavigator"):
+                count = int(clicks.get(runtime, 0))
+                if count < 1 or count > 100:
+                    raise ValueError("Для advance.clicks.{} нужно значение от 1 до 100".format(runtime))
     return route
 
 
