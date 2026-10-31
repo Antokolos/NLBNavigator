@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "wolfman-opening",
   "story_id": "am-i-a-monster",
-  "title": "Am I a Monster? — начальные переходы и первый выбор",
+  "title": "Am I a Monster? — начальная сцена и выбор пути",
   "mode": "vn",
   "language": "ru",
   "window": {
@@ -93,12 +93,40 @@
           "Перепрыгнуть через забор"
         ]
       }
+    },
+    {
+      "id": "jump-over-fence",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.28,
+          "y_ratio": 0.35
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "04-jump-over-fence.png",
+      "visual_change_from": "opening-choices",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Бежать прямо на вооружённых полицейских",
+        "instead_text_contains": "Бежать прямо на вооружённых полицейских",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
     }
   ],
   "notes": [
     "The route covers title -> opening page -> second visible portion -> first choices screen.",
     "The click lands on a non-interactive part of the background and advances the VN text paginator.",
     "INSTEAD trace records the outer iface.cmd result (the paginator-visible VN portion), page UUID, paginator position and story variables. Every key/click must have a fresh input event followed by a changed scene snapshot.",
-    "The INSTEAD trace counts only non-empty paginator segments; empty paragraph delimiters are skipped just as the paginator skips blank portions. Both engines expose 10 visible portions for this pinned opening page."
+    "The INSTEAD trace counts only non-empty paginator segments; empty paragraph delimiters are skipped just as the paginator skips blank portions. Both engines expose 10 visible portions for this pinned opening page.",
+    "Select the second option, «Перепрыгнуть через забор». NLBNavigator selects semantic choice index 1; INSTEAD receives a real mouse click on the corresponding visible option."
   ]
 }
