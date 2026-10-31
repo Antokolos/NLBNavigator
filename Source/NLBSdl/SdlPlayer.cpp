@@ -207,7 +207,11 @@ void SdlPlayer::handleEvent(SDL_Event& e) {
     switch (e.type) {
         case SDL_EVENT_QUIT: m_quit = true; break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            m_screen->click(e.button.x, e.button.y, e.button.button == SDL_BUTTON_RIGHT);
+            if (e.button.button == SDL_BUTTON_LEFT) m_screen->press(e.button.x, e.button.y);
+            else m_screen->click(e.button.x, e.button.y, e.button.button == SDL_BUTTON_RIGHT);
+            break;
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+            if (e.button.button == SDL_BUTTON_LEFT) m_screen->release(e.button.x, e.button.y);
             break;
         case SDL_EVENT_MOUSE_MOTION:
             m_screen->mouseMove(e.motion.x, e.motion.y);
@@ -440,6 +444,8 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
              && (!bObj.empty() ? m_session->clickObject(bObj) : m_session->clickItem(bItem));
     } else if (starts("start:")) {
         engine.start(line.substr(6));  // начать с указанной страницы (проверка отдельных сцен)
+    } else if (starts("give:")) {
+        ok = engine.giveItem(line.substr(5));  // положить объект (по имени) в инвентарь — подготовка сцены
     } else if (starts("set:")) {
         const auto eq = line.find('=');
         engine.setVariable(line.substr(4, eq - 4), engine.evaluate(line.substr(eq + 1)));
@@ -460,6 +466,14 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         std::sscanf(line.c_str() + 6, "%f,%f", &x, &y);
         renderFrame();
         m_screen->click(x, y, false);
+    } else if (starts("drag:")) {
+        // перетаскивание левой кнопкой: drag:x,y,dy — нажать в (x,y), сдвинуть на dy, отпустить
+        float x = 0, y = 0, dy = 0;
+        std::sscanf(line.c_str() + 5, "%f,%f,%f", &x, &y, &dy);
+        renderFrame();
+        m_screen->press(x, y);
+        for (int i = 1; i <= 10; ++i) m_screen->mouseMove(x, y + dy * i / 10);
+        m_screen->release(x, y + dy);
     } else if (starts("clickobj:") || starts("clickinv:")) {
         // щелчок мышью по объекту (ссылке или спрайту) или предмету — по его подписи
         const bool inv = starts("clickinv:");

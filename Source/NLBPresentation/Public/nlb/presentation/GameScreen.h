@@ -88,6 +88,11 @@ public:
     // ---- ввод (координаты экрана 1920×1080)
     void mouseMove(float x, float y);
     void click(float x, float y, bool rightButton);
+    /// Левая кнопка нажата/отпущена (как в INSTEAD): в окне текста нажатие с движением мыши
+    /// плавно прокручивает текст, а без движения — щелчок при отпускании. Вне окна текста
+    /// press — сразу щелчок. Фронтенды без отпускания кнопки могут звать click, как раньше.
+    void press(float x, float y);
+    void release(float x, float y);
     void wheel(float lines);                       ///< >0 — вверх (как колесо SDL)
     void key(Key key, int digit = 0);              ///< digit: 1..9 для Key::Digit
 
@@ -215,12 +220,22 @@ private:
     RectF m_textWindow{};
     bool m_moreText = false;
     float m_drawTop = -1e9f, m_drawBottom = 1e9f, m_firstHiddenY = -1;
+    bool m_partialLines = false;     ///< рисовать и строки, обрезанные краем окна (плавная прокрутка)
+    bool lineVisible(float y, float h) const {
+        return m_partialLines ? y + h > m_drawTop + 0.5f && y < m_drawBottom - 0.5f
+                              : y >= m_drawTop - 0.5f && y + h <= m_drawBottom + 0.5f;
+    }
     bool m_choicesScreen = false, m_showChoices = false;  ///< m_choicesScreen — выбор игрока (меню)
     /// Режим «варианты отдельным экраном» действует только на страницах с темой VN (там его вёл
     /// paginator INSTEAD); на страницах STANDARD — всегда варианты в тексте с прокруткой
     bool choicesMode() const { return m_choicesScreen && m_screen.layout == Layout::VisualNovel; }
     size_t m_portion = 0;            ///< текущая порция текста (режим экрана вариантов)
     bool m_scrollByPages = false;    ///< листание страницами: последняя — без повтора прочитанного
+    /// Первый экран игры (запуск, «начать заново»): текст вписывается в окно концом, как в INSTEAD
+    /// (там первая отрисовка прокручивает сцену к изменению — к концу текста, со ссылками)
+    bool m_fitToEnd = true;
+    bool m_pressed = false, m_dragging = false;  ///< левая кнопка нажата в окне текста; тянут текст
+    float m_pressX = 0, m_pressY = 0, m_dragY = 0;
     size_t m_voicedPortion = SIZE_MAX;  ///< порция, на которой уже запущена фраза озвучки
     bool m_voiceOnEnter = false;     ///< новая страница без порций: первая фраза — при отрисовке
     /// Действие привело на другую страницу (ответ «Изучив панно…» и сразу «Больно вам, больно!»):

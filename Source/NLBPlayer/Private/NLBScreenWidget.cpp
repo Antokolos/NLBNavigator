@@ -265,8 +265,21 @@ FVector2D UNLBScreenWidget::ToScreen(const FGeometry& Geometry, const FVector2D&
 FReply UNLBScreenWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) {
     if (!EnsureScreen()) return FReply::Unhandled();
     const FVector2D P = ToScreen(InGeometry, InMouseEvent.GetScreenSpacePosition());
+    if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton) {
+        // левая кнопка: в окне текста — щелчок при отпускании или прокрутка перетаскиванием
+        Screen->press(static_cast<float>(P.X), static_cast<float>(P.Y));
+        return FReply::Handled().SetUserFocus(TakeWidget(), EFocusCause::Mouse).CaptureMouse(TakeWidget());
+    }
     Screen->click(static_cast<float>(P.X), static_cast<float>(P.Y), InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton);
     return FReply::Handled().SetUserFocus(TakeWidget(), EFocusCause::Mouse);
+}
+
+FReply UNLBScreenWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) {
+    if (!EnsureScreen()) return FReply::Unhandled();
+    if (InMouseEvent.GetEffectingButton() != EKeys::LeftMouseButton) return FReply::Unhandled();
+    const FVector2D P = ToScreen(InGeometry, InMouseEvent.GetScreenSpacePosition());
+    Screen->release(static_cast<float>(P.X), static_cast<float>(P.Y));
+    return FReply::Handled().ReleaseMouseCapture();
 }
 
 FReply UNLBScreenWidget::NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) {
