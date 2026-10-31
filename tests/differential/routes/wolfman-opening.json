@@ -88,7 +88,7 @@
     }
   ],
   "notes": [
-    "The first route intentionally covers only title -> first story page -> next text portion.",
+    "The route covers title -> opening page -> second visible portion -> first choices screen.",
     "The click lands on a non-interactive part of the background and advances the VN text paginator.",
     "INSTEAD trace records the outer iface.cmd result (the paginator-visible VN portion), page UUID, paginator position and story variables. Every key/click must have a fresh input event followed by a changed scene snapshot.",
     "The INSTEAD trace counts only non-empty paginator segments; empty paragraph delimiters are skipped just as the paginator skips blank portions. Both engines expose 10 visible portions for this pinned opening page."
