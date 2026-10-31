@@ -1082,11 +1082,15 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
         const ScreenTheme& st = m_standardTheme;
         if (!m_screen.roomTitle.empty()) {
             // название комнаты: заголовок страницы, а без него — название модуля (nam в экспорте)
-            Paragraph title;
-            title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.roomTitle, "-1"});
-            title.style = Paragraph::Style::Title;
-            title.centered = true;
-            header.push_back(title);
+            // заголовок из пробелов (nam = " ": «Фронтир», страница ролика) — как INSTEAD: строка
+            // из одного пробела высоты не имеет, остаётся только отступ win_spacing под ней
+            if (m_screen.roomTitle.find_first_not_of(" \t") != std::string::npos) {
+                Paragraph title;
+                title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.roomTitle, "-1"});
+                title.style = Paragraph::Style::Title;
+                title.centered = true;
+                header.push_back(title);
+            }
             Paragraph spacer;  // game.c: win_spacing = font_size * font_height / 2 (целое)
             spacer.spacing = std::floor(window.fontSize * m_r->pixelScale() * window.lineHeight / 2) / m_r->pixelScale();
             header.push_back(spacer);
