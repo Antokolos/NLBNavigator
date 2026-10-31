@@ -285,15 +285,24 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                 )
             fragment = expected.get("instead_text_contains")
             if fragment:
-                passed = fragment in record.get("rendered", "")
+                raw_text = record.get("rendered", "")
+                normalized_text = normalize_story_text(raw_text)
+                normalized_fragment = normalize_story_text(fragment)
+                passed = normalized_fragment in normalized_text
                 text_checks.append({
                     "step_id": step["id"],
                     "expected_fragment": fragment,
                     "passed": passed,
-                    "rendered_text": record.get("rendered", ""),
+                    "source": "iface.cmd",
+                    "raw_text": raw_text,
+                    "normalized_text": normalized_text,
+                    "page_id": record.get("page_id", ""),
+                    "screen_kind": record.get("screen_kind", ""),
+                    "portion_index": record.get("portion_index", 0),
+                    "portion_count": record.get("portion_count", 0),
                 })
                 if not passed:
-                    errors.append("{}: INSTEAD в отображённом тексте нет {!r}".format(step["id"], fragment))
+                    errors.append("{}: INSTEAD в отображённой порции нет {!r}".format(step["id"], fragment))
 
     return {
         "runtime": runtime,
