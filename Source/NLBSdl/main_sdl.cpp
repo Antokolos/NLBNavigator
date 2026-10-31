@@ -139,6 +139,7 @@ int main(int argc, char** argv) {
         if (a == "--font" && i + 1 < args.size()) options.fontPath = args[++i];
         else if (a == "--theme" && i + 1 < args.size()) options.themeDir = args[++i];
         else if (a == "--base-theme" && i + 1 < args.size()) options.baseThemeDir = args[++i];
+        else if ((a == "--lang" || a == "-lang") && i + 1 < args.size()) ++i;  // languageFromArgs reads the original argument list
         else if (a == "--no-sound") options.sound = false;
         else if (a == "--choices-screen") choicesScreen = 1;
         else if (a == "--choices-in-text") choicesScreen = 0;
