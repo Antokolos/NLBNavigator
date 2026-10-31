@@ -74,15 +74,29 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
     if type(pg) == "table" and type(real_text) == "string" then
         local delimiter = pg.delim
         if type(delimiter) == "string" and delimiter ~= "" then
-            local total, prefix_count = 0, 0
             local next_page = tonumber(pg._page) or 1
+            local starts = {}
+            local cursor = 1
             pcall(function()
-                for _ in real_text:gmatch(delimiter) do total = total + 1 end
-                local prefix = real_text:sub(1, math.max(0, next_page - 1))
-                for _ in prefix:gmatch(delimiter) do prefix_count = prefix_count + 1 end
+                while cursor <= #real_text + 1 do
+                    local first, last = real_text:find(delimiter, cursor)
+                    local finish = first and (first - 1) or #real_text
+                    local segment = real_text:sub(cursor, finish)
+                    if segment:find("%S") then
+                        starts[#starts + 1] = cursor
+                    end
+                    if not first then break end
+                    cursor = last + 1
+                end
             end)
-            portion_count = total + 1
-            portion_index = math.max(0, prefix_count - 1)
+            local completed = 0
+            for _, start in ipairs(starts) do
+                if start < next_page then completed = completed + 1 end
+            end
+            portion_count = #starts
+            -- _page points to the next visible segment, except on the final segment
+            -- where text_page() sets _last without moving _page.
+            portion_index = pg._last and completed or math.max(0, completed - 1)
         end
         more = not pg._last
     end
