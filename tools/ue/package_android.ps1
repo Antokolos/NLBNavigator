@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   Упаковать NLBNavigator (Unreal) для Android: шлем Meta Quest (VR) или обычный телефон.
 
@@ -33,7 +33,11 @@ $EngineIni = Join-Path $ProjectDir "Config\DefaultEngine.ini"
 $Backups = @()
 function Backup($path) {
     $copy = "$path.nlbbak"
-    Copy-Item $path $copy -Force
+    # Не затираем резервную копию, оставшуюся после прерванного предыдущего запуска.
+    if (Test-Path $copy) {
+        throw "Уже существует резервная копия $copy. Проверьте её перед повторным запуском."
+    }
+    Copy-Item $path $copy
     $script:Backups += ,@($path, $copy)
 }
 
