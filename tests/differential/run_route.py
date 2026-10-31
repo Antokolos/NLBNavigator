@@ -224,6 +224,19 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                 errors.append("{}: ожидалась страница {}, получена {}".format(
                     step["id"], expected["page_id"], page_id
                 ))
+            if expected.get("screen") and record.get("screen") != expected["screen"]:
+                errors.append("{}: ожидался экран {}, получен {}".format(
+                    step["id"], expected["screen"], record.get("screen")
+                ))
+
+            expected_choices = expected.get("choices_contains", [])
+            if expected_choices:
+                choice_texts = [choice.get("text", "") for choice in model.get("choices", [])]
+                for fragment in expected_choices:
+                    if not any(fragment in text for text in choice_texts):
+                        errors.append("{}: среди вариантов нет {!r}; получены {}".format(
+                            step["id"], fragment, choice_texts
+                        ))
 
             suffix = expected.get("image_suffix")
             image = model.get("pageImage", {}).get("file", "")
@@ -276,6 +289,10 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                         step["id"], expected["page_id"], record.get("page_id", "")
                     )
                 )
+            if expected.get("instead_screen_kind") and record.get("screen_kind") != expected["instead_screen_kind"]:
+                errors.append("{}: INSTEAD ожидался экран {}, получен {}".format(
+                    step["id"], expected["instead_screen_kind"], record.get("screen_kind")
+                ))
             suffix = expected.get("instead_background_suffix")
             if suffix and not record.get("background", "").endswith(suffix):
                 errors.append(
@@ -334,6 +351,14 @@ def script_for_nlbnavigator(route, output_dir):
             x = round(float(action["x_ratio"]) * width)
             y = round(float(action["y_ratio"]) * height)
             append_command("click:{},{}".format(x, y))
+        elif kind == "advance":
+            x = round(float(action["x_ratio"]) * width)
+            y = round(float(action["y_ratio"]) * height)
+            clicks = int(action.get("clicks", {}).get("nlbnavigator", 0))
+            if clicks < 1 or clicks > 100:
+                raise ValueError("advance.clicks.nlbnavigator должен быть от 1 до 100")
+            for _ in range(clicks):
+                append_command("click:{},{}".format(x, y))
 
         delay = int(step.get("settle_ms", 0))
         if delay > 0:
@@ -537,29 +562,35 @@ def execute_instead_action(action, window_bounds):
                 )
             )
         return
-    if kind == "click":
+    if kind in ("click", "advance"):
         _, _, window_x, window_y, width, height = window_bounds
         x = window_x + min(width - 1, round(float(action["x_ratio"]) * width))
         y = window_y + min(height - 1, round(float(action["y_ratio"]) * height))
-        # Use absolute X11 screen coordinates; --window can hang with SDL/OpenGL windows.
-        move = run_command(
-            timeout_command(["xdotool", "mousemove", str(x), str(y)], 3), 5
-        )
-        if move.returncode != 0:
-            raise RuntimeError(
-                "INSTEAD: не удалось переместить указатель в ({}, {}): {}".format(
-                    x, y, move.stdout.strip() or "exit code {}".format(move.returncode)
-                )
+        clicks = int(action.get("clicks", {}).get("instead", 1)) if kind == "advance" else 1
+        if clicks < 1 or clicks > 100:
+            raise ValueError("advance.clicks.instead должен быть от 1 до 100")
+        for _ in range(clicks):
+            # Use absolute X11 screen coordinates; --window can hang with SDL/OpenGL windows.
+            move = run_command(
+                timeout_command(["xdotool", "mousemove", str(x), str(y)], 3), 5
             )
-        click = run_command(
-            timeout_command(["xdotool", "click", "--delay", "0", "1"], 3), 5
-        )
-        if click.returncode != 0:
-            raise RuntimeError(
-                "INSTEAD: не удалось отправить щелчок в ({}, {}): {}".format(
-                    x, y, click.stdout.strip() or "exit code {}".format(click.returncode)
+            if move.returncode != 0:
+                raise RuntimeError(
+                    "INSTEAD: не удалось переместить указатель в ({}, {}): {}".format(
+                        x, y, move.stdout.strip() or "exit code {}".format(move.returncode)
+                    )
                 )
+            click = run_command(
+                timeout_command(["xdotool", "click", "--delay", "0", "1"], 3), 5
             )
+            if click.returncode != 0:
+                raise RuntimeError(
+                    "INSTEAD: не удалось отправить щелчок в ({}, {}): {}".format(
+                        x, y, click.stdout.strip() or "exit code {}".format(click.returncode)
+                    )
+                )
+            if kind == "advance":
+                time.sleep(0.12)
         return
     raise ValueError("Неизвестное действие INSTEAD: " + kind)
 
@@ -597,7 +628,7 @@ def trace_input_matches(action, record):
     command = record.get("command", "")
     if action["type"] == "key":
         return command == "user_kbd"
-    if action["type"] == "click":
+    if action["type"] in ("click", "advance"):
         return command.startswith("click ")
     return True
 
@@ -732,10 +763,10 @@ def run_instead(args, route, output_dir):
             new_events = [record for record in after if record["seq"] > cursor]
             action_events = [
                 record for record in new_events
-                if step["action"]["type"] in ("key", "click")
+                if step["action"]["type"] in ("key", "click", "advance")
                 and trace_input_matches(step["action"], record)
             ]
-            if step["action"]["type"] in ("key", "click") and not action_events:
+            if step["action"]["type"] in ("key", "click", "advance") and not action_events:
                 trace_errors.append("{}: INSTEAD trace не зафиксировал ожидаемый input event".format(
                     step["id"]
                 ))
@@ -756,7 +787,7 @@ def run_instead(args, route, output_dir):
                 ))
             else:
                 signature = trace_state_signature(state_record)
-                if step["action"]["type"] in ("key", "click") and previous_state is not None:
+                if step["action"]["type"] in ("key", "click", "advance") and previous_state is not None:
                     if signature == previous_state:
                         trace_errors.append("{}: input зарегистрирован, но видимое состояние не изменилось".format(
                             step["id"]
