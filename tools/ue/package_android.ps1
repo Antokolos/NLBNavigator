@@ -61,7 +61,7 @@ try {
 
     & $RunUAT BuildCookRun -utf8output -nop4 -nocompileeditor -skipbuildeditor -installed `
         -project="$Project" -target=NLBNavigator -unrealexe="$EditorCmd" `
-        -platform=Android -cookflavor=ASTC -clientconfig=$Config `
+        -platform=Android -cookflavor=ASTC "-clientconfig=$Config" `
         -build -cook -stage -pak -iostore -compressed -package -archive -archivedirectory="$Out" -prereqs
     if ($LASTEXITCODE -ne 0) { throw "Упаковка не удалась (код $LASTEXITCODE)" }
     Write-Host "Готово: $Out"
