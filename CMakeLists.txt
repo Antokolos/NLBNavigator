@@ -371,7 +371,9 @@ if(NLB_WITH_SDL3)
         message(STATUS "NLBNavigator: SDL3 audio backend enabled")
         # SDL3_image/SDL3_ttf загружают PNG и FreeType, чьи imported targets ссылаются
         # на ZLIB::ZLIB. Найдём ZLIB явно до загрузки этих конфигураций (в частности, vcpkg).
-        find_package(ZLIB REQUIRED)
+        # Force CMake's built-in FindZLIB module; vcpkg's config package does not
+        # provide the ZLIB::ZLIB target expected by PNG and FreeType exports.
+        find_package(ZLIB MODULE REQUIRED)
         # Графический проигрыватель — если есть ещё SDL3_image и SDL3_ttf
         find_package(SDL3_image CONFIG QUIET)
         find_package(SDL3_ttf CONFIG QUIET)
