@@ -135,6 +135,7 @@ void UNLBVRModeComponent::CreateRig()
 	};
 	LeftController = MakeController(TEXT("NLB_LeftController"), FName(TEXT("Left")));
 	RightController = MakeController(TEXT("NLB_RightController"), FName(TEXT("Right")));
+	RightAim = MakeController(TEXT("NLB_RightAim"), FName(TEXT("RightAim")));
 
 	auto MakeHand = [&](UMotionControllerComponent* Parent, const TCHAR* Name) {
 		UStaticMeshComponent* Hand = NewObject<UStaticMeshComponent>(Owner, Name);
@@ -150,7 +151,7 @@ void UNLBVRModeComponent::CreateRig()
 
 	// Луч правой руки: тонкий цилиндр вперёд
 	Laser = NewObject<UStaticMeshComponent>(Owner, TEXT("NLB_Laser"));
-	Laser->SetupAttachment(RightController);
+	Laser->SetupAttachment(RightAim);
 	if (UStaticMesh* Cylinder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder")))
 	{
 		Laser->SetStaticMesh(Cylinder);
@@ -161,7 +162,7 @@ void UNLBVRModeComponent::CreateRig()
 
 	// Щелчки по панелям (книга, меню паузы) — тем же лучом, как мышью
 	Pointer = NewObject<UWidgetInteractionComponent>(Owner, TEXT("NLB_Pointer"));
-	Pointer->SetupAttachment(RightController);
+	Pointer->SetupAttachment(RightAim);
 	Pointer->InteractionDistance = PointerRange;
 	Pointer->InteractionSource = EWidgetInteractionSource::World;
 	Pointer->bShowDebug = false;
@@ -193,12 +194,13 @@ void UNLBVRModeComponent::DestroyRig()
 	for (USceneComponent* C : {static_cast<USceneComponent*>(Pointer.Get()), static_cast<USceneComponent*>(Laser.Get()),
 	                           static_cast<USceneComponent*>(LeftHand.Get()), static_cast<USceneComponent*>(RightHand.Get()),
 	                           static_cast<USceneComponent*>(LeftController.Get()), static_cast<USceneComponent*>(RightController.Get()),
+	                           static_cast<USceneComponent*>(RightAim.Get()),
 	                           static_cast<USceneComponent*>(VROrigin.Get())})
 	{
 		if (C) C->DestroyComponent();
 	}
 	Pointer = nullptr; Laser = nullptr; LeftHand = nullptr; RightHand = nullptr;
-	LeftController = nullptr; RightController = nullptr; VROrigin = nullptr;
+	LeftController = nullptr; RightController = nullptr; RightAim = nullptr; VROrigin = nullptr;
 }
 
 // ============================================================================ панель перед игроком
@@ -234,6 +236,9 @@ void UNLBVRModeComponent::ShowPanel(UUserWidget* Widget)
 	Panel->SetWorldRotation(FRotator(0, Yaw.Yaw + 180.0f, 0));
 	Panel->SetWorldScale3D(FVector(PanelWidth / 1920.0f));
 	Panel->SetVisibility(true);
+	// для разбора «панели не видно»: где она и где глаза (adb logcat -s UE | findstr NLB)
+	UE_LOG(LogTemp, Log, TEXT("NLB VR: панель %s у %s, глаза %s, взгляд %.0f°"), *Widget->GetName(),
+	       *Panel->GetComponentLocation().ToString(), *Eye.ToString(), Yaw.Yaw);
 }
 
 void UNLBVRModeComponent::HidePanel()
@@ -436,12 +441,12 @@ void UNLBVRModeComponent::OnMenu()
 void UNLBVRModeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (!bVRActive || !RightController)
+	if (!bVRActive || !RightAim)
 	{
 		return;
 	}
-	const FVector Start = RightController->GetComponentLocation();
-	const FVector Dir = RightController->GetForwardVector();
+	const FVector Start = RightAim->GetComponentLocation();
+	const FVector Dir = RightAim->GetForwardVector();
 	FHitResult Hit;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());

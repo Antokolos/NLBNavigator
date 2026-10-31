@@ -107,6 +107,9 @@ private:
 	UPROPERTY() TObjectPtr<USceneComponent> VROrigin;
 	UPROPERTY() TObjectPtr<UMotionControllerComponent> LeftController;
 	UPROPERTY() TObjectPtr<UMotionControllerComponent> RightController;
+	/// Поза «прицела» правой руки (OpenXR aim pose): луч и щелчки по панели. Поза хвата
+	/// (RightController) у Quest наклонена вверх — луч от неё смотрел бы не туда, куда указывает рука
+	UPROPERTY() TObjectPtr<UMotionControllerComponent> RightAim;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> LeftHand;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> RightHand;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Laser;

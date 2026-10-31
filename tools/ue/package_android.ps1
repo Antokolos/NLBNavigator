@@ -49,6 +49,8 @@ try {
         $ini = Get-Content $EngineIni -Raw -Encoding UTF8
         $ini = $ini -replace '(?m)^bPackageForMetaQuest=.*$', 'bPackageForMetaQuest=False'
         $ini = $ini -replace '(?m)^ExtraApplicationSettings=.*$', 'ExtraApplicationSettings='
+        # не у всех телефонов Vulkan, подходящий движку: запасной рендер — OpenGL ES 3.2
+        $ini = $ini -replace '(?m)^bBuildForES31=.*$', 'bBuildForES31=True'
         [IO.File]::WriteAllText($EngineIni, $ini, (New-Object Text.UTF8Encoding $false))
         # без OpenXR: в игре нет системы XR — она сама включает обычный режим и экранное управление
         $json = Get-Content $Project -Raw -Encoding UTF8 | ConvertFrom-Json

@@ -81,6 +81,11 @@ void UNLBTouchControlsComponent::BuildSticks()
 	// стиков геймпада. Положение: доля экрана (0..1) или от правого/нижнего края (-1..0)
 	UTexture2D* Back = LoadObject<UTexture2D>(nullptr, TEXT("/Engine/MobileResources/HUD/VirtualJoystick_Background.VirtualJoystick_Background"));
 	UTexture2D* Thumb = LoadObject<UTexture2D>(nullptr, TEXT("/Engine/MobileResources/HUD/VirtualJoystick_Thumb.VirtualJoystick_Thumb"));
+	if (!Back || !Thumb)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NLB: нет текстур экранного джойстика (/Engine/MobileResources/HUD) — джойстики выключены"));
+		return;
+	}
 	Sticks = NewObject<UTouchInterface>(this);
 	auto Stick = [&](FVector2D Center, const FKey& X, const FKey& Y) {
 		FTouchInputControl C;
