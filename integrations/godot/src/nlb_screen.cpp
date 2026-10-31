@@ -126,10 +126,16 @@ void NLBScreen::_draw() {
 
 void NLBScreen::_gui_input(const Ref<InputEvent>& event) {
     if (!ensureScreen()) return;
-    if (Ref<InputEventMouseButton> mb = event; mb.is_valid() && mb->is_pressed()) {
+    if (Ref<InputEventMouseButton> mb = event; mb.is_valid() && !mb->is_pressed()
+        && mb->get_button_index() == MOUSE_BUTTON_LEFT) {
+        // отпускание левой кнопки: щелчок по тексту или конец прокрутки перетаскиванием
+        const Vector2 p = toScreen(mb->get_position());
+        m_screen->release(p.x, p.y);
+        accept_event();
+    } else if (Ref<InputEventMouseButton> mb = event; mb.is_valid() && mb->is_pressed()) {
         const Vector2 p = toScreen(mb->get_position());
         switch (mb->get_button_index()) {
-            case MOUSE_BUTTON_LEFT: m_screen->click(p.x, p.y, false); break;
+            case MOUSE_BUTTON_LEFT: m_screen->press(p.x, p.y); break;
             case MOUSE_BUTTON_RIGHT: m_screen->click(p.x, p.y, true); break;
             case MOUSE_BUTTON_WHEEL_UP: m_screen->wheel(1.0f); break;
             case MOUSE_BUTTON_WHEEL_DOWN: m_screen->wheel(-1.0f); break;
