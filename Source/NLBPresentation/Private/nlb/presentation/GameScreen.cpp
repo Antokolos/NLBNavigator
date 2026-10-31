@@ -1327,12 +1327,15 @@ void GameScreen::renderVisualNovel() {
         renderChoicesScreen();
     } else if (hasText) {
         // Окно текста — как vn:auto_geom экспорта: theme.win.geom из theme_vn.lua темы игры (тема
-        // NLB по умолчанию — 248, 838, 1424, 204), вокруг — textpad vn.lua (8 px) и боковины fl/fr
-        // до краёв экрана. Полоса — полупрозрачная, как на экране INSTEAD.
+        // NLB по умолчанию — 248, 838, 1424, 204). Подложка — как vn:textbg / vn:undertext: вокруг
+        // окна с отступом textpad (8 px темы) чёрный прямоугольник с альфой bgalpha = 127, слева и
+        // справа от него — картинки gfx/fl.png и gfx/fr.png темы в своём размере (у темы NLB —
+        // 240×220, чёрные с альфой 0 → 127 и 127 → 0: края полосы уходят в прозрачность). Нет
+        // картинок — только прямоугольник (у vn:auto_geom тогда wf = 0).
         // Крупный текст (размер текста > 100 %): полоса выше в той же пропорции (строк в ней
         // столько же) и с меньшими полями, низ — на месте, но не ниже строки инвентаря
         const RectF tw = t.vnTextGeom ? t.text.rect : RectF{248, 838, 1424, 204};
-        const float pad = 8;  // vn.lua: textpad = 8
+        const float pad = 8 * t.scale;  // vn.lua: textpad = 8
         float bottom = tw.y + tw.h;
         if (m_textScale > 1.0f && !m_screen.inventory.empty()) {  // при 100 % — ровно как в теме
             const FontRef invFont = fontFor(t.inventory);
@@ -1341,9 +1344,20 @@ void GameScreen::renderVisualNovel() {
         }
         const float textH = std::min(tw.h * m_textScale, SCREEN_H * 0.5f);
         const float shrink = m_textScale > 1.0f ? tw.x * (1 - 1 / m_textScale) : 0.0f;
-        m_r->fillRect({0, bottom - textH - pad, SCREEN_W, textH + 2 * pad}, {0, 0, 0, 110});
         ScreenTheme::Window win = t.text;
         win.rect = {tw.x - shrink, bottom - textH, tw.w + 2 * shrink, textH};
+        const RectF under{win.rect.x - pad, win.rect.y - pad, win.rect.w + 2 * pad, win.rect.h + 2 * pad};
+        m_r->fillRect(under, {0, 0, 0, 127});
+        // боковины — в размере картинки (в масштабе темы); при крупном тексте полоса выше — по её высоте
+        float fw = 0, fh = 0;
+        if (!t.frameLeft.empty() && m_r->imageSize(t.frameLeft, fw, fh)) {
+            const float h = m_textScale > 1.0f ? under.h : fh * t.scale;
+            m_r->drawImage(t.frameLeft, {under.x - fw * t.scale, under.y, fw * t.scale, h}, 1.0f);
+        }
+        if (!t.frameRight.empty() && m_r->imageSize(t.frameRight, fw, fh)) {
+            const float h = m_textScale > 1.0f ? under.h : fh * t.scale;
+            m_r->drawImage(t.frameRight, {under.x + under.w, under.y, fw * t.scale, h}, 1.0f);
+        }
         renderTextWindow(win);
     }
     renderMenuButton(t);
