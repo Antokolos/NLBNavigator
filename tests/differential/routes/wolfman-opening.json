@@ -38,7 +38,11 @@
         "text_contains": "Вы очнулись лежащим посреди тротуара",
         "min_changed_pixels": 1000,
         "instead_background_suffix": "1.jpg",
-        "instead_text_contains": "Вы очнулись лежащим посреди тротуара"
+        "instead_text_contains": "Вы очнулись лежащим посреди тротуара",
+        "portion_index": 0,
+        "portion_count": 10,
+        "instead_portion_index": 0,
+        "instead_portion_count": 10
       }
     },
     {
@@ -57,7 +61,11 @@
         "min_changed_pixels": 1000,
         "instead_background_suffix": "1.jpg",
         "instead_text_contains": "Интересно, сколько я тут валяюсь",
-        "text_contains": "Интересно, сколько я тут валяюсь"
+        "text_contains": "Интересно, сколько я тут валяюсь",
+        "portion_index": 1,
+        "portion_count": 10,
+        "instead_portion_index": 1,
+        "instead_portion_count": 10
       }
     },
     {
