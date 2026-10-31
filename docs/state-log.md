@@ -15,6 +15,15 @@ nlb_sdl <книга> vn --script route.script --state-log state.jsonl --state-va
   `_` экспорта INSTEAD); `*` — все переменные, включая служебные. Без параметра переменных в
   снимке нет. Несуществующие имена пропускаются.
 
+Если файл `--state-log` не открывается, сценарий не выполняется: nlb_sdl завершается с кодом 2
+(как при невыполненной команде) — тест не пройдёт молча без диагностики.
+
+Проверка файла: `python3 tools/check_state_log.py state.jsonl [--commands N]` — каждая строка —
+JSON с обязательными полями нужных типов, `index` подряд с 0, `screen` из допустимых,
+`portion.index` в пределах `count`, `model.pageId` = `pageId`; с `--commands N` — ровно N + 1
+записей. Раннеру тестов стоит вызывать её после каждого прогона: новое поле `ScreenModel`,
+забытое в сериализаторе, не сломает её, а пропавшее обязательное — сломает.
+
 ## Запись (schema 1)
 
 | поле | что это |
@@ -25,10 +34,10 @@ nlb_sdl <книга> vn --script route.script --state-log state.jsonl --state-va
 | `ok` | команда выполнена (то же, что отсутствие `[НЕ ВЫПОЛНЕНО]` в выводе) |
 | `pageId` | UUID текущей страницы (`PlayerEngine::screen().pageId`) |
 | `screen` | `page`, `choices` (открыт экран вариантов), `message` (сообщение: конец игры, внешняя игра, ошибка), `finished` |
-| `portion.index`, `portion.count` | номер показанной порции текста VN (с 0) и число порций; вне режима экрана вариантов (STANDARD, варианты в тексте) `count` = 0 |
+| `portion.index`, `portion.count` | номер показанной порции текста VN (с 0) и число порций. **Только в режиме экрана вариантов VN**: в STANDARD и при вариантах в тексте порций нет, `count` = 0, `index` = 0, `visible` пуст — это не ошибка, текст тогда — в `model` (`pageText`, `reactionText`) |
 | `portion.more` | после показанной есть ещё порции |
 | `portion.visible` | текст показанной порции: абзацы `{runs: [{kind, text, target}], joinPrevious}` |
-| `variables` | `{имя: значение}` из `--state-vars`: число, логическое, строка или `null` |
+| `variables` | `{имя: значение}` из `--state-vars`: число, логическое, строка или `null` (и для нечислового вещественного: nan, inf) |
 | `model` | `ScreenModel` целиком (`nlb/presentation/ScreenModelJson.h`): `pageText`, `reactionText`, `choices` (`index`, `text`, `enabled`, `trivial`, `inlineLink`, `altText`), `inventory`, `sceneObjects`, `pageImage`, `style`, `finished`… |
 
 Текст в снимке — исходный текст книги: `--` и прямые кавычки, как в книге. На экране (и в

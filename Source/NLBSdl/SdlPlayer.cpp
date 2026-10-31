@@ -6,6 +6,7 @@
 #include <SDL3_image/SDL_image.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -532,8 +533,10 @@ std::string variableJson(const cparse::packToken& value) {
         case cparse::BOOL: return value.asBool() ? "true" : "false";
         case cparse::INT:  return std::to_string(value.asInt());
         case cparse::REAL: {
+            const double d = value.asDouble();
+            if (!std::isfinite(d)) return "null";  // nan/inf в JSON нет
             char buf[64];
-            std::snprintf(buf, sizeof(buf), "%.17g", value.asDouble());
+            std::snprintf(buf, sizeof(buf), "%.17g", d);
             return buf;
         }
         case cparse::STR:  return json::str(value.asString());
@@ -577,7 +580,12 @@ bool SdlPlayer::runScript() {
     if (!in) { std::cerr << "Нет сценария: " << m_options.scriptPath << std::endl; return false; }
     if (!m_options.stateLogPath.empty()) {
         m_stateLog.open(FileUtils::nativePath(m_options.stateLogPath), std::ios::binary | std::ios::trunc);
-        if (!m_stateLog) std::cerr << "Не открыть --state-log: " << m_options.stateLogPath << std::endl;
+        // запрошенный снимок не пишется — сценарий не выполняется: иначе тест прошёл бы без
+        // диагностики (код возврата 2, как у невыполненной команды)
+        if (!m_stateLog) {
+            std::cerr << "Не открыть --state-log: " << m_options.stateLogPath << std::endl;
+            return false;
+        }
         writeState(0, "", true);  // состояние до первой команды
     }
     std::string line;
