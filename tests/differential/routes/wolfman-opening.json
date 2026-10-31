@@ -67,7 +67,7 @@
         "x_ratio": 0.5,
         "y_ratio": 0.5,
         "clicks": {
-          "instead": 13,
+          "instead": 9,
           "nlbnavigator": 9
         }
       },
@@ -91,6 +91,6 @@
     "The first route intentionally covers only title -> first story page -> next text portion.",
     "The click lands on a non-interactive part of the background and advances the VN text paginator.",
     "INSTEAD trace records the outer iface.cmd result (the paginator-visible VN portion), page UUID, paginator position and story variables. Every key/click must have a fresh input event followed by a changed scene snapshot.",
-    "The same semantic action advances to the first choice screen. At the pinned references the INSTEAD paginator has 14 portions and NLBNavigator has 10; from portion index 1 this requires 13 and 9 clicks respectively. The differing segmentation is recorded and remains a separate comparison item."
+    "The INSTEAD trace counts only non-empty paginator segments; empty paragraph delimiters are skipped just as the paginator skips blank portions. Both engines expose 10 visible portions for this pinned opening page."
   ]
 }
