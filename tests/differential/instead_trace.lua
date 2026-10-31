@@ -94,7 +94,8 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
         room_text, action_text, objects_text, player_text, _wolfiness, _hp
     }
     local encoded = {}
-    for index, value in ipairs(fields) do encoded[index] = encode_field(value) end
+    -- Numeric iteration preserves empty fields when a Lua value is nil.
+    for index = 1, 20 do encoded[index] = encode_field(fields[index]) end
     trace:write(table.concat(encoded, "\t") .. "\n")
     trace:flush()
 end
