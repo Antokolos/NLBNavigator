@@ -32,7 +32,8 @@
 - `cmake -S . -B build -G Ninja && ninja -C build NLBReader nlb_main` (SDL3 — для `nlb_sdl`).
 - Тесты — небольшие программы на `Session`/`GameScreen` с подменным рендерером/звуком; снимки
   экрана — `nlb_sdl <книга> vn --script <файл> --window 1920x1080` (`shot:`, `key:`; без `wait:`
-  между нажатием и снимком — он вызывает refresh). `--log` — журнал прохождения.
+  между нажатием и снимком — он вызывает refresh; `settle:` ждёт без refresh). `--log` — журнал
+  прохождения, `--state-log` — снимок состояния после каждой команды (`docs/state-log.md`).
 - Регрессия — эталонные снимки и сверка прохождения с INSTEAD. Тестовые книги — ниже.
 
 ## Тестовые книги — github.com/nlbproject
