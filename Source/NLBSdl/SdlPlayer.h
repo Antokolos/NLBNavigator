@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include <map>
 #include <memory>
 #include <string>
@@ -32,6 +33,11 @@ public:
         std::string savesDir;                    ///< пусто — сохранения недоступны
         std::string achievementsPath;
         std::string scriptPath;                  ///< для тестов: команды и снимки экрана
+        /// --state-log: после каждой команды сценария — строка JSON со снимком состояния (для
+        /// тестов; только чтение, на игру не влияет). Схема — docs/state-log.md
+        std::string stateLogPath;
+        /// --state-vars: какие переменные книги писать в снимок (через запятую; «*» — все)
+        std::vector<std::string> stateVars;
         int windowWidth = 1280, windowHeight = 720;
         bool fullscreen = false;                 ///< --fullscreen: сразу во весь экран (F11 — переключить)
         float textScale = 1.0f;                  ///< --text-scale: размер текста (1 — как в теме; меню главнее)
@@ -78,6 +84,10 @@ private:
 
     bool runScript();
     bool scriptCommand(const std::string& line);
+    /// Строка --state-log после команды сценария (index — номер команды, с 1; 0 — начало)
+    void writeState(size_t index, const std::string& command, bool ok);
+    std::ofstream m_stateLog;
+    size_t m_commandIndex = 0;
     bool saveScreenshot(const std::string& path);
 
     Options m_options;

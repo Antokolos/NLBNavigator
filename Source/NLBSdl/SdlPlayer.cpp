@@ -12,6 +12,7 @@
 
 #include "nlb/audio/SdlAudioBackend.h"
 #include "nlb/presentation/BookMediaSource.h"
+#include "nlb/presentation/ScreenModelJson.h"
 #include "nlb/presentation/Session.h"
 #include "nlb/util/BookPack.h"
 #include "nlb/util/FileUtils.h"
@@ -441,6 +442,13 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     } else if (starts("set:")) {
         const auto eq = line.find('=');
         engine.setVariable(line.substr(4, eq - 4), engine.evaluate(line.substr(eq + 1)));
+    } else if (starts("settle:")) {
+        // как wait:, но без обновления сессии после команды (refresh/afterCommand закрывают
+        // экран вариантов): дать доиграть анимации перед снимком, ничего не меняя
+        for (int ms = std::stoi(line.substr(7)); ms > 0; ms -= 16) {
+            SDL_Delay(16);
+            m_screen->update(16);
+        }
     } else if (starts("wait:")) {
         for (int ms = std::stoi(line.substr(5)); ms > 0; ms -= 16) {
             SDL_Delay(16);  // настоящее время: эффекты спрайтов идут по часам SDL
@@ -506,17 +514,72 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
     } else if (!line.empty() && line[0] != '#') {
         ok = false;
     }
-    if (!starts("shot:") && !starts("click") && !starts("hover") && !starts("key:") && !starts("wheel:") && !starts("menu:")) {
+    if (!starts("shot:") && !starts("settle:") && !starts("click") && !starts("hover") && !starts("key:") && !starts("wheel:") && !starts("menu:")) {
         m_session->refresh();
         m_screen->afterCommand();
     }
     std::cout << (ok ? "" : "[НЕ ВЫПОЛНЕНО] ") << line << std::endl;
+    writeState(++m_commandIndex, line, ok);
     return ok;
+}
+
+namespace {
+/// Значение переменной книги в JSON: число, логическое, строка или null
+std::string variableJson(const cparse::packToken& value) {
+    namespace json = nlb::presentation::json;
+    switch (value->type) {
+        case cparse::NONE: return "null";
+        case cparse::BOOL: return value.asBool() ? "true" : "false";
+        case cparse::INT:  return std::to_string(value.asInt());
+        case cparse::REAL: {
+            char buf[64];
+            std::snprintf(buf, sizeof(buf), "%.17g", value.asDouble());
+            return buf;
+        }
+        case cparse::STR:  return json::str(value.asString());
+        default:           return json::str(value.str());
+    }
+}
+}
+
+void SdlPlayer::writeState(size_t index, const std::string& command, bool ok) {
+    if (!m_stateLog.is_open()) return;
+    namespace json = nlb::presentation::json;
+    // только чтение: снимок модели экрана, порций и переменных, без обновлений и перерисовки
+    PlayerEngine& engine = m_session->engine();
+    const nlb::presentation::ScreenModel screen = engine.screen();
+    const auto portion = m_screen->portionState();
+    const char* kind = m_screen->messageShown() ? "message"
+                     : m_screen->choicesScreenShown() ? "choices"
+                     : screen.finished ? "finished" : "page";
+    std::string r = "{\"schema\":1";
+    r += ",\"index\":" + std::to_string(index) + ",\"command\":" + json::str(command);
+    r += ",\"ok\":" + std::string(ok ? "true" : "false");
+    r += ",\"pageId\":" + json::str(screen.pageId) + ",\"screen\":" + json::str(kind);
+    r += ",\"portion\":{\"index\":" + std::to_string(portion.index) + ",\"count\":" + std::to_string(portion.count) +
+         ",\"more\":" + (portion.more ? "true" : "false") + ",\"visible\":" + json::paragraphs(portion.visible) + "}";
+    r += ",\"variables\":{";
+    std::vector<std::string> names = m_options.stateVars;
+    if (names.size() == 1 && names[0] == "*") names = engine.variableNames();
+    bool first = true;
+    for (const auto& name : names) {
+        if (name.empty() || !engine.hasVariable(name)) continue;
+        r += (first ? "" : ",") + json::str(name) + ":" + variableJson(engine.getVariable(name));
+        first = false;
+    }
+    r += "},\"model\":" + json::screenModel(screen) + "}";
+    m_stateLog << r << '\n';
+    m_stateLog.flush();
 }
 
 bool SdlPlayer::runScript() {
     std::ifstream in(FileUtils::nativePath(m_options.scriptPath));
     if (!in) { std::cerr << "Нет сценария: " << m_options.scriptPath << std::endl; return false; }
+    if (!m_options.stateLogPath.empty()) {
+        m_stateLog.open(FileUtils::nativePath(m_options.stateLogPath), std::ios::binary | std::ios::trunc);
+        if (!m_stateLog) std::cerr << "Не открыть --state-log: " << m_options.stateLogPath << std::endl;
+        writeState(0, "", true);  // состояние до первой команды
+    }
     std::string line;
     bool all = true;
     while (std::getline(in, line)) {

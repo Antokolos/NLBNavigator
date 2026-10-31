@@ -264,6 +264,18 @@ std::vector<std::vector<Paragraph>> GameScreen::portions() const {
     return out;
 }
 
+GameScreen::PortionState GameScreen::portionState() const {
+    PortionState st;
+    if (!choicesMode()) return st;
+    const auto parts = portions();
+    st.count = parts.size();
+    // как renderTextWindow: номер за пределами — последняя порция
+    st.index = parts.empty() ? 0 : std::min(m_portion, parts.size() - 1);
+    st.more = st.index + 1 < parts.size();
+    if (!parts.empty()) st.visible = parts[st.index];
+    return st;
+}
+
 int GameScreen::singleTrivialChoice() const {
     int found = -1, count = 0;
     for (const auto& c : m_screen.choices) {
