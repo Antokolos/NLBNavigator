@@ -444,9 +444,44 @@ GameScreen::EffectState GameScreen::effectState(const std::string& id, const Rec
 
 // ============================================================================ ввод
 
+void GameScreen::press(float x, float y) {
+    if (m_menu != Menu::None || m_showChoices || choicesMode() || !contains(m_textWindow, x, y)) {
+        click(x, y, false);
+        return;
+    }
+    // как INSTEAD (game_click): в окне текста щелчок — при отпускании, а движение с нажатой
+    // кнопкой тянет текст
+    m_pressed = true;
+    m_dragging = false;
+    m_pressX = x;
+    m_pressY = m_dragY = y;
+}
+
+void GameScreen::release(float x, float y) {
+    (void)x;
+    (void)y;
+    if (!m_pressed) return;
+    m_pressed = false;
+    if (m_dragging) { m_dragging = false; return; }
+    click(m_pressX, m_pressY, false);
+}
+
 void GameScreen::mouseMove(float x, float y) {
     m_mouseX = x;
     m_mouseY = y;
+    if (m_pressed) {
+        // порог — чтобы дрожь руки при щелчке не превращала его в прокрутку
+        if (!m_dragging && std::fabs(y - m_pressY) >= 8 && (m_scroll > 0 || m_contentHeight > m_pageHeight)) {
+            m_dragging = true;
+            m_dragY = y;
+        }
+        if (m_dragging) {
+            m_scroll = std::max(0.0f, m_scroll - (y - m_dragY));  // предел снизу — в renderTextWindow
+            m_scrollByPages = false;
+            m_dragY = y;
+            return;
+        }
+    }
     if (m_menu != Menu::None) return;  // пауза: книга под меню на мышь не отзывается
     // что под курсором — подсвечивается цветом alink (объекты, переходы и заголовок, предметы)
     m_hoverObject.clear();
@@ -474,7 +509,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
     if (m_menu == Menu::Message) {
         m_menu = Menu::None;
         if (m_screen.externalGame) m_session.finishExternalGame();
-        else if (m_screen.finished) m_session.tryAgain();
+        else if (m_screen.finished) { m_session.tryAgain(); m_fitToEnd = true; }
         afterCommand();
         return;
     }
@@ -693,7 +728,7 @@ void GameScreen::menuAction(int index) {
         switch (index >= 0 && index < static_cast<int>(items.size()) ? items[index] : MainItem::Back) {
             case MainItem::Save: if (saves && m_screen.canSave) m_menu = Menu::Save; break;
             case MainItem::Load: if (saves) m_menu = Menu::Load; break;
-            case MainItem::Restart: m_session.restart(); m_menu = Menu::None; afterCommand(); break;
+            case MainItem::Restart: m_session.restart(); m_menu = Menu::None; m_fitToEnd = true; afterCommand(); break;
             case MainItem::Sound:
                 if (m_options.soundAvailable) { m_soundOn = !m_soundOn; m_session.setMuted(!m_soundOn); }
                 break;
@@ -851,7 +886,7 @@ float GameScreen::renderParagraphs(const std::vector<Paragraph>& text, float x, 
             for (size_t i = 1; i < line.size(); ++i) gaps += line[i].glued ? 0 : 1;
             if (gaps) gap = (width - total) / static_cast<float>(gaps);
         }
-        const bool visible = y >= m_drawTop - 0.5f && y + lineH <= m_drawBottom + 0.5f;
+        const bool visible = lineVisible(y, lineH);
         if (draw && !visible && y + lineH > m_drawBottom + 0.5f && m_firstHiddenY < 0) m_firstHiddenY = y;
         const float ty = y + std::floor((lineH - lineHeight) * px / 2) / px;  // строка текста — по середине
         for (auto& w : line) {
@@ -948,7 +983,7 @@ float GameScreen::renderChoices(float x, float y, float width, const FontRef& fo
     for (const auto& c : m_screen.choices) {
         const std::string text = quotes(dashes(c.enabled ? std::to_string(++number) + ". " + c.text : c.altText));
         const float w = textW(font, text);
-        if (draw && y >= m_drawTop - 0.5f && y + lineHeight <= m_drawBottom + 0.5f) {
+        if (draw && lineVisible(y, lineHeight)) {
             m_r->drawText(font, text, !c.enabled ? colors.fg : c.index == m_hoverChoice ? colors.alink : colors.link, x, y, 1.0f);
             if (c.enabled) m_hits.push_back({{x, y, std::min(w, width), lineHeight}, Hit::Kind::Choice, "", c.index});
         } else if (draw && y + lineHeight > m_drawBottom + 0.5f && m_firstHiddenY < 0) {
@@ -1195,7 +1230,11 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     const float pageH = std::max(lh, std::floor(r.h / lh) * lh);
     // Листание страницами начинает каждую с первой не уместившейся строки и на последней не
     // возвращается назад: её окно может быть заполнено не целиком — прочитанное не повторяется
-    const float maxScroll = std::max(0.0f, m_scrollByPages ? need - lh : need - pageH);
+    // Плавная прокрутка (колесо, перетаскивание, вписывание первого экрана) — до конца текста
+    // по настоящей высоте окна, как txt_box_scroll в INSTEAD: последняя строка — у нижнего края
+    const float maxScroll = std::max(0.0f, m_scrollByPages ? need - lh : need - r.h);
+    if (m_fitToEnd && !choicesMode()) { m_scroll = maxScroll; m_scrollByPages = false; }  // первый экран — вписан концом, как в INSTEAD
+    m_fitToEnd = false;
     m_scroll = std::min(m_scroll, maxScroll);
     m_textWindow = r;
     m_pageHeight = pageH;
@@ -1205,6 +1244,9 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     const size_t firstHit = m_hits.size();
     float y = r.y - m_scroll;
     m_drawTop = r.y;
+    // плавная прокрутка (колесо, перетаскивание, вписанный первый экран) сдвигает текст не на
+    // целые строки — строки у краёв окна видны частично, обрезанные им, как в INSTEAD
+    m_partialLines = !m_scrollByPages && m_scroll > 0;
     m_drawBottom = r.y + r.h;
     m_firstHiddenY = -1;
     if (showCaption) {
@@ -1222,6 +1264,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     if (showChoices) renderChoices(r.x, y, r.w, font, window, true);
     m_r->setClip(nullptr);
     m_drawTop = -1e9f;
+    m_partialLines = false;
     m_drawBottom = 1e9f;
     // Следующая страница начинается с первой строки, которая не уместилась
     m_moreText = m_firstHiddenY >= 0;
@@ -1392,7 +1435,11 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
     // Подпись предмета из нескольких строк («^» в disp: «Слава: 0^Боеспособность: 45») — как в
     // INSTEAD, каждая строка с новой строки инвентаря; кусок — одна строка подписи (картинка —
     // у первой, разделитель « | » — после последней)
-    struct Item { const InventoryItem* item; std::string label; float w; bool first; bool last; };
+    // Предмет без подписи, но с картинкой (disp = img(…) в экспорте: карта «Фронтира» в бою) —
+    // картинка в своём размере (в масштабе темы), как INSTEAD выводит img в окне инвентаря.
+    // Столбиком (inv.mode = vertical) длинная строка подписи переносится по ширине окна
+    struct Item { const InventoryItem* item; std::string label; float w; bool first; bool last; float h = 0; bool imageOnly = false; };
+    const float themeScale = (m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme).scale;
     std::vector<Item> items;
     for (const auto& item : m_screen.inventory) {
         std::vector<std::string> lines;
@@ -1405,7 +1452,36 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
         }
         lines.push_back(line);
         float iw = 0, ih = 0;
-        const float icon = imageSize(item.icon, iw, ih) ? lineHeight + 6 : 0;
+        const bool hasIcon = imageSize(item.icon, iw, ih);
+        if (hasIcon && item.label.find_first_not_of(" \n") == std::string::npos) {
+            Item it{&item, "", iw * themeScale, true, true};
+            it.h = ih * themeScale;
+            it.imageOnly = true;
+            items.push_back(it);
+            continue;
+        }
+        const float icon = hasIcon ? lineHeight + 6 : 0;
+        if (!horizontal) {
+            // перенос по словам: первая строка — за картинкой, остальные — с начала строки
+            std::vector<std::string> wrapped;
+            for (const auto& l : lines) {
+                std::string cur;
+                for (const auto& w : words(l)) {
+                    const std::string next = cur + w;
+                    const float budget = r.w - (wrapped.empty() ? icon : 0);
+                    const size_t end = next.find_last_not_of(' ');
+                    if (!cur.empty() && textW(font, end == std::string::npos ? next : next.substr(0, end + 1)) > budget) {
+                        wrapped.push_back(cur);
+                        cur = w;
+                    } else {
+                        cur = next;
+                    }
+                }
+                const size_t end = cur.find_last_not_of(' ');
+                wrapped.push_back(end == std::string::npos ? std::string() : cur.substr(0, end + 1));
+            }
+            lines = wrapped;
+        }
         for (size_t i = 0; i < lines.size(); ++i) {
             items.push_back({&item, lines[i], textW(font, lines[i]) + (i == 0 ? icon : 0), i == 0, i + 1 == lines.size()});
         }
@@ -1435,6 +1511,8 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
     }
     float y = r.y;
     for (const auto& row : rows) {
+        float rowH = lineHeight;
+        for (const auto& it : row) rowH = std::max(rowH, it.h);
         float total = 0;
         for (size_t i = 0; i < row.size(); ++i) total += row[i].w + (i ? gap : 0);
         // inv.mode = horizontal-left / -center / -right
@@ -1442,7 +1520,14 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
         float x = !m_standardTheme.inventoryHorizontal || ia == "left" ? r.x
                 : ia == "right" ? r.x + r.w - total : r.x + (r.w - total) / 2;
         for (const auto& it : row) {
-            const RectF cell{x, y, it.w, lineHeight};
+            const RectF cell{x, y, it.w, it.imageOnly ? it.h : lineHeight};
+            if (it.imageOnly) {
+                if (it.item->id == selected) m_r->fillRect({cell.x - 6, cell.y, cell.w + 12, cell.h}, {0, 0, 0, 150});
+                m_r->drawImage(framePath(it.item->icon), cell, 1.0f);
+                if (it.item->active) m_hits.push_back({cell, Hit::Kind::Inventory, it.item->id});
+                x += it.w + gap;
+                continue;
+            }
             // выбранный предмет — на тёмной плашке: светлая на светлой подложке темы была не видна
             if (it.item->id == selected) m_r->fillRect({cell.x - 6, cell.y, cell.w + 12, cell.h}, {0, 0, 0, 150});
             float tx = x, iw = 0, ih = 0;
@@ -1457,7 +1542,7 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
             if (horizontal && it.last && &it != &row.back()) m_r->drawText(font, delim, window.fg, x + it.w, y + textOffset, 1.0f);
             x += it.w + gap;
         }
-        y += lineHeight;
+        y += rowH;
         if (y > r.y + r.h + lineHeight) break;
     }
 }

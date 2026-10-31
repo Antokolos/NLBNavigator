@@ -583,6 +583,21 @@ void PlayerContext::initContainers(NonLinearBook* book) {
             containerAdd(objId, containedId);
         }
     }
+    // Объект с общим объектом (commonTo, OBJREF) содержит и объекты, вложенные в общий, — перед
+    // своими, как ExportManager (createObjBuildingBlocks: addContainedObjId сначала для commonTo):
+    // карта «Фронтира» в инвентаре — картинка, «--------------------» (cardDscObj общей карты),
+    // затем спецспособность. Владелец такого объекта (containerOf) не меняется: в экспорте его
+    // container — по-прежнему общий объект
+    for (const auto& [objId, obj] : book->getObjs()) {
+        Obj* common = obj->getCommonToObj(book);
+        if (!common || common->getId() == obj->getContainerId() || common->getId() == objId) continue;
+        auto& items = m_state.containers[objId];
+        size_t at = 0;
+        for (const auto& containedId : common->getContainedObjIds()) {
+            if (std::find(items.begin(), items.end(), containedId) != items.end()) continue;
+            items.insert(items.begin() + static_cast<std::ptrdiff_t>(at++), containedId);
+        }
+    }
     // Страховка: объект знает свой контейнер, даже если список владельца его не содержит.
     // Отдельным проходом, после всех списков content: иначе объект, чей id меньше id его
     // контейнера, попадал в контейнер раньше списка и порядок содержимого ломался

@@ -1375,8 +1375,10 @@ std::vector<nlb::presentation::Paragraph> PlayerEngine::objectsText(const std::v
             runs.back().text.erase(runs.back().text.find_last_not_of(" \t") + 1);
         }
     }
-    // перевод строки в конце последнего описания пустой строки не даёт
-    while (!result.empty() && result.back().runs.empty()) result.pop_back();
+    // перевод строки в конце последнего описания остаётся пустым абзацем: за описаниями в сцене
+    // STEAD идёт xdsc экспорта («^» и ссылки после текста) — между описаниями и «Далее» тогда
+    // пустая строка («Фронтир»: «Экипировка флота»). В конце сцены пустые абзацы не видны —
+    // GameScreen их отбрасывает, как INSTEAD
     return result;
 }
 
@@ -1841,6 +1843,11 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
         // STEADExportManager.decoratePageCaption: nam = заголовок или название модуля
         // (getNonEmptyTitle: у модуля без названия — название родителя; совсем без — «...»)
         m.roomTitle = m.caption;
+        // заголовок задан, но из одних пробелов («Фронтир»: страница с роликом — caption " ") —
+        // экспорт пишет nam = " " (StringHelper.notEmpty не обрезает), и INSTEAD показывает пустой
+        // заголовок, а не название книги
+        const bool blankCaption = page->isUseCaption() && m.caption.empty() && !page->getCaption().empty();
+        if (blankCaption) m.roomTitle = " ";
         for (const NonLinearBook* b = page->getCurrentNLB(); m.roomTitle.empty() && b; b = b->getParentNLB()) {
             m.roomTitle = trim(b->getTitle());
         }
@@ -1991,6 +1998,9 @@ nlb::presentation::ScreenModel PlayerEngine::screen() const {
         item.active = iv.active;
         if (obj && obj->isImageInInventory() && !m_rootBook->isSuppressMedia()) {
             item.icon = imageRefFor(iv.instanceId, obj->isAnimatedImage(), obj->isLooped());
+            // disp пуст — в экспорте disp = img(…): в инвентаре только картинка, без имени объекта
+            // (имя — подпись для консоли, objDisp)
+            if (!item.icon.empty() && trim(displayText(m_interpreter->expandText(obj->getDisp()))).empty()) item.label.clear();
         }
         m.inventory.push_back(std::move(item));
     }
