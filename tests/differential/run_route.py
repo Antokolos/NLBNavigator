@@ -36,8 +36,8 @@ def load_route(path):
         if not screenshot or Path(screenshot).name != screenshot:
             raise ValueError("screenshot должен быть именем файла без каталогов")
         action = step.get("action", {})
-        if action.get("type") not in ("capture", "key", "click", "advance"):
-            raise ValueError("Поддерживаются действия capture, key, click и advance")
+        if action.get("type") not in ("capture", "key", "click", "advance", "select_choice"):
+            raise ValueError("Поддерживаются действия capture, key, click, advance и select_choice")
         if action.get("type") == "key" and not action.get("key"):
             raise ValueError("Для действия key не задан key")
         if action.get("type") in ("click", "advance"):
@@ -50,6 +50,14 @@ def load_route(path):
                 count = int(clicks.get(runtime, 0))
                 if count < 1 or count > 100:
                     raise ValueError("Для advance.clicks.{} нужно значение от 1 до 100".format(runtime))
+        if action.get("type") == "select_choice":
+            index = int(action.get("index", -1))
+            if index < 0 or index > 8:
+                raise ValueError("select_choice.index должен быть от 0 до 8")
+            coords = action.get("instead", {})
+            for key in ("x_ratio", "y_ratio"):
+                if key not in coords or not 0.0 <= float(coords[key]) <= 1.0:
+                    raise ValueError("Для INSTEAD select_choice нужны координаты instead.x_ratio/y_ratio от 0 до 1")
     return route
 
 
@@ -250,6 +258,13 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                             step["id"], fragment, choice_texts
                         ))
 
+            for variable, value in expected.get("variables", {}).items():
+                actual = record.get("variables", {}).get(variable)
+                if actual != value:
+                    errors.append("{}: переменная {}={}, ожидалось {}".format(
+                        step["id"], variable, actual, value
+                    ))
+
             suffix = expected.get("image_suffix")
             image = model.get("pageImage", {}).get("file", "")
             if suffix and not image.endswith(suffix):
@@ -305,6 +320,20 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                 errors.append("{}: INSTEAD ожидался экран {}, получен {}".format(
                     step["id"], expected["instead_screen_kind"], record.get("screen_kind")
                 ))
+            for variable, value in expected.get("variables", {}).items():
+                actual = record.get("wolfiness" if variable == "wolfiness" else "hp" if variable == "hp" else variable)
+                if actual != str(value):
+                    errors.append("{}: INSTEAD переменная {}={}, ожидалось {}".format(
+                        step["id"], variable, actual, value
+                    ))
+            expected_choices = expected.get("instead_choices_contains", [])
+            if expected_choices:
+                rendered = record.get("rendered", "")
+                for fragment in expected_choices:
+                    if fragment not in rendered:
+                        errors.append("{}: INSTEAD среди вариантов нет {!r}".format(
+                            step["id"], fragment
+                        ))
             for expected_key, actual_key in (
                 ("instead_portion_index", "portion_index"),
                 ("instead_portion_count", "portion_count"),
@@ -379,6 +408,8 @@ def script_for_nlbnavigator(route, output_dir):
                 raise ValueError("advance.clicks.nlbnavigator должен быть от 1 до 100")
             for _ in range(clicks):
                 append_command("click:{},{}".format(x, y))
+        elif kind == "select_choice":
+            append_command("clickchoice:" + str(int(action["index"])))
 
         delay = int(step.get("settle_ms", 0))
         if delay > 0:
@@ -582,10 +613,11 @@ def execute_instead_action(action, window_bounds):
                 )
             )
         return
-    if kind in ("click", "advance"):
+    if kind in ("click", "advance", "select_choice"):
         _, _, window_x, window_y, width, height = window_bounds
-        x = window_x + min(width - 1, round(float(action["x_ratio"]) * width))
-        y = window_y + min(height - 1, round(float(action["y_ratio"]) * height))
+        coords = action.get("instead", {}) if kind == "select_choice" else action
+        x = window_x + min(width - 1, round(float(coords["x_ratio"]) * width))
+        y = window_y + min(height - 1, round(float(coords["y_ratio"]) * height))
         clicks = int(action.get("clicks", {}).get("instead", 1)) if kind == "advance" else 1
         if clicks < 1 or clicks > 100:
             raise ValueError("advance.clicks.instead должен быть от 1 до 100")
@@ -648,7 +680,7 @@ def trace_input_matches(action, record):
     command = record.get("command", "")
     if action["type"] == "key":
         return command == "user_kbd"
-    if action["type"] in ("click", "advance"):
+    if action["type"] in ("click", "advance", "select_choice"):
         return command.startswith("click ")
     return True
 
@@ -783,10 +815,10 @@ def run_instead(args, route, output_dir):
             new_events = [record for record in after if record["seq"] > cursor]
             action_events = [
                 record for record in new_events
-                if step["action"]["type"] in ("key", "click", "advance")
+                if step["action"]["type"] in ("key", "click", "advance", "select_choice")
                 and trace_input_matches(step["action"], record)
             ]
-            if step["action"]["type"] in ("key", "click", "advance") and not action_events:
+            if step["action"]["type"] in ("key", "click", "advance", "select_choice") and not action_events:
                 trace_errors.append("{}: INSTEAD trace не зафиксировал ожидаемый input event".format(
                     step["id"]
                 ))
@@ -807,7 +839,7 @@ def run_instead(args, route, output_dir):
                 ))
             else:
                 signature = trace_state_signature(state_record)
-                if step["action"]["type"] in ("key", "click", "advance") and previous_state is not None:
+                if step["action"]["type"] in ("key", "click", "advance", "select_choice") and previous_state is not None:
                     if signature == previous_state:
                         trace_errors.append("{}: input зарегистрирован, но видимое состояние не изменилось".format(
                             step["id"]
