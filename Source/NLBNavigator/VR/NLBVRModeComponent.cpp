@@ -228,6 +228,9 @@ void UNLBVRModeComponent::ShowPanel(UUserWidget* Widget)
 		Panel->SetupAttachment(Owner->GetRootComponent());
 		Panel->RegisterComponent();
 	}
+	// UUserWidget по умолчанию SelfHitTestInvisible: луч проходил бы сквозь экран книги (он сам
+	// рисует текст и ссылки) — щелчки не доходили бы до «Далее». На ПК то же делает AddToViewport
+	Widget->SetVisibility(ESlateVisibility::Visible);
 	Panel->SetWidget(Widget);
 	// Перед игроком на уровне глаз, лицом к нему; ширина PanelWidth (экран 1920 px)
 	const FVector Eye = Camera ? Camera->GetComponentLocation() : Owner->GetActorLocation();
