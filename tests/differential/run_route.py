@@ -802,7 +802,14 @@ def run_instead(args, route, output_dir):
         if focus.returncode != 0:
             raise RuntimeError("Не удалось передать фокус окну INSTEAD")
 
-        for step in route["steps"]:
+        for step_index, step in enumerate(route["steps"], 1):
+            step_started = time.monotonic()
+            print(
+                "[INSTEAD] starting step {}/{}: {}".format(
+                    step_index, len(route["steps"]), step["id"]
+                ),
+                flush=True,
+            )
             if player.poll() is not None:
                 raise RuntimeError("INSTEAD завершился на шаге " + step["id"])
             before = read_instead_trace(trace_path)
@@ -856,6 +863,32 @@ def run_instead(args, route, output_dir):
                 state_records.append(mapped)
                 previous_state = signature
             cursor = max((record["seq"] for record in after), default=cursor)
+
+            # Persist progress after every checkpoint so CI artifacts remain useful
+            # even when a long route is interrupted by a timeout.
+            progress = {
+                "runtime": "instead",
+                "completed_steps": [record["id"] for record in records],
+                "total_steps": len(route["steps"]),
+                "state_records": state_records,
+                "trace_errors": trace_errors,
+            }
+            write_json(output_dir / "progress.json", progress)
+            if trace_path.is_file():
+                shutil.copy2(trace_path, output_dir / "instead-state.partial.tsv")
+            current = state_record or {}
+            print(
+                "[INSTEAD] completed {}/{}: {} ({}s, page={}, portion={}/{})".format(
+                    step_index,
+                    len(route["steps"]),
+                    step["id"],
+                    round(time.monotonic() - step_started, 2),
+                    current.get("page_id", ""),
+                    current.get("portion_index", ""),
+                    current.get("portion_count", ""),
+                ),
+                flush=True,
+            )
     finally:
         if player is not None and player.poll() is None:
             player.terminate()
