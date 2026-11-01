@@ -20,6 +20,12 @@ public class NLBPlayer : ModuleRules
         // Плееру RTTI не нужен (Any.h без typeid), исключения работают и без него
         bUseRTTI = false;
         bUseUnity = false;          // у файлов плеера одноимённые функции в безымянных пространствах имён
+        // libc++ (Android, Linux, Mac): шаблоны std::string, потоков и т. п. — целиком в файлах
+        // плеера, а не из готовой libc++. Иначе строку выделяет код libc++ своим operator new
+        // (malloc), а освобождает код плеера — operator delete движка (FMemory::Free), и аллокатор
+        // движка падает: «FMallocBinned … unrecognized pointer» (телефон, открытие книги). С этим
+        // и выделение, и освобождение — в файлах плеера, одним аллокатором. MSVC макрос не видит
+        PrivateDefinitions.Add("_LIBCPP_DISABLE_EXTERN_TEMPLATE=1");
         // Предупреждения кода плеера не должны останавливать сборку игры. С UE 5.5 эти настройки
         // перенесены в CppCompileWarningSettings (старые свойства устарели); символ UE_5_5_OR_LATER
         // UBT определяет сам, поэтому файл подходит и для 5.5, и для 5.6+, и для более старых версий
