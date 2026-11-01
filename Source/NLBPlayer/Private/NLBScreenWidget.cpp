@@ -1,5 +1,7 @@
 #include "NLBScreenWidget.h"
 
+#include "HAL/PlatformMisc.h"
+
 #include "Fonts/CompositeFont.h"
 
 #include "Engine/Engine.h"
@@ -267,8 +269,12 @@ FReply UNLBScreenWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
     const FVector2D P = ToScreen(InGeometry, InMouseEvent.GetScreenSpacePosition());
     if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton) {
         // левая кнопка: в окне текста — щелчок при отпускании или прокрутка перетаскиванием;
-        // порог сдвига: мышь — 8 точек, палец — 32 (дрожит сильнее), без перетаскивания — 0
-        Screen->setDragThreshold(!bDragScroll ? 0.0f : InMouseEvent.IsTouchEvent() ? 32.0f : 8.0f);
+        // порог сдвига: мышь — 8 точек (как INSTEAD), палец — 96 (≈ 5 % ширины экрана 1920: палец
+        // на телефоне дрожит на десятки точек), без перетаскивания — 0. Касание узнаём и по
+        // устройству: Slate может отдать его виджету как событие мыши
+        const bool bTouch = InMouseEvent.IsTouchEvent() || FPlatformMisc::GetUseVirtualJoysticks();
+        Screen->setDragThreshold(!bDragScroll ? 0.0f : bTouch ? 96.0f : 8.0f);
+        if (bTouch) UE_LOG(LogTemp, Log, TEXT("NLB: касание у (%.0f, %.0f)"), P.X, P.Y);  // для разбора журналом
         Screen->press(static_cast<float>(P.X), static_cast<float>(P.Y));
         return FReply::Handled().SetUserFocus(TakeWidget(), EFocusCause::Mouse).CaptureMouse(TakeWidget());
     }
@@ -278,8 +284,10 @@ FReply UNLBScreenWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
 
 FReply UNLBScreenWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) {
     if (!EnsureScreen()) return FReply::Unhandled();
-    if (InMouseEvent.GetEffectingButton() != EKeys::LeftMouseButton) return FReply::Unhandled();
+    // касание: кнопка у отпускания может быть не «левой» — отпускание всё равно завершает нажатие
+    if (!InMouseEvent.IsTouchEvent() && InMouseEvent.GetEffectingButton() != EKeys::LeftMouseButton) return FReply::Unhandled();
     const FVector2D P = ToScreen(InGeometry, InMouseEvent.GetScreenSpacePosition());
+    if (InMouseEvent.IsTouchEvent()) UE_LOG(LogTemp, Log, TEXT("NLB: касание отпущено у (%.0f, %.0f)"), P.X, P.Y);
     Screen->release(static_cast<float>(P.X), static_cast<float>(P.Y));
     return FReply::Handled().ReleaseMouseCapture();
 }
