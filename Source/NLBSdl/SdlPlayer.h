@@ -48,6 +48,10 @@ public:
         /// Варианты отдельным экраном: окно показывает только текст, а дочитав его (пробел или
         /// щелчок), игрок видит список вариантов посередине экрана. Иначе — варианты в окне текста
         bool choicesScreen = false;
+        /// Переходы между сценами (dissolve, как в INSTEAD): -1 — по умолчанию (есть, а в сценарии
+        /// --script нет, чтобы снимки не попадали на середину перехода), 0/1 — --no-transitions /
+        /// --transitions
+        int transitions = -1;
     };
 
     explicit SdlPlayer(Options options);
@@ -66,6 +70,8 @@ public:
                   float x, float y, float alpha) override;
     void setClip(const nlb::presentation::RectF* clip) override;
     float pixelScale() const override { return m_pixelScale; }
+    bool hasSnapshot() const override { return m_snapshotValid; }
+    void drawSnapshot(float alpha) override;
 
     /// Ошибка запуска: в журнал, а на Android — и окном сообщения
     static void fatal(const std::string& message);
@@ -96,6 +102,14 @@ private:
     std::string m_fontPath;
     bool m_quit = false;
     float m_pixelScale = 1.0f;  ///< пикселей окна на единицу экрана 1920×1080 (текст — в этом масштабе)
+    /// Переходы: кадр рисуется в текстуру m_frame (область экрана 1920×1080 в окне, в пикселях окна),
+    /// перед началом перехода она копируется в m_snapshot — прежний кадр, который GameScreen
+    /// накладывает на новые с убывающей прозрачностью
+    bool m_transitions = false;
+    SDL_Texture* m_frame = nullptr;
+    SDL_Texture* m_snapshot = nullptr;
+    bool m_frameValid = false, m_snapshotValid = false;
+    void ensureFrameTextures(int w, int h);
     std::unique_ptr<nlb::presentation::IMediaSource> m_media;
     std::unique_ptr<nlb::audio::SdlAudioBackend> m_audio;
     std::unique_ptr<nlb::presentation::Session> m_session;

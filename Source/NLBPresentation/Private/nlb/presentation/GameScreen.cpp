@@ -148,6 +148,11 @@ void GameScreen::pull() {
     m_seenRevision = m_session.revision();
     if (!choicesMode()) m_showChoices = false;  // страница STANDARD — экрана вариантов нет
     if (before.pageId != m_screen.pageId) {
+        // вход на страницу — vn:auto_geom('dissolve') экспорта; его нет у страниц с таймером (или
+        // анимацией) без графических объектов: там enter возвращает vn:get_win_coords() без эффекта
+        const bool graphical = std::any_of(m_screen.sceneObjects.begin(), m_screen.sceneObjects.end(),
+                                           [](const SceneObject& o) { return o.graphical; });
+        if (!before.pageId.empty() && (graphical || !m_screen.timerActive)) startTransition();
         m_reactionThenRoom = true;  // ответ (если есть) — перед описанием новой комнаты
         m_portion = 0;  // новая страница — текст с первой порции
         m_voicedPortion = SIZE_MAX;  // озвучка — заново, с первой порции
@@ -317,7 +322,14 @@ bool GameScreen::imageSize(const ImageRef& image, float& w, float& h) {
 
 // ============================================================================ время и события
 
+void GameScreen::startTransition() {
+    if (!m_options.transitions) return;
+    m_transitionPending = true;
+    m_transitionActive = false;
+}
+
 void GameScreen::update(int milliseconds) {
+    if (m_transitionActive) m_transitionMs += std::max(0, milliseconds);
     // Сессию изменили снаружи (подсистема движка, вернувшая книгу после внешней игры) — как после команды
     if (m_session.revision() != m_seenRevision) afterCommand();
     updatePause();
@@ -506,6 +518,7 @@ void GameScreen::wheel(float lines) {
 }
 
 void GameScreen::click(float x, float y, bool rightButton) {
+    finishTransition();  // щелчок во время перехода — сразу новый кадр
     if (m_menu == Menu::Message) {
         m_menu = Menu::None;
         if (m_screen.externalGame) m_session.finishExternalGame();
@@ -596,6 +609,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
 }
 
 void GameScreen::key(Key k, int digit) {
+    finishTransition();
     if (k == Key::Escape) {
         if (m_showChoices && m_menu == Menu::None) { m_showChoices = false; return; }
         if (m_menu == Menu::None) m_menu = Menu::Main;
@@ -717,6 +731,7 @@ bool GameScreen::advanceToChoices() {
         return false;
     }
     m_showChoices = true;
+    startTransition();  // экран вариантов — vn:auto_geom_choices('dissolve')
     return true;
 }
 
@@ -782,6 +797,12 @@ void GameScreen::menuAction(int index) {
 void GameScreen::render(IScreenRenderer& r) {
     m_r = &r;
     updatePause();
+    if (m_transitionPending) {
+        // предыдущий кадр рендерер сохранил перед этим (needsSnapshot); не умеет — без перехода
+        m_transitionPending = false;
+        m_transitionActive = r.hasSnapshot();
+        m_transitionMs = 0;
+    }
     m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, BACKGROUND);
     m_hits.clear();
     if (m_screen.layout == Layout::VisualNovel) renderVisualNovel();
@@ -791,6 +812,13 @@ void GameScreen::render(IScreenRenderer& r) {
     if (m_voiceOnEnter) {
         m_voiceOnEnter = false;
         m_session.nextVoice();
+    }
+    if (m_transitionActive) {
+        // gfx_change_screen INSTEAD: шаг раз в 60 мс, новый кадр с альфой (n + 1) / 8 поверх
+        // прежнего — то же, что прежний с альфой 1 − (n + 1) / 8 поверх нового
+        const int step = m_transitionMs / 60;
+        if (step >= 7) m_transitionActive = false;
+        else m_r->drawSnapshot(1.0f - static_cast<float>(step + 1) / 8.0f);
     }
     renderOverlayMessages();
     if (m_menu != Menu::None) renderMenu();
