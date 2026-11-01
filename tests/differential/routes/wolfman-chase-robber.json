@@ -1,0 +1,829 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-chase-robber",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — ветка «Прогнать грабителя»",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "steps": [
+    {
+      "id": "title",
+      "action": {
+        "type": "capture"
+      },
+      "settle_ms": 2000,
+      "screenshot": "00-title.png",
+      "expect": {
+        "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "image_suffix": "title.png",
+        "instead_background_suffix": "title.jpg"
+      }
+    },
+    {
+      "id": "opening",
+      "action": {
+        "type": "key",
+        "key": "space"
+      },
+      "settle_ms": 2000,
+      "screenshot": "01-opening.png",
+      "visual_change_from": "title",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "text_contains": "Вы очнулись лежащим посреди тротуара",
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Вы очнулись лежащим посреди тротуара",
+        "portion_index": 0,
+        "portion_count": 10,
+        "instead_portion_index": 0,
+        "instead_portion_count": 10
+      }
+    },
+    {
+      "id": "opening-next-portion",
+      "action": {
+        "type": "click",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5
+      },
+      "settle_ms": 2000,
+      "screenshot": "02-opening-next-portion.png",
+      "visual_change_from": "opening",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Интересно, сколько я тут валяюсь",
+        "text_contains": "Интересно, сколько я тут валяюсь",
+        "portion_index": 1,
+        "portion_count": 10,
+        "instead_portion_index": 1,
+        "instead_portion_count": 10
+      }
+    },
+    {
+      "id": "opening-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 9,
+          "nlbnavigator": 9
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "03-opening-choices.png",
+      "visual_change_from": "opening-next-portion",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "instead_background_suffix": "1.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Попытаться прорваться сквозь полицию",
+          "Перепрыгнуть через забор"
+        ],
+        "instead_choices_contains": [
+          "Попытаться прорваться сквозь полицию",
+          "Перепрыгнуть через забор"
+        ]
+      }
+    },
+    {
+      "id": "jump-over-fence",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.28,
+          "y_ratio": 0.35
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "04-jump-over-fence.png",
+      "visual_change_from": "opening-choices",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Бежать прямо на вооружённых полицейских",
+        "instead_text_contains": "Бежать прямо на вооружённых полицейских",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "robbery-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 4,
+          "nlbnavigator": 4
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "05-robbery-final-portion.png",
+      "visual_change_from": "jump-over-fence",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 4,
+        "portion_count": 5,
+        "instead_portion_index": 4,
+        "instead_portion_count": 5,
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "robbery-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "06-robbery-choices.png",
+      "visual_change_from": "robbery-final-portion",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть грабителя",
+          "Прогнать грабителя"
+        ],
+        "instead_choices_contains": [
+          "Съесть грабителя",
+          "Прогнать грабителя"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-robber",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.26,
+          "y_ratio": 0.36
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "07-chase-robber.png",
+      "visual_change_from": "robbery-choices",
+      "expect": {
+        "page_id": "5a8afdd9-5412-424e-b72e-1373d99795a2",
+        "image_suffix": "1.2.png",
+        "instead_background_suffix": "images/1.2.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Оскалив зубы, вы громко зарычали",
+        "instead_text_contains": "Оскалив зубы, вы громко зарычали",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-robber-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 3,
+          "nlbnavigator": 3
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "08-chase-robber-final-portion.png",
+      "visual_change_from": "chase-robber",
+      "expect": {
+        "page_id": "5a8afdd9-5412-424e-b72e-1373d99795a2",
+        "image_suffix": "1.2.png",
+        "instead_background_suffix": "images/1.2.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 3,
+        "portion_count": 4,
+        "instead_portion_index": 3,
+        "instead_portion_count": 4,
+        "text_contains": "диким зверем",
+        "instead_text_contains": "диким зверем",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-branch-zoo",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "09-chase-branch-zoo.png",
+      "visual_change_from": "chase-robber-final-portion",
+      "expect": {
+        "page_id": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "image_suffix": "1.4.png",
+        "instead_background_suffix": "images/1.4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 5,
+        "instead_portion_index": 0,
+        "instead_portion_count": 5,
+        "text_contains": "Вы мчались и мчались дальше по ночным улицам",
+        "instead_text_contains": "Вы мчались и мчались дальше по ночным улицам",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-branch-zoo-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 4,
+          "nlbnavigator": 4
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "10-chase-branch-zoo-final-portion.png",
+      "visual_change_from": "chase-branch-zoo",
+      "expect": {
+        "page_id": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "image_suffix": "1.4.png",
+        "instead_background_suffix": "images/1.4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 4,
+        "portion_count": 5,
+        "instead_portion_index": 4,
+        "instead_portion_count": 5,
+        "text_contains": "вернулись к своим обычным делам",
+        "instead_text_contains": "вернулись к своим обычным делам",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-branch-zero-condition",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "11-wolfiness-zero-outcome.png",
+      "visual_change_from": "chase-branch-zoo-final-portion",
+      "expect": {
+        "page_id": "ffa05a49-c979-4e9f-9b89-42936e21b81a",
+        "image_suffix": "1.6.png",
+        "instead_background_suffix": "images/1.6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Успокоившись, вы оглядели себя ещё раз",
+        "instead_text_contains": "Успокоившись, вы оглядели себя ещё раз",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "zoo-escape-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 11,
+          "nlbnavigator": 11
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "12-zoo-escape-final-portion.png",
+      "visual_change_from": "chase-branch-zero-condition",
+      "expect": {
+        "page_id": "ffa05a49-c979-4e9f-9b89-42936e21b81a",
+        "image_suffix": "1.6.png",
+        "instead_background_suffix": "images/1.6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 11,
+        "portion_count": 12,
+        "instead_portion_index": 11,
+        "instead_portion_count": 12,
+        "text_contains": "пошёл следом за ними",
+        "instead_text_contains": "пошёл следом за ними",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "road-page",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "13-road-page.png",
+      "visual_change_from": "zoo-escape-final-portion",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 6,
+        "instead_portion_index": 0,
+        "instead_portion_count": 6,
+        "text_contains": "Вы мчались по пустынным ночным улицам",
+        "instead_text_contains": "Вы мчались по пустынным ночным улицам",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "road-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 5,
+          "nlbnavigator": 5
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "14-road-final-portion.png",
+      "visual_change_from": "road-page",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 5,
+        "portion_count": 6,
+        "instead_portion_index": 5,
+        "instead_portion_count": 6,
+        "text_contains": "вы решили туда зайти",
+        "instead_text_contains": "вы решили туда зайти",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-entry",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "15-truckers-bar-entry.png",
+      "visual_change_from": "road-final-portion",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2,
+        "text_contains": "Усевшись за столик",
+        "instead_text_contains": "Усевшись за столик",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "16-truckers-bar-final-portion.png",
+      "visual_change_from": "truckers-bar-entry",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2,
+        "text_contains": "за столик подсел бородатый мужик",
+        "instead_text_contains": "за столик подсел бородатый мужик",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-greeting",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "17-truckers-bar-greeting.png",
+      "visual_change_from": "truckers-bar-final-portion",
+      "expect": {
+        "page_id": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+        "image_suffix": "7.png",
+        "instead_background_suffix": "images/7.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "Доброго вам утречка",
+        "instead_text_contains": "Доброго вам утречка",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "wolfiness-zero-dialogue-outcome",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "18-wolfiness-zero-dialogue-outcome.png",
+      "visual_change_from": "truckers-bar-greeting",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Здравствуйте",
+        "instead_text_contains": "Здравствуйте",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "wolfiness-zero-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 8,
+          "nlbnavigator": 8
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "19-wolfiness-zero-final-portion.png",
+      "visual_change_from": "wolfiness-zero-dialogue-outcome",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 8,
+        "portion_count": 9,
+        "instead_portion_index": 8,
+        "instead_portion_count": 9,
+        "text_contains": "где и заснули под мерное гудение пчёл",
+        "instead_text_contains": "где и заснули под мерное гудение пчёл",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page13-zero-dialogue",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "20-page13-zero-dialogue.png",
+      "visual_change_from": "wolfiness-zero-final-portion",
+      "expect": {
+        "page_id": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "из бара вышел утренний знакомец",
+        "instead_text_contains": "из бара вышел утренний знакомец",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page13-zero-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "21-page13-zero-choices.png",
+      "visual_change_from": "page13-zero-dialogue",
+      "expect": {
+        "page_id": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "instead_choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "steal-food-from-kitchen",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.26,
+          "y_ratio": 0.36
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "22-steal-food-from-kitchen.png",
+      "visual_change_from": "page13-zero-choices",
+      "expect": {
+        "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+        "image_suffix": "11.png",
+        "instead_background_suffix": "images/11.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2,
+        "text_contains": "удалось взять себя в руки",
+        "instead_text_contains": "удалось взять себя в руки",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "steal-food-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "23-steal-food-final-portion.png",
+      "visual_change_from": "steal-food-from-kitchen",
+      "expect": {
+        "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+        "image_suffix": "11.png",
+        "instead_background_suffix": "images/11.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2,
+        "text_contains": "огромный кусок сырого мяса",
+        "instead_text_contains": "огромный кусок сырого мяса",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page10-after-kitchen",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "24-page10-after-kitchen.png",
+      "visual_change_from": "steal-food-final-portion",
+      "expect": {
+        "page_id": "e40f707a-3934-43b4-b302-9ea6b4461531",
+        "image_suffix": "10.png",
+        "instead_background_suffix": "images/10.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "Основательно подкрепившись",
+        "instead_text_contains": "Основательно подкрепившись",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "forest-entry-wolfiness-zero",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "25-forest-entry-wolfiness-zero.png",
+      "visual_change_from": "page10-after-kitchen",
+      "expect": {
+        "page_id": "05837065-8160-469f-8b29-e07d87549656",
+        "image_suffix": "15.png",
+        "instead_background_suffix": "images/15.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "вы решили свернуть в лес",
+        "instead_text_contains": "вы решили свернуть в лес",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "wolfiness-not-greater-than-one-outcome",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "26-wolfiness-not-greater-than-one-outcome.png",
+      "visual_change_from": "forest-entry-wolfiness-zero",
+      "expect": {
+        "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
+        "image_suffix": "17.png",
+        "instead_background_suffix": "images/17.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "масса разнообразных запахов",
+        "instead_text_contains": "масса разнообразных запахов",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Independent clean-state route through the «Прогнать грабителя» branch.",
+    "The choice must be recorded as INSTEAD act 02 / NLBNavigator clickchoice:1.",
+    "Chasing the robber leaves wolfiness at 0. After page 1.4, the non-positive wolfiness condition leads to page 1.6 without losing HP.",
+    "After page 12, the zero-wolfiness page-13 variant offers the philosopher and kitchen choices.",
+    "This route selects the kitchen: page 11 leaves wolfiness/HP unchanged at 0/3, then page 15 routes wolfiness <= 1 to page 17.",
+    "This is one representative page-13 choice combination; the alternate choice from the zero-wolfiness variant is not yet covered."
+  ]
+}

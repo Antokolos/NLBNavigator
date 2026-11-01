@@ -1,0 +1,302 @@
+name: NLB SDL manual test
+
+"on":
+  workflow_dispatch:
+    inputs:
+      game_ref:
+        description: "Commit SHA, branch, or tag of nlbproject/wolfman (default: pinned NLB reference)"
+        required: true
+        default: "888b4b7a7a564693274f53341728ee9f3b4c2879"
+        type: string
+      reference_ref:
+        description: "Commit SHA, branch, or tag of INSTEAD export (default: pinned export)"
+        required: true
+        default: "5f8cd646905a25800afab46bd2ce17616f0d6494"
+      base_theme_ref:
+        description: "Commit SHA, branch, or tag of instead-hub/instead base theme"
+        required: true
+        default: "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+        type: string
+  push:
+    branches:
+      - ci/nlb-sdl-wolfman
+      - ci/nlb-sdl-wolfman-state-trace
+    paths:
+      - .github/workflows/nlb-sdl-test.yml
+      - CMakeLists.txt
+      - Source/NLBSdl/**
+      - Source/NLBAudioSDL/**
+      - tests/differential/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nlb-sdl-manual-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-prepare:
+    name: Build nlb_sdl and prepare test books
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GAME_REF: ${{ github.event.inputs.game_ref || '888b4b7a7a564693274f53341728ee9f3b4c2879' }}
+      REFERENCE_REF: ${{ github.event.inputs.reference_ref || '5f8cd646905a25800afab46bd2ce17616f0d6494' }}
+      BASE_THEME_REF: ${{ github.event.inputs.base_theme_ref || '1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e' }}
+    steps:
+      - name: Check out NLBNavigator
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build tools and Linux graphics dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake ninja-build pkg-config git curl zip unzip tar \
+            autoconf autoconf-archive automake libtool libltdl-dev \
+            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev \
+            libxinerama-dev libxss-dev libxt-dev libxv-dev \
+            libwayland-dev libxkbcommon-dev wayland-protocols \
+            libegl1-mesa-dev libgl1-mesa-dev libdbus-1-dev libibus-1.0-dev \
+            libudev-dev libasound2-dev libpulse-dev libsndio-dev libdecor-0-dev \
+            libfreetype-dev python3-pil xvfb xauth \
+            instead xdotool imagemagick x11-utils openbox
+
+      - name: Install SDL3 dependencies with vcpkg
+        env:
+          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+          "$VCPKG_ROOT/vcpkg" install \
+            sdl3 'sdl3-image[png,jpeg]' sdl3-ttf sdl3-mixer \
+            --triplet x64-linux
+
+      - name: Configure NLBNavigator
+        env:
+          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
+            -DVCPKG_TARGET_TRIPLET=x64-linux \
+            -DNLB_BUILD_APPS=ON \
+            -DNLB_WITH_SDL3=ON
+
+      - name: Build nlb_sdl
+        run: |
+          cmake --build build --target nlb_sdl --parallel 2
+          test -x build/nlb_sdl
+
+      - name: Smoke-test executable
+        run: |
+          set +e
+          ./build/nlb_sdl > nlb_sdl-usage.log 2>&1
+          result=$?
+          set -e
+          test "$result" -eq 1
+          grep -q "Usage: nlb_sdl" nlb_sdl-usage.log
+          cat nlb_sdl-usage.log
+
+      - name: Check out wolfman with all nested modules
+        run: |
+          git clone --no-checkout --filter=blob:none \
+            https://github.com/nlbproject/wolfman.git test-data/wolfman
+          git -C test-data/wolfman fetch --depth 1 origin "$GAME_REF"
+          git -C test-data/wolfman checkout --detach FETCH_HEAD
+          git -C test-data/wolfman submodule update --init --recursive
+          git -C test-data/wolfman log -1 --format='NLB book commit: %H %s'
+          test -d test-data/wolfman
+          test -s test-data/wolfman/images/title.png
+          test -s test-data/wolfman/images/1.png
+          file test-data/wolfman/images/title.png test-data/wolfman/images/1.png
+          find test-data/wolfman -maxdepth 2 -type f | head -n 30
+
+      - name: Check out INSTEAD reference export
+        run: |
+          git clone --no-checkout --filter=blob:none \
+            https://github.com/nlbproject/instead-am_i_a_monster_vn.git test-data/instead-am_i_a_monster_vn
+          git -C test-data/instead-am_i_a_monster_vn fetch --depth 1 origin "$REFERENCE_REF"
+          git -C test-data/instead-am_i_a_monster_vn checkout --detach FETCH_HEAD
+          git -C test-data/instead-am_i_a_monster_vn submodule update --init --recursive
+          test -d test-data/instead-am_i_a_monster_vn
+          test -s test-data/instead-am_i_a_monster_vn/luapassing.lua
+          git -C test-data/instead-am_i_a_monster_vn log -1 --format='INSTEAD reference commit: %H %s'
+          find test-data/instead-am_i_a_monster_vn -maxdepth 2 -type f | head -n 30
+
+      - name: Check out INSTEAD base theme
+        run: |
+          git clone --no-checkout --filter=blob:none \
+            https://github.com/instead-hub/instead.git test-data/instead
+          git -C test-data/instead sparse-checkout init --cone
+          git -C test-data/instead sparse-checkout set themes/default
+          git -C test-data/instead fetch --depth 1 origin "$BASE_THEME_REF"
+          git -C test-data/instead checkout --detach FETCH_HEAD
+          git -C test-data/instead log -1 --format='INSTEAD base theme commit: %H %s'
+          test -s test-data/instead/themes/default/theme.ini
+
+      - name: Validate differential test definitions
+        run: |
+          python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py
+          python3 -m json.tool tests/differential/catalog.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-opening.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-eat-robber.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-chase-robber.json > /dev/null
+          python3 tests/differential/validate_catalog.py
+          python3 tests/differential/run_route.py --help
+
+      - name: Run shared route in INSTEAD
+        run: |
+          mkdir -p test-results
+          timeout --signal=TERM --kill-after=3s 60s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-opening.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output test-results/instead
+
+      - name: Run shared route in NLBNavigator
+        run: |
+          mkdir -p test-results
+          timeout --signal=TERM --kill-after=3s 90s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --route tests/differential/routes/wolfman-opening.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output test-results/nlbnavigator
+
+      - name: Compare INSTEAD and NLBNavigator screenshots
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-opening.json \
+            --output test-results
+
+      - name: Run eat-robber branch in INSTEAD
+        run: |
+          output="test-results/robbery-eat/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-eat-robber.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run chase-robber branch in INSTEAD
+        run: |
+          output="test-results/robbery-chase/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-chase-robber.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run eat-robber branch in NLBNavigator
+        run: |
+          output="test-results/robbery-eat/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-eat-robber.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run chase-robber branch in NLBNavigator
+        run: |
+          output="test-results/robbery-chase/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-chase-robber.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Compare eat-robber branch
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-eat-robber.json \
+            --output test-results/robbery-eat
+
+      - name: Compare chase-robber branch
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-chase-robber.json \
+            --output test-results/robbery-chase
+
+      - name: Validate INSTEAD reference export
+        run: |
+          test -s test-data/instead-am_i_a_monster_vn/main.lua
+          test -d test-data/instead-am_i_a_monster_vn/images
+          test -d test-data/instead-am_i_a_monster_vn/themes
+          find test-data/instead-am_i_a_monster_vn/images -type f | grep -q .
+          printf 'Reference export structure OK\\n' | tee test-results/reference-validation.log
+
+      - name: Prepare compact diagnostic artifacts
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          from PIL import Image
+
+          source = Path("test-results")
+          target = Path("ci-artifacts")
+          target.mkdir(exist_ok=True)
+          text_suffixes = {".json", ".jsonl", ".tsv", ".txt", ".log", ".script"}
+          if source.exists():
+              for path in source.rglob("*"):
+                  if not path.is_file():
+                      continue
+                  relative = path.relative_to(source)
+                  destination = target / relative
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  if path.suffix.lower() in text_suffixes:
+                      shutil.copy2(path, destination)
+                  elif path.suffix.lower() == ".png":
+                      try:
+                          with Image.open(path) as image:
+                              image = image.convert("RGB")
+                              image.thumbnail((960, 540))
+                              destination = destination.with_suffix(".jpg")
+                              image.save(destination, "JPEG", quality=78, optimize=True)
+                      except Exception as error:
+                          print(f"Skipping image {path}: {error}")
+          PY
+
+      - name: Upload build and preparation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nlb-sdl-test-logs
+          path: |
+            nlb_sdl-usage.log
+            build/CMakeCache.txt
+            ci-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
