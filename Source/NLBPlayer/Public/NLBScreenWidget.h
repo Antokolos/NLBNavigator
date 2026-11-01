@@ -48,10 +48,17 @@ public:
     UFUNCTION(BlueprintCallable, Category = "NLB")
     void Back();
 
+    /** Прокрутка текста перетаскиванием (мышь, палец). В VR выключить: дрожь луча иначе тянет
+     *  текст туда-сюда, и щелчок по «Далее» не проходит */
+    UFUNCTION(BlueprintCallable, Category = "NLB")
+    void SetDragScroll(bool bEnable) { bDragScroll = bEnable; }
+
     // ---- для FNLBSlateRenderer
     UTexture2D* TextureFor(const FString& Path);
 
 protected:
+    bool bDragScroll = true;
+
     virtual void NativeOnInitialized() override;
     virtual void NativeConstruct() override;
     virtual void NativeDestruct() override;

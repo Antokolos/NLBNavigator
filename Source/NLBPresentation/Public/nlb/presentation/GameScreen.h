@@ -102,6 +102,10 @@ public:
     /// плавно прокручивает текст, а без движения — щелчок при отпускании. Вне окна текста
     /// press — сразу щелчок. Фронтенды без отпускания кнопки могут звать click, как раньше.
     void press(float x, float y);
+    /// Сдвиг (в точках экрана 1920×1080), после которого нажатие в окне текста становится
+    /// прокруткой перетаскиванием, а не щелчком. Мышь — 8 (как в INSTEAD), касание — больше
+    /// (палец дрожит сильнее), луч VR — 0: перетаскивания нет, щелчок при отпускании
+    void setDragThreshold(float px) { m_dragThreshold = px; }
     void release(float x, float y);
     void wheel(float lines);                       ///< >0 — вверх (как колесо SDL)
     void key(Key key, int digit = 0);              ///< digit: 1..9 для Key::Digit
@@ -257,6 +261,7 @@ private:
     int m_transitionMs = 0;
     void startTransition();
     void finishTransition() { m_transitionPending = m_transitionActive = false; }
+    float m_dragThreshold = 8;
     bool m_pressed = false, m_dragging = false;  ///< левая кнопка нажата в окне текста; тянут текст
     float m_pressX = 0, m_pressY = 0, m_dragY = 0;
     size_t m_voicedPortion = SIZE_MAX;  ///< порция, на которой уже запущена фраза озвучки
