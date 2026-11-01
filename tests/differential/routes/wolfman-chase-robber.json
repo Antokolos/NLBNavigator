@@ -353,7 +353,7 @@
       },
       "settle_ms": 2000,
       "screenshot": "12-zoo-escape-final-portion.png",
-      "visual_change_from": "11-wolfiness-zero-outcome",
+      "visual_change_from": "chase-branch-zero-condition",
       "expect": {
         "page_id": "ffa05a49-c979-4e9f-9b89-42936e21b81a",
         "image_suffix": "1.6.png",
