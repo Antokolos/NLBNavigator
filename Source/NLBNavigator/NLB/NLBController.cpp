@@ -114,11 +114,14 @@ void ANLBController::AddToViewport()
 	{
 		if (Character->IsVRMode())
 		{
+			// луч дрожит: без перетаскивания — щелчок при отпускании (текст листается стиком)
+			ScreenWidget->SetDragScroll(false);
 			Character->GetVRMode()->ShowPanel(ScreenWidget);
 			bIsVisible = true;
 			return;
 		}
 	}
+	ScreenWidget->SetDragScroll(true);
 	ScreenWidget->AddToViewport();
 	ScreenWidget->SetVisibility(ESlateVisibility::Visible);
 	bIsVisible = true;
