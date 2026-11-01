@@ -45,6 +45,11 @@ public:
     /// шрифтом уже в масштабе окна (font_size × scale) и округляет высоту строки в пикселях;
     /// рендерер, который делает так же, сообщает масштаб, чтобы раскладка совпала (по умолчанию 1)
     virtual float pixelScale() const { return 1.0f; }
+    /// Переход между сценами (dissolve INSTEAD): рендерер, умеющий сохранять кадры, хранит
+    /// предыдущий кадр, когда GameScreen::needsSnapshot() перед кадром отвечает true, и рисует
+    /// его поверх нового с прозрачностью alpha. Без этого (по умолчанию) переходов нет
+    virtual bool hasSnapshot() const { return false; }
+    virtual void drawSnapshot(float alpha) { (void)alpha; }
 };
 
 /**
@@ -75,6 +80,8 @@ public:
         /// Для маленьких экранов (телефон) — 1.25…2. Выбор игрока в меню («Размер текста»,
         /// сохраняется в settings.ini) главнее
         float textScale = 1.0f;
+        /// Переходы между сценами (dissolve, как в INSTEAD с включённым «fading»)
+        bool transitions = true;
         /// Монотонное время, мс (эффекты появления, всплывающие сообщения); пусто — steady_clock
         std::function<uint64_t()> clock;
     };
@@ -84,6 +91,9 @@ public:
     // ---- кадр
     void update(int milliseconds);                 ///< время: таймеры книги и анимация
     void render(IScreenRenderer& r);
+    /// Перед этим кадром начинается переход: рендерер должен сохранить предыдущий кадр
+    /// (IScreenRenderer::hasSnapshot/drawSnapshot)
+    bool needsSnapshot() const { return m_transitionPending; }
 
     // ---- ввод (координаты экрана 1920×1080)
     void mouseMove(float x, float y);
@@ -234,6 +244,12 @@ private:
     /// Первый экран игры (запуск, «начать заново»): текст вписывается в окно концом, как в INSTEAD
     /// (там первая отрисовка прокручивает сцену к изменению — к концу текста, со ссылками)
     bool m_fitToEnd = true;
+    /// Переход между сценами (vn:geom(…, 'dissolve') экспорта -> fading INSTEAD, gfx_change_screen):
+    /// новый кадр проступает поверх прежнего за 8 шагов по 60 мс (альфа (n + 1) / 8)
+    bool m_transitionPending = false, m_transitionActive = false;
+    int m_transitionMs = 0;
+    void startTransition();
+    void finishTransition() { m_transitionPending = m_transitionActive = false; }
     bool m_pressed = false, m_dragging = false;  ///< левая кнопка нажата в окне текста; тянут текст
     float m_pressX = 0, m_pressY = 0, m_dragY = 0;
     size_t m_voicedPortion = SIZE_MAX;  ///< порция, на которой уже запущена фраза озвучки

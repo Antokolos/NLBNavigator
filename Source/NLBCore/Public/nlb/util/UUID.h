@@ -3,8 +3,7 @@
 #include <algorithm>
 #include <iterator>
 #include <random>
-#include <sstream>
-#include <iomanip>
+#include <string>
 
 class NLBUUID {
 public:
@@ -14,24 +13,22 @@ public:
         static std::uniform_int_distribution<> dis(0, 15);
         static std::uniform_int_distribution<> dis2(8, 11);
 
-        std::stringstream ss;
-        ss << std::hex << std::setfill('0');
-        
-        for (int i = 0; i < 8; i++) 
-            ss << std::setw(1) << dis(gen);
-        ss << "-";
-        for (int i = 0; i < 4; i++) 
-            ss << std::setw(1) << dis(gen);
-        ss << "-4";
-        for (int i = 0; i < 3; i++) 
-            ss << std::setw(1) << dis(gen);
-        ss << "-" << std::setw(1) << dis2(gen);
-        for (int i = 0; i < 3; i++) 
-            ss << std::setw(1) << dis(gen);
-        ss << "-";
-        for (int i = 0; i < 12; i++) 
-            ss << std::setw(1) << dis(gen);
-        
-        return ss.str();
+        // без std::stringstream: потоки тянут локаль libc++, а UUID создаётся очень часто (и мог
+        // создаваться при загрузке библиотеки) — шестнадцатеричные цифры пишем сами
+        static const char HEX[] = "0123456789abcdef";
+        std::string s;
+        s.reserve(36);
+        auto digits = [&](int n) { for (int i = 0; i < n; i++) s += HEX[dis(gen)]; };
+        digits(8);
+        s += '-';
+        digits(4);
+        s += "-4";
+        digits(3);
+        s += '-';
+        s += HEX[dis2(gen)];
+        digits(3);
+        s += '-';
+        digits(12);
+        return s;
     }
 };

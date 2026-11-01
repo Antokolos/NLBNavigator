@@ -149,6 +149,8 @@ bool SdlPlayer::init() {
     go.textScale = m_options.textScale;
     go.soundAvailable = m_audio != nullptr;
     go.clock = [] { return static_cast<uint64_t>(SDL_GetTicks()); };
+    m_transitions = m_options.transitions < 0 ? m_options.scriptPath.empty() : m_options.transitions > 0;
+    go.transitions = m_transitions;
     m_screen = std::make_unique<GameScreen>(*m_session, go);
     std::cerr << "Оформление: " << m_screen->describeThemes() << std::endl;
     // Полный экран: пункт меню, F11 и Alt+Enter; экран книги вписывается в него с полями, как в окне
@@ -164,6 +166,9 @@ void SdlPlayer::shutdown() {
     for (auto& [k, t] : m_texts) if (t) SDL_DestroyTexture(t);
     m_images.clear();
     m_texts.clear();
+    if (m_frame) SDL_DestroyTexture(m_frame);
+    if (m_snapshot) SDL_DestroyTexture(m_snapshot);
+    m_frame = m_snapshot = nullptr;
     m_screen.reset();
     m_session.reset();
     m_audio.reset();
@@ -251,7 +256,70 @@ void SdlPlayer::renderFrame() {
     }
     SDL_SetRenderDrawColor(m_renderer, BACKGROUND.r, BACKGROUND.g, BACKGROUND.b, 255);
     SDL_RenderClear(m_renderer);
+    if (!m_transitions) {
+        m_screen->render(*this);
+        return;
+    }
+    // Кадр — в текстуру размером с область экрана 1920×1080 в окне (в пикселях окна, текст по-прежнему
+    // 1:1), с той же логической раскладкой; затем — в окно. Прежний кадр остаётся в текстуре до
+    // следующего, и перед переходом его можно сохранить
+    SDL_FRect area{};
+    SDL_GetRenderLogicalPresentationRect(m_renderer, &area);
+    ensureFrameTextures(std::max(1, static_cast<int>(std::lround(area.w))), std::max(1, static_cast<int>(std::lround(area.h))));
+    if (!m_frame) {
+        m_screen->render(*this);
+        return;
+    }
+    if (m_screen->needsSnapshot()) {
+        m_snapshotValid = false;
+        if (m_frameValid && m_snapshot && SDL_SetRenderTarget(m_renderer, m_snapshot)) {
+            SDL_SetTextureBlendMode(m_frame, SDL_BLENDMODE_NONE);
+            SDL_RenderTexture(m_renderer, m_frame, nullptr, nullptr);
+            m_snapshotValid = true;
+        }
+    }
+    SDL_SetRenderTarget(m_renderer, m_frame);
+    SDL_SetRenderDrawColor(m_renderer, BACKGROUND.r, BACKGROUND.g, BACKGROUND.b, 255);
+    SDL_RenderClear(m_renderer);
     m_screen->render(*this);
+    SDL_SetRenderTarget(m_renderer, nullptr);
+    SDL_SetTextureBlendMode(m_frame, SDL_BLENDMODE_NONE);
+    const SDL_FRect full{0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H};
+    SDL_RenderTexture(m_renderer, m_frame, nullptr, &full);
+    m_frameValid = true;
+}
+
+void SdlPlayer::ensureFrameTextures(int w, int h) {
+    float tw = 0, th = 0;
+    if (m_frame && SDL_GetTextureSize(m_frame, &tw, &th) && static_cast<int>(tw) == w && static_cast<int>(th) == h) return;
+    if (m_frame) SDL_DestroyTexture(m_frame);
+    if (m_snapshot) SDL_DestroyTexture(m_snapshot);
+    m_frameValid = m_snapshotValid = false;
+    m_frame = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, w, h);
+    m_snapshot = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, w, h);
+    for (SDL_Texture* t : {m_frame, m_snapshot}) {
+        if (!t) continue;
+        SDL_SetTextureScaleMode(t, SDL_SCALEMODE_NEAREST);  // размер тот же — копия 1:1
+        // у каждой цели своя логическая раскладка: экран 1920×1080, как у окна
+        SDL_SetRenderTarget(m_renderer, t);
+        SDL_SetRenderLogicalPresentation(m_renderer, static_cast<int>(GameScreen::SCREEN_W), static_cast<int>(GameScreen::SCREEN_H),
+                                         SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    }
+    // копия кадра в m_snapshot — пиксель в пиксель, без логической раскладки
+    if (m_snapshot) {
+        SDL_SetRenderTarget(m_renderer, m_snapshot);
+        SDL_SetRenderLogicalPresentation(m_renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED);
+    }
+    SDL_SetRenderTarget(m_renderer, nullptr);
+}
+
+void SdlPlayer::drawSnapshot(float alpha) {
+    if (!m_snapshotValid || !m_snapshot) return;
+    SDL_SetTextureBlendMode(m_snapshot, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaModFloat(m_snapshot, alpha);
+    const SDL_FRect full{0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H};
+    SDL_RenderTexture(m_renderer, m_snapshot, nullptr, &full);
+    SDL_SetTextureAlphaModFloat(m_snapshot, 1.0f);
 }
 
 // ============================================================================ рендерер

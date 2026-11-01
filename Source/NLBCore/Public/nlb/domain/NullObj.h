@@ -129,5 +129,4 @@ private:
     NullObj& operator=(const NullObj&) = delete;
 
     // Singleton instance
-    static NullObj s_instance;
 };

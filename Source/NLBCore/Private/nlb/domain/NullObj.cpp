@@ -1,10 +1,13 @@
 #include "nlb/domain/NullObj.h"
 #include "nlb/api/Constants.h"
 
-NullObj NullObj::s_instance;
 
 NullObj& NullObj::create() {
-    return s_instance;
+    // Создаётся при первом обращении, а не при загрузке библиотеки: конструктор генерирует UUID
+    // (std::random_device, потоки), а в статических конструкторах libUnreal.so на части телефонов
+    // это роняло аллокатор движка («FMallocBinned … unrecognized pointer»)
+    static NullObj instance;
+    return instance;
 }
 
 NullObj::NullObj() : AbstractNodeItem() {

@@ -143,6 +143,8 @@ int main(int argc, char** argv) {
         else if (a == "--choices-screen") choicesScreen = 1;
         else if (a == "--choices-in-text") choicesScreen = 0;
         else if (a == "--fullscreen") options.fullscreen = true;
+        else if (a == "--transitions") options.transitions = 1;
+        else if (a == "--no-transitions") options.transitions = 0;
         else if (a == "--text-scale" && i + 1 < args.size()) options.textScale = std::strtof(args[++i].c_str(), nullptr);
         else if (a == "--platform" && i + 1 < args.size()) options.platforms.push_back(args[++i]);
         else if (a == "--platform-config" && i + 1 < args.size()) options.platformConfig = args[++i];
@@ -178,7 +180,7 @@ int main(int argc, char** argv) {
         SdlPlayer::fatal("Книга не найдена: в приложении нет assets/book.nlbpack");
 #endif
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
-                     " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--text-scale 1.5] [--log <file>]"
+                     " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--transitions | --no-transitions] [--text-scale 1.5] [--log <file>]"
                      " [--platform steam|epic|log[:file]]... [--platform-config <platform.ini>] [--lang <ru|en|…>]"
                      " [--script <file> [--state-log <file.jsonl>] [--state-vars <a,b|*>]]" << std::endl;
         std::cout << "  vn            - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
