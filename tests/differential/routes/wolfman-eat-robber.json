@@ -353,7 +353,7 @@
       },
       "settle_ms": 2000,
       "screenshot": "12-zoo-escape-final-portion.png",
-      "visual_change_from": "11-wolfiness-positive-outcome",
+      "visual_change_from": "eat-branch-positive-condition",
       "expect": {
         "page_id": "30f2da3a-76a3-40b2-84f0-41714eb48ae4",
         "image_suffix": "1.5.png",
@@ -364,8 +364,8 @@
         "portion_count": 11,
         "instead_portion_index": 10,
         "instead_portion_count": 11,
-        "text_contains": "других полицейских на своём пути не встретили",
-        "instead_text_contains": "других полицейских на своём пути не встретили",
+        "text_contains": "других полицейских на своём пути вы не встретили",
+        "instead_text_contains": "других полицейских на своём пути вы не встретили",
         "variables": {
           "wolfiness": 1,
           "hp": 2
