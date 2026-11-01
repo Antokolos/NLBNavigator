@@ -559,11 +559,271 @@
           "hp": 3
         }
       }
+    },
+    {
+      "id": "wolfiness-zero-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 8,
+          "nlbnavigator": 8
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "19-wolfiness-zero-final-portion.png",
+      "visual_change_from": "wolfiness-zero-dialogue-outcome",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 8,
+        "portion_count": 9,
+        "instead_portion_index": 8,
+        "instead_portion_count": 9,
+        "text_contains": "где и заснули под мерное гудение пчёл",
+        "instead_text_contains": "где и заснули под мерное гудение пчёл",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page13-zero-dialogue",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "20-page13-zero-dialogue.png",
+      "visual_change_from": "wolfiness-zero-final-portion",
+      "expect": {
+        "page_id": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "из бара вышел утренний знакомец",
+        "instead_text_contains": "из бара вышел утренний знакомец",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page13-zero-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "21-page13-zero-choices.png",
+      "visual_change_from": "page13-zero-dialogue",
+      "expect": {
+        "page_id": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "instead_choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "steal-food-from-kitchen",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.26,
+          "y_ratio": 0.36
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "22-steal-food-from-kitchen.png",
+      "visual_change_from": "page13-zero-choices",
+      "expect": {
+        "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+        "image_suffix": "11.png",
+        "instead_background_suffix": "images/11.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2,
+        "text_contains": "удалось взять себя в руки",
+        "instead_text_contains": "удалось взять себя в руки",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "steal-food-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "23-steal-food-final-portion.png",
+      "visual_change_from": "steal-food-from-kitchen",
+      "expect": {
+        "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+        "image_suffix": "11.png",
+        "instead_background_suffix": "images/11.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2,
+        "text_contains": "огромный кусок сырого мяса",
+        "instead_text_contains": "огромный кусок сырого мяса",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page10-after-kitchen",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "24-page10-after-kitchen.png",
+      "visual_change_from": "steal-food-final-portion",
+      "expect": {
+        "page_id": "e40f707a-3934-43b4-b302-9ea6b4461531",
+        "image_suffix": "10.png",
+        "instead_background_suffix": "images/10.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "Основательно подкрепившись",
+        "instead_text_contains": "Основательно подкрепившись",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "forest-entry-wolfiness-zero",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "25-forest-entry-wolfiness-zero.png",
+      "visual_change_from": "page10-after-kitchen",
+      "expect": {
+        "page_id": "05837065-8160-469f-8b29-e07d87549656",
+        "image_suffix": "15.png",
+        "instead_background_suffix": "images/15.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "вы решили свернуть в лес",
+        "instead_text_contains": "вы решили свернуть в лес",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "wolfiness-not-greater-than-one-outcome",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "26-wolfiness-not-greater-than-one-outcome.png",
+      "visual_change_from": "forest-entry-wolfiness-zero",
+      "expect": {
+        "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
+        "image_suffix": "17.png",
+        "instead_background_suffix": "images/17.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "масса разнообразных запахов",
+        "instead_text_contains": "масса разнообразных запахов",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
     }
   ],
   "notes": [
     "Independent clean-state route through the «Прогнать грабителя» branch.",
     "The choice must be recorded as INSTEAD act 02 / NLBNavigator clickchoice:1.",
-    "Chasing the robber leaves wolfiness at 0. After page 1.4, the non-positive wolfiness condition leads to page 1.6 without losing HP."
+    "Chasing the robber leaves wolfiness at 0. After page 1.4, the non-positive wolfiness condition leads to page 1.6 without losing HP.",
+    "After page 12, the zero-wolfiness page-13 variant offers the philosopher and kitchen choices.",
+    "This route selects the kitchen: page 11 leaves wolfiness/HP unchanged at 0/3, then page 15 routes wolfiness <= 1 to page 17.",
+    "This is one representative page-13 choice combination; the alternate choice from the zero-wolfiness variant is not yet covered."
   ]
 }

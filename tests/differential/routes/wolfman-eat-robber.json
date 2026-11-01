@@ -559,11 +559,239 @@
           "hp": 2
         }
       }
+    },
+    {
+      "id": "wolfiness-positive-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 14,
+          "nlbnavigator": 14
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "19-wolfiness-positive-final-portion.png",
+      "visual_change_from": "wolfiness-positive-dialogue-outcome",
+      "expect": {
+        "page_id": "b2f0838e-3068-4850-ad2f-4944075de38b",
+        "image_suffix": "8.png",
+        "instead_background_suffix": "images/8.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 14,
+        "portion_count": 15,
+        "instead_portion_index": 14,
+        "instead_portion_count": 15,
+        "text_contains": "где и заснули под мерное гудение пчёл",
+        "instead_text_contains": "где и заснули под мерное гудение пчёл",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "page13-positive-dialogue",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "20-page13-positive-dialogue.png",
+      "visual_change_from": "wolfiness-positive-final-portion",
+      "expect": {
+        "page_id": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "вы заметили как из бара вышел философ",
+        "instead_text_contains": "вы заметили как из бара вышел философ",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "page13-positive-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "21-page13-positive-choices.png",
+      "visual_change_from": "page13-positive-dialogue",
+      "expect": {
+        "page_id": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "instead_choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "eat-philosopher",
+      "action": {
+        "type": "select_choice",
+        "index": 0,
+        "instead": {
+          "x_ratio": 0.26,
+          "y_ratio": 0.27
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "22-eat-philosopher.png",
+      "visual_change_from": "page13-positive-choices",
+      "expect": {
+        "page_id": "46fc2603-670d-4e23-8ce1-618e20143ea2",
+        "image_suffix": "9.png",
+        "instead_background_suffix": "images/9.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "загрызли прежде, чем он успел пикнуть",
+        "instead_text_contains": "загрызли прежде, чем он успел пикнуть",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page10-after-philosopher",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "23-page10-after-philosopher.png",
+      "visual_change_from": "eat-philosopher",
+      "expect": {
+        "page_id": "e40f707a-3934-43b4-b302-9ea6b4461531",
+        "image_suffix": "10.png",
+        "instead_background_suffix": "images/10.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "Основательно подкрепившись",
+        "instead_text_contains": "Основательно подкрепившись",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "forest-entry-wolfiness-two",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "24-forest-entry-wolfiness-two.png",
+      "visual_change_from": "page10-after-philosopher",
+      "expect": {
+        "page_id": "05837065-8160-469f-8b29-e07d87549656",
+        "image_suffix": "15.png",
+        "instead_background_suffix": "images/15.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "вы решили свернуть в лес",
+        "instead_text_contains": "вы решили свернуть в лес",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "wolfiness-greater-than-one-outcome",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "25-wolfiness-greater-than-one-outcome.png",
+      "visual_change_from": "forest-entry-wolfiness-two",
+      "expect": {
+        "page_id": "3792ac23-4da9-4539-a393-95780a98771a",
+        "image_suffix": "16.png",
+        "instead_background_suffix": "images/16.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "запах так и манил вас направо",
+        "instead_text_contains": "запах так и манил вас направо",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3
+        }
+      }
     }
   ],
   "notes": [
     "Independent clean-state route through the «Съесть грабителя» branch.",
     "The choice must be recorded as INSTEAD act 01 / NLBNavigator clickchoice:0.",
-    "Eating the robber increments wolfiness to 1. After page 1.4, the positive wolfiness condition leads to page 1.5 and costs one HP."
+    "Eating the robber increments wolfiness to 1. After page 1.4, the positive wolfiness condition leads to page 1.5 and costs one HP.",
+    "After page 8, the positive page-13 variant offers the philosopher and kitchen choices.",
+    "This route selects the philosopher: page 9 increments wolfiness and HP to 2/3, then page 15 routes wolfiness > 1 to page 16.",
+    "This is one representative page-13 choice combination; the alternate choice from the positive variant is not yet covered."
   ]
 }
