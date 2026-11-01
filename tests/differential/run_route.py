@@ -409,7 +409,16 @@ def script_for_nlbnavigator(route, output_dir):
             for _ in range(clicks):
                 append_command("click:{},{}".format(x, y))
         elif kind == "select_choice":
-            append_command("clickchoice:" + str(int(action["index"])))
+            # Some exported VN choices are inline text links, not the separate
+            # choices overlay. For those routes, use the explicitly configured
+            # NLBNavigator screen coordinate; keep clickchoice for real choice panels.
+            nlb_click = action.get("nlbnavigator")
+            if nlb_click:
+                x = round(float(nlb_click["x_ratio"]) * width)
+                y = round(float(nlb_click["y_ratio"]) * height)
+                append_command("click:{},{}".format(x, y))
+            else:
+                append_command("clickchoice:" + str(int(action["index"])))
 
         delay = int(step.get("settle_ms", 0))
         if delay > 0:
