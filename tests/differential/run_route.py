@@ -680,7 +680,12 @@ def trace_input_matches(action, record):
     command = record.get("command", "")
     if action["type"] == "key":
         return command == "user_kbd"
-    if action["type"] in ("click", "advance", "select_choice"):
+    if action["type"] == "select_choice":
+        # VN-INSTEAD reports a successful option selection as "act NN",
+        # not as a separate low-level mouse-click command.
+        choice_number = int(action["index"]) + 1
+        return re.fullmatch(r"act\s+0*{}".format(choice_number), command) is not None
+    if action["type"] in ("click", "advance"):
         return command.startswith("click ")
     return True
 
@@ -883,8 +888,9 @@ def run_instead(args, route, output_dir):
         step_result["state_trace"] = state_by_id.get(step_result["id"])
     report["state_records"] = state_records
     report["input_state_validation"] = (
-        "key/click actions require fresh iface.cmd input events followed by a new scene snapshot; "
-        "inventory-only and stale scene text are rejected."
+        "key actions require fresh user_kbd events; click/advance actions require fresh click events; "
+        "select_choice requires the matching semantic act NN event. Every action must be followed by "
+        "a new scene snapshot with changed visible state; inventory-only and stale scene text are rejected."
     )
     report["metadata"] = route_metadata(args.route, route, __file__)
     report["metadata"]["instead_export_commit"] = git_commit(game)
