@@ -69,6 +69,8 @@ struct ScreenTheme {
     /// Кнопка меню, которую ставит игра NLB (nlb.lua, _syscall_showmenubtn): gfx/menubtn.png и
     /// gfx/menubtn_ru.png активной темы, в правом верхнем углу (scr.w − ширина, 0)
     std::string nlbMenuButton, nlbMenuButtonRu;
+    /// gfx/theendru.png, gfx/theenden.png — надпись «Конец» экрана конца VN (nlb.lua: _try_again)
+    std::string theEndRu, theEndEn;
     float scale = 1.0f;               ///< масштаб экрана темы (scr.w×scr.h) к 1920×1080: картинки темы
     std::string clickSound;           ///< snd.click — звук щелчка по ссылке (стандартная тема INSTEAD)
     RectF screenArea{0, 0, 1920, 1080};  ///< где экран темы на экране 1920×1080 (фон scr.gfx.bg — сюда)
