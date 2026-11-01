@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "wolfman-opening",
   "story_id": "am-i-a-monster",
-  "title": "Am I a Monster? — начальная сцена и выбор пути",
+  "title": "Am I a Monster? — начальная сцена, выбор пути и ограбление",
   "mode": "vn",
   "language": "ru",
   "window": {
@@ -124,13 +124,77 @@
           "hp": 3
         }
       }
+    },
+    {
+      "id": "robbery-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 4,
+          "nlbnavigator": 4
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "05-robbery-final-portion.png",
+      "visual_change_from": "jump-over-fence",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 4,
+        "portion_count": 5,
+        "instead_portion_index": 4,
+        "instead_portion_count": 5,
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "robbery-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "06-robbery-choices.png",
+      "visual_change_from": "robbery-final-portion",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть грабителя",
+          "Прогнать грабителя"
+        ],
+        "instead_choices_contains": [
+          "Съесть грабителя",
+          "Прогнать грабителя"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
     }
   ],
   "notes": [
-    "The route covers title -> opening page -> second visible portion -> first choices screen.",
+    "The route covers title -> opening scene -> first choice -> page 1.1 -> robbery scene choices.",
     "The click lands on a non-interactive part of the background and advances the VN text paginator.",
     "INSTEAD trace records the outer iface.cmd result (the paginator-visible VN portion), page UUID, paginator position and story variables. Every key/click must have a fresh input event followed by a changed scene snapshot.",
-    "The INSTEAD trace counts only non-empty paginator segments; empty paragraph delimiters are skipped just as the paginator skips blank portions. Both engines expose 10 visible portions for this pinned opening page.",
-    "Select the second option, «Перепрыгнуть через забор». NLBNavigator selects semantic choice index 1; INSTEAD receives a real mouse click on the corresponding visible option."
+    "The INSTEAD trace counts only non-empty paginator segments; empty paragraph delimiters are skipped just as the paginator skips blank portions. Both engines expose 10 visible portions on the opening page and 5 on page 1.1.",
+    "Select the second opening option, «Перепрыгнуть через забор», then advance all five portions on page 1.1 to verify the exact choice labels «Съесть грабителя» and «Прогнать грабителя»."
   ]
 }
