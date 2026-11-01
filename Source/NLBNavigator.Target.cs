@@ -16,5 +16,16 @@ public class NLBNavigatorTarget : TargetRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5;
 #endif
 		ExtraModuleNames.Add("NLBNavigator");
+#if UE_5_6_OR_LATER
+		// Android и iOS: аллокатор движка — системный (malloc). Плеер книг и libc++ собраны в игру
+		// статически: часть памяти libc++ выделяет своим operator new (malloc), а освобождает её
+		// код плеера через аллокатор движка — Binned3 такой указатель не узнаёт и падает
+		// («FMallocBinned … unrecognized pointer»). С системным аллокатором и выделение, и
+		// освобождение — malloc/free. Работает и с собранным (не исходным) движком, с 5.6
+		if (Target.Platform == UnrealTargetPlatform.Android || Target.Platform == UnrealTargetPlatform.IOS)
+		{
+			StaticAllocator = StaticAllocatorType.Ansi;
+		}
+#endif
 	}
 }

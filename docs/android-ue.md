@@ -26,3 +26,19 @@ powershell -ExecutionPolicy Bypass -File tools\ue\package_android.ps1 -Target qu
 
 Проверить на ПК: запустить игру с ключом `-touch` (или включить «Always Show Touch Interface»
 в настройках ввода) — в редакторе касания эмулирует мышь.
+
+## Если игра упала на телефоне
+```
+powershell -ExecutionPolicy Bypass -File tools\ue\symbolize_android_crash.ps1 -Capture
+```
+Скрипт сам снимает журнал с подключённого телефона (`adb logcat -d`), находит в нём ошибку и
+стек, берёт из `out\` библиотеку с символами от той же сборки (по Build ID) и печатает стек с
+функциями, файлами и строками. Уже снятый журнал: `... symbolize_android_crash.ps1 phone.txt`
+(подойдёт и файл журнала игры `NLBNavigator.log` из
+`Android/data/com.nlbhub.NLBNavigator/files/UnrealGame/NLBNavigator/NLBNavigator/Saved/Logs`).
+Символы есть только у сборок, собранных на этой машине и ещё не перезаписанных следующей.
+
+## Аллокатор на Android
+На Android и iOS игра использует системный аллокатор (`StaticAllocator = Ansi` в
+`NLBNavigator.Target.cs`): плеер книг и libc++ собраны в игру статически, и с аллокатором
+движка (Binned3) память, выделенную внутри libc++, освобождал бы чужой аллокатор.
