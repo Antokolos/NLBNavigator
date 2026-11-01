@@ -147,6 +147,7 @@ void GameScreen::pull() {
     updateEffects(before);
     m_seenRevision = m_session.revision();
     if (!choicesMode()) m_showChoices = false;  // страница STANDARD — экрана вариантов нет
+    if (before.pageId != m_screen.pageId || !m_screen.finished) m_endScreen = false;
     if (before.pageId != m_screen.pageId) {
         // вход на страницу — vn:auto_geom('dissolve') экспорта; его нет у страниц с таймером (или
         // анимацией) без графических объектов: там enter возвращает vn:get_win_coords() без эффекта
@@ -382,8 +383,7 @@ void GameScreen::afterCommand() {
         // режиме ссылок в тексте его нет вовсе, как в INSTEAD: игрок читает последнюю страницу,
         // а начать заново можно из меню. Страница без текста — сразу
         if (m_screen.finished && choicesMode() && m_screen.pageText.empty() && m_screen.reactionText.empty()) {
-            m_message = tr(static_cast<int>(Ui::GameOver));
-            m_menu = Menu::Message;
+            showGameOver();
         }
     }
 }
@@ -499,9 +499,11 @@ void GameScreen::mouseMove(float x, float y) {
     m_hoverObject.clear();
     m_hoverChoice = NO_HOVER;
     m_hoverItem.clear();
+    m_hoverTryAgain = false;
     for (auto it = m_hits.rbegin(); it != m_hits.rend(); ++it) {
         if (!contains(it->rect, x, y)) continue;
-        if (it->kind == Hit::Kind::Object) m_hoverObject = it->id;
+        if (it->kind == Hit::Kind::TryAgain) m_hoverTryAgain = true;
+        else if (it->kind == Hit::Kind::Object) m_hoverObject = it->id;
         else if (it->kind == Hit::Kind::Choice) m_hoverChoice = it->index;
         else if (it->kind == Hit::Kind::Inventory) m_hoverItem = it->id;
         else continue;
@@ -550,6 +552,8 @@ void GameScreen::click(float x, float y, bool rightButton) {
         bool onChoice = false;
         for (const auto& h : m_hits) onChoice = onChoice || (h.kind == Hit::Kind::Choice && contains(h.rect, x, y));
         if (!onChoice) { m_showChoices = false; return; }
+    } else if (m_endScreen && !hitSomething) {
+        return;  // экран конца: начать заново — только ссылкой, как в INSTEAD
     } else if (choicesMode() && !hitSomething && m_menu == Menu::None) {
         // как paginator: щелчок мимо спрайтов — дальше по тексту
         advanceText();
@@ -602,6 +606,12 @@ void GameScreen::click(float x, float y, bool rightButton) {
                 break;
             }
             case Hit::Kind::Menu: break;
+            case Hit::Kind::TryAgain:
+                // _try_again: restore_snapshot(0) — игра с начала
+                m_endScreen = false;
+                m_session.tryAgain();
+                m_fitToEnd = true;
+                break;
         }
         afterCommand();
         return;
@@ -653,8 +663,26 @@ bool GameScreen::hitCenter(const std::string& id, bool inventory, float& x, floa
     return false;
 }
 
+std::string GameScreen::theEndImage(const ScreenTheme& t) const {
+    // nlb.lua, _try_again: theendru.png для русской книги (_export_lang), иначе theenden.png
+    return m_session.language() == "ru" ? t.theEndRu : t.theEndEn;
+}
+
+void GameScreen::showGameOver() {
+    // картинка темы найдена при загрузке темы (файл есть); рисует её renderEndScreen
+    if (m_screen.layout == Layout::VisualNovel && !theEndImage(m_vnTheme).empty()) {
+        if (m_endScreen) return;
+        m_endScreen = true;
+        m_hoverTryAgain = false;
+        startTransition();  // vn:auto_geom_end('dissolve')
+        return;
+    }
+    m_message = tr(static_cast<int>(Ui::GameOver));
+    m_menu = Menu::Message;
+}
+
 bool GameScreen::advanceText() {
-    if (m_menu != Menu::None || m_showChoices) return false;
+    if (m_menu != Menu::None || m_showChoices || m_endScreen) return false;
     if (m_moreText) {                       // не уместившиеся строки текущей порции
         m_scroll += m_pageHeight; m_scrollByPages = true;
         return true;
@@ -666,8 +694,7 @@ bool GameScreen::advanceText() {
     }
     // текст дочитан: конец игры — сообщение «начать заново»
     if (m_screen.finished && std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
-        m_message = tr(static_cast<int>(Ui::GameOver));
-        m_menu = Menu::Message;
+        showGameOver();
         return true;
     }
     // единственный тривиальный вариант («Далее») — сразу переход, иначе варианты
@@ -1402,6 +1429,13 @@ void GameScreen::renderVisualNovel() {
     m_r->fillRect(t.screenArea, t.background);
     float w = 0, h = 0;
     if (imageSize(m_screen.pageImage, w, h)) m_r->drawImage(framePath(m_screen.pageImage), {0, 0, SCREEN_W, SCREEN_H}, 1.0f);
+    if (m_endScreen) {
+        // экран конца: objs():zap() и ignore_preserved_gobjs — объектов нет, фон страницы остаётся
+        renderEndScreen(t);
+        renderMenuButton(t);
+        renderInventory(t.inventory);
+        return;
+    }
     // На экране вариантов объектов нет — как в INSTEAD, где на время выбора остаются только фон и кнопка меню
     renderSceneObjects(t, true, m_showChoices);
     // Полоса текста — только если в ней есть что показать: текст страницы или ответ, а в режиме
@@ -1449,6 +1483,37 @@ void GameScreen::renderVisualNovel() {
     }
     renderMenuButton(t);
     renderInventory(t.inventory);
+}
+
+void GameScreen::renderEndScreen(const ScreenTheme& t) {
+    // vn:auto_geom_end -> get_end_coords: окно шириной в картинку «Конец» и высотой gfx/fl.png
+    // (без неё — 200) минус 2 × textpad, по центру экрана темы; подложка — как у полосы текста
+    // (vn:textbg: прямоугольник с альфой 127 с отступом textpad и боковины fl/fr). В окне —
+    // _try_again: img(theend) .. txtc("^{Попробовать ещё раз}^"): картинка, под ней по центру ссылка
+    const std::string image = theEndImage(t);
+    float iw = 0, ih = 0;
+    if (!m_r->imageSize(image, iw, ih)) return;
+    float fw = 0, fh = 0;
+    const bool frames = !t.frameLeft.empty() && m_r->imageSize(t.frameLeft, fw, fh);
+    const float k = t.scale, pad = 8 * k;
+    const float winW = iw * k, winH = ((frames ? fh : 200.0f) - 16) * k;
+    const RectF win{t.screenArea.x + std::floor((t.screenArea.w - winW) / 2), t.screenArea.y + std::floor((t.screenArea.h - winH) / 2), winW, winH};
+    const RectF under{win.x - pad, win.y - pad, win.w + 2 * pad, win.h + 2 * pad};
+    m_r->fillRect(under, {0, 0, 0, 127});
+    if (frames) m_r->drawImage(t.frameLeft, {under.x - fw * k, under.y, fw * k, fh * k}, 1.0f);
+    float rw = 0, rh = 0;
+    if (!t.frameRight.empty() && m_r->imageSize(t.frameRight, rw, rh)) m_r->drawImage(t.frameRight, {under.x + under.w, under.y, rw * k, rh * k}, 1.0f);
+    m_r->drawImage(image, {win.x, win.y, iw * k, ih * k}, 1.0f);
+    const ScreenTheme::Window& window = t.text;
+    const FontRef font = fontFor(window);
+    const std::string label = m_session.language() == "ru" ? "Попробовать ещё раз" : "Try again";
+    const float lw = textW(font, label);
+    const float px = m_r->pixelScale();
+    const float lineH = std::floor(m_r->fontHeight(font) * px * window.lineHeight + 1e-3f) / px;
+    const float lx = win.x + std::floor((win.w - lw) / 2);
+    const float ly = win.y + ih * k + std::floor((lineH - m_r->fontHeight(font)) * px / 2) / px;
+    m_r->drawText(font, label, m_hoverTryAgain ? window.alink : window.link, lx, ly, 1.0f);
+    m_hits.push_back({{lx, win.y + ih * k, lw, lineH}, Hit::Kind::TryAgain, ""});
 }
 
 void GameScreen::renderInventory(const ScreenTheme::Window& window) {
