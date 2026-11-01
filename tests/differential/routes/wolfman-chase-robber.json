@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-chase-robber",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — ветка «Прогнать грабителя»",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "steps": [
+    {
+      "id": "title",
+      "action": {
+        "type": "capture"
+      },
+      "settle_ms": 2000,
+      "screenshot": "00-title.png",
+      "expect": {
+        "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "image_suffix": "title.png",
+        "instead_background_suffix": "title.jpg"
+      }
+    },
+    {
+      "id": "opening",
+      "action": {
+        "type": "key",
+        "key": "space"
+      },
+      "settle_ms": 2000,
+      "screenshot": "01-opening.png",
+      "visual_change_from": "title",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "text_contains": "Вы очнулись лежащим посреди тротуара",
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Вы очнулись лежащим посреди тротуара",
+        "portion_index": 0,
+        "portion_count": 10,
+        "instead_portion_index": 0,
+        "instead_portion_count": 10
+      }
+    },
+    {
+      "id": "opening-next-portion",
+      "action": {
+        "type": "click",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5
+      },
+      "settle_ms": 2000,
+      "screenshot": "02-opening-next-portion.png",
+      "visual_change_from": "opening",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Интересно, сколько я тут валяюсь",
+        "text_contains": "Интересно, сколько я тут валяюсь",
+        "portion_index": 1,
+        "portion_count": 10,
+        "instead_portion_index": 1,
+        "instead_portion_count": 10
+      }
+    },
+    {
+      "id": "opening-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 9,
+          "nlbnavigator": 9
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "03-opening-choices.png",
+      "visual_change_from": "opening-next-portion",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "instead_background_suffix": "1.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Попытаться прорваться сквозь полицию",
+          "Перепрыгнуть через забор"
+        ],
+        "instead_choices_contains": [
+          "Попытаться прорваться сквозь полицию",
+          "Перепрыгнуть через забор"
+        ]
+      }
+    },
+    {
+      "id": "jump-over-fence",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.28,
+          "y_ratio": 0.35
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "04-jump-over-fence.png",
+      "visual_change_from": "opening-choices",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Бежать прямо на вооружённых полицейских",
+        "instead_text_contains": "Бежать прямо на вооружённых полицейских",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "robbery-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 4,
+          "nlbnavigator": 4
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "05-robbery-final-portion.png",
+      "visual_change_from": "jump-over-fence",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 4,
+        "portion_count": 5,
+        "instead_portion_index": 4,
+        "instead_portion_count": 5,
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "robbery-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "06-robbery-choices.png",
+      "visual_change_from": "robbery-final-portion",
+      "expect": {
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "image_suffix": "1.1.png",
+        "instead_background_suffix": "images/1.1.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть грабителя",
+          "Прогнать грабителя"
+        ],
+        "instead_choices_contains": [
+          "Съесть грабителя",
+          "Прогнать грабителя"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-robber",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.26,
+          "y_ratio": 0.36
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "07-chase-robber.png",
+      "visual_change_from": "robbery-choices",
+      "expect": {
+        "page_id": "5a8afdd9-5412-424e-b72e-1373d99795a2",
+        "image_suffix": "1.2.png",
+        "instead_background_suffix": "images/1.2.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Оскалив зубы, вы громко зарычали",
+        "instead_text_contains": "Оскалив зубы, вы громко зарычали",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-robber-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 3,
+          "nlbnavigator": 3
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "08-chase-robber-final-portion.png",
+      "visual_change_from": "chase-robber",
+      "expect": {
+        "page_id": "5a8afdd9-5412-424e-b72e-1373d99795a2",
+        "image_suffix": "1.2.png",
+        "instead_background_suffix": "images/1.2.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 3,
+        "portion_count": 4,
+        "instead_portion_index": 3,
+        "instead_portion_count": 4,
+        "text_contains": "диким зверем",
+        "instead_text_contains": "диким зверем",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-branch-zoo",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "09-chase-branch-zoo.png",
+      "visual_change_from": "chase-robber-final-portion",
+      "expect": {
+        "page_id": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "image_suffix": "1.4.png",
+        "instead_background_suffix": "images/1.4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 5,
+        "instead_portion_index": 0,
+        "instead_portion_count": 5,
+        "text_contains": "Вы мчались и мчались дальше по ночным улицам",
+        "instead_text_contains": "Вы мчались и мчались дальше по ночным улицам",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-branch-zoo-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 4,
+          "nlbnavigator": 4
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "10-chase-branch-zoo-final-portion.png",
+      "visual_change_from": "chase-branch-zoo",
+      "expect": {
+        "page_id": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "image_suffix": "1.4.png",
+        "instead_background_suffix": "images/1.4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 4,
+        "portion_count": 5,
+        "instead_portion_index": 4,
+        "instead_portion_count": 5,
+        "text_contains": "вернулись к своим обычным делам",
+        "instead_text_contains": "вернулись к своим обычным делам",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "chase-branch-zero-condition",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "11-wolfiness-zero-outcome.png",
+      "visual_change_from": "chase-branch-zoo-final-portion",
+      "expect": {
+        "page_id": "ffa05a49-c979-4e9f-9b89-42936e21b81a",
+        "image_suffix": "1.6.png",
+        "instead_background_suffix": "images/1.6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Успокоившись, вы оглядели себя ещё раз",
+        "instead_text_contains": "Успокоившись, вы оглядели себя ещё раз",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Independent clean-state route through the «Прогнать грабителя» branch.",
+    "The choice must be recorded as INSTEAD act 02 / NLBNavigator clickchoice:1.",
+    "Chasing the robber leaves wolfiness at 0. After page 1.4, the non-positive wolfiness condition leads to page 1.6 without losing HP."
+  ]
+}

@@ -142,6 +142,8 @@ jobs:
           python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py
           python3 -m json.tool tests/differential/catalog.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-opening.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-eat-robber.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-chase-robber.json > /dev/null
           python3 tests/differential/validate_catalog.py
           python3 tests/differential/run_route.py --help
 
@@ -176,6 +178,48 @@ jobs:
             --runtime compare \
             --route tests/differential/routes/wolfman-opening.json \
             --output test-results
+
+      - name: Run both robber-choice branches in INSTEAD
+        run: |
+          for branch in eat chase; do
+            route="tests/differential/routes/wolfman-${branch}-robber.json"
+            output="test-results/robbery-${branch}/instead"
+            mkdir -p "$output"
+            timeout --signal=TERM --kill-after=3s 90s xvfb-run -a -s "-screen 0 1920x1080x24" \
+              python3 tests/differential/run_route.py \
+                --runtime instead \
+                --route "$route" \
+                --game test-data/instead-am_i_a_monster_vn \
+                --base-theme test-data/instead/themes/default \
+                --output "$output"
+          done
+
+      - name: Run both robber-choice branches in NLBNavigator
+        run: |
+          for branch in eat chase; do
+            route="tests/differential/routes/wolfman-${branch}-robber.json"
+            output="test-results/robbery-${branch}/nlbnavigator"
+            mkdir -p "$output"
+            timeout --signal=TERM --kill-after=3s 120s xvfb-run -a -s "-screen 0 1920x1080x24" \
+              env SDL_AUDIODRIVER=dummy \
+              python3 tests/differential/run_route.py \
+                --runtime nlbnavigator \
+                --route "$route" \
+                --player ./build/nlb_sdl \
+                --book test-data/wolfman \
+                --theme test-data/instead-am_i_a_monster_vn/themes/default \
+                --base-theme test-data/instead/themes/default \
+                --output "$output"
+          done
+
+      - name: Compare both robber-choice branches
+        run: |
+          for branch in eat chase; do
+            python3 tests/differential/run_route.py \
+              --runtime compare \
+              --route "tests/differential/routes/wolfman-${branch}-robber.json" \
+              --output "test-results/robbery-${branch}"
+          done
 
       - name: Validate INSTEAD reference export
         run: |
