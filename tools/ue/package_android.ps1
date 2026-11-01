@@ -64,6 +64,10 @@ try {
         $ini = $ini -replace '(?m)^ExtraApplicationSettings=.*$', 'ExtraApplicationSettings='
         # не у всех телефонов Vulkan, подходящий движку: запасной рендер — OpenGL ES 3.2
         $ini = $ini -replace '(?m)^bBuildForES31=.*$', 'bBuildForES31=True'
+        # Отрисовка для шлема (две картинки за проход) телефону не нужна, а шейдеры под неё у
+        # части телефонов дают чёрную сцену при обычном (одном) виде — выключить
+        $ini = $ini -replace '(?m)^vr\.MobileMultiView=.*$', 'vr.MobileMultiView=False'
+        $ini = $ini -replace '(?m)^vr\.InstancedStereo=.*$', 'vr.InstancedStereo=False'
         [IO.File]::WriteAllText($EngineIni, $ini, (New-Object Text.UTF8Encoding $false))
         # без OpenXR: в игре нет системы XR — она сама включает обычный режим и экранное управление
         $json = Get-Content $Project -Raw -Encoding UTF8 | ConvertFrom-Json
