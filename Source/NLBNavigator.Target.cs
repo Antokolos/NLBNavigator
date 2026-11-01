@@ -25,6 +25,9 @@ public class NLBNavigatorTarget : TargetRules
 		if (Target.Platform == UnrealTargetPlatform.Android || Target.Platform == UnrealTargetPlatform.IOS)
 		{
 			StaticAllocator = StaticAllocatorType.Ansi;
+			// цель делит готовые части с UnrealGame (собранный движок), поэтому UBT требует явно
+			// разрешить отличие настройки; уникальная среда сборки с собранным движком невозможна
+			bOverrideBuildEnvironment = true;
 		}
 #endif
 	}
