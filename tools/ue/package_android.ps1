@@ -19,7 +19,9 @@ param(
     [ValidateSet("Development", "Shipping")] [string]$Config = "Development",
     # установленная сборка движка (каталог с Engine\Build\BatchFiles\RunUAT.bat)
     [string]$Engine = $(if ($env:UE_ROOT) { $env:UE_ROOT } else { "C:\work\UE\UnrealEngine\LocalBuilds\Engine\Windows" }),
-    [string]$Out = ""
+    [string]$Out = "",
+    # не пересобирать модули редактора перед готовкой (если точно собраны)
+    [switch]$SkipEditorBuild
 )
 $ErrorActionPreference = "Stop"
 $Project = (Resolve-Path (Join-Path $PSScriptRoot "..\..\NLBNavigator.uproject")).Path
@@ -52,6 +54,16 @@ function Backup($path) {
     }
     Copy-Item $path $copy
     $script:Backups += ,@($path, $copy)
+}
+
+# Готовка (cook) запускает редактор с модулями проекта. Если код проекта менялся (например,
+# после git merge main) — их надо пересобрать, иначе редактор без окна сразу выходит, и UAT
+# пишет только «Cook failed». Собираем редактор до правки .uproject (с настройками проекта)
+if (-not $SkipEditorBuild) {
+    $BuildBat = Join-Path $Engine "Engine\Build\BatchFiles\Build.bat"
+    Write-Host "Сборка модулей редактора (NLBNavigatorEditor Win64 Development)..."
+    & $BuildBat NLBNavigatorEditor Win64 Development "-Project=$Project" -WaitMutex
+    if ($LASTEXITCODE -ne 0) { throw "Не собрались модули редактора (код $LASTEXITCODE)" }
 }
 
 try {
