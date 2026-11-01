@@ -266,7 +266,9 @@ FReply UNLBScreenWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
     if (!EnsureScreen()) return FReply::Unhandled();
     const FVector2D P = ToScreen(InGeometry, InMouseEvent.GetScreenSpacePosition());
     if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton) {
-        // левая кнопка: в окне текста — щелчок при отпускании или прокрутка перетаскиванием
+        // левая кнопка: в окне текста — щелчок при отпускании или прокрутка перетаскиванием;
+        // порог сдвига: мышь — 8 точек, палец — 32 (дрожит сильнее), без перетаскивания — 0
+        Screen->setDragThreshold(!bDragScroll ? 0.0f : InMouseEvent.IsTouchEvent() ? 32.0f : 8.0f);
         Screen->press(static_cast<float>(P.X), static_cast<float>(P.Y));
         return FReply::Handled().SetUserFocus(TakeWidget(), EFocusCause::Mouse).CaptureMouse(TakeWidget());
     }

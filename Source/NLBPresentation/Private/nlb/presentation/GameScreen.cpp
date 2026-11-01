@@ -483,7 +483,8 @@ void GameScreen::mouseMove(float x, float y) {
     m_mouseY = y;
     if (m_pressed) {
         // порог — чтобы дрожь руки при щелчке не превращала его в прокрутку
-        if (!m_dragging && std::fabs(y - m_pressY) >= 8 && (m_scroll > 0 || m_contentHeight > m_pageHeight)) {
+        if (!m_dragging && m_dragThreshold > 0 && std::fabs(y - m_pressY) >= m_dragThreshold
+            && (m_scroll > 0 || m_contentHeight > m_pageHeight)) {
             m_dragging = true;
             m_dragY = y;
         }
