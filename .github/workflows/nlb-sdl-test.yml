@@ -179,47 +179,75 @@ jobs:
             --route tests/differential/routes/wolfman-opening.json \
             --output test-results
 
-      - name: Run both robber-choice branches in INSTEAD
+      - name: Run eat-robber branch in INSTEAD
         run: |
-          for branch in eat chase; do
-            route="tests/differential/routes/wolfman-${branch}-robber.json"
-            output="test-results/robbery-${branch}/instead"
-            mkdir -p "$output"
-            timeout --signal=TERM --kill-after=3s 90s xvfb-run -a -s "-screen 0 1920x1080x24" \
-              python3 tests/differential/run_route.py \
-                --runtime instead \
-                --route "$route" \
-                --game test-data/instead-am_i_a_monster_vn \
-                --base-theme test-data/instead/themes/default \
-                --output "$output"
-          done
-
-      - name: Run both robber-choice branches in NLBNavigator
-        run: |
-          for branch in eat chase; do
-            route="tests/differential/routes/wolfman-${branch}-robber.json"
-            output="test-results/robbery-${branch}/nlbnavigator"
-            mkdir -p "$output"
-            timeout --signal=TERM --kill-after=3s 120s xvfb-run -a -s "-screen 0 1920x1080x24" \
-              env SDL_AUDIODRIVER=dummy \
-              python3 tests/differential/run_route.py \
-                --runtime nlbnavigator \
-                --route "$route" \
-                --player ./build/nlb_sdl \
-                --book test-data/wolfman \
-                --theme test-data/instead-am_i_a_monster_vn/themes/default \
-                --base-theme test-data/instead/themes/default \
-                --output "$output"
-          done
-
-      - name: Compare both robber-choice branches
-        run: |
-          for branch in eat chase; do
+          output="test-results/robbery-eat/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
             python3 tests/differential/run_route.py \
-              --runtime compare \
-              --route "tests/differential/routes/wolfman-${branch}-robber.json" \
-              --output "test-results/robbery-${branch}"
-          done
+              --runtime instead \
+              --route tests/differential/routes/wolfman-eat-robber.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run chase-robber branch in INSTEAD
+        run: |
+          output="test-results/robbery-chase/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-chase-robber.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run eat-robber branch in NLBNavigator
+        run: |
+          output="test-results/robbery-eat/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-eat-robber.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run chase-robber branch in NLBNavigator
+        run: |
+          output="test-results/robbery-chase/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-chase-robber.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Compare eat-robber branch
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-eat-robber.json \
+            --output test-results/robbery-eat
+
+      - name: Compare chase-robber branch
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-chase-robber.json \
+            --output test-results/robbery-chase
 
       - name: Validate INSTEAD reference export
         run: |
@@ -229,6 +257,38 @@ jobs:
           find test-data/instead-am_i_a_monster_vn/images -type f | grep -q .
           printf 'Reference export structure OK\\n' | tee test-results/reference-validation.log
 
+      - name: Prepare compact diagnostic artifacts
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          from PIL import Image
+
+          source = Path("test-results")
+          target = Path("ci-artifacts")
+          target.mkdir(exist_ok=True)
+          text_suffixes = {".json", ".jsonl", ".tsv", ".txt", ".log", ".script"}
+          if source.exists():
+              for path in source.rglob("*"):
+                  if not path.is_file():
+                      continue
+                  relative = path.relative_to(source)
+                  destination = target / relative
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  if path.suffix.lower() in text_suffixes:
+                      shutil.copy2(path, destination)
+                  elif path.suffix.lower() == ".png":
+                      try:
+                          with Image.open(path) as image:
+                              image = image.convert("RGB")
+                              image.thumbnail((960, 540))
+                              destination = destination.with_suffix(".jpg")
+                              image.save(destination, "JPEG", quality=78, optimize=True)
+                      except Exception as error:
+                          print(f"Skipping image {path}: {error}")
+          PY
+
       - name: Upload build and preparation logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -237,7 +297,6 @@ jobs:
           path: |
             nlb_sdl-usage.log
             build/CMakeCache.txt
-            test-results/
-            test-data/instead/themes/default/
+            ci-artifacts/
           if-no-files-found: warn
           retention-days: 14
