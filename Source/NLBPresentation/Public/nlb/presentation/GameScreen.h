@@ -149,7 +149,7 @@ public:
 
 private:
     struct Hit {
-        enum class Kind { Choice, Object, Inventory, Menu, ScrollUp, ScrollDown, MenuButton };
+        enum class Kind { Choice, Object, Inventory, Menu, ScrollUp, ScrollDown, MenuButton, TryAgain };
         RectF rect;
         Kind kind;
         std::string id;
@@ -247,6 +247,13 @@ private:
     /// Переход между сценами (vn:geom(…, 'dissolve') экспорта -> fading INSTEAD, gfx_change_screen):
     /// новый кадр проступает поверх прежнего за 8 шагов по 60 мс (альфа (n + 1) / 8)
     bool m_transitionPending = false, m_transitionActive = false;
+    /// Экран конца VN, как в экспорте (комната _choices последней страницы: vn:auto_geom_end,
+    /// _try_again из nlb.lua): посередине полоса с картинкой темы «Конец» и ссылкой «Попробовать
+    /// ещё раз». Без картинки в теме — прежнее сообщение (Menu::Message)
+    bool m_endScreen = false, m_hoverTryAgain = false;
+    void showGameOver();
+    void renderEndScreen(const ScreenTheme& t);
+    std::string theEndImage(const ScreenTheme& t) const;
     int m_transitionMs = 0;
     void startTransition();
     void finishTransition() { m_transitionPending = m_transitionActive = false; }
