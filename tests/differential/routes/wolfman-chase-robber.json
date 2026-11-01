@@ -339,6 +339,226 @@
           "hp": 3
         }
       }
+    },
+    {
+      "id": "zoo-escape-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 11,
+          "nlbnavigator": 11
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "12-zoo-escape-final-portion.png",
+      "visual_change_from": "11-wolfiness-zero-outcome",
+      "expect": {
+        "page_id": "ffa05a49-c979-4e9f-9b89-42936e21b81a",
+        "image_suffix": "1.6.png",
+        "instead_background_suffix": "images/1.6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 11,
+        "portion_count": 12,
+        "instead_portion_index": 11,
+        "instead_portion_count": 12,
+        "text_contains": "пошёл следом за ними",
+        "instead_text_contains": "пошёл следом за ними",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "road-page",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "13-road-page.png",
+      "visual_change_from": "zoo-escape-final-portion",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 6,
+        "instead_portion_index": 0,
+        "instead_portion_count": 6,
+        "text_contains": "Вы мчались по пустынным ночным улицам",
+        "instead_text_contains": "Вы мчались по пустынным ночным улицам",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "road-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 5,
+          "nlbnavigator": 5
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "14-road-final-portion.png",
+      "visual_change_from": "road-page",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 5,
+        "portion_count": 6,
+        "instead_portion_index": 5,
+        "instead_portion_count": 6,
+        "text_contains": "вы решили туда зайти",
+        "instead_text_contains": "вы решили туда зайти",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-entry",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "15-truckers-bar-entry.png",
+      "visual_change_from": "road-final-portion",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2,
+        "text_contains": "Усевшись за столик",
+        "instead_text_contains": "Усевшись за столик",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "16-truckers-bar-final-portion.png",
+      "visual_change_from": "truckers-bar-entry",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2,
+        "text_contains": "за столик подсел бородатый мужик",
+        "instead_text_contains": "за столик подсел бородатый мужик",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-greeting",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "17-truckers-bar-greeting.png",
+      "visual_change_from": "truckers-bar-final-portion",
+      "expect": {
+        "page_id": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+        "image_suffix": "7.png",
+        "instead_background_suffix": "images/7.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "Доброго вам утречка",
+        "instead_text_contains": "Доброго вам утречка",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "wolfiness-zero-dialogue-outcome",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "18-wolfiness-zero-dialogue-outcome.png",
+      "visual_change_from": "truckers-bar-greeting",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Здравствуйте",
+        "instead_text_contains": "Здравствуйте",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3
+        }
+      }
     }
   ],
   "notes": [
