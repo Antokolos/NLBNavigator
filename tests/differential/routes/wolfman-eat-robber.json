@@ -339,6 +339,226 @@
           "hp": 2
         }
       }
+    },
+    {
+      "id": "zoo-escape-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 10,
+          "nlbnavigator": 10
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "12-zoo-escape-final-portion.png",
+      "visual_change_from": "11-wolfiness-positive-outcome",
+      "expect": {
+        "page_id": "30f2da3a-76a3-40b2-84f0-41714eb48ae4",
+        "image_suffix": "1.5.png",
+        "instead_background_suffix": "images/1.5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 10,
+        "portion_count": 11,
+        "instead_portion_index": 10,
+        "instead_portion_count": 11,
+        "text_contains": "других полицейских на своём пути не встретили",
+        "instead_text_contains": "других полицейских на своём пути не встретили",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "road-page",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "13-road-page.png",
+      "visual_change_from": "zoo-escape-final-portion",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 6,
+        "instead_portion_index": 0,
+        "instead_portion_count": 6,
+        "text_contains": "Вы мчались по пустынным ночным улицам",
+        "instead_text_contains": "Вы мчались по пустынным ночным улицам",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "road-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 5,
+          "nlbnavigator": 5
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "14-road-final-portion.png",
+      "visual_change_from": "road-page",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 5,
+        "portion_count": 6,
+        "instead_portion_index": 5,
+        "instead_portion_count": 6,
+        "text_contains": "вы решили туда зайти",
+        "instead_text_contains": "вы решили туда зайти",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-entry",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "15-truckers-bar-entry.png",
+      "visual_change_from": "road-final-portion",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2,
+        "text_contains": "Усевшись за столик",
+        "instead_text_contains": "Усевшись за столик",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "16-truckers-bar-final-portion.png",
+      "visual_change_from": "truckers-bar-entry",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2,
+        "text_contains": "за столик подсел бородатый мужик",
+        "instead_text_contains": "за столик подсел бородатый мужик",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "truckers-bar-greeting",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "17-truckers-bar-greeting.png",
+      "visual_change_from": "truckers-bar-final-portion",
+      "expect": {
+        "page_id": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+        "image_suffix": "7.png",
+        "instead_background_suffix": "images/7.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1,
+        "text_contains": "Доброго вам утречка",
+        "instead_text_contains": "Доброго вам утречка",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "wolfiness-positive-dialogue-outcome",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "18-wolfiness-positive-dialogue-outcome.png",
+      "visual_change_from": "truckers-bar-greeting",
+      "expect": {
+        "page_id": "b2f0838e-3068-4850-ad2f-4944075de38b",
+        "image_suffix": "8.png",
+        "instead_background_suffix": "images/8.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вам не хотелось общаться",
+        "instead_text_contains": "Вам не хотелось общаться",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 2
+        }
+      }
     }
   ],
   "notes": [
