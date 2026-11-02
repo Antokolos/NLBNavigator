@@ -668,8 +668,8 @@
           "y_ratio": 0.27
         },
         "nlbnavigator": {
-          "x_ratio": 0.13,
-          "y_ratio": 0.12
+          "x_ratio": 0.26,
+          "y_ratio": 0.22
         }
       },
       "settle_ms": 2500,

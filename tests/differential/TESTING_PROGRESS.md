@@ -92,8 +92,7 @@ Artifact:
 
 ## 6. Confirmed discrepancy: VN paragraph pagination on wolfman page 8
 
-Status: observed, reproducible in the pinned revisions; Issue created during this stage. See the issue link on the PR/repository Issues page; search by title:
-`VN pagination differs on long paragraphs (wolfman page 8: 15 vs 17 portions)`.
+Status: observed, reproducible in the pinned revisions; Issue created during this stage. Issue #37: https://github.com/Antokolos/NLBNavigator/issues/37 — `VN pagination differs on long paragraphs (wolfman page 8: 15 vs 17 portions)`.
 
 Affected page:
 - UUID: `b2f0838e-3068-4850-ad2f-4944075de38b`
@@ -118,7 +117,7 @@ Root evidence:
 In `tests/differential/routes/wolfman-eat-robber.json`:
 - checkpoint `wolfiness-positive-final-portion` now expects NLB portion index 16/count 17, while INSTEAD remains index 14/count 15;
 - NLB route advances 16 times at this point, INSTEAD 14 times;
-- philosopher choice click for NLB is moved into the first visible choice's hit area (ratio x=0.13, y=0.12 at 1920x1080) instead of the previous center-screen click x=0.5/y=0.5.
+- philosopher choice click for NLB is moved into the first visible choice's hit area (ratio x=0.26, y=0.22 at 1920x1080; verified against the generated choice-panel geometry in `GameScreen::renderChoicesScreen` (panel x≈312, first hit-row begins x≈322/y≈228)) instead of the previous center-screen click x=0.5/y=0.5.
 These adjustments are **test-route alignment only**. They do not change engine or story behavior. Their correctness still requires a new CI run.
 
 ## 7. Other wolfman route coverage and remaining validation
@@ -176,3 +175,8 @@ Run the updated wolfman differential workflow from the latest PR branch head. Fi
 - reaches the expected page 9 state (`wolfiness=2`, `hp=3`), page 10 and forest outcome.
 
 Then inspect chase branch and update this journal with actual results.
+
+
+### 2026-11-02 — coordinate hit-zone review
+
+Before the new workflow reached the philosopher choice, source inspection of `GameScreen::renderChoicesScreen()` showed that the first choice hit rectangle begins at approximately (322, 228) on a 1920×1080 surface. The provisional (0.13, 0.12) coordinate was outside that rectangle. It has been corrected to x=0.26/y=0.22 (approximately 499×238), which is inside the first row. The workflow for the preceding commit may be cancelled by this follow-up push; do not treat it as validation of the previous coordinate.
