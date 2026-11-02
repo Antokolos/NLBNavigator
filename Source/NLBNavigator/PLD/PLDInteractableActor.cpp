@@ -81,7 +81,8 @@ void APLDInteractableActor::UpdatePromptPlacement()
     const float Near = FMath::Min(VRPromptDistance, ToObject * 0.8f);
     InteractionWidget->SetWorldLocation(Eye + Dir * Near);
     InteractionWidget->SetWorldRotation((-Dir).Rotation());  // виджет смотрит по +X — на игрока
-    InteractionWidget->SetWorldScale3D(FVector(VRPromptScale * Near / FMath::Max(ToObject, 1.0f)));
+    // размер в поле зрения — постоянный (как экранная подсказка): масштаб задан для VRPromptDistance
+    InteractionWidget->SetWorldScale3D(FVector(VRPromptScale * Near / FMath::Max(VRPromptDistance, 1.0f)));
 }
 
 void APLDInteractableActor::Tick(float DeltaTime)
