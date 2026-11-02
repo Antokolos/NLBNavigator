@@ -56,23 +56,20 @@ void APLDInteractableActor::BeginPlay()
 
 void APLDInteractableActor::UpdatePromptPlacement()
 {
-    // подсказка в мире поверх предмета, как на экране: на луче от центра предмета к глазам, чуть
-    // перед его поверхностью (чтобы предмет её не закрывал), лицом к игроку
-    APlayerCameraManager* Camera = UGameplayStatics::GetPlayerCameraManager(this, 0);
+    // Поверх предмета, как экранная подсказка на ПК. Настоящего «слоя поверх сцены» у виджета в
+    // мире нет (он проверяет глубину), поэтому подсказка — на линии от глаз к центру предмета,
+    // близко к глазам (VRPromptDistance), и уменьшена в той же пропорции: в шлеме она там же и того
+    // же размера, что и на предмете, но ближе всего остального — ни предмет, ни соседи её не закроют
     const FBoxSphereBounds B = MeshComponent->Bounds;
-    FVector Dir = Camera ? (Camera->GetCameraLocation() - B.Origin) : FVector::ForwardVector;
+    APlayerCameraManager* Camera = UGameplayStatics::GetPlayerCameraManager(this, 0);
+    const FVector Eye = Camera ? Camera->GetCameraLocation() : B.Origin - FVector::ForwardVector * 200.0f;
+    FVector Dir = B.Origin - Eye;
+    const float ToObject = Dir.Size();
     if (!Dir.Normalize()) Dir = FVector::ForwardVector;
-    // от центра до грани габарита по этому лучу
-    float ToSurface = B.SphereRadius;
-    for (int32 Axis = 0; Axis < 3; ++Axis)
-    {
-        if (FMath::Abs(Dir[Axis]) > KINDA_SMALL_NUMBER)
-        {
-            ToSurface = FMath::Min(ToSurface, B.BoxExtent[Axis] / FMath::Abs(Dir[Axis]));
-        }
-    }
-    InteractionWidget->SetWorldLocation(B.Origin + Dir * (ToSurface + VRPromptOffset));
-    InteractionWidget->SetWorldRotation(Dir.Rotation());  // виджет смотрит по +X — на игрока
+    const float Near = FMath::Min(VRPromptDistance, ToObject * 0.8f);
+    InteractionWidget->SetWorldLocation(Eye + Dir * Near);
+    InteractionWidget->SetWorldRotation((-Dir).Rotation());  // виджет смотрит по +X — на игрока
+    InteractionWidget->SetWorldScale3D(FVector(VRPromptScale * Near / FMath::Max(ToObject, 1.0f)));
 }
 
 void APLDInteractableActor::Tick(float DeltaTime)
