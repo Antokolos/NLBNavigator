@@ -278,6 +278,8 @@ FReply UNLBScreenWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
         if (bTouch) {  // для разбора журналом: куда попало касание и что рядом
             UE_LOG(LogTemp, Log, TEXT("NLB: касание — %s"), UTF8_TO_TCHAR(Screen->describeHitsNear(P.X, P.Y, 200).c_str()));
         }
+        bTouchPress = InMouseEvent.IsTouchEvent();
+        TouchPointer = InMouseEvent.GetPointerIndex();
         Screen->press(static_cast<float>(P.X), static_cast<float>(P.Y));
         return FReply::Handled().SetUserFocus(TakeWidget(), EFocusCause::Mouse).CaptureMouse(TakeWidget());
     }
@@ -291,12 +293,17 @@ FReply UNLBScreenWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, cons
     if (!InMouseEvent.IsTouchEvent() && InMouseEvent.GetEffectingButton() != EKeys::LeftMouseButton) return FReply::Unhandled();
     const FVector2D P = ToScreen(InGeometry, InMouseEvent.GetScreenSpacePosition());
     if (InMouseEvent.IsTouchEvent()) UE_LOG(LogTemp, Log, TEXT("NLB: касание отпущено у (%.0f, %.0f)"), P.X, P.Y);
+    bTouchPress = false;
     Screen->release(static_cast<float>(P.X), static_cast<float>(P.Y));
     return FReply::Handled().ReleaseMouseCapture();
 }
 
 FReply UNLBScreenWidget::NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) {
     if (!EnsureScreen()) return FReply::Unhandled();
+    // Пока палец прижат — движение только этого касания. На Android Slate присылает и движения
+    // «курсора мыши», который стоит там, где был прошлый палец: их скачок на сотни точек делал из
+    // нажатия перетаскивание (текст дёргался, щелчок по «Далее» терялся при отпускании)
+    if (bTouchPress && (!InMouseEvent.IsTouchEvent() || InMouseEvent.GetPointerIndex() != TouchPointer)) return FReply::Handled();
     const FVector2D P = ToScreen(InGeometry, InMouseEvent.GetScreenSpacePosition());
     Screen->mouseMove(static_cast<float>(P.X), static_cast<float>(P.Y));
     return FReply::Handled();
