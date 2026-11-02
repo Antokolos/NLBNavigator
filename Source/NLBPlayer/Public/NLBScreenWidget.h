@@ -58,6 +58,9 @@ public:
 
 protected:
     bool bDragScroll = true;
+    /// Идёт нажатие пальцем: движение — только этого касания (см. NativeOnMouseMove)
+    bool bTouchPress = false;
+    uint32 TouchPointer = 0;
 
     virtual void NativeOnInitialized() override;
     virtual void NativeConstruct() override;
