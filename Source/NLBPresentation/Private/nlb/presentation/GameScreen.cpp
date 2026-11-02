@@ -1343,7 +1343,7 @@ void GameScreen::renderTextWindow(const ScreenTheme::Window& window) {
     m_drawTop = r.y;
     // плавная прокрутка (колесо, перетаскивание, вписанный первый экран) сдвигает текст не на
     // целые строки — строки у краёв окна видны частично, обрезанные им, как в INSTEAD
-    m_partialLines = !m_scrollByPages && m_scroll > 0;
+    m_partialLines = m_r->clips() && !m_scrollByPages && m_scroll > 0;
     m_drawBottom = r.y + r.h;
     m_firstHiddenY = -1;
     if (showCaption) {
