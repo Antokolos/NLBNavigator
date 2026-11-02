@@ -520,6 +520,23 @@ void GameScreen::wheel(float lines) {
     }
 }
 
+std::string GameScreen::describeHitsNear(float x, float y, float radius) const {
+    static const char* KINDS[] = {"ссылка", "объект", "предмет", "меню", "вверх", "вниз", "кнопка меню", "ещё раз"};
+    char buf[160];
+    std::snprintf(buf, sizeof buf, "точка (%.0f, %.0f), прокрутка %.0f, окно текста y %.0f..%.0f, областей %zu:", x, y, m_scroll,
+                  m_textWindow.y, m_textWindow.y + m_textWindow.h, m_hits.size());
+    std::string out = buf;
+    for (const auto& h : m_hits) {
+        const float dx = std::max({h.rect.x - x, 0.0f, x - (h.rect.x + h.rect.w)});
+        const float dy = std::max({h.rect.y - y, 0.0f, y - (h.rect.y + h.rect.h)});
+        const float d = std::sqrt(dx * dx + dy * dy);
+        if (d > radius) continue;
+        std::snprintf(buf, sizeof buf, " [%s %.0f,%.0f %.0fx%.0f — %.0f]", KINDS[static_cast<int>(h.kind)], h.rect.x, h.rect.y, h.rect.w, h.rect.h, d);
+        out += buf;
+    }
+    return out;
+}
+
 void GameScreen::click(float x, float y, bool rightButton) {
     finishTransition();  // щелчок во время перехода — сразу новый кадр
     if (m_touchSlop > 0 && !rightButton) {

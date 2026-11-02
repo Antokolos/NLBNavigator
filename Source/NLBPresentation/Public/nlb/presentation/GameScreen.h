@@ -109,6 +109,9 @@ public:
     /// Касание: щелчок мимо ссылок засчитывается ближайшей ссылке, предмету или пункту меню не
     /// дальше px точек (палец закрывает ссылку и попадает чуть мимо строки). 0 — точно (мышь)
     void setTouchSlop(float px) { m_touchSlop = px; }
+    /// Для журнала: какие области щелчка рядом с точкой (вид, прямоугольник, расстояние до края)
+    /// и прокрутка текста — чтобы по журналу телефона было видно, куда попало касание
+    std::string describeHitsNear(float x, float y, float radius) const;
     void release(float x, float y);
     void wheel(float lines);                       ///< >0 — вверх (как колесо SDL)
     void key(Key key, int digit = 0);              ///< digit: 1..9 для Key::Digit
