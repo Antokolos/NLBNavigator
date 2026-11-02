@@ -7,9 +7,12 @@
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/variant/node_path.hpp>
 
+#include <godot_cpp/variant/rid.hpp>
+
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "nlb/presentation/GameScreen.h"
 
@@ -61,7 +64,6 @@ public:
     void drawText(const nlb::presentation::FontRef& font, const std::string& text, nlb::presentation::Color c,
                   float x, float y, float alpha) override;
     void setClip(const nlb::presentation::RectF* clip) override;
-    bool clips() const override { return false; }
     bool hasSnapshot() const override { return m_snapshotFresh && m_snapshot.is_valid(); }
     void drawSnapshot(float alpha) override;
 
@@ -79,6 +81,18 @@ private:
     /// Прежний кадр для перехода: область экрана книги из текстуры окна (там ещё последний
     /// показанный кадр). Без изображения (--headless, рендерер-заглушка) — без перехода
     void captureSnapshot();
+    /// Отсечение (setClip): команды рисования идут не в сам узел, а в цепочку дочерних элементов
+    /// канвы RenderingServer по порядку. Каждый setClip начинает следующий элемент: внешний — со
+    /// сдвигом и масштабом экрана книги и (если задано) отсечением по прямоугольнику, внутренний —
+    /// с командами (отсечение потомков в Godot работает всегда). Порядок наложения — draw_index
+    struct Segment { godot::RID outer, inner; };
+    std::vector<Segment> m_segments;
+    size_t m_segmentCount = 0;
+    godot::RID m_canvas;  ///< внутренний элемент текущего сегмента — сюда рисуем
+    float m_layoutScale = 1;
+    godot::Vector2 m_layoutOffset;
+    void beginSegment(const nlb::presentation::RectF* clip);
+    void freeSegments();
 
     godot::NodePath m_playerPath;
     bool m_choicesScreen = false;
