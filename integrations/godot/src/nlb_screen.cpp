@@ -8,6 +8,7 @@
 #include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/theme_db.hpp>
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/viewport_texture.hpp>
@@ -31,7 +32,41 @@ godot::Color col(nlb::presentation::Color c, float alpha) {
 }
 
 NLBScreen::NLBScreen() = default;
-NLBScreen::~NLBScreen() = default;
+NLBScreen::~NLBScreen() { freeSegments(); }
+
+void NLBScreen::freeSegments() {
+    RenderingServer* rs = RenderingServer::get_singleton();
+    if (rs) {
+        for (const Segment& seg : m_segments) {
+            rs->free_rid(seg.inner);
+            rs->free_rid(seg.outer);
+        }
+    }
+    m_segments.clear();
+    m_segmentCount = 0;
+    m_canvas = RID();
+}
+
+void NLBScreen::beginSegment(const RectF* clip) {
+    RenderingServer* rs = RenderingServer::get_singleton();
+    if (m_segmentCount == m_segments.size()) {
+        Segment seg{rs->canvas_item_create(), rs->canvas_item_create()};
+        rs->canvas_item_set_parent(seg.outer, get_canvas_item());
+        rs->canvas_item_set_parent(seg.inner, seg.outer);
+        m_segments.push_back(seg);
+    }
+    const Segment& seg = m_segments[m_segmentCount];
+    rs->canvas_item_clear(seg.inner);
+    rs->canvas_item_set_visible(seg.outer, true);
+    rs->canvas_item_set_draw_index(seg.outer, static_cast<int64_t>(m_segmentCount));
+    // координаты экрана 1920×1080 -> узел: масштаб и поля (layout)
+    rs->canvas_item_set_transform(seg.outer, Transform2D(Vector2(m_layoutScale, 0), Vector2(0, m_layoutScale), m_layoutOffset));
+    if (clip) rs->canvas_item_set_custom_rect(seg.outer, true, Rect2(clip->x, clip->y, clip->w, clip->h));
+    else rs->canvas_item_set_custom_rect(seg.outer, false);
+    rs->canvas_item_set_clip(seg.outer, clip != nullptr);
+    m_canvas = seg.inner;
+    ++m_segmentCount;
+}
 
 void NLBScreen::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_player", "path"), &NLBScreen::set_player);
@@ -93,6 +128,7 @@ bool NLBScreen::ensureScreen() {
 void NLBScreen::_exit_tree() {
     if (NLBPlayer* p = player()) p->set_screen_driven(false);
     m_screen.reset();
+    freeSegments();
 }
 
 void NLBScreen::_process(double delta) {
@@ -154,21 +190,26 @@ void NLBScreen::captureSnapshot() {
 
 void NLBScreen::drawSnapshot(float alpha) {
     if (m_snapshot.is_null()) return;
-    draw_texture_rect(m_snapshot, Rect2(0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H), false, godot::Color(1, 1, 1, alpha));
+    RenderingServer::get_singleton()->canvas_item_add_texture_rect(m_canvas, Rect2(0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H),
+                                                                   m_snapshot->get_rid(), false, godot::Color(1, 1, 1, alpha));
     ++m_drawCount;
 }
 
 void NLBScreen::_draw() {
     if (!m_screen) return;
     m_drawCount = 0;
-    float scale;
-    Vector2 offset;
-    layout(scale, offset);
-    // все команды — в координатах экрана 1920×1080
-    draw_set_transform(offset, 0.0, Vector2(scale, scale));
+    // все команды — в координатах экрана 1920×1080, в элементы канвы сегментов (setClip)
+    layout(m_layoutScale, m_layoutOffset);
+    m_segmentCount = 0;
+    beginSegment(nullptr);
     m_screen->render(*this);
     m_snapshotFresh = false;  // переход начат (или нет) — дальше снимок только рисуется
-    draw_set_transform(Vector2(), 0.0, Vector2(1, 1));
+    // сегменты, не понадобившиеся в этом кадре, — пустые и скрытые
+    RenderingServer* rs = RenderingServer::get_singleton();
+    for (size_t i = m_segmentCount; i < m_segments.size(); ++i) {
+        rs->canvas_item_clear(m_segments[i].inner);
+        rs->canvas_item_set_visible(m_segments[i].outer, false);
+    }
 }
 
 void NLBScreen::_gui_input(const Ref<InputEvent>& event) {
@@ -270,12 +311,13 @@ bool NLBScreen::imageSize(const std::string& path, float& w, float& h) {
 void NLBScreen::drawImage(const std::string& path, const RectF& dst, float alpha) {
     Ref<Texture2D> t = texture(path);
     if (t.is_null()) return;
-    draw_texture_rect(t, Rect2(dst.x, dst.y, dst.w, dst.h), false, godot::Color(1, 1, 1, alpha));
+    RenderingServer::get_singleton()->canvas_item_add_texture_rect(m_canvas, Rect2(dst.x, dst.y, dst.w, dst.h), t->get_rid(), false,
+                                                                   godot::Color(1, 1, 1, alpha));
     ++m_drawCount;
 }
 
 void NLBScreen::fillRect(const RectF& r, nlb::presentation::Color c) {
-    draw_rect(Rect2(r.x, r.y, r.w, r.h), col(c, 1.0f), true);
+    RenderingServer::get_singleton()->canvas_item_add_rect(m_canvas, Rect2(r.x, r.y, r.w, r.h), col(c, 1.0f));
     ++m_drawCount;
 }
 
@@ -297,10 +339,11 @@ void NLBScreen::drawText(const FontRef& ref, const std::string& text, nlb::prese
     Ref<Font> f = font(ref);
     // GameScreen задаёт верх строки, Godot рисует от базовой линии
     const float baseline = y + static_cast<float>(f->get_ascent(static_cast<int>(ref.size)));
-    draw_string(f, Vector2(x, baseline), s(text), HORIZONTAL_ALIGNMENT_LEFT, -1, static_cast<int>(ref.size), col(c, alpha));
+    f->draw_string(m_canvas, Vector2(x, baseline), s(text), HORIZONTAL_ALIGNMENT_LEFT, -1, static_cast<int>(ref.size), col(c, alpha));
     ++m_drawCount;
 }
 
-void NLBScreen::setClip(const RectF*) {
-    // Отсечения нет (clips() = false): GameScreen рисует в окне текста только целые строки
+void NLBScreen::setClip(const RectF* clip) {
+    // следующие команды — в новый сегмент: с отсечением по clip или без него
+    beginSegment(clip);
 }
