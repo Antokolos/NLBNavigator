@@ -721,7 +721,11 @@
         "instead_text_contains": "Основательно подкрепившись",
         "variables": {
           "wolfiness": 2,
-          "hp": 3
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": false,
+          "guardDone": false
         }
       }
     },
@@ -753,7 +757,11 @@
         "instead_text_contains": "вы решили свернуть в лес",
         "variables": {
           "wolfiness": 2,
-          "hp": 3
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": false,
+          "guardDone": false
         }
       }
     },
@@ -785,7 +793,11 @@
         "instead_text_contains": "запах так и манил вас направо",
         "variables": {
           "wolfiness": 2,
-          "hp": 3
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": false,
+          "guardDone": false
         }
       }
     }

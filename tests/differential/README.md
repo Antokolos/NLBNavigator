@@ -127,7 +127,7 @@ State-log NLBNavigator проверяется через `tools/check_state_log.
 
 ## Проверка состояния после каждой команды
 
-NLBNavigator запускается с `--state-log` и `--state-vars wolfiness,hp`.
+NLBNavigator запускается с `--state-log` и `--state-vars wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone`. Для INSTEAD та же четвёрка флагов записывается в trace под именами без подчёркивания.
 После прогона `tools/check_state_log.py` проверяет JSONL и точное число команд;
 каждый checkpoint привязан к собственной записи после `shot:`, а текст берётся из
 `portion.visible` либо из `model.pageText/reactionText`, но не из общего журнала

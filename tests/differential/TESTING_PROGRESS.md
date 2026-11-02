@@ -179,7 +179,7 @@ For every new chat or after a context reset:
 ## 10. Current next action
 
 1. Read `tests/differential/WOLFMAN_BRANCH_MAP.md` before authoring a new route.
-2. Verify NLB runtime availability for the additional variables `barExit`, `forestExit`, `wolvesTalk`, `guardDone`; extend the INSTEAD TSV trace/parser and the `--state-vars` list together only after confirming exact variable scope.
+2. Verify the newly added NLB state-log and INSTEAD trace fields for `barExit`, `forestExit`, `wolvesTalk`, `guardDone` in the current CI. The route checkpoints after page 10, forest entry and pages 16/17 assert `barExit=true`, with the other three false.
 3. Author a minimal route for page16 left/right (and the matching low-wolfiness page17 choices) with explicit semantic assertions. Run each in both engines.
 4. Then add traveler, guard, weapon and ending paths; keep each clean route small enough to diagnose.
 5. Append the resulting SHA/CI/coverage changes here after every material stage.
@@ -196,3 +196,12 @@ PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explici
 - Issue #37 remains open for the known 15-versus-17 portion split on page8.
 - Static source exploration expanded the story map through page41/page42 and found the police/hospital route; details are in `WOLFMAN_BRANCH_MAP.md`. These downstream paths are not yet runtime-tested.
 - NLB source variable names confirmed: `barExit`, `guardDone`, `forestExit`, `wolvesTalk` (plus `hp`, `wolfiness`). Runtime state-log still records only `hp,wolfiness`.
+
+
+### 2026-11-02 — state telemetry expansion (awaiting CI)
+
+- Added `barExit`, `forestExit`, `wolvesTalk`, `guardDone` to NLB `--state-vars` alongside `wolfiness,hp`.
+- Extended INSTEAD trace TSV from 20 to 24 columns with the same four flags; updated parser columns.
+- Updated INSTEAD expected-value handling so JSON booleans compare against lowercase Lua `true/false` strings.
+- Added the expected flags to page10, forest-entry, and page16/page17 terminal checkpoints in both routes: `barExit=true`, `forestExit=false`, `wolvesTalk=false`, `guardDone=false`.
+- Updated README and branch map. The current code commit must be followed by CI; do not mark telemetry verified until state logs/trace and both comparisons pass.

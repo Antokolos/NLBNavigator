@@ -749,7 +749,11 @@
         "instead_text_contains": "Основательно подкрепившись",
         "variables": {
           "wolfiness": 0,
-          "hp": 3
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": false,
+          "guardDone": false
         }
       }
     },
@@ -781,7 +785,11 @@
         "instead_text_contains": "вы решили свернуть в лес",
         "variables": {
           "wolfiness": 0,
-          "hp": 3
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": false,
+          "guardDone": false
         }
       }
     },
@@ -813,7 +821,11 @@
         "instead_text_contains": "масса разнообразных запахов",
         "variables": {
           "wolfiness": 0,
-          "hp": 3
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": false,
+          "guardDone": false
         }
       }
     }

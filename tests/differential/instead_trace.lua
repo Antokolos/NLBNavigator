@@ -105,16 +105,17 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
     local fields = {
         sequence, kind, command, arguments, rendered, page_id, location_name, room_name,
         screen_kind, page_name, background, portion_index, portion_count, more,
-        room_text, action_text, objects_text, player_text, _wolfiness, _hp
+        room_text, action_text, objects_text, player_text, _wolfiness, _hp,
+        _barExit, _forestExit, _wolvesTalk, _guardDone
     }
     local encoded = {}
     -- Numeric iteration preserves empty fields when a Lua value is nil.
-    for index = 1, 20 do encoded[index] = encode_field(fields[index]) end
+    for index = 1, 24 do encoded[index] = encode_field(fields[index]) end
     trace:write(table.concat(encoded, "\t") .. "\n")
     trace:flush()
 end
 
-trace:write("# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\n")
+trace:write("# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\tbarExit\tforestExit\twolvesTalk\tguardDone\n")
 trace:flush()
 
 -- Keep iface.fmt as a secondary diagnostic source for STANDARD exports.

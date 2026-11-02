@@ -322,7 +322,8 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                 ))
             for variable, value in expected.get("variables", {}).items():
                 actual = record.get("wolfiness" if variable == "wolfiness" else "hp" if variable == "hp" else variable)
-                if actual != str(value):
+                expected_value = ("true" if value else "false") if isinstance(value, bool) else str(value)
+                if actual != expected_value:
                     errors.append("{}: INSTEAD переменная {}={}, ожидалось {}".format(
                         step["id"], variable, actual, value
                     ))
@@ -469,7 +470,7 @@ def run_nlbnavigator(args, route, output_dir):
         "--window", "{}x{}".format(window["width"], window["height"]),
         "--script", str(script_path.resolve()),
         "--state-log", str(state_log_path.resolve()),
-        "--state-vars", "wolfiness,hp",
+        "--state-vars", "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone",
     ]
     environment = dict(os.environ)
     environment["SDL_AUDIODRIVER"] = "dummy"
@@ -664,6 +665,7 @@ def read_instead_trace(path):
         "location_id", "room_id", "screen_kind", "page_name", "background",
         "portion_index", "portion_count", "more", "room_text", "action_text",
         "objects_text", "player_text", "wolfiness", "hp",
+        "barExit", "forestExit", "wolvesTalk", "guardDone",
     ]
     records = []
     with path.open("r", encoding="utf-8", errors="replace") as source:
