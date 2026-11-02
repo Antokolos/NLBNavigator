@@ -9,6 +9,8 @@
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/theme_db.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/viewport_texture.hpp>
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/core/class_db.hpp>
 
@@ -38,6 +40,9 @@ void NLBScreen::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_choices_screen"), &NLBScreen::get_choices_screen);
     ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "player", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "NLBPlayer"), "set_player", "get_player");
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "choices_screen"), "set_choices_screen", "get_choices_screen");
+    ClassDB::bind_method(D_METHOD("set_transitions", "on"), &NLBScreen::set_transitions);
+    ClassDB::bind_method(D_METHOD("get_transitions"), &NLBScreen::get_transitions);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "transitions"), "set_transitions", "get_transitions");
     ClassDB::bind_method(D_METHOD("next_page"), &NLBScreen::next_page);
     ClassDB::bind_method(D_METHOD("is_choices_screen_shown"), &NLBScreen::is_choices_screen_shown);
     ClassDB::bind_method(D_METHOD("get_draw_count"), &NLBScreen::get_draw_count);
@@ -65,6 +70,7 @@ bool NLBScreen::ensureScreen() {
     // VN — всегда экран вариантов (как paginator в VN-INSTEAD), Standard — по свойству choices_screen
     o.choicesScreen = p->session()->exportMode() == PlayerEngine::ExportMode::VN || m_choicesScreen;
     o.soundAvailable = true;
+    o.transitions = m_transitions;
     o.clock = [] { return static_cast<uint64_t>(Time::get_singleton()->get_ticks_msec()); };
     m_screen = std::make_unique<GameScreen>(*p->session(), o);
     // события, которые забирает экран, — в сигналы NLBPlayer (игра слушает их)
@@ -92,6 +98,9 @@ void NLBScreen::_exit_tree() {
 void NLBScreen::_process(double delta) {
     if (Engine::get_singleton()->is_editor_hint() || !ensureScreen()) return;
     m_screen->update(static_cast<int>(delta * 1000.0));
+    // переход начинается на следующем кадре: текстура окна ещё хранит прежний кадр (смена страницы —
+    // по вводу в _gui_input или по времени в update выше)
+    if (m_screen->needsSnapshot()) captureSnapshot();
     if (m_screen->quitRequested()) {
         m_screen->clearQuitRequest();
         emit_signal("quit_requested");
@@ -112,6 +121,43 @@ Vector2 NLBScreen::toScreen(const Vector2& local) const {
     return scale > 0 ? (local - offset) / scale : Vector2();
 }
 
+void NLBScreen::captureSnapshot() {
+    m_snapshot.unref();
+    // без окна (--headless) кадров нет — переход не нужен
+    if (DisplayServer::get_singleton()->get_name() == "headless") return;
+    Viewport* viewport = get_viewport();
+    if (!viewport) return;
+    Ref<ViewportTexture> vt = viewport->get_texture();
+    if (vt.is_null()) return;
+    Ref<Image> image = vt->get_image();
+    if (image.is_null() || image->is_empty()) return;
+    // область экрана книги (1920×1080, вписанная в узел с полями): из координат узла — в координаты
+    // окна (с канвой и её слоями), из них — в пиксели текстуры (при растяжении окна они другого
+    // размера, чем видимая область)
+    float scale;
+    Vector2 offset;
+    layout(scale, offset);
+    const Rect2 visible = viewport->get_visible_rect();
+    if (scale <= 0 || visible.size.x <= 0 || visible.size.y <= 0) return;
+    const Vector2 ratio(image->get_width() / visible.size.x, image->get_height() / visible.size.y);
+    const Transform2D xf = get_global_transform_with_canvas();
+    const Vector2 a = (xf.xform(offset) - visible.position) * ratio;
+    const Vector2 b = (xf.xform(offset + Vector2(GameScreen::SCREEN_W, GameScreen::SCREEN_H) * scale) - visible.position) * ratio;
+    const int x0 = std::max(0, static_cast<int>(std::lround(std::min(a.x, b.x))));
+    const int y0 = std::max(0, static_cast<int>(std::lround(std::min(a.y, b.y))));
+    const int x1 = std::min(image->get_width(), static_cast<int>(std::lround(std::max(a.x, b.x))));
+    const int y1 = std::min(image->get_height(), static_cast<int>(std::lround(std::max(a.y, b.y))));
+    if (x1 - x0 < 2 || y1 - y0 < 2) return;
+    m_snapshot = ImageTexture::create_from_image(image->get_region(Rect2i(x0, y0, x1 - x0, y1 - y0)));
+    m_snapshotFresh = m_snapshot.is_valid();
+}
+
+void NLBScreen::drawSnapshot(float alpha) {
+    if (m_snapshot.is_null()) return;
+    draw_texture_rect(m_snapshot, Rect2(0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H), false, godot::Color(1, 1, 1, alpha));
+    ++m_drawCount;
+}
+
 void NLBScreen::_draw() {
     if (!m_screen) return;
     m_drawCount = 0;
@@ -121,6 +167,7 @@ void NLBScreen::_draw() {
     // все команды — в координатах экрана 1920×1080
     draw_set_transform(offset, 0.0, Vector2(scale, scale));
     m_screen->render(*this);
+    m_snapshotFresh = false;  // переход начат (или нет) — дальше снимок только рисуется
     draw_set_transform(Vector2(), 0.0, Vector2(1, 1));
 }
 
@@ -255,5 +302,5 @@ void NLBScreen::drawText(const FontRef& ref, const std::string& text, nlb::prese
 }
 
 void NLBScreen::setClip(const RectF*) {
-    // GameScreen сам рисует в окне текста только целые строки, отдельное отсечение не нужно
+    // Отсечения нет (clips() = false): GameScreen рисует в окне текста только целые строки
 }
