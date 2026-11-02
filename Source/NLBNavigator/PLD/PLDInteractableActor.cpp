@@ -3,6 +3,8 @@
 #include "NLBNavigatorCharacter.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
+#include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
 
 APLDInteractableActor::APLDInteractableActor()
 {
@@ -61,8 +63,18 @@ void APLDInteractableActor::UpdatePromptPlacement()
     // близко к глазам (VRPromptDistance), и уменьшена в той же пропорции: в шлеме она там же и того
     // же размера, что и на предмете, но ближе всего остального — ни предмет, ни соседи её не закроют
     const FBoxSphereBounds B = MeshComponent->Bounds;
-    APlayerCameraManager* Camera = UGameplayStatics::GetPlayerCameraManager(this, 0);
-    const FVector Eye = Camera ? Camera->GetCameraLocation() : B.Origin - FVector::ForwardVector * 200.0f;
+    // Глаза — камера персонажа: в VR она следует за шлемом каждый кадр. У менеджера камеры место
+    // в VR бывает без смещения шлема — подсказка «у глаз» оказывалась вне поля зрения
+    FVector Eye = B.Origin - FVector::ForwardVector * 200.0f;
+    const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+    if (const UCameraComponent* Cam = Pawn ? Pawn->FindComponentByClass<UCameraComponent>() : nullptr)
+    {
+        Eye = Cam->GetComponentLocation();
+    }
+    else if (APlayerCameraManager* Camera = UGameplayStatics::GetPlayerCameraManager(this, 0))
+    {
+        Eye = Camera->GetCameraLocation();
+    }
     FVector Dir = B.Origin - Eye;
     const float ToObject = Dir.Size();
     if (!Dir.Normalize()) Dir = FVector::ForwardVector;
@@ -138,6 +150,12 @@ void APLDInteractableActor::ShowInteractionWidget(bool bShow)
         if (bVR)
         {
             UpdatePromptPlacement();
+            // для разбора по журналу (adb logcat -s UE): где подсказка, её масштаб и где камера
+            const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+            const UCameraComponent* Cam = Pawn ? Pawn->FindComponentByClass<UCameraComponent>() : nullptr;
+            UE_LOG(LogTemp, Log, TEXT("NLB: подсказка VR у %s, масштаб %.3f; камера %s; предмет %s"),
+                   *InteractionWidget->GetComponentLocation().ToString(), InteractionWidget->GetComponentScale().X,
+                   Cam ? *Cam->GetComponentLocation().ToString() : TEXT("нет"), *MeshComponent->Bounds.Origin.ToString());
         }
     }
     InteractionWidget->SetVisibility(bShow);
