@@ -1555,12 +1555,20 @@ void GameScreen::renderEndScreen(const ScreenTheme& t) {
 }
 
 void GameScreen::renderInventory(const ScreenTheme::Window& window) {
-    if (m_screen.inventory.empty()) return;
     const FontRef font = fontFor(window);
     RectF r = window.rect;
     // высота строки — как у текста (inv.fnt.height), слово — по середине строки
     const float px = m_r->pixelScale();
     const float lineHeight = std::floor(m_r->fontHeight(font) * px * window.lineHeight + 1e-3f) / px;
+    if (m_screen.inventory.empty()) {
+        // VN: полоса под инвентарём есть и при пустом инвентаре — там же, где при одной строке
+        // предметов, чтобы низ экрана не менялся, когда появляется первый предмет
+        if (m_screen.layout == Layout::VisualNovel) {
+            const float top = r.y + lineHeight > SCREEN_H ? std::max(0.0f, SCREEN_H - lineHeight) : r.y;
+            m_r->fillRect({0, top, SCREEN_W, SCREEN_H - top}, {0, 0, 0, 255});
+        }
+        return;
+    }
     const float textOffset = std::floor((lineHeight - m_r->fontHeight(font)) * px / 2) / px;
     // Предметы в строку разделяются « | », как hinv_delim в INSTEAD (game.gui)
     const bool horizontal = m_standardTheme.inventoryHorizontal;
@@ -1636,8 +1644,8 @@ void GameScreen::renderInventory(const ScreenTheme::Window& window) {
         rowW += (rows.back().empty() ? 0 : gap) + it.w;
         rows.back().push_back(it);
     }
-    // VN: под инвентарём — сплошная чёрная полоса до низа экрана, иначе подписи предметов
-    // теряются на картинке сцены. Крупный текст (размер текста) не уходит за низ экрана: строки
+    // VN: под инвентарём — сплошная чёрная полоса до низа экрана (и при пустом инвентаре), иначе
+    // подписи предметов теряются на картинке сцены. Крупный текст (размер текста) не уходит за низ экрана: строки
     // предметов поднимаются, и полоса вместе с ними
     if (m_screen.layout == Layout::VisualNovel) {
         const float need = lineHeight * static_cast<float>(rows.size());
