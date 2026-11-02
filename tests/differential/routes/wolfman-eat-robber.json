@@ -568,7 +568,7 @@
         "y_ratio": 0.5,
         "clicks": {
           "instead": 14,
-          "nlbnavigator": 14
+          "nlbnavigator": 16
         }
       },
       "settle_ms": 2000,
@@ -580,8 +580,8 @@
         "instead_background_suffix": "images/8.jpg",
         "screen": "page",
         "instead_screen_kind": "page",
-        "portion_index": 14,
-        "portion_count": 15,
+        "portion_index": 16,
+        "portion_count": 17,
         "instead_portion_index": 14,
         "instead_portion_count": 15,
         "text_contains": "где и заснули под мерное гудение пчёл",
@@ -668,8 +668,8 @@
           "y_ratio": 0.27
         },
         "nlbnavigator": {
-          "x_ratio": 0.5,
-          "y_ratio": 0.5
+          "x_ratio": 0.13,
+          "y_ratio": 0.12
         }
       },
       "settle_ms": 2500,
