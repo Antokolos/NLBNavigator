@@ -62,6 +62,11 @@ public:
 	bool SetVRMode(bool bEnable, FString& OutError);
 	UFUNCTION(BlueprintCallable, Category = "VR")
 	bool IsVRMode() const;
+
+	/// Подсказка над предметом для текущего устройства: ПК — клавиша, назначенная действию
+	/// «взаимодействовать» (как настроено во вводе, с переназначениями игрока), телефон — кнопка
+	/// «Действие» на экране, VR — курок
+	FString GetInteractPrompt() const;
 	UNLBVRModeComponent* GetVRMode() const { return VRMode; }
 
 	/** Книга: путь от каталога проекта или абсолютный (пусто — по умолчанию контроллера,

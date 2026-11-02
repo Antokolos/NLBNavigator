@@ -30,6 +30,8 @@
 #include "NLBVRModeComponent.h"
 #include "NLBPauseMenuWidget.h"
 #include "NLBTouchControlsComponent.h"
+#include "Internationalization/Culture.h"
+#include "Internationalization/Internationalization.h"
 #include "NLBNavigatorWeaponComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -469,6 +471,38 @@ void ANLBNavigatorCharacter::EnableCharacterInput()
 		}
 	}
 	UpdateTouchControls();
+}
+
+FString ANLBNavigatorCharacter::GetInteractPrompt() const
+{
+	// язык подписей — язык системы (как у экранных кнопок)
+	const bool bRu = FInternationalization::Get().GetCurrentLanguage()->GetTwoLetterISOLanguageName() == TEXT("ru");
+	const FString Verb = bRu ? TEXT("взаимодействовать") : TEXT("Interact");
+	if (IsVRMode())
+	{
+		return (bRu ? TEXT("Курок: ") : TEXT("Trigger: ")) + Verb;
+	}
+	if (UNLBTouchControlsComponent::IsTouchDevice())
+	{
+		return bRu ? TEXT("Действие") : TEXT("Action");  // как подпись экранной кнопки
+	}
+	// клавиша из раскладки ввода; с клавиатуры и мыши — в первую очередь
+	FKey Shown;
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputSubsystem())
+	{
+		if (InteractAction)
+		{
+			for (const FKey& Key : Subsystem->QueryKeysMappedToAction(InteractAction))
+			{
+				if (!Shown.IsValid() || (Shown.IsGamepadKey() && !Key.IsGamepadKey()))
+				{
+					Shown = Key;
+				}
+			}
+		}
+	}
+	const FString KeyName = Shown.IsValid() ? Shown.GetDisplayName(/*bLongDisplayName*/ false).ToString() : TEXT("E");
+	return KeyName + TEXT(": ") + Verb;
 }
 
 UEnhancedInputLocalPlayerSubsystem* ANLBNavigatorCharacter::GetEnhancedInputSubsystem() const
