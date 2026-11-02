@@ -32,6 +32,7 @@
 #include "nlb/util/FileUtils.h"
 
 #include <map>
+#include <vector>
 
 using namespace nlb::presentation;
 
@@ -52,6 +53,7 @@ public:
     explicit FNLBSlateRenderer(UNLBScreenWidget* InOwner) : Owner(InOwner) {}
 
     void Begin(const FGeometry& InGeometry, FSlateWindowElementList& InElements, int32 InLayer) {
+        Current.clear();  // команды нового кадра
         Geometry = &InGeometry;
         Elements = &InElements;
         Layer = InLayer;
@@ -74,7 +76,34 @@ public:
         return true;
     }
 
+    // ---- переход между сценами (dissolve). Slate рисует списком элементов, а не в текстуру, поэтому
+    // «снимок кадра» — список команд рисования прошлого кадра: drawSnapshot повторяет их поверх
+    // нового кадра с прозрачностью alpha (как gfx_change_screen INSTEAD накладывает кадры)
+
+    /// Перед кадром, если GameScreen::needsSnapshot(): прежний кадр — снимок
+    void TakeSnapshot() { Snapshot = Current; }
+    bool hasSnapshot() const override { return !Snapshot.empty(); }
+    void drawSnapshot(float Alpha) override {
+        bReplaying = true;
+        for (const FCommand& C : Snapshot) {
+            switch (C.Kind) {
+                case FCommand::EKind::Image: drawImage(C.Text, C.Rect, C.Alpha * Alpha); break;
+                case FCommand::EKind::Rect: {
+                    Color Faded = C.Col;
+                    Faded.a = static_cast<uint8_t>(FMath::RoundToInt(C.Col.a * Alpha));
+                    fillRect(C.Rect, Faded);
+                    break;
+                }
+                case FCommand::EKind::Text: drawText(C.Font, C.Text, C.Col, C.Rect.x, C.Rect.y, C.Alpha * Alpha); break;
+                case FCommand::EKind::Clip: setClip(C.bHasClip ? &C.Rect : nullptr); break;
+            }
+        }
+        setClip(nullptr);
+        bReplaying = false;
+    }
+
     void drawImage(const std::string& Path, const RectF& Dst, float Alpha) override {
+        if (!bReplaying) Current.push_back({FCommand::EKind::Image, Path, Dst, {}, {}, Alpha, false});
         UTexture2D* T = Owner->TextureFor(S(Path));
         if (!T || !Elements) return;
         FSlateBrush& Brush = Brushes[Path];
@@ -87,6 +116,7 @@ public:
     }
 
     void fillRect(const RectF& R, Color C) override {
+        if (!bReplaying) Current.push_back({FCommand::EKind::Rect, {}, R, C, {}, 1.0f, false});
         if (!Elements) return;
         FSlateDrawElement::MakeBox(*Elements, ++Layer, Paint(R), FCoreStyle::Get().GetBrush("WhiteBrush"),
                                    ESlateDrawEffect::None, ToLinear(C, 1.0f));
@@ -104,6 +134,7 @@ public:
     }
 
     void drawText(const FontRef& Font, const std::string& Text, Color C, float X, float Y, float Alpha) override {
+        if (!bReplaying && !Text.empty()) Current.push_back({FCommand::EKind::Text, Text, {X, Y, 0, 0}, C, Font, Alpha, false});
         if (!Elements || Text.empty()) return;
         const FString T = S(Text);
         const FSlateFontInfo& Info = FontInfo(Font);
@@ -113,6 +144,7 @@ public:
     }
 
     void setClip(const RectF* Clip) override {
+        if (!bReplaying) Current.push_back({FCommand::EKind::Clip, {}, Clip ? *Clip : RectF{}, {}, {}, 1.0f, Clip != nullptr});
         if (!Elements) return;
         if (bClip) { Elements->PopClip(); bClip = false; }
         if (Clip) {
@@ -164,6 +196,20 @@ private:
     bool bClip = false;
     std::map<std::string, FSlateBrush> Brushes;
     std::map<FontRef, FSlateFontInfo> Fonts;
+
+    /// Команда рисования кадра (для снимка перехода)
+    struct FCommand {
+        enum class EKind : uint8 { Image, Rect, Text, Clip };
+        EKind Kind;
+        std::string Text;   ///< путь картинки или текст
+        RectF Rect;         ///< куда; у текста — x, y
+        Color Col;
+        FontRef Font;
+        float Alpha;
+        bool bHasClip;
+    };
+    std::vector<FCommand> Current, Snapshot;
+    bool bReplaying = false;
 };
 
 void FNLBGameScreenDeleter::operator()(GameScreen* P) const { delete P; }
@@ -251,6 +297,7 @@ int32 UNLBScreenWidget::NativePaint(const FPaintArgs& Args, const FGeometry& All
     if (!Screen || !Renderer) return Layer;
     // GameScreen хранит состояние кадра (области щелчков, эффекты) — рисование меняет его
     UNLBScreenWidget* Self = const_cast<UNLBScreenWidget*>(this);
+    if (Self->Screen->needsSnapshot()) Self->Renderer->TakeSnapshot();  // переход: прежний кадр — снимок
     Self->Renderer->Begin(AllottedGeometry, OutDrawElements, Layer);
     Self->Screen->render(*Self->Renderer);
     return Self->Renderer->End();
