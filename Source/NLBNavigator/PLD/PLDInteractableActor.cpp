@@ -56,16 +56,23 @@ void APLDInteractableActor::BeginPlay()
 
 void APLDInteractableActor::UpdatePromptPlacement()
 {
-    // подсказка в мире: над верхом предмета, по центру, лицом к глазам игрока
+    // подсказка в мире поверх предмета, как на экране: на луче от центра предмета к глазам, чуть
+    // перед его поверхностью (чтобы предмет её не закрывал), лицом к игроку
     APlayerCameraManager* Camera = UGameplayStatics::GetPlayerCameraManager(this, 0);
     const FBoxSphereBounds B = MeshComponent->Bounds;
-    const FVector At = B.Origin + FVector(0, 0, B.BoxExtent.Z + VRPromptLift);
-    InteractionWidget->SetWorldLocation(At);
-    if (Camera)
+    FVector Dir = Camera ? (Camera->GetCameraLocation() - B.Origin) : FVector::ForwardVector;
+    if (!Dir.Normalize()) Dir = FVector::ForwardVector;
+    // от центра до грани габарита по этому лучу
+    float ToSurface = B.SphereRadius;
+    for (int32 Axis = 0; Axis < 3; ++Axis)
     {
-        const FVector ToEye = Camera->GetCameraLocation() - At;
-        InteractionWidget->SetWorldRotation(FRotator(0, ToEye.Rotation().Yaw, 0));  // виджет смотрит по +X
+        if (FMath::Abs(Dir[Axis]) > KINDA_SMALL_NUMBER)
+        {
+            ToSurface = FMath::Min(ToSurface, B.BoxExtent[Axis] / FMath::Abs(Dir[Axis]));
+        }
     }
+    InteractionWidget->SetWorldLocation(B.Origin + Dir * (ToSurface + VRPromptOffset));
+    InteractionWidget->SetWorldRotation(Dir.Rotation());  // виджет смотрит по +X — на игрока
 }
 
 void APLDInteractableActor::Tick(float DeltaTime)
@@ -118,7 +125,7 @@ void APLDInteractableActor::ShowInteractionWidget(bool bShow)
             bPromptInWorld = bVR;
             InteractionWidget->SetWidgetSpace(bVR ? EWidgetSpace::World : EWidgetSpace::Screen);
             InteractionWidget->SetTwoSided(bVR);
-            InteractionWidget->SetPivot(FVector2D(0.5f, 1.0f));  // низ подсказки — над предметом
+            InteractionWidget->SetPivot(FVector2D(0.5f, 0.5f));
             if (bVR)
             {
                 InteractionWidget->SetWorldScale3D(FVector(VRPromptScale));
@@ -129,7 +136,6 @@ void APLDInteractableActor::ShowInteractionWidget(bool bShow)
                 InteractionWidget->SetRelativeScale3D(FVector(1));
                 InteractionWidget->SetRelativeRotation(FRotator::ZeroRotator);
                 InteractionWidget->SetRelativeLocation(MeshComponent->Bounds.BoxExtent);
-                InteractionWidget->SetPivot(FVector2D(0.5f, 0.5f));
             }
         }
         if (bVR)

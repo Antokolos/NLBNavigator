@@ -30,9 +30,9 @@ public:
     /// VR: масштаб подсказки в мире (сантиметров на точку виджета)
     UPROPERTY(EditAnywhere, Category = "Interaction")
     float VRPromptScale = 0.12f;
-    /// VR: насколько выше верха предмета подсказка, см
+    /// VR: насколько перед поверхностью предмета (к игроку) подсказка, см
     UPROPERTY(EditAnywhere, Category = "Interaction")
-    float VRPromptLift = 12.0f;
+    float VRPromptOffset = 3.0f;
 
 private:
     /// Подсказка в мире (VR): экранная подсказка проецируется по одному «глазу» и в шлеме видна
