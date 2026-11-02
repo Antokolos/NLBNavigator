@@ -118,22 +118,32 @@ In `tests/differential/routes/wolfman-eat-robber.json`:
 - checkpoint `wolfiness-positive-final-portion` now expects NLB portion index 16/count 17, while INSTEAD remains index 14/count 15;
 - NLB route advances 16 times at this point, INSTEAD 14 times;
 - philosopher choice click for NLB is moved into the first visible choice's hit area (ratio x=0.26, y=0.22 at 1920x1080; verified against the generated choice-panel geometry in `GameScreen::renderChoicesScreen` (panel x≈312, first hit-row begins x≈322/y≈228)) instead of the previous center-screen click x=0.5/y=0.5.
-These adjustments are **test-route alignment only**. They do not change engine or story behavior. Their correctness still requires a new CI run.
+These adjustments are **test-route alignment only**; they do not change engine or story behavior. Their correctness is now confirmed by CI #41408858828 (run 113): both extended INSTEAD and NLBNavigator branches completed, and both comparisons passed with `errors: []`.
 
-## 7. Other wolfman route coverage and remaining validation
+## 7. Current confirmed wolfman coverage and remaining validation
 
-At the current stage, the extended JSON routes contain:
-- eat-robber route: 26 checkpoints, from title/opening through page 8, philosopher choice, page 10 and the `wolfiness > 1` forest outcome (page 16).
-- chase-robber route: 27 checkpoints, from title/opening through page 12, kitchen choice, page 10 and the `wolfiness <= 1` forest outcome (page 17).
+The latest successful run for the current branch head is CI #41408858828 (run 113):
+https://github.com/Antokolos/NLBNavigator/actions/runs/41408858828
 
-Do not claim these extended NLB branches are fully tested until a current CI run passes both.
-After the corrected eat route:
-1. Inspect the new CI result and artifacts.
-2. Confirm the philosopher selection actually changes state to the expected page and variables.
-3. Inspect the NLB chase run; do not assume its portion count matches INSTEAD.
-4. Fix any further route alignment/input problems one at a time.
-5. Compare both branches only after both runtimes pass; verify report `errors: []` and state-log validation.
-6. Inspect remaining choices in wolfman and expand branch coverage until every reachable branch/ending is covered or explicitly marked unsupported/unreachable with evidence.
+- HEAD: `9df55828fea027e7c7d7a2085f19a3756a799fdb`.
+- Workflow: **success**, 25/25 steps.
+- Build, setup, shared opening route, all four extended runs (eat/chase in both engines), both comparisons, and INSTEAD export validation passed.
+- eat: 26 checkpoints in each engine; chase: 27 checkpoints in each engine.
+- INSTEAD route reports and NLBNavigator route reports all have `ok: true`, `errors: []`.
+- Comparison reports: eat 26 paired checkpoints and chase 27; both `ok: true`, `errors: []`. Cross-renderer pixel metrics remain advisory.
+- NLBNavigator state-log validation: eat **121 records**, chase **118 records**. Both files validate successfully.
+- Verified end checkpoints: eat page 16 (`wolfiness=2`, `hp=3`); chase page 17 (`wolfiness=0`, `hp=3`).
+- Artifact `nlb-sdl-test-logs`, ID `13125976222`, available from the CI run (12.8 MB). It contains route reports, state logs, trace TSV, progress files, screenshots and comparison outputs.
+
+The route configs still have **26 / 27 checkpoints**. They do not yet choose left/right on page16/page17 and do not cover downstream forest, traveler, guard, weapon, hospital or ending branches. Static source graph and the next route matrix are documented in `tests/differential/WOLFMAN_BRANCH_MAP.md`.
+
+Remaining:
+1. Add focused paired routes for the first forest decisions and confirm each action in the trace.
+2. Extend state telemetry to `barExit`, `forestExit`, `wolvesTalk`, `guardDone` after verifying active module variable visibility.
+3. Add hospital/police branch and positive-wolfiness kitchen alternative.
+4. Cover the traveler choices, guard decisions, weapons and all terminal endings.
+5. Add achievement capture and page36 tagged-background verification.
+6. Resolve Issue #37's pagination contract separately; don't hide the 15/17 difference or turn it into a pixel gate.
 
 ## 8. Issue #28 and broader suite
 
@@ -168,15 +178,21 @@ For every new chat or after a context reset:
 
 ## 10. Current next action
 
-Run the updated wolfman differential workflow from the latest PR branch head. First inspect whether the eat route now:
-- reaches page 8 final portion at NLB index 16/count 17 and INSTEAD index 14/count 15;
-- reaches page 13 choice screen;
-- selects `Съесть философа` using the adjusted coordinate;
-- reaches the expected page 9 state (`wolfiness=2`, `hp=3`), page 10 and forest outcome.
+1. Read `tests/differential/WOLFMAN_BRANCH_MAP.md` before authoring a new route.
+2. Verify NLB runtime availability for the additional variables `barExit`, `forestExit`, `wolvesTalk`, `guardDone`; extend the INSTEAD TSV trace/parser and the `--state-vars` list together only after confirming exact variable scope.
+3. Author a minimal route for page16 left/right (and the matching low-wolfiness page17 choices) with explicit semantic assertions. Run each in both engines.
+4. Then add traveler, guard, weapon and ending paths; keep each clean route small enough to diagnose.
+5. Append the resulting SHA/CI/coverage changes here after every material stage.
 
-Then inspect chase branch and update this journal with actual results.
+PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explicit approval.
 
+### 2026-11-02 — successful extended differential run
 
-### 2026-11-02 — coordinate hit-zone review
-
-Before the new workflow reached the philosopher choice, source inspection of `GameScreen::renderChoicesScreen()` showed that the first choice hit rectangle begins at approximately (322, 228) on a 1920×1080 surface. The provisional (0.13, 0.12) coordinate was outside that rectangle. It has been corrected to x=0.26/y=0.22 (approximately 499×238), which is inside the first row. The workflow for the preceding commit may be cancelled by this follow-up push; do not treat it as validation of the previous coordinate.
+- CI #41408858828 (run 113), HEAD `9df55828fea027e7c7d7a2085f19a3756a799fdb`: **success, 25/25 steps**.
+- Both extended routes passed in INSTEAD and NLBNavigator. Eat: 26 checkpoints / 121 NLB state-log records. Chase: 27 checkpoints / 118 NLB state-log records.
+- Both comparison reports: `ok=true`, `errors=[]`; pixel metrics advisory.
+- Final checkpoints agree: page16 / `wolfiness=2,hp=3`; page17 / `wolfiness=0,hp=3`.
+- Artifact ID `13125976222` (`nlb-sdl-test-logs`).
+- Issue #37 remains open for the known 15-versus-17 portion split on page8.
+- Static source exploration expanded the story map through page41/page42 and found the police/hospital route; details are in `WOLFMAN_BRANCH_MAP.md`. These downstream paths are not yet runtime-tested.
+- NLB source variable names confirmed: `barExit`, `guardDone`, `forestExit`, `wolvesTalk` (plus `hp`, `wolfiness`). Runtime state-log still records only `hp,wolfiness`.
