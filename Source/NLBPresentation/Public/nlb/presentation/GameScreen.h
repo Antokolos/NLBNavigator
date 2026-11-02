@@ -106,6 +106,9 @@ public:
     /// прокруткой перетаскиванием, а не щелчком. Мышь — 8 (как в INSTEAD), касание — больше
     /// (палец дрожит сильнее), луч VR — 0: перетаскивания нет, щелчок при отпускании
     void setDragThreshold(float px) { m_dragThreshold = px; }
+    /// Касание: щелчок мимо ссылок засчитывается ближайшей ссылке, предмету или пункту меню не
+    /// дальше px точек (палец закрывает ссылку и попадает чуть мимо строки). 0 — точно (мышь)
+    void setTouchSlop(float px) { m_touchSlop = px; }
     void release(float x, float y);
     void wheel(float lines);                       ///< >0 — вверх (как колесо SDL)
     void key(Key key, int digit = 0);              ///< digit: 1..9 для Key::Digit
@@ -262,6 +265,7 @@ private:
     void startTransition();
     void finishTransition() { m_transitionPending = m_transitionActive = false; }
     float m_dragThreshold = 8;
+    float m_touchSlop = 0;
     bool m_pressed = false, m_dragging = false;  ///< левая кнопка нажата в окне текста; тянут текст
     float m_pressX = 0, m_pressY = 0, m_dragY = 0;
     size_t m_voicedPortion = SIZE_MAX;  ///< порция, на которой уже запущена фраза озвучки
