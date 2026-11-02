@@ -274,6 +274,7 @@ FReply UNLBScreenWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
         // устройству: Slate может отдать его виджету как событие мыши
         const bool bTouch = InMouseEvent.IsTouchEvent() || FPlatformMisc::GetUseVirtualJoysticks();
         Screen->setDragThreshold(!bDragScroll ? 0.0f : bTouch ? 96.0f : 8.0f);
+        Screen->setTouchSlop(bTouch ? 56.0f : 0.0f);  // палец мимо строки — к ближайшей ссылке
         if (bTouch) UE_LOG(LogTemp, Log, TEXT("NLB: касание у (%.0f, %.0f)"), P.X, P.Y);  // для разбора журналом
         Screen->press(static_cast<float>(P.X), static_cast<float>(P.Y));
         return FReply::Handled().SetUserFocus(TakeWidget(), EFocusCause::Mouse).CaptureMouse(TakeWidget());

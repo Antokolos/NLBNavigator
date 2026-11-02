@@ -522,6 +522,26 @@ void GameScreen::wheel(float lines) {
 
 void GameScreen::click(float x, float y, bool rightButton) {
     finishTransition();  // щелчок во время перехода — сразу новый кадр
+    if (m_touchSlop > 0 && !rightButton) {
+        // касание мимо: к ближайшей ссылке/предмету/пункту меню в пределах m_touchSlop
+        bool inside = false;
+        for (const auto& h : m_hits) {
+            if (h.kind != Hit::Kind::ScrollUp && h.kind != Hit::Kind::ScrollDown && contains(h.rect, x, y)) { inside = true; break; }
+        }
+        if (!inside) {
+            float best = m_touchSlop;
+            float bx = x, by = y;
+            for (const auto& h : m_hits) {
+                if (h.kind == Hit::Kind::ScrollUp || h.kind == Hit::Kind::ScrollDown) continue;
+                const float dx = std::max({h.rect.x - x, 0.0f, x - (h.rect.x + h.rect.w)});
+                const float dy = std::max({h.rect.y - y, 0.0f, y - (h.rect.y + h.rect.h)});
+                const float d = std::sqrt(dx * dx + dy * dy);
+                if (d < best) { best = d; bx = h.rect.x + h.rect.w / 2; by = h.rect.y + h.rect.h / 2; }
+            }
+            x = bx;
+            y = by;
+        }
+    }
     if (m_menu == Menu::Message) {
         m_menu = Menu::None;
         if (m_screen.externalGame) m_session.finishExternalGame();
