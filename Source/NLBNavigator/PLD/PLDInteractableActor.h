@@ -43,4 +43,10 @@ private:
     /// в стороне от предмета
     bool bPromptInWorld = false;
     void UpdatePromptPlacement();
+
+    /// Подсказка для VR — отдельный виджет в мире, созданный сразу в World space (как панель книги,
+    /// которая в шлеме видна). Переключение экранного виджета в World на ходу в шлеме не рисовалось
+    UPROPERTY(Transient)
+    UWidgetComponent* VRPromptWidget = nullptr;
+    UWidgetComponent* EnsureVRPrompt();
 };

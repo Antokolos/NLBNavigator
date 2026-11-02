@@ -79,16 +79,20 @@ void APLDInteractableActor::UpdatePromptPlacement()
     const float ToObject = Dir.Size();
     if (!Dir.Normalize()) Dir = FVector::ForwardVector;
     const float Near = FMath::Min(VRPromptDistance, ToObject * 0.8f);
-    InteractionWidget->SetWorldLocation(Eye + Dir * Near);
-    InteractionWidget->SetWorldRotation((-Dir).Rotation());  // виджет смотрит по +X — на игрока
+    if (!VRPromptWidget)
+    {
+        return;
+    }
+    VRPromptWidget->SetWorldLocation(Eye + Dir * Near);
+    VRPromptWidget->SetWorldRotation((-Dir).Rotation());  // виджет смотрит по +X — на игрока
     // размер в поле зрения — постоянный (как экранная подсказка): масштаб задан для VRPromptDistance
-    InteractionWidget->SetWorldScale3D(FVector(VRPromptScale * Near / FMath::Max(VRPromptDistance, 1.0f)));
+    VRPromptWidget->SetWorldScale3D(FVector(VRPromptScale * Near / FMath::Max(VRPromptDistance, 1.0f)));
 }
 
 void APLDInteractableActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if (bPromptInWorld && InteractionWidget && InteractionWidget->IsVisible())
+    if (bPromptInWorld && VRPromptWidget && VRPromptWidget->IsVisible())
     {
         UpdatePromptPlacement();
     }
@@ -115,50 +119,62 @@ void APLDInteractableActor::Interact(AActor* Interactor)
     }
 }
 
+UWidgetComponent* APLDInteractableActor::EnsureVRPrompt()
+{
+    if (VRPromptWidget || !InteractionWidget)
+    {
+        return VRPromptWidget;
+    }
+    VRPromptWidget = NewObject<UWidgetComponent>(this, TEXT("VRPromptWidget"));
+    VRPromptWidget->SetUsingAbsoluteLocation(true);
+    VRPromptWidget->SetUsingAbsoluteRotation(true);
+    VRPromptWidget->SetUsingAbsoluteScale(true);
+    VRPromptWidget->SetWidgetSpace(EWidgetSpace::World);  // до регистрации — как панель книги
+    VRPromptWidget->SetWidgetClass(InteractionWidget->GetWidgetClass());
+    VRPromptWidget->SetDrawAtDesiredSize(true);
+    VRPromptWidget->SetPivot(FVector2D(0.5f, 0.5f));
+    VRPromptWidget->SetTwoSided(true);
+    VRPromptWidget->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    VRPromptWidget->SetGenerateOverlapEvents(false);
+    VRPromptWidget->SetCastShadow(false);
+    VRPromptWidget->SetupAttachment(RootComponent);
+    VRPromptWidget->RegisterComponent();
+    VRPromptWidget->InitWidget();
+    VRPromptWidget->SetVisibility(false);
+    return VRPromptWidget;
+}
+
 void APLDInteractableActor::ShowInteractionWidget(bool bShow)
 {
     if (!InteractionWidget)
     {
         return;
     }
-    if (bShow)
+    // подсказка и место — по текущему устройству (VR включается и выключается во время игры)
+    const ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+    const bool bVR = Character && Character->IsVRMode();
+    bPromptInWorld = bVR;
+    UWidgetComponent* Shown = bVR ? EnsureVRPrompt() : InteractionWidget;
+    if (bShow && Shown)
     {
-        // подсказка и место — по текущему устройству (VR включается и выключается во время игры)
-        const ANLBNavigatorCharacter* Character = Cast<ANLBNavigatorCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-        const bool bVR = Character && Character->IsVRMode();
-        if (UPLDInteractionWidget* Widget = Cast<UPLDInteractionWidget>(InteractionWidget->GetUserWidgetObject()))
+        if (UPLDInteractionWidget* Widget = Cast<UPLDInteractionWidget>(Shown->GetUserWidgetObject()))
         {
             Widget->UpdateText(Character ? Character->GetInteractPrompt() : FString(TEXT("E: Interact")));
-        }
-        if (bVR != bPromptInWorld)
-        {
-            bPromptInWorld = bVR;
-            InteractionWidget->SetWidgetSpace(bVR ? EWidgetSpace::World : EWidgetSpace::Screen);
-            InteractionWidget->SetTwoSided(bVR);
-            InteractionWidget->SetPivot(FVector2D(0.5f, 0.5f));
-            if (bVR)
-            {
-                InteractionWidget->SetWorldScale3D(FVector(VRPromptScale));
-            }
-            else
-            {
-                // экран: как прежде — в углу габарита предмета, в масштабе экрана
-                InteractionWidget->SetRelativeScale3D(FVector(1));
-                InteractionWidget->SetRelativeRotation(FRotator::ZeroRotator);
-                InteractionWidget->SetRelativeLocation(MeshComponent->Bounds.BoxExtent);
-            }
         }
         if (bVR)
         {
             UpdatePromptPlacement();
-            // для разбора по журналу (adb logcat -s UE): где подсказка, её масштаб и где камера
-            const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-            const UCameraComponent* Cam = Pawn ? Pawn->FindComponentByClass<UCameraComponent>() : nullptr;
-            UE_LOG(LogTemp, Log, TEXT("NLB: подсказка VR у %s, масштаб %.3f; камера %s; предмет %s"),
-                   *InteractionWidget->GetComponentLocation().ToString(), InteractionWidget->GetComponentScale().X,
-                   Cam ? *Cam->GetComponentLocation().ToString() : TEXT("нет"), *MeshComponent->Bounds.Origin.ToString());
+            // для разбора по журналу (adb logcat -s UE): где подсказка, её масштаб и есть ли виджет
+            UE_LOG(LogTemp, Log, TEXT("NLB: подсказка VR у %s, масштаб %.3f, виджет %s"),
+                   *Shown->GetComponentLocation().ToString(), Shown->GetComponentScale().X,
+                   Shown->GetUserWidgetObject() ? TEXT("есть") : TEXT("НЕТ"));
         }
     }
-    InteractionWidget->SetVisibility(bShow);
-    SetActorTickEnabled(bShow && bPromptInWorld);
+    // видна только подсказка текущего устройства
+    InteractionWidget->SetVisibility(bShow && !bVR);
+    if (VRPromptWidget)
+    {
+        VRPromptWidget->SetVisibility(bShow && bVR);
+    }
+    SetActorTickEnabled(bShow && bVR);
 }
