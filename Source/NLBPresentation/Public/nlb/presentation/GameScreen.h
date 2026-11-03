@@ -97,6 +97,12 @@ public:
     /// Перед этим кадром начинается переход: рендерер должен сохранить предыдущий кадр
     /// (IScreenRenderer::hasSnapshot/drawSnapshot)
     bool needsSnapshot() const { return m_transitionPending; }
+    /// Экран темы текущей страницы (scr.w×scr.h, вписанный в 1920×1080): его фронтенд и вписывает
+    /// в окно — как INSTEAD, поля только с одной стороны (у темы 800×600 «Фронтира» — 1440×1080
+    /// посередине). Вне него на экране только рамка темы
+    RectF screenArea() const;
+    /// Цвет вокруг экрана темы (scr.col.brd) — им фронтенд заливает поля окна
+    Color borderColor() const;
 
     // ---- ввод (координаты экрана 1920×1080)
     void mouseMove(float x, float y);
