@@ -240,3 +240,8 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 [CI #41597493394](https://github.com/Antokolos/NLBNavigator/actions/runs/41597493394), HEAD `5cf6c480b754b934382280ef4209d9f24be8d17d`, failed at the last checkpoint of the first route only. All 27 preceding checkpoints succeeded, including the page16 choices screen and both rendered choice texts. The final click was sent at x=499/y=292; trace recorded the raw click but did not record `act 01`, and no new scene appeared. In the screenshot the cursor sat just beyond the short “Налево” link. This is a test coordinate miss, not evidence of an INSTEAD/NLB gameplay mismatch.
 
 The four route JSONs now use x_ratio=0.23 for INSTEAD direction selection, with y_ratio=0.27 (top row) / 0.36 (second row). Re-run CI before claiming these branches pass.
+
+
+### CI #118 — NLBNavigator choice-panel diagnosis
+
+CI #41599355620 passed all four forest routes in INSTEAD. The first NLBNavigator route failed on `clickchoice:0`: its page16 state-log contains two model choices but the screen is still `page`; the screenshot shows normal page text rather than the choice overlay. In the NLB runtime a single click on the finished VN page is required to trigger `advanceToChoices()` and render the actual choice panel. The four routes now send one reveal click in both INSTEAD and NLBNavigator and expect NLB `screen=choices` before selecting index 0/1. This is a test input/expectation correction, not a gameplay change.

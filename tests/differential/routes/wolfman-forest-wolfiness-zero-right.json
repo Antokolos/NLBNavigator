@@ -837,7 +837,7 @@
         "y_ratio": 0.5,
         "clicks": {
           "instead": 1,
-          "nlbnavigator": 0
+          "nlbnavigator": 1
         }
       },
       "settle_ms": 2000,
@@ -847,7 +847,7 @@
         "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
         "image_suffix": "17.png",
         "instead_background_suffix": "images/17.jpg",
-        "screen": "page",
+        "screen": "choices",
         "instead_screen_kind": "choices",
         "choices_contains": [
           "Налево",

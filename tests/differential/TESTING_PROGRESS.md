@@ -233,3 +233,15 @@ PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explici
 - Artifact ID `13213121943` (`nlb-sdl-test-logs`) contains the full INSTEAD trace, partial trace, progress JSON and the two relevant screenshots.
 - Corrective change: all four page16/page17 direction routes now use `instead.x_ratio=0.23` (screen x≈442 on 1920px width), centered within both short link labels; y remains 0.27 for row 1 and 0.36 for row 2. This correction is test-input-only; no game or source story code changed.
 - New CI on the corrective commit is required before marking any of the four forest routes passed.
+
+
+### 2026-11-03 — CI #118: NLB choice panel not opened
+
+- CI #41599355620 (run 118), HEAD `db531735164e132bf24b74acfb08778bb7385e39`, built successfully and passed setup plus the shared route comparison.
+- All four new forest routes passed in INSTEAD, including both page16 choices and both page17 choices; the INSTEAD right branches reached page24/page25 as expected.
+- The first NLBNavigator route failed at `clickchoice:0`. The last saved NLB state-log record shows page16 and both choices in the model (`Налево`, `Направо`), but `screen=page`; the screenshot has only the VN page text and no choices overlay. Thus the earlier assumption that model choices imply a visible choice panel was wrong.
+- In NLBNavigator, the first click on a completed VN page must call `advanceToChoices()`, which sets `m_showChoices`; only then does `clickchoice:N` find the `Hit::Kind::Choice` rectangle created by `renderChoicesScreen()`.
+- Corrective route-only change: the forest choices reveal checkpoint now clicks once in **both** engines (`advance.clicks.instead=1`, `advance.clicks.nlbnavigator=1`) and expects NLB `screen=choices`; after that the separate `clickchoice:0/1` selects the visible panel option.
+- No story or engine code was changed. The first INSTEAD route input x-coordinate correction remains intact (x_ratio=0.23 only on forest link selections; baseline prefix choices retain original coordinates).
+- CI #118 artifact ID `13215290301` contains NLB page16 choices screenshot/state log, confirming the above diagnosis.
+- The corrected four route configs need a fresh CI before any NLB forest branch is marked passed.

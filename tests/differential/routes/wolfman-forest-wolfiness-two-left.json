@@ -809,7 +809,7 @@
         "y_ratio": 0.5,
         "clicks": {
           "instead": 1,
-          "nlbnavigator": 0
+          "nlbnavigator": 1
         }
       },
       "settle_ms": 2000,
@@ -819,7 +819,7 @@
         "page_id": "3792ac23-4da9-4539-a393-95780a98771a",
         "image_suffix": "16.png",
         "instead_background_suffix": "images/16.jpg",
-        "screen": "page",
+        "screen": "choices",
         "instead_screen_kind": "choices",
         "choices_contains": [
           "Налево",

@@ -167,3 +167,6 @@ Workflow выполняет каждую ветвь отдельно в обои
 
 
 CI #41597493394 (run 116) reached the page16 choice screen successfully in the new `wolfiness=2 / left` route, with both choice texts in the INSTEAD trace. Its final click missed the short “Налево” hit area at x=499; no `act 01` or new scene was recorded. All four route JSONs now use a revised INSTEAD x coordinate ratio of 0.23, centred on the visible links. This is a test-coordinate correction, not a game-code change. A new CI run is required for verification.
+
+
+CI #41599355620 (run 118) confirms all four new direction routes pass in INSTEAD. The first NLB forest route exposed a test assumption: the page model already contains choices, but the separate VN choices panel is not yet displayed. A click is needed in NLBNavigator to open it; the next commit changes all four routes to click once in both runtimes and expect NLB `screen=choices` before using `clickchoice:N`. Thus the NLB direction branches remain pending fresh CI.
