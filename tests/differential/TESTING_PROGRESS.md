@@ -179,7 +179,7 @@ For every new chat or after a context reset:
 ## 10. Current next action
 
 1. Read `tests/differential/WOLFMAN_BRANCH_MAP.md` before authoring a new route.
-2. Verify the newly added NLB state-log and INSTEAD trace fields for `barExit`, `forestExit`, `wolvesTalk`, `guardDone` in the current CI. The route checkpoints after page 10, forest entry and pages 16/17 assert `barExit=true`, with the other three false.
+2. Run the four new forest routes added in this commit. CI #115 already verified the four telemetry flags; the new runs continue to page18/page24/page25 and compare the actual state and content.
 3. Author a minimal route for page16 left/right (and the matching low-wolfiness page17 choices) with explicit semantic assertions. Run each in both engines.
 4. Then add traveler, guard, weapon and ending paths; keep each clean route small enough to diagnose.
 5. Append the resulting SHA/CI/coverage changes here after every material stage.
@@ -205,3 +205,18 @@ PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explici
 - Updated INSTEAD expected-value handling so JSON booleans compare against lowercase Lua `true/false` strings.
 - Added the expected flags to page10, forest-entry, and page16/page17 terminal checkpoints in both routes: `barExit=true`, `forestExit=false`, `wolvesTalk=false`, `guardDone=false`.
 - Updated README and branch map. The current code commit must be followed by CI; do not mark telemetry verified until state logs/trace and both comparisons pass.
+
+
+### 2026-11-03 — CI #115 telemetry verified; forest routes added
+
+- CI #41412052519 (run 115), HEAD `3fe8603a5ffc7e37dad58196af400ec20562cce1`: **SUCCESS, 25/25 steps**.
+- Artifact: `nlb-sdl-test-logs`, ID `13126997642`, 12,789,839 bytes.
+- INSTEAD TSV in both extended branch runs has 24 columns ending with `wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone`.
+- NLB state-log validates: **121 records** (eat) and **118 records** (chase); each record includes all six variables.
+- At page10, forest entry, and page16/page17 terminal checkpoints, both runtimes report:
+  - page16/eat: `wolfiness=2,hp=3,barExit=true,forestExit=false,wolvesTalk=false,guardDone=false`;
+  - page17/chase: `wolfiness=0,hp=3,barExit=true,forestExit=false,wolvesTalk=false,guardDone=false`.
+- Both extended branch reports and both comparison reports have `ok=true`, `errors=[]`. The four flags are verified runtime facts.
+- Added four independent clean-state route configs for page16/page17 left/right. Each replays the matching previously validated robber/bar prefix because each route must launch a separate fresh session.
+- Added runner support for an `advance` action with zero clicks in one runtime, provided the other runtime advances. INSTEAD clicks once to expose its choices overlay; NLBNavigator captures the existing model choices without an extra click.
+- Updated workflow to execute and compare all four routes. New CI is pending.

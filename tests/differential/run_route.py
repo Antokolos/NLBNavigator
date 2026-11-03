@@ -46,10 +46,14 @@ def load_route(path):
                     raise ValueError("Координаты click/advance задаются x_ratio/y_ratio от 0 до 1")
         if action.get("type") == "advance":
             clicks = action.get("clicks", {})
+            counts = {}
             for runtime in ("instead", "nlbnavigator"):
                 count = int(clicks.get(runtime, 0))
-                if count < 1 or count > 100:
-                    raise ValueError("Для advance.clicks.{} нужно значение от 1 до 100".format(runtime))
+                if count < 0 or count > 100:
+                    raise ValueError("Для advance.clicks.{} нужно значение от 0 до 100".format(runtime))
+                counts[runtime] = count
+            if counts["instead"] == 0 and counts["nlbnavigator"] == 0:
+                raise ValueError("advance должен выполнять хотя бы один щелчок в одном из движков")
         if action.get("type") == "select_choice":
             index = int(action.get("index", -1))
             if index < 0 or index > 8:
@@ -405,8 +409,9 @@ def script_for_nlbnavigator(route, output_dir):
             x = round(float(action["x_ratio"]) * width)
             y = round(float(action["y_ratio"]) * height)
             clicks = int(action.get("clicks", {}).get("nlbnavigator", 0))
-            if clicks < 1 or clicks > 100:
-                raise ValueError("advance.clicks.nlbnavigator должен быть от 1 до 100")
+            if clicks < 0 or clicks > 100:
+                raise ValueError("advance.clicks.nlbnavigator должен быть от 0 до 100")
+            # Zero is valid when this runtime already exposes choices on the current page.
             for _ in range(clicks):
                 append_command("click:{},{}".format(x, y))
         elif kind == "select_choice":
@@ -629,8 +634,8 @@ def execute_instead_action(action, window_bounds):
         x = window_x + min(width - 1, round(float(coords["x_ratio"]) * width))
         y = window_y + min(height - 1, round(float(coords["y_ratio"]) * height))
         clicks = int(action.get("clicks", {}).get("instead", 1)) if kind == "advance" else 1
-        if clicks < 1 or clicks > 100:
-            raise ValueError("advance.clicks.instead должен быть от 1 до 100")
+        if clicks < 0 or clicks > 100:
+            raise ValueError("advance.clicks.instead должен быть от 0 до 100")
         for _ in range(clicks):
             # Use absolute X11 screen coordinates; --window can hang with SDL/OpenGL windows.
             move = run_command(

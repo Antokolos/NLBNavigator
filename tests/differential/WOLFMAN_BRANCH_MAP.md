@@ -168,7 +168,7 @@
 - `wolvesTalk`
 - `room` (служебное/маршрутное значение для выбора текущей комнаты/тега).
 
-В актуальной ветке state-log и INSTEAD trace расширяются до `wolfiness`, `hp`, `barExit`, `forestExit`, `wolvesTalk`, `guardDone`. По коду `PlayerContext::ensureBookVars()` переменные вложенных модулей рекурсивно добавляются в единый scope; `PlayerEngine::variableNames()/hasVariable()` позволяют считывать их снаружи. На точках после страницы 10, при входе в лес и на страницах 16/17 маршруты ожидают `barExit=true`, остальные три флага `false`. Это диагностическая телеметрия; её фактическая согласованность ещё должна быть подтверждена CI.
+CI #41412052519 (run 115) подтвердил в обоих runtime, что state-log/INSTEAD trace содержат все шесть переменных. На page10, page15 (forest entry) и page16/page17 значения совпали: `barExit=true`, а `forestExit`, `wolvesTalk`, `guardDone` остаются `false`. Это runtime-подтверждённые значения, не только статические ожидания.
 
 ### Достижения, обнаруженные в экспортном модуле
 
@@ -196,9 +196,17 @@
 
 ## Следующие тестовые маршруты (план)
 
+Четыре ближайших лесных маршрута созданы в текущей ветке:
+- `tests/differential/routes/wolfman-forest-wolfiness-two-left.json`
+- `tests/differential/routes/wolfman-forest-wolfiness-two-right.json`
+- `tests/differential/routes/wolfman-forest-wolfiness-zero-left.json`
+- `tests/differential/routes/wolfman-forest-wolfiness-zero-right.json`
+
+Они включают чистый setup из ранее проверенных ветвей eat/chase и завершаются на page18, page24 или page25. Статус: создано, CI ожидается.
+
 Рекомендуемый порядок, каждый вариант — отдельный clean run в обоих движках:
 
-1. Страница 16: налево/направо; страница 17: налево/направо.
+1. **Добавлены, ожидают CI:** четыре независимых маршрута page16/wolfiness=2 left/right и page17/wolfiness=0 left/right. Left должен вести на page18; right — через page23 к page24 (wolfiness>1, wolvesTalk=true) либо page25 (wolfiness<=1, wolvesTalk=false).
 2. Для пути с `wolvesTalk=true` и `false`: страницы 24/25, затем налево/направо и оба варианта встречи с путником.
 3. Съесть/не съесть путника: подтвердить дельты `wolfiness/hp` и переход к странице 22.
 4. Охранник: информационная ветка и силовая ветка; проверить `guardDone`, соответствующие UUID и достижения.
@@ -214,3 +222,14 @@
 - [PR #32](https://github.com/Antokolos/NLBNavigator/pull/32) — текущий Draft; не сливать без согласования.
 - [Issue #37](https://github.com/Antokolos/NLBNavigator/issues/37) — различие 15/17 порций на странице 8.
 - [Issue #28](https://github.com/Antokolos/NLBNavigator/issues/28) — полное покрытие всех парных книг.
+
+
+## CI #115 — telemetry checkpoint
+
+[CI #41412052519](https://github.com/Antokolos/NLBNavigator/actions/runs/41412052519), HEAD `3fe8603a5ffc7e37dad58196af400ec20562cce1`, completed successfully (25/25 steps). Artifact ID `13126997642`.
+
+- INSTEAD `instead-state.tsv` contains all 24 fields, including the four forest flags.
+- NLBNavigator state-log: 121 rows (eat) and 118 rows (chase); validator reports `ok`.
+- Both engines report identical end states: page16 `wolfiness=2,hp=3,barExit=true,forestExit=false,wolvesTalk=false,guardDone=false`; page17 `wolfiness=0,hp=3,barExit=true,forestExit=false,wolvesTalk=false,guardDone=false`.
+- Both runtime reports and both comparison reports are `ok=true`, `errors=[]`.
+- The four flags are verified observations. The next pending CI covers the new page16/page17 left/right routes.

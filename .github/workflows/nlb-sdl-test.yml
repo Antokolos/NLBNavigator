@@ -39,7 +39,7 @@ jobs:
   build-and-prepare:
     name: Build nlb_sdl and prepare test books
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       GAME_REF: ${{ github.event.inputs.game_ref || '888b4b7a7a564693274f53341728ee9f3b4c2879' }}
       REFERENCE_REF: ${{ github.event.inputs.reference_ref || '5f8cd646905a25800afab46bd2ce17616f0d6494' }}
@@ -144,6 +144,10 @@ jobs:
           python3 -m json.tool tests/differential/routes/wolfman-opening.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-eat-robber.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-chase-robber.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-right.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-left.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-right.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-left.json > /dev/null
           python3 tests/differential/validate_catalog.py
           python3 tests/differential/run_route.py --help
 
@@ -179,75 +183,145 @@ jobs:
             --route tests/differential/routes/wolfman-opening.json \
             --output test-results
 
-      - name: Run eat-robber branch in INSTEAD
+      - name: Run forest wolfiness two left in INSTEAD
         run: |
-          output="test-results/robbery-eat/instead"
+          output="test-results/wolfman-forest-wolfiness-two-left/instead"
           mkdir -p "$output"
           timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
             python3 tests/differential/run_route.py \
               --runtime instead \
-              --route tests/differential/routes/wolfman-eat-robber.json \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-left.json \
               --game test-data/instead-am_i_a_monster_vn \
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
-      - name: Run chase-robber branch in INSTEAD
+      - name: Run forest wolfiness two right in INSTEAD
         run: |
-          output="test-results/robbery-chase/instead"
+          output="test-results/wolfman-forest-wolfiness-two-right/instead"
           mkdir -p "$output"
           timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
             python3 tests/differential/run_route.py \
               --runtime instead \
-              --route tests/differential/routes/wolfman-chase-robber.json \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-right.json \
               --game test-data/instead-am_i_a_monster_vn \
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
-      - name: Run eat-robber branch in NLBNavigator
+      - name: Run forest wolfiness zero left in INSTEAD
         run: |
-          output="test-results/robbery-eat/nlbnavigator"
+          output="test-results/wolfman-forest-wolfiness-zero-left/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-left.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run forest wolfiness zero right in INSTEAD
+        run: |
+          output="test-results/wolfman-forest-wolfiness-zero-right/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-right.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run forest wolfiness two left in NLBNavigator
+        run: |
+          output="test-results/wolfman-forest-wolfiness-two-left/nlbnavigator"
           mkdir -p "$output"
           timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
             env SDL_AUDIODRIVER=dummy \
             python3 tests/differential/run_route.py \
               --runtime nlbnavigator \
               --timeout 240 \
-              --route tests/differential/routes/wolfman-eat-robber.json \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-left.json \
               --player ./build/nlb_sdl \
               --book test-data/wolfman \
               --theme test-data/instead-am_i_a_monster_vn/themes/default \
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
-      - name: Run chase-robber branch in NLBNavigator
+      - name: Run forest wolfiness two right in NLBNavigator
         run: |
-          output="test-results/robbery-chase/nlbnavigator"
+          output="test-results/wolfman-forest-wolfiness-two-right/nlbnavigator"
           mkdir -p "$output"
           timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
             env SDL_AUDIODRIVER=dummy \
             python3 tests/differential/run_route.py \
               --runtime nlbnavigator \
               --timeout 240 \
-              --route tests/differential/routes/wolfman-chase-robber.json \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-right.json \
               --player ./build/nlb_sdl \
               --book test-data/wolfman \
               --theme test-data/instead-am_i_a_monster_vn/themes/default \
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
-      - name: Compare eat-robber branch
+      - name: Run forest wolfiness zero left in NLBNavigator
         run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-eat-robber.json \
-            --output test-results/robbery-eat
+          output="test-results/wolfman-forest-wolfiness-zero-left/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-left.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
 
-      - name: Compare chase-robber branch
+      - name: Run forest wolfiness zero right in NLBNavigator
+        run: |
+          output="test-results/wolfman-forest-wolfiness-zero-right/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-right.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Compare wolfman-forest-wolfiness-two-left
         run: |
           python3 tests/differential/run_route.py \
             --runtime compare \
-            --route tests/differential/routes/wolfman-chase-robber.json \
-            --output test-results/robbery-chase
+            --route tests/differential/routes/wolfman-forest-wolfiness-two-left.json \
+            --output test-results/wolfman-forest-wolfiness-two-left
+
+      - name: Compare wolfman-forest-wolfiness-two-right
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-forest-wolfiness-two-right.json \
+            --output test-results/wolfman-forest-wolfiness-two-right
+
+      - name: Compare wolfman-forest-wolfiness-zero-left
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-forest-wolfiness-zero-left.json \
+            --output test-results/wolfman-forest-wolfiness-zero-left
+
+      - name: Compare wolfman-forest-wolfiness-zero-right
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-forest-wolfiness-zero-right.json \
+            --output test-results/wolfman-forest-wolfiness-zero-right
 
       - name: Validate INSTEAD reference export
         run: |
