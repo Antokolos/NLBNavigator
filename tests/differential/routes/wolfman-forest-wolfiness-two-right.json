@@ -104,7 +104,7 @@
         "type": "select_choice",
         "index": 1,
         "instead": {
-          "x_ratio": 0.23,
+          "x_ratio": 0.28,
           "y_ratio": 0.35
         }
       },
@@ -845,7 +845,7 @@
         "type": "select_choice",
         "index": 1,
         "instead": {
-          "x_ratio": 0.26,
+          "x_ratio": 0.23,
           "y_ratio": 0.36
         }
       },
