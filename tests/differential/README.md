@@ -164,3 +164,6 @@ Workflow выполняет каждую ветвь отдельно в обои
 клика; успешный переход всё равно проверяется по UUID страницы, фрагменту текста
 и игровым переменным. Обычные панели выбора по-прежнему используют
 `select_choice.index` и `clickchoice:N`.
+
+
+CI #41597493394 (run 116) reached the page16 choice screen successfully in the new `wolfiness=2 / left` route, with both choice texts in the INSTEAD trace. Its final click missed the short “Налево” hit area at x=499; no `act 01` or new scene was recorded. All four route JSONs now use a revised INSTEAD x coordinate ratio of 0.23, centred on the visible links. This is a test-coordinate correction, not a game-code change. A new CI run is required for verification.

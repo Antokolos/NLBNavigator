@@ -196,7 +196,7 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 
 ## Следующие тестовые маршруты (план)
 
-Четыре ближайших лесных маршрута созданы в текущей ветке:
+Четыре ближайших лесных маршрута созданы в текущей ветке; после CI #116 координата INSTEAD для двух коротких link labels скорректирована до x_ratio=0.23 (центр hit-area по скриншоту), y_ratio=0.27/0.36:
 - `tests/differential/routes/wolfman-forest-wolfiness-two-left.json`
 - `tests/differential/routes/wolfman-forest-wolfiness-two-right.json`
 - `tests/differential/routes/wolfman-forest-wolfiness-zero-left.json`
@@ -233,3 +233,10 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 - Both engines report identical end states: page16 `wolfiness=2,hp=3,barExit=true,forestExit=false,wolvesTalk=false,guardDone=false`; page17 `wolfiness=0,hp=3,barExit=true,forestExit=false,wolvesTalk=false,guardDone=false`.
 - Both runtime reports and both comparison reports are `ok=true`, `errors=[]`.
 - The four flags are verified observations. The next pending CI covers the new page16/page17 left/right routes.
+
+
+## CI #116 — first forest input diagnosis
+
+[CI #41597493394](https://github.com/Antokolos/NLBNavigator/actions/runs/41597493394), HEAD `5cf6c480b754b934382280ef4209d9f24be8d17d`, failed at the last checkpoint of the first route only. All 27 preceding checkpoints succeeded, including the page16 choices screen and both rendered choice texts. The final click was sent at x=499/y=292; trace recorded the raw click but did not record `act 01`, and no new scene appeared. In the screenshot the cursor sat just beyond the short “Налево” link. This is a test coordinate miss, not evidence of an INSTEAD/NLB gameplay mismatch.
+
+The four route JSONs now use x_ratio=0.23 for INSTEAD direction selection, with y_ratio=0.27 (top row) / 0.36 (second row). Re-run CI before claiming these branches pass.

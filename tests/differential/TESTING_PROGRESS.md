@@ -220,3 +220,16 @@ PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explici
 - Added four independent clean-state route configs for page16/page17 left/right. Each replays the matching previously validated robber/bar prefix because each route must launch a separate fresh session.
 - Added runner support for an `advance` action with zero clicks in one runtime, provided the other runtime advances. INSTEAD clicks once to expose its choices overlay; NLBNavigator captures the existing model choices without an extra click.
 - Updated workflow to execute and compare all four routes. New CI is pending.
+
+
+### 2026-11-03 — CI #116 first forest route: coordinate miss
+
+- CI #41597493394 (run 116), HEAD `5cf6c480b754b934382280ef4209d9f24be8d17d`, failed at step `Run forest wolfiness two left in INSTEAD`. Build, all 11 preparation/validation steps, and the shared route plus screenshot comparison passed.
+- The independent route reached all 27 checkpoints through page16 and correctly recorded the choices screen:
+  - page UUID `3792ac23-4da9-4539-a393-95780a98771a`;
+  - rendered links `<a:act 01>Налево</a>` and `<a:act 02>Направо</a>`;
+  - flags `wolfiness=2,hp=3,barExit=true,forestExit=false,wolvesTalk=false,guardDone=false`.
+- The final click used screen coordinate (499,292), recorded as `click true,1,499,292`, but the trace had no `act 01` and no new scene. The screenshot shows that point just to the right of the short “Налево” hit area; changed pixels were only 614, so it was a click miss, not a game transition.
+- Artifact ID `13213121943` (`nlb-sdl-test-logs`) contains the full INSTEAD trace, partial trace, progress JSON and the two relevant screenshots.
+- Corrective change: all four page16/page17 direction routes now use `instead.x_ratio=0.23` (screen x≈442 on 1920px width), centered within both short link labels; y remains 0.27 for row 1 and 0.36 for row 2. This correction is test-input-only; no game or source story code changed.
+- New CI on the corrective commit is required before marking any of the four forest routes passed.
