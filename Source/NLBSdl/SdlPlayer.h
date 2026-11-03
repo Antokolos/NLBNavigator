@@ -110,6 +110,12 @@ private:
     SDL_Texture* m_snapshot = nullptr;
     bool m_frameValid = false, m_snapshotValid = false;
     void ensureFrameTextures(int w, int h);
+    /// Экран темы (GameScreen::screenArea) — логический размер окна; координаты экрана 1920×1080
+    /// сдвигаются на его начало (m_area.x/y) при рисовании и обратно — для мыши
+    nlb::presentation::RectF m_area{0, 0, 1920, 1080};
+    int m_logicalW = 0, m_logicalH = 0;      ///< логический размер окна и текстур кадра
+    int m_frameLogicalW = 0, m_frameLogicalH = 0;
+    void updateArea();
     std::unique_ptr<nlb::presentation::IMediaSource> m_media;
     std::unique_ptr<nlb::audio::SdlAudioBackend> m_audio;
     std::unique_ptr<nlb::presentation::Session> m_session;

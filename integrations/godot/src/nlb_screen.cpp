@@ -61,9 +61,12 @@ void NLBScreen::beginSegment(const RectF* clip) {
     rs->canvas_item_set_draw_index(seg.outer, static_cast<int64_t>(m_segmentCount));
     // координаты экрана 1920×1080 -> узел: масштаб и поля (layout)
     rs->canvas_item_set_transform(seg.outer, Transform2D(Vector2(m_layoutScale, 0), Vector2(0, m_layoutScale), m_layoutOffset));
-    if (clip) rs->canvas_item_set_custom_rect(seg.outer, true, Rect2(clip->x, clip->y, clip->w, clip->h));
-    else rs->canvas_item_set_custom_rect(seg.outer, false);
-    rs->canvas_item_set_clip(seg.outer, clip != nullptr);
+    // всегда — по экрану темы (за ним — поля узла: рамка 1920×1080 туда не вылезает), с clip — и по нему
+    const RectF a = area();
+    Rect2 r(a.x, a.y, a.w, a.h);
+    if (clip) r = r.intersection(Rect2(clip->x, clip->y, clip->w, clip->h));
+    rs->canvas_item_set_custom_rect(seg.outer, true, r);
+    rs->canvas_item_set_clip(seg.outer, true);
     m_canvas = seg.inner;
     ++m_segmentCount;
 }
@@ -144,10 +147,15 @@ void NLBScreen::_process(double delta) {
     queue_redraw();
 }
 
+RectF NLBScreen::area() const {
+    return m_screen ? m_screen->screenArea() : RectF{0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H};
+}
+
 void NLBScreen::layout(float& scale, Vector2& offset) const {
     const Vector2 size = get_size();
-    scale = std::min(size.x / GameScreen::SCREEN_W, size.y / GameScreen::SCREEN_H);
-    offset = (size - Vector2(GameScreen::SCREEN_W, GameScreen::SCREEN_H) * scale) * 0.5f;
+    const RectF a = area();
+    scale = std::min(size.x / a.w, size.y / a.h);
+    offset = (size - Vector2(a.w, a.h) * scale) * 0.5f - Vector2(a.x, a.y) * scale;
 }
 
 Vector2 NLBScreen::toScreen(const Vector2& local) const {
@@ -167,7 +175,7 @@ void NLBScreen::captureSnapshot() {
     if (vt.is_null()) return;
     Ref<Image> image = vt->get_image();
     if (image.is_null() || image->is_empty()) return;
-    // область экрана книги (1920×1080, вписанная в узел с полями): из координат узла — в координаты
+    // область экрана темы (вписанная в узел с полями): из координат узла — в координаты
     // окна (с канвой и её слоями), из них — в пиксели текстуры (при растяжении окна они другого
     // размера, чем видимая область)
     float scale;
@@ -177,8 +185,9 @@ void NLBScreen::captureSnapshot() {
     if (scale <= 0 || visible.size.x <= 0 || visible.size.y <= 0) return;
     const Vector2 ratio(image->get_width() / visible.size.x, image->get_height() / visible.size.y);
     const Transform2D xf = get_global_transform_with_canvas();
-    const Vector2 a = (xf.xform(offset) - visible.position) * ratio;
-    const Vector2 b = (xf.xform(offset + Vector2(GameScreen::SCREEN_W, GameScreen::SCREEN_H) * scale) - visible.position) * ratio;
+    const RectF ar = area();
+    const Vector2 a = (xf.xform(offset + Vector2(ar.x, ar.y) * scale) - visible.position) * ratio;
+    const Vector2 b = (xf.xform(offset + Vector2(ar.x + ar.w, ar.y + ar.h) * scale) - visible.position) * ratio;
     const int x0 = std::max(0, static_cast<int>(std::lround(std::min(a.x, b.x))));
     const int y0 = std::max(0, static_cast<int>(std::lround(std::min(a.y, b.y))));
     const int x1 = std::min(image->get_width(), static_cast<int>(std::lround(std::max(a.x, b.x))));
@@ -190,7 +199,8 @@ void NLBScreen::captureSnapshot() {
 
 void NLBScreen::drawSnapshot(float alpha) {
     if (m_snapshot.is_null()) return;
-    RenderingServer::get_singleton()->canvas_item_add_texture_rect(m_canvas, Rect2(0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H),
+    const RectF ar = area();
+    RenderingServer::get_singleton()->canvas_item_add_texture_rect(m_canvas, Rect2(ar.x, ar.y, ar.w, ar.h),
                                                                    m_snapshot->get_rid(), false, godot::Color(1, 1, 1, alpha));
     ++m_drawCount;
 }

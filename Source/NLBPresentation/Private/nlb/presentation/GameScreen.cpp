@@ -1798,13 +1798,24 @@ void GameScreen::renderChoicesScreen() {
     }
 }
 
+RectF GameScreen::screenArea() const {
+    return (m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme).screenArea;
+}
+
+Color GameScreen::borderColor() const {
+    return (m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme).border;
+}
+
 void GameScreen::renderOverlayMessages() {
+    // сообщения — внутри экрана темы: окно показывает только его
+    const RectF area = screenArea();
     if (!m_toasts.empty() && now() < m_toastUntil) {
-        float y = 30;
+        float y = area.y + 30;
         for (const auto& t : m_toasts) {
             const float w = textW(scaled(m_options.uiFont), t), h = m_r->fontHeight(scaled(m_options.uiFont));
-            m_r->fillRect({SCREEN_W - w - 70, y - 10, w + 40, h + 20}, SELECTED);
-            m_r->drawText(scaled(m_options.uiFont), t, TEXT, SCREEN_W - w - 50, y, 1.0f);
+            const float right = area.x + area.w;
+            m_r->fillRect({right - w - 70, y - 10, w + 40, h + 20}, SELECTED);
+            m_r->drawText(scaled(m_options.uiFont), t, TEXT, right - w - 50, y, 1.0f);
             y += h + 30;
         }
     } else {
@@ -1814,7 +1825,7 @@ void GameScreen::renderOverlayMessages() {
         // подсказка — на тёмной плашке, чтобы читалась на любом фоне (светлая подложка темы, картинка)
         const std::string hint = tr(static_cast<int>(Ui::ItemSelected));
         const float w = textW(scaled(m_options.smallFont), hint), h = m_r->fontHeight(scaled(m_options.smallFont));
-        const float x = 60, y = SCREEN_H - h - 12;
+        const float x = area.x + 60, y = area.y + area.h - h - 12;
         m_r->fillRect({x - 14, y - 6, w + 28, h + 12}, {0, 0, 0, 190});
         m_r->drawText(scaled(m_options.smallFont), hint, REACTION, x, y, 1.0f);
     }

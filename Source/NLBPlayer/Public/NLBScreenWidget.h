@@ -9,7 +9,7 @@
 
 class UNLBPlayerSubsystem;
 class UTexture2D;
-namespace nlb::presentation { class GameScreen; class Session; }
+namespace nlb::presentation { class GameScreen; class Session; struct RectF; }
 class FNLBSlateRenderer;
 
 struct FNLBGameScreenDeleter { void operator()(nlb::presentation::GameScreen* P) const; };
@@ -29,6 +29,9 @@ class NLBPLAYER_API UNLBScreenWidget : public UUserWidget {
     GENERATED_BODY()
 
 public:
+    /// Масштаб и сдвиг координат экрана 1920×1080 в виджет размера Size: экран темы Area вписан
+    /// с полями (как INSTEAD: поля только с одной стороны)
+    static void Fit(const FVector2D& Size, const nlb::presentation::RectF& Area, float& Scale, FVector2D& Offset);
     /** Варианты отдельным экраном, если книга открыта в режиме Standard. В режиме VN (bVisualNovel
      *  у OpenBook) экран вариантов — родной режим VN-INSTEAD и включается всегда; во время игры
      *  его можно переключить в меню книги */
