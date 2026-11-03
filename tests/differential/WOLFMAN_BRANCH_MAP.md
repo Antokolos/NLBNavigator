@@ -20,22 +20,24 @@
 
 ## Текущий проверенный охват
 
-Последний полный успешный workflow: [CI #41408858828, run 113](https://github.com/Antokolos/NLBNavigator/actions/runs/41408858828), HEAD `9df55828fea027e7c7d7a2085f19a3756a799fdb`.
+Последний полный успешный workflow: [CI #41695602249, run 120](https://github.com/Antokolos/NLBNavigator/actions/runs/41695602249), HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`.
 
-| Маршрут | Контрольные точки | INSTEAD | NLBNavigator | Результат |
-|---|---:|---|---|---|
-| Общий вводный | 7 | `ok=true` | `ok=true` | Сравнение успешно |
-| Съесть грабителя | 26 | `ok=true` | `ok=true` | Сравнение успешно, лесная страница 16 |
-| Прогнать грабителя | 27 | `ok=true` | `ok=true` | Сравнение успешно, лесная страница 17 |
+| Маршрут | INSTEAD | NLBNavigator | Результат |
+|---|---|---|---|
+| Общий вводный и две ветви грабителя/бара | `ok=true` | `ok=true` | Сравнения успешны |
+| Лес / путник (4 clean-state варианта) | `ok=true` | `ok=true` | Все 4 сравнения `ok=true` |
 
-Для обоих расширенных маршрутов comparison report содержит `errors: []`; междвижковая pixel-diff метрика остаётся advisory. Текстовые проверки: 21 для eat и 22 для chase. State-log прошёл валидацию: 121 запись для eat и 118 для chase.
+В CI #120 восемь forest runtime reports и четыре comparison reports имеют `errors=[]`; текстовые проверки — 24–26 на маршрут; state-log прошёл валидацию на 139, 151, 136 и 139 строках.
 
-Подтверждённые конечные контрольные состояния:
+Подтверждённые конечные состояния (INSTEAD и NLBNavigator совпали):
+- wolfiness=2, page18 → page19 → съесть путника → page20 UUID `0d9f5052-9f0a-4a5d-892b-05d8ac7f713f`, `images/20.jpg`, `wolfiness=3,hp=4`;
+- wolfiness=2, page24 / встреча со стаей → page19 → не есть → page21 UUID `db1bdcfc-0184-46ea-8194-d7cdbbf3b8fb`, `images/21.jpg`, `wolfiness=2,hp=3,wolvesTalk=true`;
+- wolfiness=0, page18 → page19 → не есть → page21, `wolfiness=0,hp=3,wolvesTalk=false`;
+- wolfiness=0, page25 / волки обойдены → page19 → съесть путника → page20, `wolfiness=1,hp=4,wolvesTalk=false`.
 
-- Ветка eat: страница 16, UUID `3792ac23-4da9-4539-a393-95780a98771a`, фон `images/16.jpg` / `16.png`, `wolfiness=2`, `hp=3`.
-- Ветка chase: страница 17, UUID `58180cad-f8db-42f7-a04a-994e1c56f991`, фон `images/17.jpg` / `17.png`, `wolfiness=0`, `hp=3`.
+Во всех случаях `barExit=true,forestExit=false,guardDone=false`. Page16/page17 направления, приводящие к page18/page24/page25, подтверждены CI #119. Междвижковые пиксельные различия — advisory.
 
-Это **не полное прохождение**: текущие маршруты заканчиваются на страницах 16 и 17 и ещё не выбирают направление в лесу.
+Следующий CI должен проверить четыре правых поворота на page18/24/25: обход путника → page22 и `forestExit=true`. До успешного CI page22 не входит в runtime-подтверждённое покрытие.
 
 ### Известное отличие пагинации
 
@@ -80,9 +82,9 @@
 - `wolfiness > 1` → страница 16.
 - `wolfiness <= 1` → страница 17.
 
-Все четыре варианта выбора на страницах 16/17 теперь проверены CI #119 в обоих движках и в cross-runtime comparisons: page16/17 → налево → page18; page16 → направо → page23 → page24 при wolfiness=2; page17 → направо → page23 → page25 при wolfiness=0. На page24 подтверждён флаг `wolvesTalk=true`; на page25 — `false`. Следующий этап — выбор на страницах 18/24/25 и обе ветви встречи с путником.
+CI #119 подтвердил направления page16/page17. CI #120 подтвердил четыре левых маршрута от page18/page24/page25 через page19 с одним из двух исходов путника на page20/page21. Съесть путника увеличивает `wolfiness` и `hp` на 1; отказ не меняет их. Четыре правых bypass-маршрута к page22 с `forestExit=true` добавлены и ожидают CI.
 
-### 4. Лесные развилки и путь к путнику (ветви page16/page17 подтверждены CI #119)
+### 4. Лесные развилки и путь к путнику (page16/page17 — CI #119; путник — CI #120)
 
 Страницы:
 - 16: UUID `3792ac23-4da9-4539-a393-95780a98771a`, текстовая подсказка «Запах так и манил направо».
@@ -196,26 +198,18 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 
 ## Следующие тестовые маршруты (план)
 
-Четыре лесных маршрута page16/page17 прошли CI #119. Координата INSTEAD для коротких link labels скорректирована до x_ratio=0.23 (центр hit-area по скриншоту), y_ratio=0.27/0.36. В текущем обновлении те же clean-state маршруты расширены до page19 и выбора путника:
-- `tests/differential/routes/wolfman-forest-wolfiness-two-left.json`
-- `tests/differential/routes/wolfman-forest-wolfiness-two-right.json`
-- `tests/differential/routes/wolfman-forest-wolfiness-zero-left.json`
-- `tests/differential/routes/wolfman-forest-wolfiness-zero-right.json`
+Добавлены четыре clean-state маршрута правого поворота:
+- `tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json`
+- `tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json`
+- `tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json`
+- `tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json`
+Каждый проверяет обход путника, page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, фон `22.png` / `images/22.jpg`, текст и `forestExit=true`. Следующий CI должен подтвердить все маршруты в INSTEAD, NLBNavigator и comparisons.
 
-Каждый маршрут повторяет ранее проверенный clean setup и теперь проверяет входную лесную ветвь, левый поворот к page19, оба отображаемых варианта путника и один из двух исходов на page20/page21. Статус нового продолжения: ожидает CI; не считать новые шаги runtime-подтверждёнными заранее.
-
-Рекомендуемый порядок, каждый вариант — отдельный clean run в обоих движках:
-
-1. **Подтверждено CI #119:** четыре независимых маршрута page16/page17 left/right, включая соответствующие переходы на page18/page24/page25, с совпадающими UUID, текстовыми checkpoint и игровыми переменными в обоих движках.
-2. **Текущий этап ожидает CI:** на страницах 18/24/25 проверить левый поворот к page19, отображение выбора путника и обе опции: съесть / не есть. Следом добавить отдельные правые повороты к page22 и проверить `forestExit=true`.
-3. Съесть/не съесть путника: подтвердить дельты `wolfiness/hp` и переход к странице 22.
-4. Охранник: информационная ветка и силовая ветка; проверить `guardDone`, соответствующие UUID и достижения.
-5. Выбор оружия: боярышник, рябина, калина; отдельно проверить список доступных вариантов при `wolfiness=0` и при `wolfiness=1`.
-6. Покрыть концовки 34, 37, 38, 39, 41 и 42, проверяя фон/ресурсы, текст, UUID, `wolfiness/hp` и достижения.
-7. Отдельно пройти альтернативу полиции/больницы и альтернативу кухни при положительной волчности.
-8. Сопоставить фактическое множество достижений и tagged background страницы 36.
-
-Не объединять в один тест все возможные состояния. Сначала сделать короткий маршрут на каждый новый выбор, проверить trace и переменные, затем строить минимальные независимые пути до концовок.
+Затем продолжить через лесной модуль к охраннику:
+- high wolfiness + `wolvesTalk=true` → page27 / `INFO_FOR_GUARD`;
+- high wolfiness + `wolvesTalk=false` → page28 / `GUARD_NOT_A_PROBLEM`;
+- low wolfiness → page1.8;
+позже — выбор оружия и концовки. Статический граф не считать выполненным тестом.
 
 ## Связанные задачи
 

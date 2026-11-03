@@ -40,7 +40,7 @@ Pinned source inputs from `tests/differential/catalog.json`:
 
 ## 3. Test infrastructure already present
 
-- `.github/workflows/nlb-sdl-test.yml`: builds `nlb_sdl`, prepares pinned story/export/theme, validates definitions, runs opening and two extended wolfman routes in both runtimes, compares reports and uploads diagnostics.
+- `.github/workflows/nlb-sdl-test.yml`: builds `nlb_sdl`, prepares pinned story/export/theme, validates definitions, runs the shared opening route, robber/bar routes and independent forest/traveler/bypass routes in both runtimes, compares reports and uploads diagnostics.
 - `tests/differential/run_route.py`: common route runner/adapters and comparisons.
 - `tests/differential/instead_trace.lua`: test-only INSTEAD adapter; wraps outer `iface.cmd`; uses isolated overlay and per-run `-appdata`.
 - `tests/differential/catalog.json`: pinned source catalog.
@@ -122,28 +122,22 @@ These adjustments are **test-route alignment only**; they do not change engine o
 
 ## 7. Current confirmed wolfman coverage and remaining validation
 
-The latest successful run for the current branch head is CI #41408858828 (run 113):
-https://github.com/Antokolos/NLBNavigator/actions/runs/41408858828
+Latest successful baseline before this route expansion: CI #41695602249 (run 120), HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`:
+https://github.com/Antokolos/NLBNavigator/actions/runs/41695602249
 
-- HEAD: `9df55828fea027e7c7d7a2085f19a3756a799fdb`.
-- Workflow: **success**, 25/25 steps.
-- Build, setup, shared opening route, all four extended runs (eat/chase in both engines), both comparisons, and INSTEAD export validation passed.
-- eat: 26 checkpoints in each engine; chase: 27 checkpoints in each engine.
-- INSTEAD route reports and NLBNavigator route reports all have `ok: true`, `errors: []`.
-- Comparison reports: eat 26 paired checkpoints and chase 27; both `ok: true`, `errors: []`. Cross-renderer pixel metrics remain advisory.
-- NLBNavigator state-log validation: eat **121 records**, chase **118 records**. Both files validate successfully.
-- Verified end checkpoints: eat page 16 (`wolfiness=2`, `hp=3`); chase page 17 (`wolfiness=0`, `hp=3`).
-- Artifact `nlb-sdl-test-logs`, ID `13125976222`, available from the CI run (12.8 MB). It contains route reports, state logs, trace TSV, progress files, screenshots and comparison outputs.
-
-The route configs still have **26 / 27 checkpoints**. They do not yet choose left/right on page16/page17 and do not cover downstream forest, traveler, guard, weapon, hospital or ending branches. Static source graph and the next route matrix are documented in `tests/differential/WOLFMAN_BRANCH_MAP.md`.
+- Workflow: **success**, 29/29 steps; build, shared route, eight forest runtime routes, four comparisons and reference-export validation passed.
+- All eight forest runtime route reports and all four comparisons report `ok=true`, `errors=[]`; 24–26 text checks passed per route.
+- NLB state-log validation: 139, 151, 136 and 139 records for the four wolfiness/traveler variants.
+- Matching end states: w=2 page18 → page19 → eat → page20 (`wolfiness=3,hp=4`); w=2 page24/pack meeting → page19 → don't eat → page21 (`wolfiness=2,hp=3,wolvesTalk=true`); w=0 page18 → page19 → don't eat → page21 (`wolfiness=0,hp=3,wolvesTalk=false`); w=0 page25/pack avoided → page19 → eat → page20 (`wolfiness=1,hp=4,wolvesTalk=false`).
+- All four terminal states agree on `barExit=true,forestExit=false,guardDone=false`. Pixel metrics remain advisory.
+- This update adds four independent right-turn routes to page22 from page18 at wolfiness 2 and 0, page24 at wolfiness 2/`wolvesTalk=true`, and page25 at wolfiness 0. They expect page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, background `images/22.jpg` / `22.png`, and `forestExit=true`; new routes await CI.
 
 Remaining:
-1. Add focused paired routes for the first forest decisions and confirm each action in the trace.
-2. Extend state telemetry to `barExit`, `forestExit`, `wolvesTalk`, `guardDone` after verifying active module variable visibility.
-3. Add hospital/police branch and positive-wolfiness kitchen alternative.
-4. Cover the traveler choices, guard decisions, weapons and all terminal endings.
-5. Add achievement capture and page36 tagged-background verification.
-6. Resolve Issue #37's pagination contract separately; don't hide the 15/17 difference or turn it into a pixel gate.
+1. Verify all four bypass routes in both engines, including page22 identity, text, background and state flags.
+2. Extend clean-state routes from page22 through the forest module to the guard module; cover `wolvesTalk=true/false` at high wolfiness and low wolfiness.
+3. Cover weapon choices, the hospital/police alternative start and endings.
+4. Add achievement capture and page36 tagged-background verification.
+5. Resolve Issue #37's pagination contract separately; do not hide the 15/17 difference or turn it into a pixel gate.
 
 ## 8. Issue #28 and broader suite
 
@@ -178,15 +172,11 @@ For every new chat or after a context reset:
 
 ## 10. Current next action
 
-CI #119 has now verified all four page16/page17 direction branches in both runtimes. The four route files have been extended beyond pages18/24/25 to test the left turn to the traveler, the page19 choice panel, and both traveler outcomes across the high- and low-wolfiness states. The current commit is expected to be followed by CI; do not mark these new steps passed until both runtimes and comparison reports are inspected.
+CI #120 (run 120, HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`) succeeded: all four independent traveler-decision routes passed in both engines and their four comparisons. Page20/page21 UUIDs, images, text checkpoints and wolfiness/HP values agree; details are recorded below.
 
-Next:
-1. Inspect the new route reports and verify the expected wolfiness/HP deltas on pages20/21.
-2. Add clean-state routes for the right turn that avoids the traveler and verifies page22 / `forestExit=true`.
-3. Continue into the guard module, then cover the information/force branch and weapon choice.
-4. Keep alternative decisions in independent clean-state runs; avoid claiming full story coverage from static graph inspection.
+This update adds four independent right-turn bypasses from pages18, 24 and 25 (including both page18 wolfiness states). Each should land on page22 and set `forestExit=true`. Inspect every route report, comparison, INSTEAD trace and NLB state-log before marking this branch verified. Then continue through the forest module to the guard module and test the high-/low-wolfiness guard branches, weapon choices and endings.
 
-PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explicit approval.
+PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explicit approval.
 
 ### 2026-11-02 — successful extended differential run
 
@@ -259,9 +249,20 @@ PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explici
 - The NLB choice-panel reveal correction is verified. Pixel metrics between renderers remain advisory rather than pixel-perfect gates.
 - This checkpoint is the verified baseline for the traveler continuation below.
 
-### 2026-11-04 — traveler decision routes extended; awaiting CI
+### 2026-11-04 — CI #120: traveler decisions verified in both engines
 
-- Extended the same four clean-state forest routes rather than adding duplicate prefixes.
-- Each route now opens the choices panel on page18, page24 (after advancing through all eight text portions), or page25; chooses the left path to page19; opens and validates the page19 choice panel; then selects a traveler outcome.
-- Expected state deltas: wolfiness 2 + eat → page20 with `wolfiness=3,hp=4`; wolfiness 2 + do not eat → page21 with `wolfiness=2,hp=3`; wolfiness 0 + do not eat → page21 with `wolfiness=0,hp=3`; wolfiness 0 + eat → page20 with `wolfiness=1,hp=4`.
-- These expected states are based on the pinned source logic; mark them runtime-verified only after the next CI completes and both traces agree.
+- CI [#41695602249](https://github.com/Antokolos/NLBNavigator/actions/runs/41695602249), run 120, HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`: **SUCCESS, 29/29 steps**.
+- Artifact `nlb-sdl-test-logs`, ID `13262693170`, 29,922,904 bytes.
+- All eight runtime route reports and all four comparison reports have `ok=true`, `errors=[]`; every text checkpoint passed (24–26 checks per route).
+- NLB state-log validation passed with 139, 151, 136 and 139 records for the four wolfiness/traveler variants.
+- Matching end states: page20 after eating (w=2→3,hp=3→4) on high branch; page21 after declining (w=2,hp=3,wolvesTalk=true); page21 after declining (w=0,hp=3); page20 after eating on low branch (w=0→1,hp=3→4). UUIDs/backgrounds are recorded in the branch map and PR description.
+- All final checkpoints agree on `barExit=true,forestExit=false,guardDone=false`; pixel differences remain advisory.
+
+### 2026-11-04 — right-turn bypass routes added; awaiting CI
+
+- `wolfman-forest-wolfiness-two-page18-bypass`: wolfiness=2, origin page 18, `wolvesTalk=false`.
+- `wolfman-forest-wolfiness-two-page24-bypass`: wolfiness=2, origin page 24, `wolvesTalk=true`.
+- `wolfman-forest-wolfiness-zero-page18-bypass`: wolfiness=0, origin page 18, `wolvesTalk=false`.
+- `wolfman-forest-wolfiness-zero-page25-bypass`: wolfiness=0, origin page 25, `wolvesTalk=false`.
+- Each expects page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, `22.png` / `images/22.jpg`, text fragment “дом врага уже совсем близко”, and `forestExit=true`.
+- Workflow runs every route independently in INSTEAD and NLBNavigator and creates one comparison per route. No story or engine source was changed.

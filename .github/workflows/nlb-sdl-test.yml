@@ -148,6 +148,10 @@ jobs:
           python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-left.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-right.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-left.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json > /dev/null
           python3 tests/differential/validate_catalog.py
           python3 tests/differential/run_route.py --help
 
@@ -231,6 +235,54 @@ jobs:
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
+      - name: Run wolfman-forest-wolfiness-two-page18-bypass in INSTEAD
+        run: |
+          output="test-results/wolfman-forest-wolfiness-two-page18-bypass/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-forest-wolfiness-two-page24-bypass in INSTEAD
+        run: |
+          output="test-results/wolfman-forest-wolfiness-two-page24-bypass/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-forest-wolfiness-zero-page18-bypass in INSTEAD
+        run: |
+          output="test-results/wolfman-forest-wolfiness-zero-page18-bypass/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-forest-wolfiness-zero-page25-bypass in INSTEAD
+        run: |
+          output="test-results/wolfman-forest-wolfiness-zero-page25-bypass/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
       - name: Run forest wolfiness two left in NLBNavigator
         run: |
           output="test-results/wolfman-forest-wolfiness-two-left/nlbnavigator"
@@ -295,6 +347,70 @@ jobs:
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
+      - name: Run wolfman-forest-wolfiness-two-page18-bypass in NLBNavigator
+        run: |
+          output="test-results/wolfman-forest-wolfiness-two-page18-bypass/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-forest-wolfiness-two-page24-bypass in NLBNavigator
+        run: |
+          output="test-results/wolfman-forest-wolfiness-two-page24-bypass/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-forest-wolfiness-zero-page18-bypass in NLBNavigator
+        run: |
+          output="test-results/wolfman-forest-wolfiness-zero-page18-bypass/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-forest-wolfiness-zero-page25-bypass in NLBNavigator
+        run: |
+          output="test-results/wolfman-forest-wolfiness-zero-page25-bypass/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
       - name: Compare wolfman-forest-wolfiness-two-left
         run: |
           python3 tests/differential/run_route.py \
@@ -322,6 +438,34 @@ jobs:
             --runtime compare \
             --route tests/differential/routes/wolfman-forest-wolfiness-zero-right.json \
             --output test-results/wolfman-forest-wolfiness-zero-right
+
+      - name: Compare wolfman-forest-wolfiness-two-page18-bypass
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json \
+            --output test-results/wolfman-forest-wolfiness-two-page18-bypass
+
+      - name: Compare wolfman-forest-wolfiness-two-page24-bypass
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json \
+            --output test-results/wolfman-forest-wolfiness-two-page24-bypass
+
+      - name: Compare wolfman-forest-wolfiness-zero-page18-bypass
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json \
+            --output test-results/wolfman-forest-wolfiness-zero-page18-bypass
+
+      - name: Compare wolfman-forest-wolfiness-zero-page25-bypass
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json \
+            --output test-results/wolfman-forest-wolfiness-zero-page25-bypass
 
       - name: Validate INSTEAD reference export
         run: |
