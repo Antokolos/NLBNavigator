@@ -52,17 +52,19 @@ class FNLBSlateRenderer : public IScreenRenderer {
 public:
     explicit FNLBSlateRenderer(UNLBScreenWidget* InOwner) : Owner(InOwner) {}
 
-    void Begin(const FGeometry& InGeometry, FSlateWindowElementList& InElements, int32 InLayer) {
+    /// Area — экран темы текущей страницы (GameScreen::screenArea): он вписывается в виджет с
+    /// полями, как в INSTEAD (поля только с одной стороны); за ним ничего не рисуется
+    void Begin(const FGeometry& InGeometry, FSlateWindowElementList& InElements, int32 InLayer, const RectF& Area) {
         Current.clear();  // команды нового кадра
         Geometry = &InGeometry;
         Elements = &InElements;
         Layer = InLayer;
-        const FVector2D Size = InGeometry.GetLocalSize();
-        Scale = FMath::Min(Size.X / GameScreen::SCREEN_W, Size.Y / GameScreen::SCREEN_H);
-        Offset = (Size - FVector2D(GameScreen::SCREEN_W, GameScreen::SCREEN_H) * Scale) * 0.5f;
+        UNLBScreenWidget::Fit(InGeometry.GetLocalSize(), Area, Scale, Offset);
+        Elements->PushClip(FSlateClippingZone(Paint(Area)));
     }
     int32 End() {
         if (bClip) { Elements->PopClip(); bClip = false; }
+        Elements->PopClip();  // экран темы (Begin)
         Geometry = nullptr;
         Elements = nullptr;
         return Layer;
@@ -298,17 +300,22 @@ int32 UNLBScreenWidget::NativePaint(const FPaintArgs& Args, const FGeometry& All
     // GameScreen хранит состояние кадра (области щелчков, эффекты) — рисование меняет его
     UNLBScreenWidget* Self = const_cast<UNLBScreenWidget*>(this);
     if (Self->Screen->needsSnapshot()) Self->Renderer->TakeSnapshot();  // переход: прежний кадр — снимок
-    Self->Renderer->Begin(AllottedGeometry, OutDrawElements, Layer);
+    Self->Renderer->Begin(AllottedGeometry, OutDrawElements, Layer, Self->Screen->screenArea());
     Self->Screen->render(*Self->Renderer);
     return Self->Renderer->End();
 }
 
 FVector2D UNLBScreenWidget::ToScreen(const FGeometry& Geometry, const FVector2D& AbsolutePosition) const {
     const FVector2D Local = Geometry.AbsoluteToLocal(AbsolutePosition);
-    const FVector2D Size = Geometry.GetLocalSize();
-    const float Scale = FMath::Min(Size.X / GameScreen::SCREEN_W, Size.Y / GameScreen::SCREEN_H);
-    const FVector2D Offset = (Size - FVector2D(GameScreen::SCREEN_W, GameScreen::SCREEN_H) * Scale) * 0.5f;
+    float Scale = 0;
+    FVector2D Offset;
+    Fit(Geometry.GetLocalSize(), Screen ? Screen->screenArea() : RectF{0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H}, Scale, Offset);
     return Scale > 0 ? (Local - Offset) / Scale : FVector2D::ZeroVector;
+}
+
+void UNLBScreenWidget::Fit(const FVector2D& Size, const RectF& Area, float& Scale, FVector2D& Offset) {
+    Scale = FMath::Min(Size.X / Area.w, Size.Y / Area.h);
+    Offset = (Size - FVector2D(Area.w, Area.h) * Scale) * 0.5f - FVector2D(Area.x, Area.y) * Scale;
 }
 
 FReply UNLBScreenWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) {

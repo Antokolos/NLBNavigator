@@ -75,8 +75,10 @@ private:
     bool ensureScreen();
     godot::Ref<godot::Texture2D> texture(const std::string& path);
     godot::Ref<godot::Font> font(const nlb::presentation::FontRef& ref);
-    /// Масштаб и сдвиг: экран книги 1920×1080 вписывается в узел с полями
+    /// Масштаб и сдвиг координат экрана 1920×1080 в узел: в узел с полями вписывается экран темы
+    /// текущей страницы (GameScreen::screenArea), как в INSTEAD, — поля только с одной стороны
     void layout(float& scale, godot::Vector2& offset) const;
+    nlb::presentation::RectF area() const;
     godot::Vector2 toScreen(const godot::Vector2& local) const;
     /// Прежний кадр для перехода: область экрана книги из текстуры окна (там ещё последний
     /// показанный кадр). Без изображения (--headless, рендерер-заглушка) — без перехода

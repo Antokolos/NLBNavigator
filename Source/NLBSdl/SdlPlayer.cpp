@@ -21,7 +21,6 @@
 using namespace nlb::presentation;
 
 namespace {
-const SDL_Color BACKGROUND = {12, 12, 16, 255};
 
 /// Шрифт по умолчанию: свой каталог fonts/, затем системные шрифты с кириллицей
 std::string findFont(const std::string& bookPath) {
@@ -136,9 +135,7 @@ bool SdlPlayer::init() {
         fatal(std::string("SDL_CreateWindowAndRenderer: ") + SDL_GetError());
         return false;
     }
-    // Экран экспорта — 1920×1080; в окно он вписывается с полями (letterbox), как в теме INSTEAD
-    SDL_SetRenderLogicalPresentation(m_renderer, static_cast<int>(GameScreen::SCREEN_W), static_cast<int>(GameScreen::SCREEN_H),
-                                     SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    // Экран темы (часть экрана 1920×1080) вписывается в окно с полями (letterbox) — updateArea
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderVSync(m_renderer, 1);
 
@@ -209,6 +206,14 @@ void SdlPlayer::loop() {
 
 void SdlPlayer::handleEvent(SDL_Event& e) {
     SDL_ConvertEventToRenderCoordinates(m_renderer, &e);
+    // логические координаты окна — от начала экрана темы; GameScreen ждёт координаты 1920×1080
+    if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN || e.type == SDL_EVENT_MOUSE_BUTTON_UP) {
+        e.button.x += m_area.x;
+        e.button.y += m_area.y;
+    } else if (e.type == SDL_EVENT_MOUSE_MOTION) {
+        e.motion.x += m_area.x;
+        e.motion.y += m_area.y;
+    }
     switch (e.type) {
         case SDL_EVENT_QUIT: m_quit = true; break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
@@ -247,14 +252,31 @@ void SdlPlayer::handleEvent(SDL_Event& e) {
     }
 }
 
+void SdlPlayer::updateArea() {
+    // В окно вписывается экран темы текущей страницы, как в INSTEAD (scr.w×scr.h -> окно): поля
+    // только с одной стороны. Раньше вписывался весь экран 1920×1080, а в нём тема 4:3 — уже со
+    // своими полями, и у «Фронтира» (800×600) в широком окне поля были и по бокам, и сверху-снизу
+    m_area = m_screen->screenArea();
+    const int lw = std::max(1, static_cast<int>(std::lround(m_area.w)));
+    const int lh = std::max(1, static_cast<int>(std::lround(m_area.h)));
+    if (lw != m_logicalW || lh != m_logicalH) {
+        m_logicalW = lw;
+        m_logicalH = lh;
+        SDL_SetRenderLogicalPresentation(m_renderer, lw, lh, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    }
+}
+
 void SdlPlayer::renderFrame() {
+    updateArea();
     // Масштаб окна: текст, как в INSTEAD, рисуется шрифтом размера font_size × scale (целое),
     // а не растягивается из 1920×1080 — тогда переносы и межстрочные расстояния те же
     int ow = 0, oh = 0;
     if (SDL_GetCurrentRenderOutputSize(m_renderer, &ow, &oh) && ow > 0 && oh > 0) {
-        m_pixelScale = std::min(ow / GameScreen::SCREEN_W, oh / GameScreen::SCREEN_H);
+        m_pixelScale = std::min(ow / m_area.w, oh / m_area.h);
     }
-    SDL_SetRenderDrawColor(m_renderer, BACKGROUND.r, BACKGROUND.g, BACKGROUND.b, 255);
+    // поля окна — цветом рамки темы (scr.col.brd), как вокруг экрана темы внутри 1920×1080
+    const nlb::presentation::Color border = m_screen->borderColor();
+    SDL_SetRenderDrawColor(m_renderer, border.r, border.g, border.b, 255);
     SDL_RenderClear(m_renderer);
     if (!m_transitions) {
         m_screen->render(*this);
@@ -279,19 +301,22 @@ void SdlPlayer::renderFrame() {
         }
     }
     SDL_SetRenderTarget(m_renderer, m_frame);
-    SDL_SetRenderDrawColor(m_renderer, BACKGROUND.r, BACKGROUND.g, BACKGROUND.b, 255);
+    SDL_SetRenderDrawColor(m_renderer, border.r, border.g, border.b, 255);
     SDL_RenderClear(m_renderer);
     m_screen->render(*this);
     SDL_SetRenderTarget(m_renderer, nullptr);
     SDL_SetTextureBlendMode(m_frame, SDL_BLENDMODE_NONE);
-    const SDL_FRect full{0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H};
+    const SDL_FRect full{0, 0, static_cast<float>(m_logicalW), static_cast<float>(m_logicalH)};
     SDL_RenderTexture(m_renderer, m_frame, nullptr, &full);
     m_frameValid = true;
 }
 
 void SdlPlayer::ensureFrameTextures(int w, int h) {
     float tw = 0, th = 0;
-    if (m_frame && SDL_GetTextureSize(m_frame, &tw, &th) && static_cast<int>(tw) == w && static_cast<int>(th) == h) return;
+    if (m_frame && SDL_GetTextureSize(m_frame, &tw, &th) && static_cast<int>(tw) == w && static_cast<int>(th) == h
+        && m_frameLogicalW == m_logicalW && m_frameLogicalH == m_logicalH) return;
+    m_frameLogicalW = m_logicalW;
+    m_frameLogicalH = m_logicalH;
     if (m_frame) SDL_DestroyTexture(m_frame);
     if (m_snapshot) SDL_DestroyTexture(m_snapshot);
     m_frameValid = m_snapshotValid = false;
@@ -300,10 +325,9 @@ void SdlPlayer::ensureFrameTextures(int w, int h) {
     for (SDL_Texture* t : {m_frame, m_snapshot}) {
         if (!t) continue;
         SDL_SetTextureScaleMode(t, SDL_SCALEMODE_NEAREST);  // размер тот же — копия 1:1
-        // у каждой цели своя логическая раскладка: экран 1920×1080, как у окна
+        // у каждой цели своя логическая раскладка: экран темы, как у окна
         SDL_SetRenderTarget(m_renderer, t);
-        SDL_SetRenderLogicalPresentation(m_renderer, static_cast<int>(GameScreen::SCREEN_W), static_cast<int>(GameScreen::SCREEN_H),
-                                         SDL_LOGICAL_PRESENTATION_LETTERBOX);
+        SDL_SetRenderLogicalPresentation(m_renderer, m_logicalW, m_logicalH, SDL_LOGICAL_PRESENTATION_LETTERBOX);
     }
     // копия кадра в m_snapshot — пиксель в пиксель, без логической раскладки
     if (m_snapshot) {
@@ -317,7 +341,7 @@ void SdlPlayer::drawSnapshot(float alpha) {
     if (!m_snapshotValid || !m_snapshot) return;
     SDL_SetTextureBlendMode(m_snapshot, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaModFloat(m_snapshot, alpha);
-    const SDL_FRect full{0, 0, GameScreen::SCREEN_W, GameScreen::SCREEN_H};
+    const SDL_FRect full{0, 0, static_cast<float>(m_logicalW), static_cast<float>(m_logicalH)};
     SDL_RenderTexture(m_renderer, m_snapshot, nullptr, &full);
     SDL_SetTextureAlphaModFloat(m_snapshot, 1.0f);
 }
@@ -413,7 +437,7 @@ bool SdlPlayer::imageSize(const std::string& path, float& w, float& h) {
 void SdlPlayer::drawImage(const std::string& path, const RectF& dst, float alpha) {
     SDL_Texture* tex = textureFor(path);
     if (!tex) return;
-    const SDL_FRect d{dst.x, dst.y, dst.w, dst.h};
+    const SDL_FRect d{dst.x - m_area.x, dst.y - m_area.y, dst.w, dst.h};
     SDL_SetTextureAlphaModFloat(tex, alpha);
     SDL_RenderTexture(m_renderer, tex, nullptr, &d);
     SDL_SetTextureAlphaModFloat(tex, 1.0f);
@@ -421,7 +445,7 @@ void SdlPlayer::drawImage(const std::string& path, const RectF& dst, float alpha
 
 void SdlPlayer::fillRect(const RectF& r, Color c) {
     SDL_SetRenderDrawColor(m_renderer, c.r, c.g, c.b, c.a);
-    const SDL_FRect d{r.x, r.y, r.w, r.h};
+    const SDL_FRect d{r.x - m_area.x, r.y - m_area.y, r.w, r.h};
     SDL_RenderFillRect(m_renderer, &d);
 }
 
@@ -451,7 +475,7 @@ void SdlPlayer::drawText(const FontRef& ref, const std::string& text, Color c, f
     if (!tex) return;
     float w, h;
     SDL_GetTextureSize(tex, &w, &h);
-    const SDL_FRect dst{x, y, w / m_pixelScale, h / m_pixelScale};  // надпись в пикселях окна — 1:1
+    const SDL_FRect dst{x - m_area.x, y - m_area.y, w / m_pixelScale, h / m_pixelScale};  // надпись в пикселях окна — 1:1
     SDL_SetTextureAlphaModFloat(tex, alpha);
     SDL_RenderTexture(m_renderer, tex, nullptr, &dst);
     SDL_SetTextureAlphaModFloat(tex, 1.0f);
@@ -462,7 +486,7 @@ void SdlPlayer::setClip(const RectF* clip) {
         SDL_SetRenderClipRect(m_renderer, nullptr);
         return;
     }
-    const SDL_Rect r{static_cast<int>(clip->x), static_cast<int>(clip->y), static_cast<int>(clip->w), static_cast<int>(clip->h)};
+    const SDL_Rect r{static_cast<int>(clip->x - m_area.x), static_cast<int>(clip->y - m_area.y), static_cast<int>(clip->w), static_cast<int>(clip->h)};
     SDL_SetRenderClipRect(m_renderer, &r);
 }
 
@@ -470,7 +494,10 @@ void SdlPlayer::setClip(const RectF* clip) {
 
 bool SdlPlayer::saveScreenshot(const std::string& path) {
     renderFrame();
+    // всё окно, с полями: при логической раскладке SDL читал бы только экран темы
+    SDL_SetRenderLogicalPresentation(m_renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED);
     SDL_Surface* s = SDL_RenderReadPixels(m_renderer, nullptr);
+    SDL_SetRenderLogicalPresentation(m_renderer, m_logicalW, m_logicalH, SDL_LOGICAL_PRESENTATION_LETTERBOX);
     if (!s) return false;
     const bool ok = IMG_SavePNG(s, path.c_str());
     SDL_DestroySurface(s);
