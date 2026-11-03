@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "wolfman-forest-wolfiness-two-right",
   "story_id": "am-i-a-monster",
-  "title": "Am I a Monster? — ветка «Съесть грабителя»",
+  "title": "Am I a Monster? — волчность 2: встреча со стаей → путник → не есть",
   "mode": "vn",
   "language": "ru",
   "window": {
@@ -905,11 +905,189 @@
           "guardDone": false
         }
       }
+    },
+    {
+      "id": "wolves-meeting-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 7,
+          "nlbnavigator": 7
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "29-page24-final-portion.png",
+      "visual_change_from": "wolves-meeting-page24",
+      "expect": {
+        "page_id": "4d0291af-49a6-42ab-ae94-4e039cb15072",
+        "image_suffix": "24.png",
+        "instead_background_suffix": "images/24.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 7,
+        "portion_count": 8,
+        "instead_portion_index": 7,
+        "instead_portion_count": 8,
+        "text_contains": "С этими словами вы побежали прочь",
+        "instead_text_contains": "С этими словами вы побежали прочь",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": true,
+          "guardDone": false
+        }
+      }
+    },
+    {
+      "id": "page24-traveler-branch-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "30-page24-choices.png",
+      "visual_change_from": "wolves-meeting-final-portion",
+      "expect": {
+        "page_id": "4d0291af-49a6-42ab-ae94-4e039cb15072",
+        "image_suffix": "24.png",
+        "instead_background_suffix": "images/24.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Налево",
+          "Направо"
+        ],
+        "instead_choices_contains": [
+          "Налево",
+          "Направо"
+        ],
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": true,
+          "guardDone": false
+        }
+      }
+    },
+    {
+      "id": "page24-left-to-page19",
+      "action": {
+        "type": "select_choice",
+        "index": 0,
+        "instead": {
+          "x_ratio": 0.23,
+          "y_ratio": 0.27
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "31-page24-left-to-page19.png",
+      "visual_change_from": "page24-traveler-branch-choices",
+      "expect": {
+        "page_id": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+        "image_suffix": "19.png",
+        "instead_background_suffix": "images/19.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "instead_portion_index": 0,
+        "text_contains": "Вы выбрали левый поворот",
+        "instead_text_contains": "Вы выбрали левый поворот",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": true,
+          "guardDone": false
+        }
+      }
+    },
+    {
+      "id": "page19-traveler-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "32-page19-traveler-choices.png",
+      "visual_change_from": "page24-left-to-page19",
+      "expect": {
+        "page_id": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+        "image_suffix": "19.png",
+        "instead_background_suffix": "images/19.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть путника",
+          "Не есть путника"
+        ],
+        "instead_choices_contains": [
+          "Съесть путника",
+          "Не есть путника"
+        ],
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": true,
+          "guardDone": false
+        }
+      }
+    },
+    {
+      "id": "leave-traveler-page21",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.23,
+          "y_ratio": 0.36
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "33-traveler-choice-page21.png",
+      "visual_change_from": "page19-traveler-choices",
+      "expect": {
+        "page_id": "db1bdcfc-0184-46ea-8194-d7cdbbf3b8fb",
+        "image_suffix": "21.png",
+        "instead_background_suffix": "images/21.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "instead_portion_index": 0,
+        "text_contains": "Вам некогда было с ним возиться",
+        "instead_text_contains": "Вам некогда было с ним возиться",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "barExit": true,
+          "forestExit": false,
+          "wolvesTalk": true,
+          "guardDone": false
+        }
+      }
     }
   ],
   "notes": [
-    "Independent clean-state route: repeats the previously validated robber/bar prefix because each direction must start in a fresh runtime session.",
-    "wolfiness=2, page16: choose Направо; compare the resulting semantic page and scenario flags.",
-    "The runner's advance action uses one click in INSTEAD to expose its choices overlay and zero clicks in NLBNavigator, whose current page model already contains both choices."
+    "The runner's advance action uses one click in INSTEAD to expose its choices overlay and zero clicks in NLBNavigator, whose current page model already contains both choices.",
+    "CI #119 verified the incoming forest state on page 24. This continuation opens the page's choice panel, selects left to meet the traveler on page 19, then tests \"Не есть путника\".",
+    "Expected terminal checkpoint: page 21, wolfiness=2, hp=3, wolvesTalk=true."
   ]
 }

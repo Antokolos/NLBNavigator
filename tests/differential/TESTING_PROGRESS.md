@@ -3,7 +3,7 @@
 > Read this file first when resuming this long-running task after a chat reset or context loss.
 > Update it in the same working PR branch after every meaningful testing stage. GitHub PR and CI are the live source of truth; this file is the durable human-readable handoff.
 
-Last updated: 2026-11-02 (Asia/Bishkek)
+Last updated: 2026-11-04 (Asia/Bishkek)
 Repository: https://github.com/Antokolos/NLBNavigator
 Working PR: https://github.com/Antokolos/NLBNavigator/pull/32
 Working branch: `ci/nlb-sdl-wolfman-state-trace`
@@ -178,11 +178,13 @@ For every new chat or after a context reset:
 
 ## 10. Current next action
 
-1. Read `tests/differential/WOLFMAN_BRANCH_MAP.md` before authoring a new route.
-2. Run the four new forest routes added in this commit. CI #115 already verified the four telemetry flags; the new runs continue to page18/page24/page25 and compare the actual state and content.
-3. Author a minimal route for page16 left/right (and the matching low-wolfiness page17 choices) with explicit semantic assertions. Run each in both engines.
-4. Then add traveler, guard, weapon and ending paths; keep each clean route small enough to diagnose.
-5. Append the resulting SHA/CI/coverage changes here after every material stage.
+CI #119 has now verified all four page16/page17 direction branches in both runtimes. The four route files have been extended beyond pages18/24/25 to test the left turn to the traveler, the page19 choice panel, and both traveler outcomes across the high- and low-wolfiness states. The current commit is expected to be followed by CI; do not mark these new steps passed until both runtimes and comparison reports are inspected.
+
+Next:
+1. Inspect the new route reports and verify the expected wolfiness/HP deltas on pages20/21.
+2. Add clean-state routes for the right turn that avoids the traveler and verifies page22 / `forestExit=true`.
+3. Continue into the guard module, then cover the information/force branch and weapon choice.
+4. Keep alternative decisions in independent clean-state runs; avoid claiming full story coverage from static graph inspection.
 
 PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explicit approval.
 
@@ -245,3 +247,21 @@ PR #32 remains Draft/open/unmerged. Never modify `main` or merge without explici
 - No story or engine code was changed. The first INSTEAD route input x-coordinate correction remains intact (x_ratio=0.23 only on forest link selections; baseline prefix choices retain original coordinates).
 - CI #118 artifact ID `13215290301` contains NLB page16 choices screenshot/state log, confirming the above diagnosis.
 - The corrected four route configs need a fresh CI before any NLB forest branch is marked passed.
+
+
+### 2026-11-04 — CI #119: page16/page17 forest directions verified
+
+- CI [#41602166825](https://github.com/Antokolos/NLBNavigator/actions/runs/41602166825), run 119, HEAD `417bfc58dd7e41ca44beafcbc00cefa4e459dde7`: **SUCCESS, 29/29 steps**.
+- Artifact `nlb-sdl-test-logs`, ID `13216749996`, 26,045,630 bytes.
+- All eight runtime route reports (four INSTEAD, four NLBNavigator) have `ok=true`, `errors=[]`; all four comparisons have `ok=true`, `errors=[]`.
+- NLB state-log validators passed: 127, 130, 124 and 127 records for wolfiness 2/left, 2/right, 0/left and 0/right.
+- Matching final checkpoints: page18 for both left routes, page24 for wolfiness 2/right (`wolvesTalk=true`), page25 for wolfiness 0/right (`wolvesTalk=false`). Every route has `barExit=true,forestExit=false,guardDone=false`.
+- The NLB choice-panel reveal correction is verified. Pixel metrics between renderers remain advisory rather than pixel-perfect gates.
+- This checkpoint is the verified baseline for the traveler continuation below.
+
+### 2026-11-04 — traveler decision routes extended; awaiting CI
+
+- Extended the same four clean-state forest routes rather than adding duplicate prefixes.
+- Each route now opens the choices panel on page18, page24 (after advancing through all eight text portions), or page25; chooses the left path to page19; opens and validates the page19 choice panel; then selects a traveler outcome.
+- Expected state deltas: wolfiness 2 + eat → page20 with `wolfiness=3,hp=4`; wolfiness 2 + do not eat → page21 with `wolfiness=2,hp=3`; wolfiness 0 + do not eat → page21 with `wolfiness=0,hp=3`; wolfiness 0 + eat → page20 with `wolfiness=1,hp=4`.
+- These expected states are based on the pinned source logic; mark them runtime-verified only after the next CI completes and both traces agree.
