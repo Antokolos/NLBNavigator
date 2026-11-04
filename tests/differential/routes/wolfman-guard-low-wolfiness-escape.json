@@ -1044,7 +1044,7 @@
         "y_ratio": 0.5,
         "clicks": {
           "instead": 3,
-          "nlbnavigator": 2
+          "nlbnavigator": 3
         }
       },
       "settle_ms": 3000,

@@ -982,7 +982,7 @@
         "y_ratio": 0.5,
         "clicks": {
           "instead": 3,
-          "nlbnavigator": 2
+          "nlbnavigator": 3
         }
       },
       "settle_ms": 3000,
@@ -1014,7 +1014,7 @@
         "y_ratio": 0.5,
         "clicks": {
           "instead": 8,
-          "nlbnavigator": 7
+          "nlbnavigator": 8
         }
       },
       "settle_ms": 3500,
@@ -1039,5 +1039,5 @@
       }
     }
   ],
-  "notes": "Clean-state route: page18 / wolvesTalk=false → page22 → guard module → page26 → page28. Confirms the GUARD_NOT_A_PROBLEM branch; achievement persistence itself is not asserted. Page 1.7 uses runtime-specific pagination: 3 nonempty INSTEAD segments versus 2 NLB text blocks, so its conditional branch is entered with 3/2 clicks respectively."
+  "notes": "Clean-state route: page18 / wolvesTalk=false → page22 → guard module → page26 → page28. Confirms the GUARD_NOT_A_PROBLEM branch; achievement persistence itself is not asserted. Runtime traces show page 1.7 has 3 paginator portions in both engines (the NLB page has an internal split despite two source text blocks); page26 has 8 portions in both engines. Use 3 clicks on page1.7 and 8 on page26 in each runtime."
 }

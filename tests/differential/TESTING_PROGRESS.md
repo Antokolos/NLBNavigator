@@ -316,3 +316,16 @@ PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explic
 - Static review found the same premature text expectation in the high-wolfiness fight route: page28 first shows «Ты пропустишь меня?», while «придётся драться со мной» appears later. Updated the checkpoint to the first visible text to avoid an equivalent false failure.
 - The low-wolfiness route did not run in CI #124 because the workflow stopped at the first failure. Its 3/2 page1.7 click correction remains in place but still awaits runtime verification.
 - Artifact: `nlb-sdl-test-logs`, ID `13340908124`. No gameplay/story source, INSTEAD export, or main branch changes.
+
+
+### 2026-11-04 — CI #125: runtime paginator counts corrected
+
+- CI [#41880453967](https://github.com/Antokolos/NLBNavigator/actions/runs/41880453967), run 125, HEAD `d8f303460b9734ae5d9194b2c8bd8f7d21048d53`: **FAILURE** in the NLBNavigator execution of `wolfman-guard-high-wolves-talk`. Build, smoke-test, all previous forest routes and all four page22 bypass routes/comparisons passed.
+- The INSTEAD guard-talk route completed successfully: page22 → page1.7 → page26 → page27. The final checkpoint is page27 UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3`, background `images/27.jpg`, with `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=true,guardDone=false`. Its route report has `ok=true`, `errors=[]`.
+- NLB state-log validation also passed (`161 records`), but its captured paginator state disproved the earlier static estimate:
+  - page1.7 UUID `5848772f-134b-412e-9e5e-f9d2feedb3b0` has runtime `portion.count=3`; after two clicks it remains on page1.7 at portion 2/3. The conditional branch is entered on the **third** click. The NLB source's two text blocks do not imply two paginator portions because one block is internally split.
+  - page26 UUID `0e3e04d8-03e7-459d-8136-e7c135100101` has runtime `portion.count=8`; after seven clicks it remains at portion 6/8. The eighth click advances to page27.
+- The INSTEAD trace independently confirms 3 portions on page1.7 and 8 on page26. Therefore the correct route counts are now **3/3 for page1.7** and **8/8 for page26** (INSTEAD/NLBNavigator), not the previously inferred 3/2 and 8/7. Updated all three guard routes, including the low-wolfiness page1.7 branch.
+- The NLB route failed at both checkpoints only because it received too few clicks; it had not yet reached page26 or page27 when those expectations were evaluated. No gameplay mismatch is demonstrated. The page28 route and low-wolfiness route still need fresh execution.
+- Artifact: `nlb-sdl-test-logs`, ID `13354465374`. The INSTEAD session log records `INFO_FOR_GUARD` being set; persisted achievement-state read-back is not yet tested.
+- These corrections change only differential-test route JSON and documentation. No story/export/engine source or `main` changes.

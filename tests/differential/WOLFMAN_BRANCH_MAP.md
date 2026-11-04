@@ -259,3 +259,12 @@ The low-wolfiness route was also corrected: after page22 enters page1.7 at porti
 CI [#41856596471](https://github.com/Antokolos/NLBNavigator/actions/runs/41856596471) reached page27 in INSTEAD after the corrected 8-click page26 advance. The trace confirms page27 UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3`, background `images/27.jpg`, and the expected six-variable state. The test failed only because it searched the first displayed portion for «где найти оборотней», which occurs later; the first portion is «Вспомнив недавнюю встречу, вы воскликнули:». The assertion now checks the first visible portion.
 
 The INSTEAD session log recorded the `INFO_FOR_GUARD` achievement call and `Achievement set.`; persistence has not been read back. The corresponding page28 route expectation was also corrected from a later sentence («придётся драться со мной») to its first visible sentence («Ты пропустишь меня?»). The remaining guard routes still require a complete run in both engines. Artifact ID: `13340908124`.
+
+
+## CI #125 — paginator counts verified from runtime state
+
+CI [#41880453967](https://github.com/Antokolos/NLBNavigator/actions/runs/41880453967) completed the INSTEAD `wolfman-guard-high-wolves-talk` route successfully through page27, with the expected UUID, `images/27.jpg` and all six variables. NLB state-log validation passed (161 records), but the NLB route action counts were too small.
+
+The NLB state-log proves page1.7 has `portion.count=3` (after two clicks it is still on portion 2/3), and page26 has `portion.count=8` (after seven clicks it is still on portion 6/8). INSTEAD trace also reports 3 and 8 portions respectively. The corrected routes therefore use **3 clicks on page1.7 and 8 clicks on page26 in both runtimes**. This supersedes the earlier static estimate based solely on the number of nonempty source text blocks; the paginator can split a block internally.
+
+The INSTEAD talk route is runtime-confirmed; its NLB counterpart, the page28 attack route and the low-wolfiness route still require a fresh full run. Artifact ID: `13354465374`.

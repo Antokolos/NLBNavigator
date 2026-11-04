@@ -175,3 +175,6 @@ CI [#41837368137](https://github.com/Antokolos/NLBNavigator/actions/runs/4183736
 
 
 CI [#41856596471](https://github.com/Antokolos/NLBNavigator/actions/runs/41856596471) (run 124) reached the expected page27 UUID in INSTEAD with matching image and state, but failed its text assertion: the expected phrase was later in the page, not in the first displayed portion. The route now checks «Вспомнив недавнюю встречу, вы воскликнули». The same first-visible-portion correction was made for page28 («Ты пропустишь меня?»). The INSTEAD session log records `INFO_FOR_GUARD` as set; persisted achievement state is not yet verified. All guard routes still await successful runs in both runtimes. Artifact ID: `13340908124`.
+
+
+CI [#41880453967](https://github.com/Antokolos/NLBNavigator/actions/runs/41880453967) (run 125) confirmed the INSTEAD talk route through page27, but the NLB route stopped on the two guard pagination checkpoints. Runtime state-log—not static source block count—shows page1.7 has 3 NLB portions (the second source block is internally split) and page26 has 8. Both engines therefore now use 3 clicks for page1.7 and 8 for page26. This supersedes the prior 3/2 and 8/7 estimates. The INSTEAD talk route is confirmed; NLB talk, page28 attack, and low-wolfiness escape remain pending a fresh full CI. Artifact ID: `13354465374`.
