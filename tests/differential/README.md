@@ -11,9 +11,10 @@ wolfman и instead-am_i_a_monster_vn — две упаковки одной ис
 движках и их comparisons: переходы page16/page17 к page18/page24/page25, затем
 левый поворот к page19 и проверка выбора путника с конечными страницами 20/21.
 Съесть путника увеличивает `wolfiness` и `hp` на 1; отказ не меняет эти значения.
-В этом обновлении добавлены четыре clean-state маршрута правого поворота к page22
-с проверкой `forestExit=true`; они ожидают следующего CI. Guard module и концовки
-пока не входят в runtime-покрытие. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
+CI #121 подтвердил четыре правых bypass-маршрута через page22 с `forestExit=true`
+в обоих движках. Три последующих guard-маршрута добавлены и ожидают CI:
+`wolvesTalk=true` → page27, `wolvesTalk=false` → page28 при высокой волчности,
+низкая волчность → page1.8. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
 контрольная точка: `TESTING_PROGRESS.md`.
 
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
@@ -92,8 +93,10 @@ python3 tests/differential/run_route.py \
 - Четыре `wolfman-forest-wolfiness-*` маршрута: выборы page16/page17,
   page18/page24/page25, page19 и исход встречи с путником на page20/page21;
   успешно прошли CI #120.
-- Четыре новых `wolfman-forest-wolfiness-*-bypass.json` маршрута: правый поворот
-  от page18/page24/page25 к page22 с ожиданием `forestExit=true`; ожидают CI.
+- Четыре `wolfman-forest-wolfiness-*-bypass.json` маршрута: правый поворот
+  от page18/page24/page25 к page22 с `forestExit=true`; подтверждены CI #121.
+- Три `wolfman-guard-*.json` маршрута: выход из леса к охраннику и условные ветви
+  page27/page28/page1.8; ожидают CI.
 
 CI #41695602249 (run 120) завершил все четыре расширенных forest routes в обоих
 движках и четыре comparisons: route reports и comparison reports имеют
@@ -101,8 +104,10 @@ CI #41695602249 (run 120) завершил все четыре расширен�
 Страница 8 по-прежнему отличается числом непустых порций (INSTEAD 15,
 NLBNavigator 17), Issue #37 остаётся открытым.
 
-Page22 bypass-маршруты добавлены, но пока не runtime-проверены. Guard module,
-выбор оружия, альтернативный старт через больницу и шесть концовок ещё вне
+CI #121 подтвердил page22 bypass-маршруты: все четыре INSTEAD/NLBNavigator route
+reports и четыре comparison reports прошли; конечные UUID, фон и `forestExit=true`
+совпали. Новые guard routes добавлены, но ещё не runtime-проверены. Выбор оружия,
+альтернативный старт через больницу и шесть концовок остаются вне подтверждённого
 runtime-покрытия.
 
 Для INSTEAD trace считает только непустые сегменты пагинатора: пустые разделители

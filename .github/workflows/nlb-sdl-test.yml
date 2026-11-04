@@ -152,6 +152,9 @@ jobs:
           python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-guard-high-wolves-talk.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-guard-high-wolves-attack.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-guard-low-wolfiness-escape.json > /dev/null
           python3 tests/differential/validate_catalog.py
           python3 tests/differential/run_route.py --help
 
@@ -466,6 +469,111 @@ jobs:
             --runtime compare \
             --route tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json \
             --output test-results/wolfman-forest-wolfiness-zero-page25-bypass
+
+      - name: Run wolfman-guard-high-wolves-talk in INSTEAD
+        run: |
+          output="test-results/wolfman-guard-high-wolves-talk/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-guard-high-wolves-talk.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-guard-high-wolves-talk in NLBNavigator
+        run: |
+          output="test-results/wolfman-guard-high-wolves-talk/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-guard-high-wolves-talk.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Compare wolfman-guard-high-wolves-talk
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-guard-high-wolves-talk.json \
+            --output test-results/wolfman-guard-high-wolves-talk
+
+      - name: Run wolfman-guard-high-wolves-attack in INSTEAD
+        run: |
+          output="test-results/wolfman-guard-high-wolves-attack/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-guard-high-wolves-attack.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-guard-high-wolves-attack in NLBNavigator
+        run: |
+          output="test-results/wolfman-guard-high-wolves-attack/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-guard-high-wolves-attack.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Compare wolfman-guard-high-wolves-attack
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-guard-high-wolves-attack.json \
+            --output test-results/wolfman-guard-high-wolves-attack
+
+      - name: Run wolfman-guard-low-wolfiness-escape in INSTEAD
+        run: |
+          output="test-results/wolfman-guard-low-wolfiness-escape/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-guard-low-wolfiness-escape.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman-guard-low-wolfiness-escape in NLBNavigator
+        run: |
+          output="test-results/wolfman-guard-low-wolfiness-escape/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 240 \
+              --route tests/differential/routes/wolfman-guard-low-wolfiness-escape.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Compare wolfman-guard-low-wolfiness-escape
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-guard-low-wolfiness-escape.json \
+            --output test-results/wolfman-guard-low-wolfiness-escape
 
       - name: Validate INSTEAD reference export
         run: |

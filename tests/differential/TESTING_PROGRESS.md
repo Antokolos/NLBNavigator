@@ -130,12 +130,12 @@ https://github.com/Antokolos/NLBNavigator/actions/runs/41695602249
 - NLB state-log validation: 139, 151, 136 and 139 records for the four wolfiness/traveler variants.
 - Matching end states: w=2 page18 → page19 → eat → page20 (`wolfiness=3,hp=4`); w=2 page24/pack meeting → page19 → don't eat → page21 (`wolfiness=2,hp=3,wolvesTalk=true`); w=0 page18 → page19 → don't eat → page21 (`wolfiness=0,hp=3,wolvesTalk=false`); w=0 page25/pack avoided → page19 → eat → page20 (`wolfiness=1,hp=4,wolvesTalk=false`).
 - All four terminal states agree on `barExit=true,forestExit=false,guardDone=false`. Pixel metrics remain advisory.
-- This update adds four independent right-turn routes to page22 from page18 at wolfiness 2 and 0, page24 at wolfiness 2/`wolvesTalk=true`, and page25 at wolfiness 0. They expect page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, background `images/22.jpg` / `22.png`, and `forestExit=true`; new routes await CI.
+- CI #121 subsequently verified all four right-turn bypass routes to page22 in both engines. All 8 runtime reports and 4 comparison reports were `ok=true`, `errors=[]`; each comparison covered 30–32 checkpoints and 23–25 text checks. NLB state-log validation passed (130–145 records per route). INSTEAD trace and NLB state-log agree on page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, the `images/22.jpg` / `22.png` resources, and `forestExit=true`; the other five tracked variables also matched. Pixel metrics remain advisory.
 
 Remaining:
-1. Verify all four bypass routes in both engines, including page22 identity, text, background and state flags.
-2. Extend clean-state routes from page22 through the forest module to the guard module; cover `wolvesTalk=true/false` at high wolfiness and low wolfiness.
-3. Cover weapon choices, the hospital/police alternative start and endings.
+1. The four page22 bypass routes are verified by CI #121, including identity, text, background and all six tracked variables.
+2. Three new clean-state guard routes now cover page22 → page1.7 → page27 (`wolvesTalk=true`, high wolfiness), page28 (`wolvesTalk=false`, high wolfiness), and page1.8 (low wolfiness); they await the next CI.
+3. Continue the low-wolfiness escape from page1.8 to page1.9, then cover weapon choices, the hospital/police alternative start and endings.
 4. Add achievement capture and page36 tagged-background verification.
 5. Resolve Issue #37's pagination contract separately; do not hide the 15/17 difference or turn it into a pixel gate.
 
@@ -174,7 +174,7 @@ For every new chat or after a context reset:
 
 CI #120 (run 120, HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`) succeeded: all four independent traveler-decision routes passed in both engines and their four comparisons. Page20/page21 UUIDs, images, text checkpoints and wolfiness/HP values agree; details are recorded below.
 
-This update adds four independent right-turn bypasses from pages18, 24 and 25 (including both page18 wolfiness states). Each should land on page22 and set `forestExit=true`. Inspect every route report, comparison, INSTEAD trace and NLB state-log before marking this branch verified. Then continue through the forest module to the guard module and test the high-/low-wolfiness guard branches, weapon choices and endings.
+CI #121 verified the four page22 bypass routes in both runtimes. This commit adds three follow-on clean-state routes through the forest and guard modules: high wolfiness + `wolvesTalk=true` should reach page27; high wolfiness + `wolvesTalk=false` should reach page28; low wolfiness should reach page1.8. Their runtime results remain pending.
 
 PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explicit approval.
 
@@ -266,3 +266,23 @@ PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explic
 - `wolfman-forest-wolfiness-zero-page25-bypass`: wolfiness=0, origin page 25, `wolvesTalk=false`.
 - Each expects page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, `22.png` / `images/22.jpg`, text fragment “дом врага уже совсем близко”, and `forestExit=true`.
 - Workflow runs every route independently in INSTEAD and NLBNavigator and creates one comparison per route. No story or engine source was changed.
+
+
+### 2026-11-04 — CI #121: page22 bypass and forest exit verified
+
+- CI [#41704728633](https://github.com/Antokolos/NLBNavigator/actions/runs/41704728633), run 121, HEAD `c77f1ddb9a369dd528ac2cecb3c0b8046c8b08cf`: **SUCCESS, 41/41 steps**.
+- Artifact `nlb-sdl-test-logs`, ID `13268556774`, 56,239,646 bytes.
+- All four new bypass routes passed in INSTEAD and NLBNavigator; all four earlier direction/traveler routes also passed as part of the suite.
+- All 8 bypass runtime reports: `ok=true`, `errors=[]`; text checks passed (23–25 per route). All 4 comparisons: `ok=true`, `errors=[]`.
+- NLB state-log validation passed: 130, 145, 133 and 139 records for page18/w=2, page24/w=2, page18/w=0 and page25/w=0 bypass routes.
+- INSTEAD trace and NLB state-log agree on page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, background `images/22.jpg` / `22.png`, visible text and `forestExit=true`. They also preserve `wolfiness`, `hp`, `barExit`, `wolvesTalk` and `guardDone` as expected.
+- No story source, export, engine code or pinned input changed. Inter-renderer pixel metrics remain advisory.
+
+### 2026-11-04 — guard branch routes added; awaiting CI
+
+- `wolfman-guard-high-wolves-talk`: high wolfiness, `wolvesTalk=true`; page22 → page1.7 → page26 → page27.
+- `wolfman-guard-high-wolves-attack`: high wolfiness, `wolvesTalk=false`; page22 → page1.7 → page26 → page28.
+- `wolfman-guard-low-wolfiness-escape`: low wolfiness; page22 → page1.7 → page1.8.
+- The tests verify page UUID, NLB/INSTEAD image, visible text and all six tracked variables at each new checkpoint. The high branches advance through the page26 dialog before checking page27/page28.
+- These routes are static test definitions until the next CI passes; do not count them as runtime coverage yet.
+- Next: inspect every route report, all three comparisons, the INSTEAD trace and NLB state-log; use artifacts to diagnose failures without replaying the already confirmed CI #121 bypass paths.

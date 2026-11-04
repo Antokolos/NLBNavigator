@@ -196,20 +196,22 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 
 Эти 15 идентификаторов найдены статически. Текущие route-report/state trace не доказывают факт выдачи достижений. Для полной проверки потребуется добавить read-only наблюдение за вызовами и/или чтение сохранённого achievement state в обоих движках.
 
-## Следующие тестовые маршруты (план)
+## Следующие тестовые маршруты и текущий статус
 
-Добавлены четыре clean-state маршрута правого поворота:
-- `tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json`
-- `tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json`
-- `tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json`
-- `tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json`
-Каждый проверяет обход путника, page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, фон `22.png` / `images/22.jpg`, текст и `forestExit=true`. Следующий CI должен подтвердить все маршруты в INSTEAD, NLBNavigator и comparisons.
+Четыре clean-state маршрута правого поворота к page22 **подтверждены CI #121** в обоих движках:
+- `wolfman-forest-wolfiness-two-page18-bypass`: page18, wolfiness=2, wolvesTalk=false.
+- `wolfman-forest-wolfiness-two-page24-bypass`: page24, wolfiness=2, wolvesTalk=true.
+- `wolfman-forest-wolfiness-zero-page18-bypass`: page18, wolfiness=0, wolvesTalk=false.
+- `wolfman-forest-wolfiness-zero-page25-bypass`: page25, wolfiness=0, wolvesTalk=false.
 
-Затем продолжить через лесной модуль к охраннику:
-- high wolfiness + `wolvesTalk=true` → page27 / `INFO_FOR_GUARD`;
-- high wolfiness + `wolvesTalk=false` → page28 / `GUARD_NOT_A_PROBLEM`;
-- low wolfiness → page1.8;
-позже — выбор оружия и концовки. Статический граф не считать выполненным тестом.
+Все четыре bypass route reports на каждом движке имеют `ok=true`, все четыре comparisons — `errors=[]`. Во всех случаях конечная страница — page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, фон `22.png` / `images/22.jpg`, `forestExit=true`; остальные переменные соответствуют исходным ветвям. Подробные записи и ID артефакта находятся в `TESTING_PROGRESS.md`.
+
+Добавлены, но ещё **не runtime-проверены** три следующих маршрута:
+- `tests/differential/routes/wolfman-guard-high-wolves-talk.json`: page24 → page22 → page1.7 → page26 → page27 (`wolvesTalk=true`, высокая волчность; ожидается `INFO_FOR_GUARD`).
+- `tests/differential/routes/wolfman-guard-high-wolves-attack.json`: page18 → page22 → page1.7 → page26 → page28 (`wolvesTalk=false`, высокая волчность; ожидается `GUARD_NOT_A_PROBLEM`).
+- `tests/differential/routes/wolfman-guard-low-wolfiness-escape.json`: page25 → page22 → page1.7 → page1.8 (низкая волчность).
+
+После подтверждения guard branches продолжить low-wolfiness route от page1.8 к page1.9, затем проверять выбор оружия и концовки. Статический граф не считать выполненным тестом.
 
 ## Связанные задачи
 
