@@ -6,6 +6,7 @@
 #include "nlb/api/Link.h"
 #include "nlb/api/Modification.h"
 #include "nlb/api/Variable.h"
+#include "nlb/api/SpecialVariablesNameHelper.h"
 #include "nlb/exception/NLBExceptions.h"
 #include "nlb/util/StringHelper.h"
 #include "nlb/api/Constants.h"
@@ -1045,10 +1046,15 @@ bool ModificationInterpreter::objUse(const std::string& sourceInstanceId,
         if (c && c->isDeleted()) c = nullptr;
         Variable* m = (link->isObeyToModuleConstraint() && !moduleConstrId.empty())
                       ? book->getVariableById(moduleConstrId) : nullptr;
-        if (!c && !m) {
+        if (!c && !m && !link->isOnce()) {
             return std::nullopt;  // неограниченная ссылка
         }
+        // createUseBuildingBlocks: (!lvs_<id>) && (модуль) && (условие), «не» — над всем;
+        // «Once» — применение срабатывает один раз, как переход по ссылке страницы
         bool value = true;
+        if (link->isOnce()) {
+            value = !isTruthy(m_context.getVar(SpecialVariablesNameHelper::decorateLinkVisitStateVar(link->getId())));
+        }
         if (m) value = value && isTruthy(evaluate(m->getValue()));
         if (c) value = value && isTruthy(evaluate(c->getValue()));
         return link->isPositiveConstraint() ? value : !value;
@@ -1096,6 +1102,9 @@ bool ModificationInterpreter::objUse(const std::string& sourceInstanceId,
             if (Variable* v = book->getVariableById(link->getVarId())) {
                 if (!v->isDeleted() && !v->getName().empty()) m_context.setVar(v->getName(), true);
             }
+        }
+        if (link->isOnce()) {
+            m_context.setVar(SpecialVariablesNameHelper::decorateLinkVisitStateVar(link->getId()), true);
         }
     }
     return wasText;
