@@ -3,7 +3,7 @@
 > Read this file first when resuming this long-running task after a chat reset or context loss.
 > Update it in the same working PR branch after every meaningful testing stage. GitHub PR and CI are the live source of truth; this file is the durable human-readable handoff.
 
-Last updated: 2026-11-04 (Asia/Bishkek)
+Last updated: 2026-11-05 (Asia/Bishkek)
 Repository: https://github.com/Antokolos/NLBNavigator
 Working PR: https://github.com/Antokolos/NLBNavigator/pull/32
 Working branch: `ci/nlb-sdl-wolfman-state-trace`
@@ -122,22 +122,25 @@ These adjustments are **test-route alignment only**; they do not change engine o
 
 ## 7. Current confirmed wolfman coverage and remaining validation
 
-Latest successful baseline before this route expansion: CI #41695602249 (run 120), HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`:
-https://github.com/Antokolos/NLBNavigator/actions/runs/41695602249
+Latest successful full workflow: CI [#41901754643, run 126](https://github.com/Antokolos/NLBNavigator/actions/runs/41901754643), HEAD `2cc7ace2613d6929d7ac1d55a3389fefc0d8d60f`.
 
-- Workflow: **success**, 29/29 steps; build, shared route, eight forest runtime routes, four comparisons and reference-export validation passed.
-- All eight forest runtime route reports and all four comparisons report `ok=true`, `errors=[]`; 24–26 text checks passed per route.
-- NLB state-log validation: 139, 151, 136 and 139 records for the four wolfiness/traveler variants.
-- Matching end states: w=2 page18 → page19 → eat → page20 (`wolfiness=3,hp=4`); w=2 page24/pack meeting → page19 → don't eat → page21 (`wolfiness=2,hp=3,wolvesTalk=true`); w=0 page18 → page19 → don't eat → page21 (`wolfiness=0,hp=3,wolvesTalk=false`); w=0 page25/pack avoided → page19 → eat → page20 (`wolfiness=1,hp=4,wolvesTalk=false`).
-- All four terminal states agree on `barExit=true,forestExit=false,guardDone=false`. Pixel metrics remain advisory.
-- CI #121 subsequently verified all four right-turn bypass routes to page22 in both engines. All 8 runtime reports and 4 comparison reports were `ok=true`, `errors=[]`; each comparison covered 30–32 checkpoints and 23–25 text checks. NLB state-log validation passed (130–145 records per route). INSTEAD trace and NLB state-log agree on page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, the `images/22.jpg` / `22.png` resources, and `forestExit=true`; the other five tracked variables also matched. Pixel metrics remain advisory.
+- Workflow: **SUCCESS**. Build, smoke-test, shared route, all previously covered forest/traveler/bypass routes, all three new guard routes in both runtimes, all comparisons, INSTEAD reference validation and artifact upload passed.
+- All six guard runtime reports (three routes × two engines): `ok=true`, `errors=[]`. All three guard comparison reports: `ok=true`, `errors=[]`.
+- Text-check counts: talk 28 per runtime; attack 26; low-wolfiness escape 27. Comparison reports cover 35, 33 and 34 checkpoints respectively.
+- NLB state-log validators: **163 records** (high-wolves talk), **151** (high-wolves attack), **141** (low-wolfiness escape). All validators report `ok`.
+- Matching talk outcome: page27 UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3`, `27.png` / `images/27.jpg`, `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=true,guardDone=false`.
+- Matching attack outcome: page28 UUID `d45d6de2-e019-4a32-87f8-5f97ab2fcbf9`, `28.png` / `images/28.jpg`, `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`.
+- Matching low-wolfiness outcome: page1.8 UUID `433426b4-2e3f-4461-ab7a-e87119808471`, `1.8.png` / `images/1.8.jpg`, `wolfiness=0,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`.
+- Runtime traces confirm page1.7 has **3 portions in both engines**, and page26 has **8 portions in both engines**. This supersedes the source-block-count estimate from earlier notes.
+- INSTEAD session logs record achievement calls `INFO_FOR_GUARD` and `GUARD_NOT_A_PROBLEM` on the corresponding routes. This proves the calls occurred in those sessions, but does not verify persistent achievement storage or parity with NLBNavigator.
+- Artifact: `nlb-sdl-test-logs`, ID `13363351670`. Cross-renderer pixel metrics remain advisory; comparisons are based on route semantics, page identity, resources, text and state.
 
 Remaining:
-1. The four page22 bypass routes are verified by CI #121, including identity, text, background and all six tracked variables.
-2. Three new clean-state guard routes now cover page22 → page1.7 → page27 (`wolvesTalk=true`, high wolfiness), page28 (`wolvesTalk=false`, high wolfiness), and page1.8 (low wolfiness); they await the next CI.
-3. Continue the low-wolfiness escape from page1.8 to page1.9, then cover weapon choices, the hospital/police alternative start and endings.
-4. Add achievement capture and page36 tagged-background verification.
-5. Resolve Issue #37's pagination contract separately; do not hide the 15/17 difference or turn it into a pixel gate.
+1. Continue the low-wolfiness path from page1.8 to page1.9, then cover the hawthorn/rowan/viburnum weapon choices and their results.
+2. Add the alternative police/hospital start and determine runtime effects of the corpse choice on page14.
+3. Cover villain approach, page36 tagged-background selection and all six endings.
+4. Add read-only achievement-state capture/read-back in both runtimes; current INSTEAD session logs prove only that achievement calls executed.
+5. Resolve Issue #37's page8 pagination contract separately; do not convert it into a pixel gate.
 
 ## 8. Issue #28 and broader suite
 
@@ -172,9 +175,9 @@ For every new chat or after a context reset:
 
 ## 10. Current next action
 
-CI #120 (run 120, HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`) succeeded: all four independent traveler-decision routes passed in both engines and their four comparisons. Page20/page21 UUIDs, images, text checkpoints and wolfiness/HP values agree; details are recorded below.
+CI #120 confirmed the four traveler-decision variants; CI #121 confirmed all four page22 bypass routes. Most recently, CI #126 (**SUCCESS**, HEAD `2cc7ace2613d6929d7ac1d55a3389fefc0d8d60f`) confirmed all three guard routes in INSTEAD and NLBNavigator, with all three comparisons passing. See the CI #126 entry below for exact page UUIDs, images, variables and state-log counts.
 
-CI #121 verified the four page22 bypass routes in both runtimes. This commit adds three follow-on clean-state routes through the forest and guard modules: high wolfiness + `wolvesTalk=true` should reach page27; high wolfiness + `wolvesTalk=false` should reach page28; low wolfiness should reach page1.8. Their runtime results remain pending.
+Next: continue from page1.8 to page1.9 and test weapon selection, then cover the alternative police/hospital start and endings. Achievement state read-back and page36 tag-dependent background remain separate tasks.
 
 PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explicit approval.
 
@@ -329,3 +332,30 @@ PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explic
 - The NLB route failed at both checkpoints only because it received too few clicks; it had not yet reached page26 or page27 when those expectations were evaluated. No gameplay mismatch is demonstrated. The page28 route and low-wolfiness route still need fresh execution.
 - Artifact: `nlb-sdl-test-logs`, ID `13354465374`. The INSTEAD session log records `INFO_FOR_GUARD` being set; persisted achievement-state read-back is not yet tested.
 - These corrections change only differential-test route JSON and documentation. No story/export/engine source or `main` changes.
+
+
+### 2026-11-05 — CI #126: all three guard routes verified in both engines
+
+- CI [#41901754643](https://github.com/Antokolos/NLBNavigator/actions/runs/41901754643), run 126, HEAD `2cc7ace2613d6929d7ac1d55a3389fefc0d8d60f`: **SUCCESS**.
+- Build and smoke-test passed. The shared route, all earlier forest direction/traveler/bypass routes, the three guard routes in both engines, all comparisons, INSTEAD reference validation and artifact upload passed.
+- For each guard route, both runtime route reports have `ok=true`, `errors=[]`; the three comparison reports also have `ok=true`, `errors=[]`.
+- `wolfman-guard-high-wolves-talk`:
+  - INSTEAD and NLB finish on page27 UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3`, backgrounds `images/27.jpg` / `27.png`.
+  - Both report `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=true,guardDone=false`.
+  - 28 text checks per runtime; comparison report: 35 checkpoints, 28 text checks. NLB state-log: 163 records, validation `ok`.
+  - INSTEAD session log records `INFO_FOR_GUARD` and `Achievement set.`.
+- `wolfman-guard-high-wolves-attack`:
+  - INSTEAD and NLB finish on page28 UUID `d45d6de2-e019-4a32-87f8-5f97ab2fcbf9`, backgrounds `images/28.jpg` / `28.png`.
+  - Both report `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`.
+  - 26 text checks per runtime; comparison report: 33 checkpoints, 26 text checks. NLB state-log: 151 records, validation `ok`.
+  - INSTEAD session log records `GUARD_NOT_A_PROBLEM` and `Achievement set.`.
+- `wolfman-guard-low-wolfiness-escape`:
+  - INSTEAD and NLB finish on page1.8 UUID `433426b4-2e3f-4461-ab7a-e87119808471`, backgrounds `images/1.8.jpg` / `1.8.png`.
+  - Both report `wolfiness=0,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`.
+  - 27 text checks per runtime; comparison report: 34 checkpoints, 27 text checks. NLB state-log: 141 records, validation `ok`.
+- Runtime paginator state confirms page1.7 has 3 portions and page26 has 8 portions in both engines. All guard route JSONs now use those verified click counts.
+- Achievement-call logs are runtime evidence that the two relevant INSTEAD calls executed. Persistent achievement read-back and NLBNavigator achievement parity are **not** asserted.
+- Artifact `nlb-sdl-test-logs`, ID `13363351670`. Cross-renderer pixel metrics remain advisory and are not a pixel-perfect gate.
+- No story source, INSTEAD export, game engine or `main` was modified by this test stage. PR #32 remains Draft/open/unmerged.
+
+Next action: extend the low-wolfiness branch from page1.8 to page1.9, then validate the weapon options and downstream guard result.

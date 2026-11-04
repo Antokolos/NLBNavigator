@@ -20,16 +20,20 @@
 
 ## Текущий проверенный охват
 
-Последний полный успешный workflow: [CI #41695602249, run 120](https://github.com/Antokolos/NLBNavigator/actions/runs/41695602249), HEAD `a7b0411f36b61bf81bb8cef9970be15955638b07`.
+Последний полный успешный workflow: [CI #41901754643, run 126](https://github.com/Antokolos/NLBNavigator/actions/runs/41901754643), HEAD `2cc7ace2613d6929d7ac1d55a3389fefc0d8d60f`.
 
 | Маршрут | INSTEAD | NLBNavigator | Результат |
 |---|---|---|---|
-| Общий вводный и две ветви грабителя/бара | `ok=true` | `ok=true` | Сравнения успешны |
+| Общий вводный, грабитель и бар | `ok=true` | `ok=true` | Сравнения успешны |
 | Лес / путник (4 clean-state варианта) | `ok=true` | `ok=true` | Все 4 сравнения `ok=true` |
+| Четыре bypass-маршрута к page22 | `ok=true` | `ok=true` | Все 4 сравнения `ok=true` |
+| Охранник: `wolvesTalk=true` → page27 | `ok=true` | `ok=true` | Сравнение `ok=true` |
+| Охранник: `wolvesTalk=false` → page28 | `ok=true` | `ok=true` | Сравнение `ok=true` |
+| Охранник: `wolfiness=0` → page1.8 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 
-В CI #120 восемь forest runtime reports и четыре comparison reports имеют `errors=[]`; текстовые проверки — 24–26 на маршрут; state-log прошёл валидацию на 139, 151, 136 и 139 строках.
+CI #126 подтвердил все три guard routes; их NLB state-log валидирован на 163, 151 и 141 записях соответственно. Подробные конечные состояния перечислены в разделе «Охранник и выбор оружия».
 
-Подтверждённые конечные состояния (INSTEAD и NLBNavigator совпали):
+Подтверждённые конечные состояния forest/traveler маршрутов (INSTEAD и NLBNavigator совпали):
 - wolfiness=2, page18 → page19 → съесть путника → page20 UUID `0d9f5052-9f0a-4a5d-892b-05d8ac7f713f`, `images/20.jpg`, `wolfiness=3,hp=4`;
 - wolfiness=2, page24 / встреча со стаей → page19 → не есть → page21 UUID `db1bdcfc-0184-46ea-8194-d7cdbbf3b8fb`, `images/21.jpg`, `wolfiness=2,hp=3,wolvesTalk=true`;
 - wolfiness=0, page18 → page19 → не есть → page21, `wolfiness=0,hp=3,wolvesTalk=false`;
@@ -82,7 +86,7 @@
 - `wolfiness > 1` → страница 16.
 - `wolfiness <= 1` → страница 17.
 
-CI #119 подтвердил направления page16/page17. CI #120 подтвердил четыре левых маршрута от page18/page24/page25 через page19 с одним из двух исходов путника на page20/page21. Съесть путника увеличивает `wolfiness` и `hp` на 1; отказ не меняет их. Четыре правых bypass-маршрута к page22 с `forestExit=true` добавлены и ожидают CI.
+CI #119 подтвердил направления page16/page17. CI #120 подтвердил четыре левых маршрута через page19 и исходы путника на page20/page21. CI #121 подтвердил четыре правых bypass-маршрута к page22 с `forestExit=true` в обоих движках. CI #126 подтвердил все три продолжения от page22 через модуль охранника: page27, page28 и page1.8.
 
 ### 4. Лесные развилки и путь к путнику (page16/page17 — CI #119; путник — CI #120)
 
@@ -119,12 +123,14 @@ CI #119 подтвердил направления page16/page17. CI #120 по�
 - `wolfiness <= 1` → страница 1.8, UUID `433426b4-2e3f-4461-ab7a-e87119808471`.
 
 При `wolfiness > 1`, страница 26 смотрит на `wolvesTalk`:
-- `wolvesTalk=true` → страница 27, UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3` (информация о стае; достижение `INFO_FOR_GUARD`).
-- иначе → страница 28, UUID `d45d6de2-e019-4a32-87f8-5f97ab2fcbf9` (разобраться с охранником силой; достижение `GUARD_NOT_A_PROBLEM`).
+- `wolvesTalk=true` → страница 27, UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3` (информация о стае; достижение `INFO_FOR_GUARD`). **CI #126 подтвердил** страницу 27 в обоих движках, фон `27.png` / `images/27.jpg` и состояние `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=true,guardDone=false`.
+- иначе → страница 28, UUID `d45d6de2-e019-4a32-87f8-5f97ab2fcbf9` (разобраться с охранником силой; достижение `GUARD_NOT_A_PROBLEM`). **CI #126 подтвердил** страницу 28 в обоих движках, фон `28.png` / `images/28.jpg` и состояние `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`.
+
+В обоих соответствующих INSTEAD session logs CI #126 есть вызовы `INFO_FOR_GUARD` / `GUARD_NOT_A_PROBLEM` и `Achievement set.`. Это подтверждает исполнение вызова в сессии, но не чтение сохранённого achievement state и не междвижковую проверку его персистентности.
 
 Обе ветки затем сходятся на странице 35a, UUID `d6b53c8e-e4ae-492c-8489-89a67cf8d41e`, устанавливают `guardDone=true` и возвращаются в модуль охранника; при повторном входе он направляет к злодею.
 
-При `wolfiness <= 1`, путь идёт через страницу 1.8 к странице 1.9, UUID `8c0da93f-8301-442b-a9fd-60d68d9610d0`:
+При `wolfiness <= 1`, CI #126 подтвердил ветку page1.7 → page1.8 в обоих движках: page1.8 UUID `433426b4-2e3f-4461-ab7a-e87119808471`, фон `1.8.png` / `images/1.8.jpg`, состояние `wolfiness=0,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`. Продолжение от страницы 1.8 идёт к странице 1.9, UUID `8c0da93f-8301-442b-a9fd-60d68d9610d0`, но ещё не проверено runtime:
 - при `wolfiness >= 1` → страница 29, UUID `e307ea1f-9d44-45f0-aa58-15607482293b`, с тремя вариантами:
   - **Рябина** → страница 31, UUID `b8eecad7-8e40-4397-87de-e794189f7bf5` → страница 34, UUID `9a78cd0b-cc2b-4c46-bf73-e807ed71189c` (`WRONG_CHOICE`);
   - **Калина** → страница 32, UUID `7e4ded08-354b-4c76-b876-2e8ac335fdad` → та же страница 34 (`WRONG_CHOICE`);
@@ -194,7 +200,7 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 | `VILLAIN_PUNISHED` | `ec437b19-13ab-4f4a-b851-185849a51249` |
 | `MAXIMUM_WOLFINESS` | `a0b1f017-c7a3-4f32-a55c-25ab02f9ec39` |
 
-Эти 15 идентификаторов найдены статически. Текущие route-report/state trace не доказывают факт выдачи достижений. Для полной проверки потребуется добавить read-only наблюдение за вызовами и/или чтение сохранённого achievement state в обоих движках.
+Эти 15 идентификаторов найдены статически. CI #126 дополнительно зафиксировал в INSTEAD session logs фактические вызовы `INFO_FOR_GUARD` и `GUARD_NOT_A_PROBLEM` с `Achievement set.`. Это доказывает вызов в соответствующих сессиях, но не персистентность после закрытия игры и не parity с NLBNavigator. Для полной проверки требуется read-only наблюдение/чтение сохранённого achievement state в обоих движках.
 
 ## Следующие тестовые маршруты и текущий статус
 
@@ -206,14 +212,14 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 
 Все четыре bypass route reports на каждом движке имеют `ok=true`, все четыре comparisons — `errors=[]`. Во всех случаях конечная страница — page22 UUID `86893ac1-6506-4fdd-bbfc-8008d6ad6b31`, фон `22.png` / `images/22.jpg`, `forestExit=true`; остальные переменные соответствуют исходным ветвям. Подробные записи и ID артефакта находятся в `TESTING_PROGRESS.md`.
 
-Добавлены, но ещё **не runtime-проверены** три следующих маршрута:
-- `tests/differential/routes/wolfman-guard-high-wolves-talk.json`: page24 → page22 → page1.7 → page26 → page27 (`wolvesTalk=true`, высокая волчность; ожидается `INFO_FOR_GUARD`).
-- `tests/differential/routes/wolfman-guard-high-wolves-attack.json`: page18 → page22 → page1.7 → page26 → page28 (`wolvesTalk=false`, высокая волчность; ожидается `GUARD_NOT_A_PROBLEM`).
-- `tests/differential/routes/wolfman-guard-low-wolfiness-escape.json`: page25 → page22 → page1.7 → page1.8 (низкая волчность).
+Три guard-маршрута **подтверждены CI #126** в обоих движках:
+- `wolfman-guard-high-wolves-talk.json`: page24 → page22 → page1.7 → page26 → page27; конечный UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3`, `wolfiness=2`, `wolvesTalk=true`.
+- `wolfman-guard-high-wolves-attack.json`: page18 → page22 → page1.7 → page26 → page28; конечный UUID `d45d6de2-e019-4a32-87f8-5f97ab2fcbf9`, `wolfiness=2`, `wolvesTalk=false`.
+- `wolfman-guard-low-wolfiness-escape.json`: page25 → page22 → page1.7 → page1.8; конечный UUID `433426b4-2e3f-4461-ab7a-e87119808471`, `wolfiness=0`.
 
-Page1.7 is split into two nonempty text blocks in the pinned NLB book and three nonempty `pn` segments in the INSTEAD export. The high-wolfiness route steps therefore use 2 NLB clicks and 3 INSTEAD clicks before checking the conditional page26 branch; this input alignment awaits runtime confirmation.
+Все шесть runtime route reports имеют `ok=true`, `errors=[]`; все три comparison reports — `ok=true`, `errors=[]`. NLB state-log: 163/151/141 записей; все validators `ok`. Runtime trace показывает по 3 порции на странице 1.7 и по 8 на странице 26 в обоих движках; route JSON использует 3/3 и 8/8 кликов (INSTEAD/NLBNavigator).
 
-После подтверждения guard branches продолжить low-wolfiness route от page1.8 к page1.9, затем проверять выбор оружия и концовки. Статический граф не считать выполненным тестом.
+Следующий тест: продолжить low-wolfiness route от page1.8 к page1.9, затем проверить выбор оружия, результаты и путь к злодею. Статический граф дальнейших сцен не считать runtime-покрытием.
 
 ## Связанные задачи
 

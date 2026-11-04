@@ -6,15 +6,15 @@
 
 ## Текущая модель покрытия
 
-wolfman и instead-am_i_a_monster_vn — две упаковки одной истории
+wolfman и instead-am_i-a_monster_vn — две упаковки одной истории
 **Am I a Monster?**. CI #120 подтвердил четыре clean-state лесных маршрута в обоих
-движках и их comparisons: переходы page16/page17 к page18/page24/page25, затем
-левый поворот к page19 и проверка выбора путника с конечными страницами 20/21.
-Съесть путника увеличивает `wolfiness` и `hp` на 1; отказ не меняет эти значения.
-CI #121 подтвердил четыре правых bypass-маршрута через page22 с `forestExit=true`
-в обоих движках. Три последующих guard-маршрута добавлены и ожидают CI:
-`wolvesTalk=true` → page27, `wolvesTalk=false` → page28 при высокой волчности,
-низкая волчность → page1.8. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
+движках и их comparisons: page16/page17 → page18/page24/page25, левый поворот
+к page19 и выбор путника с исходами на page20/page21. Съесть путника увеличивает
+`wolfiness` и `hp` на 1; отказ не меняет эти значения. CI #121 подтвердил четыре
+правых bypass-маршрута через page22 (`forestExit=true`). CI #126 подтвердил в обоих
+движках три дальнейшие ветви охранника: высокая волчность + `wolvesTalk=true` →
+page27; высокая волчность + `wolvesTalk=false` → page28; низкая волчность →
+page1.8. Все три route comparisons успешны. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
 контрольная точка: `TESTING_PROGRESS.md`.
 
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
@@ -96,7 +96,7 @@ python3 tests/differential/run_route.py \
 - Четыре `wolfman-forest-wolfiness-*-bypass.json` маршрута: правый поворот
   от page18/page24/page25 к page22 с `forestExit=true`; подтверждены CI #121.
 - Три `wolfman-guard-*.json` маршрута: выход из леса к охраннику и условные ветви
-  page27/page28/page1.8; ожидают CI.
+  page27/page28/page1.8; подтверждены CI #126 в обоих движках и тремя успешными comparisons.
 
 CI #41695602249 (run 120) завершил все четыре расширенных forest routes в обоих
 движках и четыре comparisons: route reports и comparison reports имеют
@@ -106,9 +106,20 @@ NLBNavigator 17), Issue #37 остаётся открытым.
 
 CI #121 подтвердил page22 bypass-маршруты: все четыре INSTEAD/NLBNavigator route
 reports и четыре comparison reports прошли; конечные UUID, фон и `forestExit=true`
-совпали. Новые guard routes добавлены, но ещё не runtime-проверены. Выбор оружия,
-альтернативный старт через больницу и шесть концовок остаются вне подтверждённого
-runtime-покрытия.
+совпали.
+
+CI #126 подтвердил три guard routes: все шесть runtime route reports имеют
+`ok=true`, `errors=[]`; все три comparisons также успешны. Конечные состояния
+совпадают: page27 (`wolvesTalk=true`, `wolfiness=2`), page28 (`wolvesTalk=false`,
+`wolfiness=2`) и page1.8 (`wolfiness=0`); page identity, image, visible text и
+все шесть отслеживаемых переменных совпали. NLB state-log validators прошли на
+163/151/141 записях. Страница 1.7 имеет 3 порции, страница 26 — 8 порций в обоих
+движках. Артефакт CI #126: `nlb-sdl-test-logs`, ID `13363351670`.
+
+Вне подтверждённого runtime-покрытия пока остаются продолжение от page1.8 к
+выбору оружия, альтернативный старт через больницу и шесть концовок. Достижения
+`INFO_FOR_GUARD` и `GUARD_NOT_A_PROBLEM` зафиксированы как вызовы в INSTEAD
+session logs, но сохранённое состояние достижений и parity с NLBNavigator не проверены.
 
 Для INSTEAD trace считает только непустые сегменты пагинатора: пустые разделители
 пропускаются самим paginator и не должны увеличивать число видимых порций.
