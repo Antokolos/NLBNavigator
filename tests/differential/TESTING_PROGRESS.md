@@ -294,3 +294,14 @@ PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explic
 - Static input comparison found that page1.7 has two nonempty text blocks in the pinned NLB book but three nonempty `pn` segments in the INSTEAD export.
 - Updated both high-wolfiness guard route definitions to advance 2 clicks in NLBNavigator and 3 in INSTEAD before expecting page26.
 - This is a route-input alignment based on the pinned texts, not a story/engine modification. CI #122 was superseded while still in setup; the corrected commit will be verified by the next run.
+
+
+### 2026-11-04 — CI #123: guard route pagination count diagnosed
+
+- CI [#41837368137](https://github.com/Antokolos/NLBNavigator/actions/runs/41837368137), run 123, HEAD `0fbe9e19cdfa5ba046c8bb0d3a639034d3923756`: **FAILURE** at the first new guard route. Build, smoke test, shared route, all four forest direction/traveler routes, all four page22 bypass routes and their comparisons completed successfully.
+- The INSTEAD run of `wolfman-guard-high-wolves-talk` reached page26 UUID `0e3e04d8-03e7-459d-8136-e7c135100101` with `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=true,guardDone=false`. The failed checkpoint was still on `images/26.jpg`, at INSTEAD portion 7 of 8; the final visible text was «Не знаю. Но очень надеюсь.».
+- This is an off-by-one in the route input, not evidence of a game mismatch: the route sent seven INSTEAD clicks, which reached the last visible page26 portion but did not leave the page. The pinned NLB page26 text has seven blocks; the captured INSTEAD trace has eight nonempty portions. The required page26 advance is therefore **INSTEAD 8 / NLBNavigator 7**.
+- The same incorrect count existed in the alternate high-wolfiness route. The low-wolfiness route also had an incomplete page1.7 advance: after entering page1.7, the conditional branch requires **INSTEAD 3 / NLBNavigator 2** clicks, not 1/1.
+- Corrected all three route actions to those per-runtime counts. Since CI #123 stopped at the first guard route, it did not run the NLBNavigator version of that route, either remaining guard route, or any guard comparison. Guard branch behavior and achievements remain unverified.
+- Artifact `nlb-sdl-test-logs`, ID `13332131136`, contains the route report, screenshots, full/partial INSTEAD trace and progress checkpoint. CI #122 was cancelled; no game data, INSTEAD export, engine source or `main` was changed by this test correction.
+- A fresh CI run is required before marking any guard branch covered.

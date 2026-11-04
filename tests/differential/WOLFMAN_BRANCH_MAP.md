@@ -243,3 +243,12 @@ The four route JSONs now use x_ratio=0.23 for INSTEAD direction selection, with 
 ### CI #118 — NLBNavigator choice-panel diagnosis
 
 CI #41599355620 passed all four forest routes in INSTEAD. The first NLBNavigator route failed on `clickchoice:0`: its page16 state-log contains two model choices but the screen is still `page`; the screenshot shows normal page text rather than the choice overlay. In the NLB runtime a single click on the finished VN page is required to trigger `advanceToChoices()` and render the actual choice panel. The four routes now send one reveal click in both INSTEAD and NLBNavigator and expect NLB `screen=choices` before selecting index 0/1. This is a test input/expectation correction, not a gameplay change.
+
+
+## CI #123 — guard-route test-input diagnosis
+
+CI [#41837368137](https://github.com/Antokolos/NLBNavigator/actions/runs/41837368137) failed in the first new guard route, after all previous forest and page22 bypass route checks and comparisons had passed. The INSTEAD trace reached page26 with the expected high-wolfiness state (`wolfiness=2`, `wolvesTalk=true`, `forestExit=true`) but the last checkpoint remained on page26 portion 7/8. The route had sent only seven clicks, so this is an incomplete page advance, not a confirmed branch mismatch.
+
+The pinned NLB page26 text consists of seven blocks, while the INSTEAD runtime trace records eight nonempty portions. The page26-to-conditional-branch action must use 8 INSTEAD clicks and 7 NLBNavigator clicks. The same correction is applied to both high-wolfiness guard routes.
+
+The low-wolfiness route was also corrected: after page22 enters page1.7 at portion zero, completing page1.7 requires 3 INSTEAD clicks and 2 NLBNavigator clicks before page1.8. It previously used 1/1. No guard route has yet completed in both engines; all three remain pending a fresh CI run. Artifact ID: `13332131136`.
