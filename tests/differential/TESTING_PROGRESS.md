@@ -358,4 +358,16 @@ PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explic
 - Artifact `nlb-sdl-test-logs`, ID `13363351670`. Cross-renderer pixel metrics remain advisory and are not a pixel-perfect gate.
 - No story source, INSTEAD export, game engine or `main` was modified by this test stage. PR #32 remains Draft/open/unmerged.
 
-Next action: extend the low-wolfiness branch from page1.8 to page1.9, then validate the weapon options and downstream guard result.
+Next action: run the pending low-wolfiness continuation through page1.9; after runtime validation, advance to page30, select the only available hawthorn option, and verify the resulting guard outcome.
+
+
+### 2026-11-05 — CI #127 and low-wolfiness continuation prepared
+
+- CI [#41915650980](https://github.com/Antokolos/NLBNavigator/actions/runs/41915650980), run 127, HEAD `2f0e05f14908a19acb2f96594b198e6226a3cd0c`: **SUCCESS**. This was a documentation-only revalidation after the CI #126 coverage update; all 50 job steps passed, including build, smoke test, existing route runs, guard routes, comparisons, INSTEAD export validation and artifact upload.
+- Artifact: `nlb-sdl-test-logs`, ID `13369413410`, 77,716,384 bytes.
+- Inspection of CI #126's low-wolfiness trace confirms that page1.8 UUID `433426b4-2e3f-4461-ab7a-e87119808471` has **5 runtime portions in both engines**. The captured start state was portion 0/5; all six tracked variables matched at `wolfiness=0,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`.
+- Extended `wolfman-guard-low-wolfiness-escape.json` with two checkpoints: after 4 additional advances, verify the final page1.8 portion (index 4/5); after one more advance, verify page1.9 UUID `8c0da93f-8301-442b-a9fd-60d68d9610d0`, image `1.9.png` / `images/1.9.jpg`, first visible text and all six variables.
+- The source export shows the automatic transition from page1.8 through its empty choice wrapper to page1.9. The new runtime checkpoints are **pending the next full CI run**; page1.9 is not yet counted as confirmed coverage.
+- No NLB story source, INSTEAD export, engine code or `main` was changed. This is test-route and documentation work only.
+
+Next: inspect both runtime traces for the new page1.8/page1.9 checkpoints and use the captured page1.9 paginator count to extend the route through page30 and the low-wolfiness hawthorn choice.

@@ -14,7 +14,7 @@ wolfman и instead-am_i-a_monster_vn — две упаковки одной ис
 правых bypass-маршрута через page22 (`forestExit=true`). CI #126 подтвердил в обоих
 движках три дальнейшие ветви охранника: высокая волчность + `wolvesTalk=true` →
 page27; высокая волчность + `wolvesTalk=false` → page28; низкая волчность →
-page1.8. Все три route comparisons успешны. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
+page1.8. Все три route comparisons успешны. По артефакту CI #126 на page1.8 подтверждены 5 runtime-порций в обоих движках; добавлены pending checkpoints последней порции и перехода на page1.9, которые требуют следующего полного CI. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
 контрольная точка: `TESTING_PROGRESS.md`.
 
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
@@ -189,3 +189,6 @@ CI [#41856596471](https://github.com/Antokolos/NLBNavigator/actions/runs/4185659
 
 
 CI [#41880453967](https://github.com/Antokolos/NLBNavigator/actions/runs/41880453967) (run 125) confirmed the INSTEAD talk route through page27, but the NLB route stopped on the two guard pagination checkpoints. Runtime state-log—not static source block count—shows page1.7 has 3 NLB portions (the second source block is internally split) and page26 has 8. Both engines therefore now use 3 clicks for page1.7 and 8 for page26. This supersedes the prior 3/2 and 8/7 estimates. The INSTEAD talk route is confirmed; NLB talk, page28 attack, and low-wolfiness escape remain pending a fresh full CI. Artifact ID: `13354465374`.
+
+
+Продолжение low-wolfiness маршрута подготовлено: после 4 дополнительных advances он проверяет последнюю из 5 порций page1.8, затем ещё одним advance — вход на page1.9. До прохождения следующего CI эти checkpoints и page1.9 не считаются runtime-подтверждёнными. Следующая стадия после этого — page30 и выбор боярышника.

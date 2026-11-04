@@ -1067,6 +1067,78 @@
           "guardDone": false
         }
       }
+    },
+    {
+      "id": "guard-escape-final-portion",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 4,
+          "nlbnavigator": 4
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "guard-escape-final-portion.png",
+      "visual_change_from": "guard-page17-low-wolfiness-escape",
+      "expect": {
+        "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+        "image_suffix": "1.8.png",
+        "instead_background_suffix": "images/1.8.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 4,
+        "portion_count": 5,
+        "instead_portion_index": 4,
+        "instead_portion_count": 5,
+        "text_contains": "сзади уже никого не было",
+        "instead_text_contains": "сзади уже никого не было",
+        "min_changed_pixels": 1000,
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3,
+          "barExit": true,
+          "forestExit": true,
+          "wolvesTalk": false,
+          "guardDone": false
+        }
+      }
+    },
+    {
+      "id": "guard-escape-to-page19",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "guard-escape-to-page19.png",
+      "visual_change_from": "guard-escape-final-portion",
+      "expect": {
+        "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+        "image_suffix": "1.9.png",
+        "instead_background_suffix": "images/1.9.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "portion_index": 0,
+        "instead_portion_index": 0,
+        "text_contains": "Дрожа, вы улеглись под кустом",
+        "instead_text_contains": "Дрожа, вы улеглись под кустом",
+        "min_changed_pixels": 1000,
+        "variables": {
+          "wolfiness": 0,
+          "hp": 3,
+          "barExit": true,
+          "forestExit": true,
+          "wolvesTalk": false,
+          "guardDone": false
+        }
+      }
     }
   ],
   "notes": "Clean-state route: page25 / wolvesTalk=false → page22 → guard module → page1.7 → page1.8. Confirms the wolfiness<=1 branch; the continuation from page1.8 to weapon selection is a later test."

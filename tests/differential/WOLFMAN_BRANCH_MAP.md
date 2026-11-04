@@ -130,7 +130,7 @@ CI #119 подтвердил направления page16/page17. CI #120 по�
 
 Обе ветки затем сходятся на странице 35a, UUID `d6b53c8e-e4ae-492c-8489-89a67cf8d41e`, устанавливают `guardDone=true` и возвращаются в модуль охранника; при повторном входе он направляет к злодею.
 
-При `wolfiness <= 1`, CI #126 подтвердил ветку page1.7 → page1.8 в обоих движках: page1.8 UUID `433426b4-2e3f-4461-ab7a-e87119808471`, фон `1.8.png` / `images/1.8.jpg`, состояние `wolfiness=0,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`. Продолжение от страницы 1.8 идёт к странице 1.9, UUID `8c0da93f-8301-442b-a9fd-60d68d9610d0`, но ещё не проверено runtime:
+При `wolfiness <= 1`, CI #126 подтвердил ветку page1.7 → page1.8 в обоих движках: page1.8 UUID `433426b4-2e3f-4461-ab7a-e87119808471`, фон `1.8.png` / `images/1.8.jpg`, состояние `wolfiness=0,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`. Артефакт CI #126 показывает **5 runtime-порций page1.8 в обоих движках**. После последней порции автоматический переход ведёт на page1.9, UUID `8c0da93f-8301-442b-a9fd-60d68d9610d0`. В low-wolfiness route добавлены контрольные точки последней порции и входа на page1.9; они ожидают полного CI-подтверждения:
 - при `wolfiness >= 1` → страница 29, UUID `e307ea1f-9d44-45f0-aa58-15607482293b`, с тремя вариантами:
   - **Рябина** → страница 31, UUID `b8eecad7-8e40-4397-87de-e794189f7bf5` → страница 34, UUID `9a78cd0b-cc2b-4c46-bf73-e807ed71189c` (`WRONG_CHOICE`);
   - **Калина** → страница 32, UUID `7e4ded08-354b-4c76-b876-2e8ac335fdad` → та же страница 34 (`WRONG_CHOICE`);
@@ -219,7 +219,7 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 
 Все шесть runtime route reports имеют `ok=true`, `errors=[]`; все три comparison reports — `ok=true`, `errors=[]`. NLB state-log: 163/151/141 записей; все validators `ok`. Runtime trace показывает по 3 порции на странице 1.7 и по 8 на странице 26 в обоих движках; route JSON использует 3/3 и 8/8 кликов (INSTEAD/NLBNavigator).
 
-Следующий тест: продолжить low-wolfiness route от page1.8 к page1.9, затем проверить выбор оружия, результаты и путь к злодею. Статический граф дальнейших сцен не считать runtime-покрытием.
+Следующий тестовый запуск проверит продолжение low-wolfiness route от page1.8 через последнюю из пяти порций к page1.9. После подтверждения runtime-пагинации следует продолжить через page30, выбрать боярышник и проверить результат боя и путь к злодею. Статический граф дальнейших сцен не считать runtime-покрытием.
 
 ## Связанные задачи
 
@@ -274,3 +274,8 @@ CI [#41880453967](https://github.com/Antokolos/NLBNavigator/actions/runs/4188045
 The NLB state-log proves page1.7 has `portion.count=3` (after two clicks it is still on portion 2/3), and page26 has `portion.count=8` (after seven clicks it is still on portion 6/8). INSTEAD trace also reports 3 and 8 portions respectively. The corrected routes therefore use **3 clicks on page1.7 and 8 clicks on page26 in both runtimes**. This supersedes the earlier static estimate based solely on the number of nonempty source text blocks; the paginator can split a block internally.
 
 The INSTEAD talk route is runtime-confirmed; its NLB counterpart, the page28 attack route and the low-wolfiness route still require a fresh full run. Artifact ID: `13354465374`.
+
+
+### Продолжение низкой ветки — новые checkpoints ожидают CI
+
+В CI #126 trace низкой ветки показал 5 порций page1.8 и в INSTEAD, и в NLBNavigator. Текущая версия `wolfman-guard-low-wolfiness-escape.json` теперь отдельно проверяет порцию 4/5 с окончанием фразы «сзади уже никого не было», затем переход на page1.9 (`8c0da93f-8301-442b-a9fd-60d68d9610d0`, `1.9.png` / `images/1.9.jpg`). Это тестовая конфигурация, ещё не runtime-подтверждение. При `wolfiness=0` статический граф затем ведёт к page30 и единственному варианту «Выбрать боярышник»; его результат также ждёт отдельного маршрута и CI.
