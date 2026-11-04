@@ -211,6 +211,8 @@ CI #41412052519 (run 115) подтвердил в обоих runtime, что sta
 - `tests/differential/routes/wolfman-guard-high-wolves-attack.json`: page18 → page22 → page1.7 → page26 → page28 (`wolvesTalk=false`, высокая волчность; ожидается `GUARD_NOT_A_PROBLEM`).
 - `tests/differential/routes/wolfman-guard-low-wolfiness-escape.json`: page25 → page22 → page1.7 → page1.8 (низкая волчность).
 
+Page1.7 is split into two nonempty text blocks in the pinned NLB book and three nonempty `pn` segments in the INSTEAD export. The high-wolfiness route steps therefore use 2 NLB clicks and 3 INSTEAD clicks before checking the conditional page26 branch; this input alignment awaits runtime confirmation.
+
 После подтверждения guard branches продолжить low-wolfiness route от page1.8 к page1.9, затем проверять выбор оружия и концовки. Статический граф не считать выполненным тестом.
 
 ## Связанные задачи

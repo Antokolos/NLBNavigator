@@ -284,5 +284,13 @@ PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explic
 - `wolfman-guard-high-wolves-attack`: high wolfiness, `wolvesTalk=false`; page22 → page1.7 → page26 → page28.
 - `wolfman-guard-low-wolfiness-escape`: low wolfiness; page22 → page1.7 → page1.8.
 - The tests verify page UUID, NLB/INSTEAD image, visible text and all six tracked variables at each new checkpoint. The high branches advance through the page26 dialog before checking page27/page28.
+- These routes are configured for the page1.7 pagination split found in the pinned inputs: NLB `text/ru` has two nonempty text blocks, while the INSTEAD export's `dsc` has three nonempty `pn` segments. The page1.7 branch step therefore sends 2 clicks in NLBNavigator and 3 in INSTEAD; CI must confirm these runtime counts before marking the guard branch covered.
 - These routes are static test definitions until the next CI passes; do not count them as runtime coverage yet.
 - Next: inspect every route report, all three comparisons, the INSTEAD trace and NLB state-log; use artifacts to diagnose failures without replaying the already confirmed CI #121 bypass paths.
+
+
+### 2026-11-04 — guard route pagination alignment
+
+- Static input comparison found that page1.7 has two nonempty text blocks in the pinned NLB book but three nonempty `pn` segments in the INSTEAD export.
+- Updated both high-wolfiness guard route definitions to advance 2 clicks in NLBNavigator and 3 in INSTEAD before expecting page26.
+- This is a route-input alignment based on the pinned texts, not a story/engine modification. CI #122 was superseded while still in setup; the corrected commit will be verified by the next run.
