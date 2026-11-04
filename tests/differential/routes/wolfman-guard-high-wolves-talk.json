@@ -1096,8 +1096,8 @@
         "instead_background_suffix": "images/27.jpg",
         "screen": "page",
         "instead_screen_kind": "page",
-        "text_contains": "где найти оборотней",
-        "instead_text_contains": "где найти оборотней",
+        "text_contains": "Вспомнив недавнюю встречу, вы воскликнули",
+        "instead_text_contains": "Вспомнив недавнюю встречу, вы воскликнули",
         "variables": {
           "wolfiness": 2,
           "hp": 3,

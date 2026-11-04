@@ -305,3 +305,14 @@ PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explic
 - Corrected all three route actions to those per-runtime counts. Since CI #123 stopped at the first guard route, it did not run the NLBNavigator version of that route, either remaining guard route, or any guard comparison. Guard branch behavior and achievements remain unverified.
 - Artifact `nlb-sdl-test-logs`, ID `13332131136`, contains the route report, screenshots, full/partial INSTEAD trace and progress checkpoint. CI #122 was cancelled; no game data, INSTEAD export, engine source or `main` was changed by this test correction.
 - A fresh CI run is required before marking any guard branch covered.
+
+
+### 2026-11-04 — CI #124: guard transition reached; text assertion corrected
+
+- CI [#41856596471](https://github.com/Antokolos/NLBNavigator/actions/runs/41856596471), run 124, HEAD `78e949f361bd2c32c866f066deb845e6a61b98d4`: **FAILURE** at the text assertion for the first guard-talk checkpoint. Build, smoke test, all previous forest routes, all four page22 bypass routes and their comparisons passed.
+- The corrected page26 click counts worked: INSTEAD completed page26 (portion 7/8) and transitioned to page27 UUID `2eb72ffe-865a-4e51-aa9c-60af1b055fc3`, background `images/27.jpg`. The trace has no errors and records the expected variables `wolfiness=2,hp=3,barExit=true,forestExit=true,wolvesTalk=true,guardDone=false`.
+- The remaining error was a text-checkpoint mismatch: the route expected «где найти оборотней», which occurs later on page27, while the first displayed portion is «Вспомнив недавнюю встречу, вы воскликнули:». The CI screenshot confirms that exact first portion. Updated both runtime text expectations to the text visible on initial entry.
+- The INSTEAD session log records `Setting achievement 'INFO_FOR_GUARD'...` followed by `Achievement set.`. This confirms that the achievement call ran in this session; persistence/read-back of achievement state remains unverified.
+- Static review found the same premature text expectation in the high-wolfiness fight route: page28 first shows «Ты пропустишь меня?», while «придётся драться со мной» appears later. Updated the checkpoint to the first visible text to avoid an equivalent false failure.
+- The low-wolfiness route did not run in CI #124 because the workflow stopped at the first failure. Its 3/2 page1.7 click correction remains in place but still awaits runtime verification.
+- Artifact: `nlb-sdl-test-logs`, ID `13340908124`. No gameplay/story source, INSTEAD export, or main branch changes.

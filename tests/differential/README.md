@@ -172,3 +172,6 @@ CI #41599355620 (run 118) confirms all four new direction routes pass in INSTEAD
 
 
 CI [#41837368137](https://github.com/Antokolos/NLBNavigator/actions/runs/41837368137) (run 123) reached the first guard route but failed because its test action stopped on page26's last INSTEAD text portion (7/8) instead of advancing to page27. The pinned page26 has seven NLB text blocks and eight INSTEAD portions; both high-wolfiness routes now use 8 INSTEAD clicks / 7 NLBNavigator clicks. The low-wolfiness route now fully advances page1.7 with 3/2 clicks. These are test-input corrections only; guard behavior remains unverified until the next complete CI. Artifact ID: `13332131136`.
+
+
+CI [#41856596471](https://github.com/Antokolos/NLBNavigator/actions/runs/41856596471) (run 124) reached the expected page27 UUID in INSTEAD with matching image and state, but failed its text assertion: the expected phrase was later in the page, not in the first displayed portion. The route now checks «Вспомнив недавнюю встречу, вы воскликнули». The same first-visible-portion correction was made for page28 («Ты пропустишь меня?»). The INSTEAD session log records `INFO_FOR_GUARD` as set; persisted achievement state is not yet verified. All guard routes still await successful runs in both runtimes. Artifact ID: `13340908124`.

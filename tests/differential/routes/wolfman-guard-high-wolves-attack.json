@@ -1026,8 +1026,8 @@
         "instead_background_suffix": "images/28.jpg",
         "screen": "page",
         "instead_screen_kind": "page",
-        "text_contains": "придётся драться со мной",
-        "instead_text_contains": "придётся драться со мной",
+        "text_contains": "Ты пропустишь меня",
+        "instead_text_contains": "Ты пропустишь меня",
         "variables": {
           "wolfiness": 2,
           "hp": 3,
