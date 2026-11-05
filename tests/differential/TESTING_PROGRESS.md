@@ -397,3 +397,17 @@ Next: inspect both runtime traces for the new page1.8/page1.9 checkpoints and us
 - Cross-renderer pixel metrics remain advisory; semantic text, page/resource identity and tracked variables are the comparison gate. No story source, INSTEAD export, engine code or `main` was changed. PR #32 remains Draft/open/unmerged.
  
 Next: inspect the two new page33/page35b checkpoints in CI #131. After confirming page35b, continue into the villain module and test the actual background selected by page36's tag before covering its six endings.
+
+
+### 2026-11-06 — CI #131: page33 completion, page35b and RIGHT_CHOICE verified
+
+- CI [#42073829562](https://github.com/Antokolos/NLBNavigator/actions/runs/42073829562), run 131, HEAD `bf5e787aafdbe9a1f3daa4d37d96203765a0ea4b`: **SUCCESS, 51/51 steps**. Build, smoke-test, all existing forest and guard routes in both runtimes, all comparisons, INSTEAD export validation and artifact upload passed.
+- Artifact `nlb-sdl-test-logs`, ID `13440709102`, 79,879,950 bytes.
+- Low-wolfiness route reports: INSTEAD `ok=true`, `errors=[]`; NLBNavigator `ok=true`, `errors=[]`. Cross-runtime comparison: `ok=true`, `errors=[]`, 42 checkpoints and **34 text checks**. NLBNavigator state-log validation: **169 records**, `ok`.
+- Both engines show page33 UUID `bc738a80-9890-4416-bead-3bbc8f533412`, backgrounds `33.png` / `images/33.jpg`, with **2 runtime portions**. The final portion contains «Оборотень кинулся на вас… налетел грудью прямо на острую палку».
+- Advancing from the second page33 portion reaches page35b UUID `6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46`, backgrounds `35b.png` / `images/35b.jpg`, text «Путь был свободен». Both engines agree on `wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`.
+- INSTEAD `session.log` records `Setting achievement 'RIGHT_CHOICE'...` followed by `Achievement set.`. This confirms the achievement call occurred during the tested session. NLBNavigator state trace confirms `guardDone=true`; it does not prove persisted achievement-state parity or a saved-state read-back.
+- The route is extended one step further to the villain module's page36. The pinned INSTEAD export's `tagsObj` sets tag `HUMAN` when `wolfiness <= 1`, otherwise `WOLF`; page36 chooses `images/36.jpg` for HUMAN and `images/36b.jpg` for WOLF. Since this route ends with `wolfiness=0`, CI #132 expects page36 UUID `0aa69b7f-274b-42ee-a758-4d3c2f98e3aa`, `36.png` / `images/36.jpg` and the first visible text «Других препятствий вы не встретили». This page36 checkpoint is **pending CI #132**.
+- Cross-renderer pixel metrics remain advisory, not a pixel-perfect gate. No story source, INSTEAD export, game engine or `main` was changed. PR #32 remains Draft/open/unmerged.
+
+Next: inspect CI #132 for the guard-module exit and page36 tag-selected background. Then trace the low-wolfiness villain dialog and its `wolfiness=0,hp=2` ending branch.
