@@ -411,3 +411,17 @@ Next: inspect the two new page33/page35b checkpoints in CI #131. After confirmin
 - Cross-renderer pixel metrics remain advisory, not a pixel-perfect gate. No story source, INSTEAD export, game engine or `main` was changed. PR #32 remains Draft/open/unmerged.
 
 Next: inspect CI #132 for the guard-module exit and page36 tag-selected background. Then trace the low-wolfiness villain dialog and its `wolfiness=0,hp=2` ending branch.
+
+
+### 2026-11-06 — CI #132: page36 HUMAN background verified
+
+- CI [#42089222459](https://github.com/Antokolos/NLBNavigator/actions/runs/42089222459), run 132, HEAD `7a7dbc689300ed755318b30eb3cfc297da81e756`: **SUCCESS, 51/51 steps**. Build, smoke-test, all forest/guard routes in both runtimes, all comparisons, INSTEAD export validation and artifact upload passed.
+- Artifact `nlb-sdl-test-logs`, ID `13448363329`, 80,085,911 bytes.
+- Low-wolfiness route reports: INSTEAD `ok=true`, `errors=[]`; NLBNavigator `ok=true`, `errors=[]`. Comparison report: `ok=true`, `errors=[]`, 43 route checkpoints. NLBNavigator state-log validation: **172 records**, `ok`.
+- Both runtimes successfully advance from page35b to page36 UUID `0aa69b7f-274b-42ee-a758-4d3c2f98e3aa`; the selected resources are INSTEAD `images/36.jpg` and NLBNavigator `36.png`. Text begins «Других препятствий вы не встретили. С замиранием сердца вы проникли в дом». Both screenshots show the same HUMAN-branch artwork.
+- All six tracked variables match at page36: `wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`. This confirms the `tagsObj` behavior in the tested low-wolfiness route and verifies the HUMAN rather than WOLF resource selection.
+- The INSTEAD session log still records the earlier `RIGHT_CHOICE` call and `Achievement set.`. This is a call-level observation, not a persisted read-back or achievement-state parity test.
+- Static control-flow review shows that page36's choice wrapper sends `wolfiness < 1` to page40 UUID `b5aa3b43-a7be-44b3-82d1-95925a213cd7`. With the current state `hp=2`, page40's automatic choice condition is expected to continue to page42 UUID `c81126f6-4646-42b3-af03-aae3d6a9a0c2` (`VILLAIN_PUNISHED`), not page41. The route now checks entry into page40; page40's actual runtime paginator count must be read from CI #133 before adding the exact advances to page42.
+- No game/story source, INSTEAD export, engine code or `main` was changed. PR #32 remains Draft/open/unmerged.
+
+Next: inspect CI #133 for page40 entry and runtime pagination; then advance to page42 and verify the low-wolfiness / hp=2 ending and `VILLAIN_PUNISHED` call.
