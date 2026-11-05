@@ -383,3 +383,17 @@ Next: inspect both runtime traces for the new page1.8/page1.9 checkpoints and us
 - Extended the low-wolfiness route again: it now checks page1.9 final portion (index 2/3), advances to page30 (`e0d11a50-50d2-4521-be11-10267f8aab92`), expects the only hawthorn choice, selects it and expects page33 (`bc738a80-9890-4416-bead-3bbc8f533412`) with `hp=2`. These four additional checkpoints are **pending CI #129**; their static expectations are not yet runtime-confirmed.
 - The source indicates page33 should then transition to page35b (`6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46`), setting `guardDone=true` and calling `RIGHT_CHOICE`; page33 runtime pagination still needs observation before adding the exact advances.
 - No NLB story source, INSTEAD export, engine code or `main` was changed. PR #32 remains Draft/open/unmerged.
+
+
+### 2026-11-05 — CI #130: page30 hawthorn choice and page33 verified
+
+- CI [#42001378961](https://github.com/Antokolos/NLBNavigator/actions/runs/42001378961), run 130, HEAD `50371498f4c0badc17d72d2196e365c254075159`: **SUCCESS, 51/51 steps**. Build, smoke-test, all earlier routes, all three guard routes in both runtimes, comparisons, INSTEAD export validation and artifact upload passed.
+- Artifact `nlb-sdl-test-logs`, ID `13407082565`, 79,230,675 bytes.
+- Low-wolfiness route reports: INSTEAD `ok=true`, `errors=[]`; NLBNavigator `ok=true`, `errors=[]`. Comparison report: `ok=true`, `errors=[]`, 40 route checkpoints and 32 text checks, all passed. NLBNavigator state-log validation: **163 records**, `ok`.
+- The route completes page1.9 (3 portions in each runtime), reaches page30 UUID `e0d11a50-50d2-4521-be11-10267f8aab92` and sees the only available choice, «Выбрать боярышник».
+- After correcting the INSTEAD click coordinate from `y_ratio=0.36` to `0.27`, both engines select the hawthorn action and reach page33 UUID `bc738a80-9890-4416-bead-3bbc8f533412`, backgrounds `33.png` / `images/33.jpg`. Both show the first text portion beginning «Соорудив примитивное оружие». All six tracked variables match: `wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`. This runtime-confirms the `hp -= 1` effect of choosing the hawthorn stake.
+- Page33 has **2 runtime portions in both engines**. Its second INSTEAD text portion includes «Оборотень кинулся на вас… налетел грудью прямо на острую палку». The new route adds a check for that final portion, followed by the transition to page35b UUID `6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46`, background `35b.png` / `images/35b.jpg`, expected text «Путь был свободен», `guardDone=true` and achievement `RIGHT_CHOICE`. These two new checkpoints are **pending CI #131**.
+- Static verification against the pinned INSTEAD export confirms that page33's choices wrapper automatically walks to page35b when `guardDone=false`; page35b's entry calls `RIGHT_CHOICE` and sets `guardDone=true`. The next CI must verify that behavior at runtime in both implementations and inspect the INSTEAD session log for the achievement call.
+- Cross-renderer pixel metrics remain advisory; semantic text, page/resource identity and tracked variables are the comparison gate. No story source, INSTEAD export, engine code or `main` was changed. PR #32 remains Draft/open/unmerged.
+ 
+Next: inspect the two new page33/page35b checkpoints in CI #131. After confirming page35b, continue into the villain module and test the actual background selected by page36's tag before covering its six endings.
