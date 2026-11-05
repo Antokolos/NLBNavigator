@@ -371,3 +371,15 @@ Next action: run the pending low-wolfiness continuation through page1.9; after r
 - No NLB story source, INSTEAD export, engine code or `main` was changed. This is test-route and documentation work only.
 
 Next: inspect both runtime traces for the new page1.8/page1.9 checkpoints and use the captured page1.9 paginator count to extend the route through page30 and the low-wolfiness hawthorn choice.
+
+
+### 2026-11-05 — CI #128: page1.8 completion and page1.9 verified
+
+- CI [#41928063316](https://github.com/Antokolos/NLBNavigator/actions/runs/41928063316), run 128, HEAD `13953100518e89774f27bda72db90edd80e5434b`: **SUCCESS, 52/52 steps**. Build, smoke-test, all existing routes, all guard routes in both engines, comparisons, INSTEAD export validation and artifact upload passed.
+- Artifact: `nlb-sdl-test-logs`, ID `13373614763`, 78,205,900 bytes.
+- The extended low-wolfiness route reports `ok=true`, `errors=[]` in INSTEAD and NLBNavigator; the comparison report also has `ok=true`, `errors=[]`. It contains **29 text checks** per runtime and 36 comparison checkpoints. NLB state-log validation: **150 records**, `ok`.
+- Both engines completed page1.8 UUID `433426b4-2e3f-4461-ab7a-e87119808471` at portion **4/5**, with the final phrase “сзади уже никого не было”, then advanced to page1.9 UUID `8c0da93f-8301-442b-a9fd-60d68d9610d0`.
+- Page1.9 has **3 runtime portions in both engines**. Its first visible text is “Дрожа, вы улеглись под кустом…”. At entry, both runtimes preserve `wolfiness=0,hp=3,barExit=true,forestExit=true,wolvesTalk=false,guardDone=false`. The NLB state-log and INSTEAD scene trace agree on UUID, image `1.9.png` / `images/1.9.jpg`, first portion and variables.
+- Extended the low-wolfiness route again: it now checks page1.9 final portion (index 2/3), advances to page30 (`e0d11a50-50d2-4521-be11-10267f8aab92`), expects the only hawthorn choice, selects it and expects page33 (`bc738a80-9890-4416-bead-3bbc8f533412`) with `hp=2`. These four additional checkpoints are **pending CI #129**; their static expectations are not yet runtime-confirmed.
+- The source indicates page33 should then transition to page35b (`6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46`), setting `guardDone=true` and calling `RIGHT_CHOICE`; page33 runtime pagination still needs observation before adding the exact advances.
+- No NLB story source, INSTEAD export, engine code or `main` was changed. PR #32 remains Draft/open/unmerged.
