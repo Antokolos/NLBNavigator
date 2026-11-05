@@ -425,3 +425,16 @@ Next: inspect CI #132 for the guard-module exit and page36 tag-selected backgrou
 - No game/story source, INSTEAD export, engine code or `main` was changed. PR #32 remains Draft/open/unmerged.
 
 Next: inspect CI #133 for page40 entry and runtime pagination; then advance to page42 and verify the low-wolfiness / hp=2 ending and `VILLAIN_PUNISHED` call.
+
+
+### 2026-11-06 — CI #133: page40 и её пагинация подтверждены
+
+- CI [#42102312026](https://github.com/Antokolos/NLBNavigator/actions/runs/42102312026), run 133, HEAD `8ea5fb0ca247b2a8522e4d5232b96343ac072a45`: **SUCCESS, 51/51 шагов**. Сборка, smoke test, все forest/guard routes в обоих runtime, comparisons, проверка INSTEAD export и загрузка диагностического артефакта завершились успешно.
+- Артефакт `nlb-sdl-test-logs`, ID `13454743940`, 80,327,570 bytes.
+- Low-wolfiness route: оба runtime отчёта `ok=true`, `errors=[]`; по **44 шага** и **36 текстовых проверок** в каждом. Comparison: `ok=true`, `errors=[]`, 44 сопоставленных кадра. NLB state-log validation: **175 записей**, `ok`.
+- Оба движка перешли с page36 HUMAN на page40 UUID `b5aa3b43-a7be-44b3-82d1-95925a213cd7`, ресурсы `40.png` / `images/40.jpg`. Runtime paginator сообщает **8 порций page40 в обоих движках**; текущий checkpoint — первая порция (0/8).
+- На входе page40 совпадают все шесть переменных: `wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`. Скриншоты двух runtime просмотрены: сцена и текст совпадают; NLBNavigator дополнительно отображает инвентарь.
+- CI #133 подтверждает только вход на page40, не её завершение и не концовку. Статический control-flow review предсказывает при `hp=2` переход после последней порции page40 на page42 UUID `c81126f6-4646-42b3-af03-aae3d6a9a0c2` (`42.png` / `images/42.jpg`), где INSTEAD должен вызвать `VILLAIN_PUNISHED`. Этот переход и achievement call пока не runtime-подтверждены.
+- Pixel-diff остаётся advisory, а вызовы достижений не считаются проверкой их persisted storage или parity с NLBNavigator.
+
+Следующий маршрутный этап добавляет проверку последней порции page40 (8/8) и перехода на page42 при `wolfiness=0,hp=2`; проверка ожидает CI #134. В исходники истории, INSTEAD export, код движка и `main` изменения не вносятся.

@@ -284,3 +284,10 @@ The INSTEAD talk route is runtime-confirmed; its NLB counterpart, the page28 att
 ### CI #128 — продолжение низкой ветки
 
 CI #128 подтвердил в обоих движках завершение page1.8 (5 порций, последняя 4/5) и переход на page1.9 (`8c0da93f-8301-442b-a9fd-60d68d9610d0`, `1.9.png` / `images/1.9.jpg`, 3 порции). На входе совпали первый видимый текст и все шесть переменных. NLB state-log: 150 записей; route reports и comparison: `ok=true`, `errors=[]`. Следующий маршрутный запуск проверит финальную порцию page1.9, page30, единственный выбор боярышника и page33 с ожидаемым `hp=2`; это пока pending CI #129.
+
+
+## CI #133 — page40 runtime подтверждена, концовка ожидает проверки
+
+CI [#42102312026](https://github.com/Antokolos/NLBNavigator/actions/runs/42102312026) прошёл успешно. Оба движка достигли page40 UUID `b5aa3b43-a7be-44b3-82d1-95925a213cd7`, показали ресурс `40.png` / `images/40.jpg` и совпали по шести переменным (`wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`). Runtime pagination page40 — **8 порций в INSTEAD и 8 в NLBNavigator**. Оба route report и comparison report успешны; 44 checkpoints, 36 текстовых проверок, NLB state log — 175 валидных записей.
+
+При `hp=2` статическая ветвь page40 должна вести на page42 (`c81126f6-4646-42b3-af03-aae3d6a9a0c2`, `42.png` / `images/42.jpg`) и вызвать `VILLAIN_PUNISHED`. Новый pending маршрутный этап отдельно проверяет страницу 40, порцию 8/8, затем page42 и вызов достижения в session log. До CI #134 это ожидаемое поведение, а не runtime-подтверждение.

@@ -14,7 +14,7 @@ wolfman и instead-am_i-a_monster_vn — две упаковки одной ис
 правых bypass-маршрута через page22 (`forestExit=true`). CI #126 подтвердил в обоих
 движках три дальнейшие ветви охранника: высокая волчность + `wolvesTalk=true` →
 page27; высокая волчность + `wolvesTalk=false` → page28; низкая волчность →
-page1.8. Все три route comparisons успешны. CI #128 подтвердил последние порции page1.8 (5 всего) и вход на page1.9 (3 порции) в обоих движках. CI #130 подтвердил переход page30 → единственный выбор боярышника → page33 в обоих движках: `hp=3→2`, по 2 runtime-порции на page33. CI #131 подтвердил финальную порцию page33, переход на page35b и `guardDone=true` / вызов `RIGHT_CHOICE` в INSTEAD. CI #132 подтвердил переход к page36 и HUMAN-фон (`36.png` / `images/36.jpg`) при `wolfiness=0`; дальше эта ветвь ведёт к странице 40 и при `hp=2` должна закончиться на page42 (`VILLAIN_PUNISHED`). CI #133 проверяет вход на page40 и её runtime-пагинацию. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
+page1.8. Все три route comparisons успешны. CI #128 подтвердил последние порции page1.8 (5 всего) и вход на page1.9 (3 порции) в обоих движках. CI #130 подтвердил переход page30 → единственный выбор боярышника → page33 в обоих движках: `hp=3→2`, по 2 runtime-порции на page33. CI #131 подтвердил финальную порцию page33, переход на page35b и `guardDone=true` / вызов `RIGHT_CHOICE` в INSTEAD. CI #132 подтвердил переход к page36 и HUMAN-фон (`36.png` / `images/36.jpg`) при `wolfiness=0`; дальше эта ветвь ведёт к странице 40 и при `hp=2` должна закончиться на page42 (`VILLAIN_PUNISHED`). CI #133 подтвердил вход на page40: оба runtime согласны по UUID, фону, шести переменным и числу порций (8). Завершение page40 и переход на page42 ожидают CI #134. Подробная карта: `WOLFMAN_BRANCH_MAP.md`,
 контрольная точка: `TESTING_PROGRESS.md`.
 
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
@@ -194,3 +194,12 @@ CI [#41880453967](https://github.com/Antokolos/NLBNavigator/actions/runs/4188045
 
 
 CI #128 подтвердил последнюю из пяти порций page1.8 и вход на page1.9 в обоих движках. Page1.9 имеет три runtime-порции. В маршрут добавлены pending checkpoints для завершения page1.9, страницы 30, единственного выбора боярышника и страницы 33 с ожидаемым `hp=2`; проверка будет считаться покрытием только после CI #129.
+
+
+## CI #133 — подтверждён вход на page40
+
+[CI #42102312026](https://github.com/Antokolos/NLBNavigator/actions/runs/42102312026), run 133, HEAD `8ea5fb0ca247b2a8522e4d5232b96343ac072a45` — **SUCCESS, 51/51 steps**; artifact `nlb-sdl-test-logs`, ID `13454743940`.
+
+Low-wolfiness route прошёл в обоих runtime: по 44 шага и 36 текстовых проверок, route reports `ok=true`, `errors=[]`; comparison также `ok=true`, `errors=[]`. NLB state-log validation прошёл на 175 записях. На page40 совпали UUID, ресурсы `40.png` / `images/40.jpg`, все шесть переменных и **8 runtime-порций**. Скриншоты показывают одну сцену; строка инвентаря есть только в NLBNavigator. Pixel metrics — advisory.
+
+Следующий pending checkpoint: последняя порция page40 (8/8), затем page42 при `wolfiness=0,hp=2`; дополнительно проверим call `VILLAIN_PUNISHED` в INSTEAD session log. До успешного CI #134 концовка не считается runtime-проверенной.
