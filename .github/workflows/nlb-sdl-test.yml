@@ -545,7 +545,8 @@ jobs:
         run: |
           output="test-results/wolfman-guard-low-wolfiness-escape/instead"
           mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
+          # This 46-step reference route needs more than four minutes on hosted runners.
+          timeout --signal=TERM --kill-after=3s 360s xvfb-run -a -s "-screen 0 1920x1080x24" \
             python3 tests/differential/run_route.py \
               --runtime instead \
               --route tests/differential/routes/wolfman-guard-low-wolfiness-escape.json \
