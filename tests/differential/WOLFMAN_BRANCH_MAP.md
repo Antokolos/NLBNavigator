@@ -291,3 +291,20 @@ CI #128 подтвердил в обоих движках завершение p
 CI [#42102312026](https://github.com/Antokolos/NLBNavigator/actions/runs/42102312026) прошёл успешно. Оба движка достигли page40 UUID `b5aa3b43-a7be-44b3-82d1-95925a213cd7`, показали ресурс `40.png` / `images/40.jpg` и совпали по шести переменным (`wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`). Runtime pagination page40 — **8 порций в INSTEAD и 8 в NLBNavigator**. Оба route report и comparison report успешны; 44 checkpoints, 36 текстовых проверок, NLB state log — 175 валидных записей.
 
 При `hp=2` статическая ветвь page40 должна вести на page42 (`c81126f6-4646-42b3-af03-aae3d6a9a0c2`, `42.png` / `images/42.jpg`) и вызвать `VILLAIN_PUNISHED`. Новый pending маршрутный этап отдельно проверяет страницу 40, порцию 8/8, затем page42 и вызов достижения в session log. До CI #134 это ожидаемое поведение, а не runtime-подтверждение.
+
+
+## CI #136 — low-wolfiness route reaches page42 ending
+
+[CI #42193651367](https://github.com/Antokolos/NLBNavigator/actions/runs/42193651367), run 136, HEAD `d33daadee54edcbc648be407207e7e9b24da556f`: **SUCCESS**.
+
+The clean-state low-wolfiness route now completes all 46 checkpoints and 38 text checks in both engines, from the opening through the guard-house escape, page1.9, hawthorn weapon, villain module and page42. Both runtime reports and the comparison report have `ok=true`, `errors=[]`; NLBNavigator state-log validation passes with 187 records.
+
+- Final page: UUID `c81126f6-4646-42b3-af03-aae3d6a9a0c2`, NLB resource `42.png`, INSTEAD resource `images/42.jpg`.
+- Final variables in both engines: `wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`.
+- INSTEAD reports `screen_kind=page`; NLBNavigator reports `screen=finished`. The route explicitly expects this terminal classification in NLB.
+- INSTEAD `session.log` records `VILLAIN_PUNISHED` and `Achievement set.`; this is evidence of the call during the run, not persisted achievement-state read-back.
+- Artifact: `nlb-sdl-test-logs`, ID `13494262828`.
+
+CI #134's external timeout was traced to runner shutdown after the INSTEAD route had already reached page42. The bounded process-group cleanup added for CI #135 was exercised successfully in CI #136. CI #135 also exposed the terminal-screen expectation mismatch, corrected in the route JSON; no story/game source was changed.
+
+The route confirms the `wolfiness=0,hp=2` path to `VILLAIN_PUNISHED`. The separate `hp<=1` ending (page41) remains untested and can be targeted through the alternative police/hospital start. Achievement persistence/parity and the page8 pagination contract remain open tasks.

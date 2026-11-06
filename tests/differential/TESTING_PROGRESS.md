@@ -3,7 +3,7 @@
 > Read this file first when resuming this long-running task after a chat reset or context loss.
 > Update it in the same working PR branch after every meaningful testing stage. GitHub PR and CI are the live source of truth; this file is the durable human-readable handoff.
 
-Last updated: 2026-11-05 (Asia/Bishkek)
+Last updated: 2026-11-06 (Asia/Bishkek)
 Repository: https://github.com/Antokolos/NLBNavigator
 Working PR: https://github.com/Antokolos/NLBNavigator/pull/32
 Working branch: `ci/nlb-sdl-wolfman-state-trace`
@@ -175,9 +175,9 @@ For every new chat or after a context reset:
 
 ## 10. Current next action
 
-CI #120 confirmed the four traveler-decision variants; CI #121 confirmed all four page22 bypass routes. Most recently, CI #126 (**SUCCESS**, HEAD `2cc7ace2613d6929d7ac1d55a3389fefc0d8d60f`) confirmed all three guard routes in INSTEAD and NLBNavigator, with all three comparisons passing. See the CI #126 entry below for exact page UUIDs, images, variables and state-log counts.
+CI #136 (**SUCCESS**, HEAD `d33daadee54edcbc648be407207e7e9b24da556f`) confirms the complete low-wolfiness escape route through page42 in both engines, including the terminal `screen=finished` classification in NLBNavigator. The latest confirmed checkpoint and runner-cleanup diagnosis are recorded at the end of this file.
 
-Next: continue from page1.8 to page1.9 and test weapon selection, then cover the alternative police/hospital start and endings. Achievement state read-back and page36 tag-dependent background remain separate tasks.
+Next: test the alternative police/hospital start, especially whether the corpse choice on page14 preserves `hp=2` and `wolfiness=0`; then use that path to reach the `hp<=1` ending. Continue the remaining wolfiness/weapon branches. Achievement persistence/read-back and Issue #37's page8 pagination contract remain separate tasks.
 
 PR #32 remains Draft/open/unmerged. Do not modify `main` or merge without explicit approval.
 
@@ -438,3 +438,19 @@ Next: inspect CI #133 for page40 entry and runtime pagination; then advance to p
 - Pixel-diff остаётся advisory, а вызовы достижений не считаются проверкой их persisted storage или parity с NLBNavigator.
 
 Следующий маршрутный этап добавляет проверку последней порции page40 (8/8) и перехода на page42 при `wolfiness=0,hp=2`; проверка ожидает CI #134. В исходники истории, INSTEAD export, код движка и `main` изменения не вносятся.
+
+
+### 2026-11-06 — CI #134–#136: low-wolfiness ending and runner cleanup verified
+
+- CI [#42120679525](https://github.com/Antokolos/NLBNavigator/actions/runs/42120679525), run 134, HEAD `7acf7448bc06e3602292a90961af994a79d9eed9`, reached the final INSTEAD checkpoint on page42 but was terminated by the outer 240-second timeout during process shutdown. The trace had completed all 46 route steps, saved page42 and recorded `VILLAIN_PUNISHED`; the missing route report was a runner-lifecycle failure, not a failed story assertion.
+- The runner cleanup was hardened in `tests/differential/run_route.py`: Openbox and INSTEAD are started in separate process sessions; cleanup sends SIGTERM to each process group, waits for a bounded grace period, then sends SIGKILL if necessary. This prevents child GUI processes from keeping the route process alive indefinitely.
+- CI [#42182141917](https://github.com/Antokolos/NLBNavigator/actions/runs/42182141917), run 135, confirmed the INSTEAD low-wolfiness route now exits normally and reaches its report. It exposed a separate expected-value issue: NLBNavigator correctly marked the terminal page as `screen=finished`, while the route expected `screen=page`.
+- The route expectation was corrected only for the NLBNavigator terminal checkpoint; INSTEAD's `screen_kind=page` expectation remains unchanged. No game or story source was changed.
+- CI [#42193651367](https://github.com/Antokolos/NLBNavigator/actions/runs/42193651367), run 136, HEAD `d33daadee54edcbc648be407207e7e9b24da556f`: **SUCCESS**. Build, smoke-test, shared route, all eight forest routes, all three guard routes in both runtimes, all 12 comparisons, INSTEAD export validation and artifact upload passed.
+- The low-wolfiness escape route completed **46 checkpoints and 38 text checks** in each runtime. Both route reports and the comparison report have `ok=true`, `errors=[]`. NLBNavigator state-log validation passed with **187 records**.
+- Both runtimes reached page42 UUID `c81126f6-4646-42b3-af03-aae3d6a9a0c2`, resource `42.png` / `images/42.jpg`, with matching variables `wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`. INSTEAD reports `screen_kind=page`; NLBNavigator reports `screen=finished`, which is the expected terminal-screen classification.
+- INSTEAD `session.log` records `VILLAIN_PUNISHED` followed by `Achievement set.`. This confirms the call during the session, not persistent achievement storage or parity with NLBNavigator.
+- Artifact: `nlb-sdl-test-logs`, ID `13494262828`. Pixel metrics remain advisory and are not a pixel-perfect gate.
+- Runner cleanup and the terminal-screen expectation are now covered by the successful full CI. PR #32 remains Draft/open/unmerged; `main` was not changed.
+
+Next: continue with the alternative police/hospital start and verify the corpse-choice HP effect, then pursue the remaining weapon branches/endings. Keep achievement persistence/read-back and Issue #37's page8 pagination contract as separate tasks.

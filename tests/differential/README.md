@@ -203,3 +203,12 @@ CI #128 подтвердил последнюю из пяти порций page1
 Low-wolfiness route прошёл в обоих runtime: по 44 шага и 36 текстовых проверок, route reports `ok=true`, `errors=[]`; comparison также `ok=true`, `errors=[]`. NLB state-log validation прошёл на 175 записях. На page40 совпали UUID, ресурсы `40.png` / `images/40.jpg`, все шесть переменных и **8 runtime-порций**. Скриншоты показывают одну сцену; строка инвентаря есть только в NLBNavigator. Pixel metrics — advisory.
 
 Следующий pending checkpoint: последняя порция page40 (8/8), затем page42 при `wolfiness=0,hp=2`; дополнительно проверим call `VILLAIN_PUNISHED` в INSTEAD session log. До успешного CI #134 концовка не считается runtime-проверенной.
+
+
+## Latest verified coverage — CI #136
+
+[CI #42193651367](https://github.com/Antokolos/NLBNavigator/actions/runs/42193651367) passed on commit `d33daadee54edcbc648be407207e7e9b24da556f`. The complete low-wolfiness route now reaches page42 in both engines: 46 checkpoints and 38 text checks per runtime, comparison `errors=[]`, and 187 validated NLBNavigator state-log records. The final state matches (`wolfiness=0,hp=2,barExit=true,forestExit=true,wolvesTalk=false,guardDone=true`); NLBNavigator correctly reports the terminal screen as `finished`, while INSTEAD trace reports the page scene as `page`.
+
+The run also confirms that the bounded process-group cleanup introduced after CI #134's shutdown timeout works. INSTEAD's session log records the `VILLAIN_PUNISHED` achievement call; persistent achievement-state parity is not yet verified. Pixel differences remain advisory.
+
+See [TESTING_PROGRESS.md](TESTING_PROGRESS.md) for the detailed CI history and [WOLFMAN_BRANCH_MAP.md](WOLFMAN_BRANCH_MAP.md) for the route/ending graph. Next coverage target: alternative police/hospital start and the page41 low-HP ending.
