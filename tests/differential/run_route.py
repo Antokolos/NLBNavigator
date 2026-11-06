@@ -7,6 +7,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -737,6 +738,55 @@ def create_instead_overlay(source_dir, overlay_dir):
         )
 
 
+def stop_process_group(process, name, log_path, grace_seconds=1, kill_wait_seconds=2):
+    """Stop a GUI process and its descendants without unbounded cleanup waits."""
+    if process is None:
+        print("[INSTEAD] cleanup {}: not started".format(name), flush=True)
+        return
+    status = process.poll()
+    if status is not None:
+        print("[INSTEAD] cleanup {}: already exited with status {}".format(name, status), flush=True)
+        return
+
+    print("[INSTEAD] cleanup {}: sending SIGTERM to process group {}".format(
+        name, process.pid
+    ), flush=True)
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        print("[INSTEAD] cleanup {}: process group already absent".format(name), flush=True)
+    except OSError as error:
+        print("[INSTEAD] cleanup {}: SIGTERM failed: {}".format(name, error), flush=True)
+
+    try:
+        status = process.wait(timeout=grace_seconds)
+        print("[INSTEAD] cleanup {}: exited after SIGTERM with status {}".format(
+            name, status
+        ), flush=True)
+        return
+    except subprocess.TimeoutExpired:
+        print("[INSTEAD] cleanup {}: grace period expired; sending SIGKILL".format(
+            name
+        ), flush=True)
+
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    except OSError as error:
+        print("[INSTEAD] cleanup {}: SIGKILL failed: {}".format(name, error), flush=True)
+
+    try:
+        status = process.wait(timeout=kill_wait_seconds)
+        print("[INSTEAD] cleanup {}: reaped after SIGKILL with status {}".format(
+            name, status
+        ), flush=True)
+    except subprocess.TimeoutExpired:
+        print("[INSTEAD] cleanup {}: process did not exit within {}s after SIGKILL; continuing cleanup (pid={}, log={})".format(
+            name, kill_wait_seconds, process.pid, log_path
+        ), flush=True)
+
+
 def run_instead(args, route, output_dir):
     game = Path(args.game).resolve()
     base_theme = Path(args.base_theme).resolve()
@@ -785,7 +835,8 @@ def run_instead(args, route, output_dir):
     cursor = 0
     try:
         wm = subprocess.Popen(
-            ["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env
+            ["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env,
+            start_new_session=True
         )
         time.sleep(1)
         player = subprocess.Popen(
@@ -797,7 +848,8 @@ def run_instead(args, route, output_dir):
                 str(overlay),
             ],
             cwd=overlay, env=env,
-            stdout=session_log, stderr=subprocess.STDOUT
+            stdout=session_log, stderr=subprocess.STDOUT,
+            start_new_session=True
         )
 
         window = None
@@ -906,22 +958,15 @@ def run_instead(args, route, output_dir):
                 flush=True,
             )
     finally:
-        if player is not None and player.poll() is None:
-            player.terminate()
-            try:
-                player.wait(timeout=3)
-            except subprocess.TimeoutExpired:
-                player.kill()
-                player.wait(timeout=3)
-        if wm is not None and wm.poll() is None:
-            wm.terminate()
-            try:
-                wm.wait(timeout=3)
-            except subprocess.TimeoutExpired:
-                wm.kill()
-                wm.wait(timeout=3)
+        # Stop each GUI process group with bounded waits. INSTEAD/Openbox may
+        # spawn descendants, so terminating only the direct child can leave
+        # X11 clients alive and prevent the test runner from exiting cleanly.
+        print("[INSTEAD] cleanup: begin", flush=True)
+        stop_process_group(player, "player", session_log.name)
+        stop_process_group(wm, "openbox", openbox_log.name)
         session_log.close()
         openbox_log.close()
+        print("[INSTEAD] cleanup: process logs closed", flush=True)
 
     if trace_path.is_file():
         shutil.copy2(trace_path, output_dir / "instead-state.tsv")
