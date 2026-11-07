@@ -8,7 +8,7 @@
 
 - История: `Am I a Monster? / Я — монстр`.
 - NLB: [nlbproject/wolfman](https://github.com/nlbproject/wolfman), commit `888b4b7a7a564693274f53341728ee9f3b4c2879`.
-- INSTEAD: [nlbproject/instead-am_i_a_monster_vn](https://github.com/nlbproject/instead-am_i_a_monster_vn), commit `5f8cd646905a25800afab46bd2ce17616f0d6494`.
+- INSTEAD: [nlbproject/instead-am_i_a_monster_vn](https://github.com/nlbproject/instead-am_i_a_monster_vn), commit `0db8d2c611faa596987baaf041763ef6c9282484`.
 - Базовая тема INSTEAD: [instead-hub/instead](https://github.com/instead-hub/instead), commit `1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e`.
 - NLB книга и INSTEAD экспорт — две упаковки одной истории; это подтверждено владельцем проекта.
 - Условные переходы и эффекты ниже сверены по экспортному `module_ru.lua` на указанном commit. Для новых маршрутов нужно дополнительно сверять NLB-метаданные, исполнять один и тот же смысловой выбор в обоих движках и сохранять trace/state-log.

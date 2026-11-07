@@ -19,7 +19,7 @@
         "repository": "nlbproject/instead-am_i_a_monster_vn",
         "default_branch": "main",
         "reference_branch": "main",
-        "reference_commit": "5f8cd646905a25800afab46bd2ce17616f0d6494"
+        "reference_commit": "0db8d2c611faa596987baaf041763ef6c9282484"
       },
       "coverage": [
         "vn",
