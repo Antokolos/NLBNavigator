@@ -11,7 +11,7 @@ name: NLB SDL manual test
       reference_ref:
         description: "Commit SHA, branch, or tag of INSTEAD export (default: pinned export)"
         required: true
-        default: "5f8cd646905a25800afab46bd2ce17616f0d6494"
+        default: "0db8d2c611faa596987baaf041763ef6c9282484"
       base_theme_ref:
         description: "Commit SHA, branch, or tag of instead-hub/instead base theme"
         required: true
@@ -42,7 +42,7 @@ jobs:
     timeout-minutes: 90
     env:
       GAME_REF: ${{ github.event.inputs.game_ref || '888b4b7a7a564693274f53341728ee9f3b4c2879' }}
-      REFERENCE_REF: ${{ github.event.inputs.reference_ref || '5f8cd646905a25800afab46bd2ce17616f0d6494' }}
+      REFERENCE_REF: ${{ github.event.inputs.reference_ref || '0db8d2c611faa596987baaf041763ef6c9282484' }}
       BASE_THEME_REF: ${{ github.event.inputs.base_theme_ref || '1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e' }}
     steps:
       - name: Check out NLBNavigator

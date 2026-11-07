@@ -567,7 +567,7 @@
         "x_ratio": 0.5,
         "y_ratio": 0.5,
         "clicks": {
-          "instead": 14,
+          "instead": 16,
           "nlbnavigator": 16
         }
       },
@@ -582,8 +582,8 @@
         "instead_screen_kind": "page",
         "portion_index": 16,
         "portion_count": 17,
-        "instead_portion_index": 14,
-        "instead_portion_count": 15,
+        "instead_portion_index": 16,
+        "instead_portion_count": 17,
         "text_contains": "где и заснули под мерное гудение пчёл",
         "instead_text_contains": "где и заснули под мерное гудение пчёл",
         "variables": {
