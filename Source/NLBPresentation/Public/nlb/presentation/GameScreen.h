@@ -66,7 +66,9 @@ public:
  */
 class GameScreen {
 public:
-    enum class Key { Escape, Space, Enter, PageUp, PageDown, Save, Load, Digit };
+    /// Клавиши и кнопки. Up/Down/Left/Right, Accept, Back — геймпад (крестовина или стик, A, B):
+    /// выбранная ссылка, предмет или пункт меню подсвечивается, как под мышью
+    enum class Key { Escape, Space, Enter, PageUp, PageDown, Save, Load, Digit, Up, Down, Left, Right, Accept, Back };
 
     struct Options {
         std::string themeDir;            ///< каталог темы игры INSTEAD (может быть внутри пакета)
@@ -245,6 +247,12 @@ private:
     int m_hoverChoice = NO_HOVER;    ///< переход под курсором (номер варианта; -1 — заголовок комнаты)
     std::string m_hoverItem;         ///< предмет инвентаря под курсором
     float m_mouseX = 0, m_mouseY = 0;
+    // ---- выбор с геймпада: какая область щелчка выбрана (вид, номер, id — переживают перерисовку)
+    struct NavFocus { bool active = false; int kind = 0; int index = -1; std::string id; };
+    NavFocus m_nav;
+    void navigate(float dx, float dy);
+    bool navFocusCenter(float& x, float& y) const;
+    void dropNavFocus();
     float m_scroll = 0, m_contentHeight = 0, m_lineHeight = 30, m_pageHeight = 0;
     RectF m_textWindow{};
     bool m_moreText = false;

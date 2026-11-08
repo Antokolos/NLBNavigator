@@ -101,6 +101,10 @@ private:
     SDL_Renderer* m_renderer = nullptr;
     std::string m_fontPath;
     bool m_quit = false;
+    // геймпад: левый стик как крестовина — нажатие при отклонении и повтор, пока держат
+    int m_stickDx = 0, m_stickDy = 0;
+    Uint64 m_stickRepeatAt = 0;
+    void stickRepeat(Uint64 now);
     float m_pixelScale = 1.0f;  ///< пикселей окна на единицу экрана 1920×1080 (текст — в этом масштабе)
     /// Переходы: кадр рисуется в текстуру m_frame (область экрана 1920×1080 в окне, в пикселях окна),
     /// перед началом перехода она копируется в m_snapshot — прежний кадр, который GameScreen

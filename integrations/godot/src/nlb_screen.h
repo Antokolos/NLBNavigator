@@ -1,6 +1,7 @@
 #pragma once
 
 #include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/input_event.hpp>
@@ -36,6 +37,7 @@ public:
     void _process(double delta) override;
     void _draw() override;
     void _gui_input(const godot::Ref<godot::InputEvent>& event) override;
+    void handleKey(const godot::Ref<godot::InputEventKey>& k);
     void _exit_tree() override;
 
     void set_player(const godot::NodePath& path) { m_playerPath = path; }
