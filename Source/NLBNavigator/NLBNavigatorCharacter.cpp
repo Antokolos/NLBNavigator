@@ -30,6 +30,7 @@
 #include "NLBVRModeComponent.h"
 #include "NLBPauseMenuWidget.h"
 #include "NLBTouchControlsComponent.h"
+#include "NLBInputDevice.h"
 #include "Internationalization/Culture.h"
 #include "Internationalization/Internationalization.h"
 #include "NLBNavigatorWeaponComponent.h"
@@ -101,6 +102,8 @@ void ANLBNavigatorCharacter::BeginPlay()
 			UpdateTouchControls();
 		});
 	}
+
+	NLBInputDevice::IsUsingGamepad();  // начать следить за устройством ввода (для подсказок)
 
 	// Экранное управление (телефон): кнопки вызывают то же, что клавиши и геймпад
 	TouchControls->OnMenu = [this]() { TogglePauseMenu(); };
@@ -486,7 +489,10 @@ FString ANLBNavigatorCharacter::GetInteractPrompt() const
 	{
 		return bRu ? TEXT("Действие") : TEXT("Action");  // как подпись экранной кнопки
 	}
-	// клавиша из раскладки ввода; с клавиатуры и мыши — в первую очередь
+	// кнопка из раскладки ввода — того устройства, которым игрок управляет сейчас: геймпад (на
+	// консолях — всегда) или клавиатура с мышью; у геймпада — название по платформе («A»,
+	// «Крестик», «ZR»), у клавиатуры — как в раскладке
+	const bool bGamepad = NLBInputDevice::IsUsingGamepad();
 	FKey Shown;
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputSubsystem())
 	{
@@ -494,14 +500,22 @@ FString ANLBNavigatorCharacter::GetInteractPrompt() const
 		{
 			for (const FKey& Key : Subsystem->QueryKeysMappedToAction(InteractAction))
 			{
-				if (!Shown.IsValid() || (Shown.IsGamepadKey() && !Key.IsGamepadKey()))
+				if (!Shown.IsValid() || (Shown.IsGamepadKey() != bGamepad && Key.IsGamepadKey() == bGamepad))
 				{
 					Shown = Key;
 				}
 			}
 		}
 	}
-	const FString KeyName = Shown.IsValid() ? Shown.GetDisplayName(/*bLongDisplayName*/ false).ToString() : TEXT("E");
+	FString KeyName;
+	if (Shown.IsValid() && Shown.IsGamepadKey())
+	{
+		KeyName = NLBInputDevice::GamepadButtonName(Shown, bRu);
+	}
+	if (KeyName.IsEmpty())
+	{
+		KeyName = Shown.IsValid() ? Shown.GetDisplayName(/*bLongDisplayName*/ false).ToString() : FString(TEXT("E"));
+	}
 	return KeyName + TEXT(": ") + Verb;
 }
 
