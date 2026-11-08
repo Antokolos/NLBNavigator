@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/font_file.hpp>
 #include <godot_cpp/classes/image.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
+#include <godot_cpp/classes/input_event_joypad_button.hpp>
 #include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
@@ -243,7 +244,31 @@ void NLBScreen::_gui_input(const Ref<InputEvent>& event) {
     } else if (Ref<InputEventMouseMotion> mm = event; mm.is_valid()) {
         const Vector2 p = toScreen(mm->get_position());
         m_screen->mouseMove(p.x, p.y);
+    } else if (Ref<InputEventJoypadButton> jb = event; jb.is_valid() || event->is_action_type()) {
+        // геймпад и стрелки — через действия ui_* проекта (по умолчанию: крестовина, левый стик,
+        // A — ui_accept, B — ui_cancel); стрелки клавиатуры дают то же
+        using Key = GameScreen::Key;
+        if (event->is_action_pressed("ui_up", true)) m_screen->key(Key::Up);
+        else if (event->is_action_pressed("ui_down", true)) m_screen->key(Key::Down);
+        else if (event->is_action_pressed("ui_left", true)) m_screen->key(Key::Left);
+        else if (event->is_action_pressed("ui_right", true)) m_screen->key(Key::Right);
+        else if (jb.is_valid() && event->is_action_pressed("ui_accept")) m_screen->key(Key::Accept);
+        else if (jb.is_valid() && event->is_action_pressed("ui_cancel")) m_screen->key(Key::Back);
+        else if (jb.is_valid() && jb->is_pressed() && jb->get_button_index() == JOY_BUTTON_START) m_screen->key(Key::Escape);
+        else if (jb.is_valid() && jb->is_pressed() && jb->get_button_index() == JOY_BUTTON_LEFT_SHOULDER) m_screen->key(Key::PageUp);
+        else if (jb.is_valid() && jb->is_pressed() && jb->get_button_index() == JOY_BUTTON_RIGHT_SHOULDER) m_screen->key(Key::PageDown);
+        else if (Ref<InputEventKey> k2 = event; k2.is_valid() && k2->is_pressed() && !k2->is_echo()) {
+            handleKey(k2);
+            return;
+        } else return;
+        accept_event();
     } else if (Ref<InputEventKey> k = event; k.is_valid() && k->is_pressed() && !k->is_echo()) {
+        handleKey(k);
+    }
+}
+
+void NLBScreen::handleKey(const Ref<InputEventKey>& k) {
+    {
         using Key = GameScreen::Key;
         const godot::Key code = k->get_keycode();
         if (code == KEY_ESCAPE) m_screen->key(Key::Escape);

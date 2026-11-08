@@ -70,7 +70,7 @@ SdlPlayer::~SdlPlayer() {
 }
 
 bool SdlPlayer::init() {
-    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_GAMEPAD)) {
         fatal(std::string("SDL_Init: ") + SDL_GetError());
         return false;
     }
@@ -196,12 +196,20 @@ void SdlPlayer::loop() {
         SDL_Event e;
         while (SDL_PollEvent(&e)) handleEvent(e);
         const Uint64 now = SDL_GetTicks();
+        stickRepeat(now);
         m_screen->update(static_cast<int>(now - last));
         last = now;
         renderFrame();
         SDL_RenderPresent(m_renderer);
         if (SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED) SDL_Delay(50);
     }
+}
+
+void SdlPlayer::stickRepeat(Uint64 now) {
+    using Key = GameScreen::Key;
+    if ((m_stickDx == 0 && m_stickDy == 0) || now < m_stickRepeatAt) return;
+    m_screen->key(m_stickDy < 0 ? Key::Up : m_stickDy > 0 ? Key::Down : m_stickDx < 0 ? Key::Left : Key::Right);
+    m_stickRepeatAt = now + (m_stickRepeatAt == 0 ? 400 : 180);  // первый повтор — позже
 }
 
 void SdlPlayer::handleEvent(SDL_Event& e) {
@@ -231,6 +239,37 @@ void SdlPlayer::handleEvent(SDL_Event& e) {
             float dy = e.wheel.y;
             if (e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) dy = -dy;
             m_screen->wheel(dy);
+            break;
+        }
+        case SDL_EVENT_GAMEPAD_ADDED:
+            SDL_OpenGamepad(e.gdevice.which);  // геймпад: крестовина/стик — выбор, A — нажать, B — назад
+            break;
+        case SDL_EVENT_GAMEPAD_BUTTON_DOWN: {
+            using Key = GameScreen::Key;
+            switch (e.gbutton.button) {
+                case SDL_GAMEPAD_BUTTON_DPAD_UP: m_screen->key(Key::Up); break;
+                case SDL_GAMEPAD_BUTTON_DPAD_DOWN: m_screen->key(Key::Down); break;
+                case SDL_GAMEPAD_BUTTON_DPAD_LEFT: m_screen->key(Key::Left); break;
+                case SDL_GAMEPAD_BUTTON_DPAD_RIGHT: m_screen->key(Key::Right); break;
+                case SDL_GAMEPAD_BUTTON_SOUTH: m_screen->key(Key::Accept); break;
+                case SDL_GAMEPAD_BUTTON_EAST: m_screen->key(Key::Back); break;
+                case SDL_GAMEPAD_BUTTON_START: m_screen->key(Key::Escape); break;  // меню
+                case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: m_screen->key(Key::PageUp); break;
+                case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: m_screen->key(Key::PageDown); break;
+                default: break;
+            }
+            break;
+        }
+        case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
+            // левый стик — как крестовина (с повтором); правый по вертикали — прокрутка текста
+            const float v = e.gaxis.value / 32767.0f;
+            if (e.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTX || e.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTY) {
+                int& d = e.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTX ? m_stickDx : m_stickDy;
+                const int nd = v > 0.6f ? 1 : v < -0.6f ? -1 : (std::fabs(v) < 0.3f ? 0 : d);
+                if (nd != d) { d = nd; m_stickRepeatAt = 0; }  // новое отклонение — сразу нажатие
+            } else if (e.gaxis.axis == SDL_GAMEPAD_AXIS_RIGHTY && std::fabs(v) > 0.6f) {
+                m_screen->wheel(v > 0 ? -1 : 1);
+            }
             break;
         }
         case SDL_EVENT_KEY_DOWN: {

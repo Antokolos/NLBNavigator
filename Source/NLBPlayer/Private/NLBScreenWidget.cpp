@@ -373,6 +373,25 @@ FReply UNLBScreenWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKey
     if (!EnsureScreen()) return FReply::Unhandled();
     using Key = GameScreen::Key;
     const FKey K = InKeyEvent.GetKey();
+    if (K.IsGamepadKey()) {
+        // Геймпад: «принять», «назад» и направления — по правилам навигации Slate для платформы
+        // (на Switch «принять» — правая кнопка A, на PlayStation — по региону; стик — с повтором)
+        FSlateApplication& App = FSlateApplication::Get();
+        const EUINavigationAction Action = App.GetNavigationActionFromKey(InKeyEvent);
+        if (Action == EUINavigationAction::Accept) { Screen->key(Key::Accept); return FReply::Handled(); }
+        if (Action == EUINavigationAction::Back) { Screen->key(Key::Back); return FReply::Handled(); }
+        switch (App.GetNavigationDirectionFromKey(InKeyEvent)) {
+            case EUINavigation::Up: Screen->key(Key::Up); return FReply::Handled();
+            case EUINavigation::Down: Screen->key(Key::Down); return FReply::Handled();
+            case EUINavigation::Left: Screen->key(Key::Left); return FReply::Handled();
+            case EUINavigation::Right: Screen->key(Key::Right); return FReply::Handled();
+            default: break;
+        }
+        if (K == EKeys::Gamepad_Special_Right) { Screen->key(Key::Escape); return FReply::Handled(); }  // «меню», «+», Options
+        if (K == EKeys::Gamepad_LeftShoulder) { Screen->key(Key::PageUp); return FReply::Handled(); }
+        if (K == EKeys::Gamepad_RightShoulder) { Screen->key(Key::PageDown); return FReply::Handled(); }
+        return FReply::Unhandled();
+    }
     static const FKey Digits[] = {EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five,
                                   EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine};
     if (K == EKeys::Escape) Screen->key(Key::Escape);

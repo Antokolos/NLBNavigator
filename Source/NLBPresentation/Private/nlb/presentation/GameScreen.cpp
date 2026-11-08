@@ -149,6 +149,7 @@ void GameScreen::pull() {
     if (!choicesMode()) m_showChoices = false;  // страница STANDARD — экрана вариантов нет
     if (before.pageId != m_screen.pageId || !m_screen.finished) m_endScreen = false;
     if (before.pageId != m_screen.pageId) {
+        dropNavFocus();  // новая страница — выбор с геймпада заново
         // вход на страницу — vn:auto_geom('dissolve') экспорта; его нет у страниц с таймером (или
         // анимацией) без графических объектов: там enter возвращает vn:get_win_coords() без эффекта
         const bool graphical = std::any_of(m_screen.sceneObjects.begin(), m_screen.sceneObjects.end(),
@@ -656,8 +657,109 @@ void GameScreen::click(float x, float y, bool rightButton) {
     }
 }
 
+bool GameScreen::navFocusCenter(float& x, float& y) const {
+    if (!m_nav.active) return false;
+    for (const auto& h : m_hits) {
+        if (static_cast<int>(h.kind) == m_nav.kind && h.index == m_nav.index && h.id == m_nav.id) {
+            x = h.rect.x + h.rect.w / 2;
+            y = h.rect.y + h.rect.h / 2;
+            return true;
+        }
+    }
+    return false;
+}
+
+void GameScreen::dropNavFocus() {
+    if (!m_nav.active) return;
+    m_nav = NavFocus{};
+    m_mouseX = m_mouseY = -10000;  // подсветка была от выбора, а не от мыши — убрать
+}
+
+void GameScreen::navigate(float dx, float dy) {
+    // кандидаты: что можно нажать (без стрелок прокрутки); при открытом меню — только его пункты
+    std::vector<const Hit*> cands;
+    for (const auto& h : m_hits) {
+        if (h.kind == Hit::Kind::ScrollUp || h.kind == Hit::Kind::ScrollDown) continue;
+        if (m_menu != Menu::None && h.kind != Hit::Kind::Menu) continue;
+        cands.push_back(&h);
+    }
+    auto select = [&](const Hit& h) {
+        m_nav = NavFocus{true, static_cast<int>(h.kind), h.index, h.id};
+        m_mouseX = h.rect.x + h.rect.w / 2;  // подсветка — как под мышью
+        m_mouseY = h.rect.y + h.rect.h / 2;
+    };
+    float cx = 0, cy = 0;
+    const bool haveFocus = navFocusCenter(cx, cy)
+        && (m_menu == Menu::None || m_nav.kind == static_cast<int>(Hit::Kind::Menu));
+    if (!haveFocus) {
+        // вниз, а текст ещё не дочитан и вариантов не видно — сначала листать (как пробел)
+        const bool choiceVisible = std::any_of(cands.begin(), cands.end(), [](const Hit* h) { return h->kind == Hit::Kind::Choice; });
+        if (dy > 0 && m_menu == Menu::None && m_moreText && !choiceVisible) {
+            key(Key::PageDown);
+            return;
+        }
+        // первое нажатие: пункт меню, вариант-переход (не ссылка заголовка), «ещё раз», предмет на
+        // сцене или в инвентаре, ссылки в тексте; кнопка меню — только если больше нечего (её
+        // открывает и кнопка «меню» геймпада)
+        auto isRealChoice = [&](const Hit* h) {
+            return h->kind == Hit::Kind::Choice && std::any_of(m_screen.choices.begin(), m_screen.choices.end(),
+                [&](const Choice& c) { return c.enabled && c.index == h->index; });
+        };
+        for (const Hit* h : cands) if (h->kind == Hit::Kind::Menu) { select(*h); return; }
+        for (const Hit* h : cands) if (isRealChoice(h)) { select(*h); return; }
+        for (Hit::Kind want : {Hit::Kind::TryAgain, Hit::Kind::Object, Hit::Kind::Inventory, Hit::Kind::Choice,
+                               Hit::Kind::MenuButton}) {
+            for (const Hit* h : cands) if (h->kind == want) { select(*h); return; }
+        }
+        return;
+    }
+    // ближайший в нужную сторону: вдоль направления + штраф за уход вбок
+    const Hit* best = nullptr;
+    float bestScore = 0;
+    for (const Hit* h : cands) {
+        // слова той же ссылки (ссылка из нескольких слов — несколько областей) — та же цель
+        if (static_cast<int>(h->kind) == m_nav.kind && h->index == m_nav.index && h->id == m_nav.id) continue;
+        const float hx = h->rect.x + h->rect.w / 2 - cx, hy = h->rect.y + h->rect.h / 2 - cy;
+        const float along = hx * dx + hy * dy;
+        if (along <= 1) continue;
+        const float score = along + 2 * std::fabs(hx * dy - hy * dx);
+        if (!best || score < bestScore) { best = h; bestScore = score; }
+    }
+    if (best) {
+        select(*best);
+    } else if (m_menu == Menu::None && dy != 0) {
+        // дальше в эту сторону ничего — листать текст
+        key(dy > 0 ? Key::PageDown : Key::PageUp);
+    }
+}
+
 void GameScreen::key(Key k, int digit) {
     finishTransition();
+    // геймпад: выбор (крестовина / стик), A — нажать выбранное или «дальше», B — назад
+    switch (k) {
+        case Key::Up: navigate(0, -1); return;
+        case Key::Down: navigate(0, 1); return;
+        case Key::Left: navigate(-1, 0); return;
+        case Key::Right: navigate(1, 0); return;
+        case Key::Accept: {
+            float x = 0, y = 0;
+            if (navFocusCenter(x, y)) {
+                click(x, y, false);
+                // после нажатия раскладка другая: выбор — заново первым нажатием направления
+                dropNavFocus();
+            } else if (m_menu != Menu::None) {
+                navigate(0, 1);  // меню без выбора — выбрать первый пункт
+            } else {
+                key(Key::Space);  // ничего не выбрано — «дальше», как пробел
+            }
+            return;
+        }
+        case Key::Back:
+            if (m_menu != Menu::None || m_showChoices) key(Key::Escape);
+            dropNavFocus();
+            return;
+        default: break;
+    }
     if (k == Key::Escape) {
         if (m_showChoices && m_menu == Menu::None) { m_showChoices = false; return; }
         if (m_menu == Menu::None) m_menu = Menu::Main;
