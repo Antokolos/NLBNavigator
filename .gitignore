@@ -76,3 +76,7 @@ Session.vim
 /integrations/godot/demo/bin/
 /integrations/godot/demo/.godot/
 /integrations/**/build/
+
+# Differential route validator and its unit tests.
+!/tests/differential/route_validation.py
+!/tests/differential/test_route_validation.py

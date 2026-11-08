@@ -53,6 +53,20 @@ python3 tests/differential/run_route.py \
 python3 tests/differential/validate_catalog.py
 ~~~
 
+Статическая проверка одного маршрута (без запуска INSTEAD или NLBNavigator):
+
+~~~bash
+python3 tests/differential/run_route.py \
+  --route tests/differential/routes/wolfman-police-hospital-corpse.json \
+  --check
+~~~
+
+Положительные и отрицательные тесты validator:
+
+~~~bash
+python3 -m unittest discover -s tests/differential -p 'test_route_validation.py' -v
+~~~
+
 После обоих запусков сформировать сопоставительный отчёт:
 
 ~~~bash

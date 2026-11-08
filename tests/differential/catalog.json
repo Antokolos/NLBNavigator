@@ -178,5 +178,82 @@
     "repository": "instead-hub/instead",
     "reference_branch": "master",
     "reference_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
-  }
+  },
+  "routes": [
+    {
+      "id": "wolfman-opening",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-opening.json"
+    },
+    {
+      "id": "wolfman-police-hospital-corpse",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-police-hospital-corpse.json"
+    },
+    {
+      "id": "wolfman-eat-robber",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-eat-robber.json"
+    },
+    {
+      "id": "wolfman-chase-robber",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-chase-robber.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-zero-right",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-zero-right.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-zero-left",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-zero-left.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-two-right",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-two-right.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-two-left",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-two-left.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-two-page18-bypass",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-two-page24-bypass",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-zero-page18-bypass",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-zero-page25-bypass",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json"
+    },
+    {
+      "id": "wolfman-guard-high-wolves-talk",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-guard-high-wolves-talk.json"
+    },
+    {
+      "id": "wolfman-guard-high-wolves-attack",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-guard-high-wolves-attack.json"
+    },
+    {
+      "id": "wolfman-guard-low-wolfiness-escape",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-guard-low-wolfiness-escape.json"
+    }
+  ]
 }

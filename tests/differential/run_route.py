@@ -15,6 +15,8 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import unquote
 
+from route_validation import validate_route
+
 
 SCREEN_RE = re.compile(
     r"\[screen\]\s+page='([^']*)'\s+image='([^']*)'\s+imageIsBackground=(true|false)"
@@ -63,6 +65,9 @@ def load_route(path):
             for key in ("x_ratio", "y_ratio"):
                 if key not in coords or not 0.0 <= float(coords[key]) <= 1.0:
                     raise ValueError("Для INSTEAD select_choice нужны координаты instead.x_ratio/y_ratio от 0 до 1")
+    validation_errors = validate_route(route, str(path))
+    if validation_errors:
+        raise ValueError("; ".join(validation_errors))
     return route
 
 
@@ -1088,9 +1093,10 @@ def compare_runtimes(route, output_dir):
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--runtime", required=True, choices=("nlbnavigator", "instead", "compare"))
+    parser.add_argument("--runtime", choices=("nlbnavigator", "instead", "compare"))
     parser.add_argument("--route", required=True)
-    parser.add_argument("--output", required=True)
+    parser.add_argument("--output")
+    parser.add_argument("--check", action="store_true", help="Проверить маршрут без запуска движка")
     parser.add_argument("--player", help="Путь к nlb_sdl")
     parser.add_argument("--book", help="Каталог NLB-книги")
     parser.add_argument("--theme", help="Тема книги для NLBNavigator")
@@ -1104,6 +1110,13 @@ def parse_args():
 def main():
     args = parse_args()
     route = load_route(args.route)
+    if args.check:
+        print("Маршрут {}: OK ({} шагов)".format(route["id"], len(route["steps"])))
+        return 0
+    if not args.runtime:
+        raise ValueError("Укажите --runtime или используйте --check")
+    if not args.output:
+        raise ValueError("Для запуска runtime требуется --output")
     output_dir = Path(args.output).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 

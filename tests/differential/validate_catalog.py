@@ -6,6 +6,8 @@ import re
 import sys
 from pathlib import Path
 
+from route_validation import validate_route
+
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG_PATH = ROOT / "tests/differential/catalog.json"
@@ -81,12 +83,51 @@ def main():
         if not re.search(default_pattern, workflow):
             return fail("workflow_dispatch input {} не использует тот же pinned SHA".format(input_name))
 
+    routes = catalog.get("routes", [])
+    if not isinstance(routes, list) or not routes:
+        return fail("В каталоге отсутствует непустой массив routes")
+    route_ids = [item.get("id") if isinstance(item, dict) else None for item in routes]
+    if any(not isinstance(value, str) or not value for value in route_ids) or len(route_ids) != len(set(route_ids)):
+        return fail("ID маршрутов в catalog.json должны быть уникальными и непустыми")
+
+    book_ids = set(ids)
+    for item in routes:
+        route_id = item["id"]
+        book_id = item.get("book_id")
+        relative_path = item.get("path", "")
+        if book_id not in book_ids:
+            return fail("{}: неизвестная книга {!r}".format(route_id, book_id))
+        if not isinstance(relative_path, str) or not relative_path:
+            return fail("{}: не задан path маршрута".format(route_id))
+        route_path = (ROOT / relative_path).resolve()
+        try:
+            route_path.relative_to(ROOT)
+        except ValueError:
+            return fail("{}: путь маршрута выходит за пределы репозитория".format(route_id))
+        if not route_path.is_file():
+            return fail("{}: файл маршрута не найден: {}".format(route_id, relative_path))
+        try:
+            with route_path.open("r", encoding="utf-8") as source:
+                route = json.load(source)
+        except (OSError, json.JSONDecodeError) as error:
+            return fail("{}: не удалось прочитать маршрут: {}".format(route_id, error))
+        if not isinstance(route, dict):
+            return fail("{}: корень JSON маршрута должен быть объектом".format(route_id))
+        if route.get("id") != route_id:
+            return fail("{}: id в JSON ({}) не совпадает с catalog.json".format(route_id, route.get("id")))
+        route_errors = validate_route(route, relative_path)
+        if route_errors:
+            return fail("; ".join(route_errors))
+
     print(
-        "Catalog OK: {} books, {} paired INSTEAD exports, {} unpaired book.".format(
-            len(books), sum(1 for book in books if book.get("instead")), sum(1 for book in books if not book.get("instead"))
+        "Catalog OK: {} books, {} paired INSTEAD exports, {} unpaired book, {} routes.".format(
+            len(books),
+            sum(1 for book in books if book.get("instead")),
+            sum(1 for book in books if not book.get("instead")),
+            len(routes),
         )
     )
-    print("wolfman, INSTEAD export and base theme pins match workflow defaults.")
+    print("wolfman, INSTEAD export, base theme pins and registered routes are valid.")
     return 0
 
 
