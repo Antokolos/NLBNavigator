@@ -1,5 +1,6 @@
 #include "NLBPauseMenuWidget.h"
 
+#include "HAL/PlatformProperties.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Border.h"
 #include "Components/BorderSlot.h"
@@ -85,12 +86,17 @@ void UNLBPauseMenuWidget::Refresh()
 	else
 	{
 		AddItem(TEXT("Продолжить (Esc)"), Continue);
-#if !PLATFORM_ANDROID
-		// на автономном шлеме (Quest) только VR — переключать нечего
+#if PLATFORM_DESKTOP
+		// VR по OpenXR — только на ПК (шлем по Link); на автономном шлеме (Quest) только VR, на
+		// телефоне и консолях — без VR: переключать нечего
 		const bool bVR = C && C->IsVRMode();
 		AddItem(bVR ? TEXT("Режим: VR → обычный") : TEXT("Режим: обычный → VR"), ToggleVR);
 #endif
-		AddItem(TEXT("Выйти из игры"), Quit);
+		// на консолях выхода из игры в меню нет — только системная кнопка (требования Nintendo, Sony)
+		if (FPlatformProperties::SupportsQuit())
+		{
+			AddItem(TEXT("Выйти из игры"), Quit);
+		}
 	}
 	Status->SetText(FText::FromString(StatusText));
 }
