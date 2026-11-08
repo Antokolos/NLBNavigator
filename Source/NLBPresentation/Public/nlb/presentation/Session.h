@@ -129,7 +129,7 @@ private:
     std::vector<PlayerEngine::Event> m_pending;
     std::string m_selected;
     uint64_t m_localRevision = 0;  ///< выбор предмета меняет вид, но не снимок движка
-    std::unique_ptr<std::ofstream> m_log;  ///< журнал прохождения (setLogFile)
+    std::unique_ptr<std::ostream> m_log;  ///< журнал прохождения (setLogFile)
     std::unique_ptr<nlb::platform::PlatformBridge> m_platforms;
     std::deque<std::string> m_voices;  ///< очередь озвучки текущей страницы
     bool m_voicePlayed = false;        ///< на странице звучала озвучка (уход — остановить)

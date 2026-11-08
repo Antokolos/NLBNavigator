@@ -119,8 +119,8 @@ bool Session::setLogFile(const std::string& path, std::string& error) {
     m_log.reset();
     m_logPage.clear();
     if (path.empty()) return true;
-    auto f = std::make_unique<std::ofstream>(FileUtils::nativePath(path), std::ios::binary | std::ios::trunc);
-    if (!*f) {
+    auto f = FileUtils::openWriteStream(path);  // через файловую систему плеера
+    if (!f) {
         error = "не удалось открыть журнал " + path;
         return false;
     }
@@ -406,7 +406,7 @@ void Session::setSetting(const std::string& key, const std::string& value) {
     }
     if (!done) out += key + "=" + value + "\n";
     FileUtils::createDirectoryRecursive(m_options.savesDir);
-    std::ofstream(FileUtils::nativePath(path), std::ios::trunc) << out;
+    FileUtils::writeFile(path, out);
 }
 
 bool Session::setLanguage(const std::string& language, bool byPlayer) {

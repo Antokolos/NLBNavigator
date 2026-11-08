@@ -1,5 +1,7 @@
 #pragma once
 
+#include "nlb/util/FileUtils.h"
+
 #include <cstdint>
 #include <fstream>
 #include <functional>
@@ -110,7 +112,7 @@ private:
     std::string m_sourceDir;
     std::string m_packPath;                   ///< откуда прочитан пакет (для отложенного чтения)
     mutable std::mutex m_ioMutex;
-    mutable std::ifstream m_file;
+    mutable std::unique_ptr<IFileSystem::Reader> m_file;  ///< файл пакета (через файловую систему плеера)
     std::map<std::string, Entry> m_entries;   ///< "" — корень, "pages/<id>/text/ru" и т.п.
     std::map<std::string, std::vector<std::string>> m_children;
     void index();

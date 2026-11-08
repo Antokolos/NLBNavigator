@@ -826,25 +826,15 @@ bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
         error = "здесь сохраняться нельзя";
         return false;
     }
-    const std::string tmp = path + ".tmp";
-    {
-        std::ofstream out(FileUtils::nativePath(tmp), std::ios::binary | std::ios::trunc);
-        if (!out) {
-            error = "не удалось создать файл " + path;
-            return false;
-        }
-        writeSave(out);
-        // Снимок SNAPSHOT — тоже сохранение игры, целиком в одной записи
-        if (!m_snapshot.empty()) {
-            PlayerContext::writeSaveRecord(out, {"snapshot", m_snapshot});
-        }
-        if (!out) {
-            error = "ошибка записи в файл " + path;
-            return false;
-        }
+    std::ostringstream out(std::ios::binary);
+    writeSave(out);
+    // Снимок SNAPSHOT — тоже сохранение игры, целиком в одной записи
+    if (!m_snapshot.empty()) {
+        PlayerContext::writeSaveRecord(out, {"snapshot", m_snapshot});
     }
-    // Через WinAPI: std::filesystem в MinGW не понимает пути с префиксом \\?\ (nativePath)
-    if (!FileUtils::renameReplace(tmp, path)) {
+    // через файловую систему плеера (на консолях — каталог сохранений платформы); атомарно:
+    // во временный файл и переименование — сбой записи не портит прежнее сохранение
+    if (!FileUtils::writeFileAtomic(path, out.str())) {
         error = "не удалось записать файл " + path;
         return false;
     }
@@ -853,10 +843,11 @@ bool PlayerEngine::saveGame(const std::string& path, std::string& error) const {
 
 PlayerEngine::SaveInfo PlayerEngine::readSaveInfo(const std::string& path) const {
     SaveInfo info;
-    std::ifstream in(FileUtils::nativePath(path), std::ios::binary);
-    if (!in) {
+    std::string data;
+    if (!FileUtils::readFile(path, data)) {
         return info;
     }
+    std::istringstream in(data, std::ios::binary);
     const auto records = PlayerContext::readSaveRecords(in);
     if (records.empty() || records[0].empty() || records[0][0] != SAVE_MAGIC) {
         return info;
@@ -877,11 +868,12 @@ PlayerEngine::SaveInfo PlayerEngine::readSaveInfo(const std::string& path) const
 }
 
 bool PlayerEngine::loadGame(const std::string& path, std::string& error) {
-    std::ifstream in(FileUtils::nativePath(path), std::ios::binary);
-    if (!in) {
+    std::string data;
+    if (!FileUtils::readFile(path, data)) {
         error = "файл сохранения не найден";
         return false;
     }
+    std::istringstream in(data, std::ios::binary);
     const auto records = PlayerContext::readSaveRecords(in);
     if (records.empty() || records[0].size() < 2 || records[0][0] != SAVE_MAGIC) {
         error = "это не файл сохранения NLBNavigator";
