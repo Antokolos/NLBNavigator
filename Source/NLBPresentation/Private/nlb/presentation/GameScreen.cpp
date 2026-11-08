@@ -868,7 +868,7 @@ std::vector<GameScreen::MainItem> GameScreen::mainItems() const {
     if (m_setFullscreen) items.push_back(MainItem::Fullscreen);
     if (m_session.availableLanguages().size() > 1) items.push_back(MainItem::Language);  // язык — если есть выбор
     items.push_back(MainItem::TextSize);
-    items.push_back(MainItem::Quit);
+    if (m_options.canQuit) items.push_back(MainItem::Quit);  // на консолях выхода из меню нет
     items.push_back(MainItem::Back);
     return items;
 }

@@ -1,6 +1,7 @@
 #include "NLBScreenWidget.h"
 
 #include "HAL/PlatformMisc.h"
+#include "HAL/PlatformProperties.h"
 
 #include "Fonts/CompositeFont.h"
 
@@ -240,6 +241,8 @@ bool UNLBScreenWidget::EnsureScreen() {
     // VN — всегда экран вариантов (как paginator в VN-INSTEAD), Standard — по свойству
     O.choicesScreen = P->GetSession()->exportMode() == PlayerEngine::ExportMode::VN || bChoicesScreen;
     O.soundAvailable = true;
+    // на консолях выхода из игры в меню нет — только системная кнопка (требования платформ)
+    O.canQuit = FPlatformProperties::SupportsQuit();
     O.clock = [] { return static_cast<uint64_t>(FPlatformTime::Seconds() * 1000.0); };
     Screen.reset(new GameScreen(*P->GetSession(), O));
     // события, которые забирает экран, — в делегаты подсистемы (контроллер игры слушает их)
