@@ -6,7 +6,7 @@
 
 ## Текущая модель покрытия
 
-wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #144: 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. В каталоге зарегистрировано 15 маршрутов; все 15 семантически проверены validator, а 13 исполнены в обоих runtime.
+wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #145 (до интеграции актуального main): 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. Следующий CI запускается после merge актуального main в рабочую ветку. В каталоге зарегистрировано 15 маршрутов; все 15 семантически проверены validator, а 13 исполнены в обоих runtime.
 
 В полицейском маршруте оба движка согласны по UUID страницы 2, hp=2, wolfiness=0; INSTEAD зафиксировал act 01. Больница и выбор врача/трупа после страницы 2 ещё не покрыты этим маршрутом. Полная сводка, SHA и остаток работ: TESTING_PROGRESS.md; граф ветвей: WOLFMAN_BRANCH_MAP.md.
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
@@ -247,3 +247,10 @@ forest/bypass и guard); два robber routes зарегистрированы �
 `route_validation.py`. Локально также прошли 12 unit tests и все 15 команд
 `run_route.py --check`. Issue #37 закрыта: страница 8 имеет 17 порций в обоих
 движках (индексы 0–16), подтверждено trace/state-log в артефакте CI #144.
+
+
+## CI #145 и интеграция main
+
+[CI #145](https://github.com/Antokolos/NLBNavigator/actions/runs/42520125450) завершился SUCCESS: 53 шага, сборка и smoke-test SDL-плеера, проверка каталога, runtime в обоих движках, 13 comparisons и проверка INSTEAD export. Артефакт: [nlb-sdl-test-logs](https://github.com/Antokolos/NLBNavigator/actions/runs/42520125450/artifacts/13635088105).
+
+После этого рабочая ветка обновлена merge-коммитом `bf45a65f429510c458280457442e63f2a24a2359`, включающим актуальный на тот момент `main` (`b609b74d2dbe2c48d5979127bce7455312ecdbd5`). CI #145 относится к прежнему HEAD; интеграционная проверка нового HEAD обязательна.

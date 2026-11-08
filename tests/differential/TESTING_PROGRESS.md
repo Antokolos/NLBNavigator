@@ -5,7 +5,7 @@
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - PR #32: https://github.com/Antokolos/NLBNavigator/pull/32
 - Рабочая ветка: ci/nlb-sdl-wolfman-state-trace
-- HEAD: c8640c6e0ce34054efad0a0491488d3331ecbe70
+- HEAD до этого документационного обновления: bf45a65f429510c458280457442e63f2a24a2359 (merge актуального main в рабочую ветку).
 - PR #32 открыт, Draft, не смёржен. Merge делает владелец; автоматически не объединять.
 - PR #25 закрыт владельцем как заменённый PR #32.
 
@@ -46,7 +46,7 @@
 
 В CI #144 validate_catalog.py также применил семантический validator ко всем 15 маршрутам. Отдельный unittest suite в этом workflow пока не запускается.
 
-## CI #144 — SUCCESS
+## CI #144 — SUCCESS (исторический прогон)
 
 https://github.com/Antokolos/NLBNavigator/actions/runs/42496423107
 
@@ -98,3 +98,23 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 - nlb_sdl built; vcpkg ~/work/vcpkg.
 - test-data — локальные pinned checkouts; не добавлять в Git.
 - local git identity: Anton P. Kolosov <antokolos@gmail.com>.
+
+
+## Интеграция с актуальным main — выполнена
+
+- Актуальный main на момент обновления: `b609b74d2dbe2c48d5979127bce7455312ecdbd5`.
+- Рабочая ветка обновлена merge-коммитом `bf45a65f429510c458280457442e63f2a24a2359`; родительские коммиты — актуальный main и прежний HEAD PR `29d3d9cbde282699d796e9184b2405eece8d1a95`.
+- Изменения PR сохранены поверх main. В затронутых PR файлах нет конфликтов с новыми изменениями main; изменения main в `Source/**` сохранены.
+- PR по-прежнему не содержит изменений `Source/**`: кодовые изменения из main пришли в ветку только как базовая история.
+- Требуется новый CI после обновления ветки: он должен собрать текущий `Source/NLBSdl/**` и повторить differential routes на новом merge HEAD. До его завершения не переводить PR в Ready и не сливать.
+
+## CI #145 — SUCCESS на прежнем HEAD
+
+[CI #145](https://github.com/Antokolos/NLBNavigator/actions/runs/42520125450)
+
+- HEAD `29d3d9cbde282699d796e9184b2405eece8d1a95`; все 53 шага завершились SUCCESS.
+- Сборка `nlb_sdl`, smoke-test, статическая проверка 15 маршрутов, runtime-прогоны INSTEAD/NLBNavigator, comparisons и проверка reference export завершились успешно.
+- 13 сценариев выполнены в обоих движках; 13 comparisons успешны. Два robber routes остаются только статически проверенными.
+- Артефакт `nlb-sdl-test-logs`: [ID 13635088105](https://github.com/Antokolos/NLBNavigator/actions/runs/42520125450/artifacts/13635088105), 81,618,567 bytes.
+- Этот прогон предшествует интеграции актуального main; он не заменяет обязательный CI на merge-коммите.
+
