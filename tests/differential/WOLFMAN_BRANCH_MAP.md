@@ -20,7 +20,7 @@
 
 ## Текущий проверенный охват
 
-Последний полный успешный workflow: [CI #141](https://github.com/Antokolos/NLBNavigator/actions/runs/42430296127), HEAD 80ac36bf69789c52d3f249c435b5ed189adbfd33 — 26 runtime reports и 13 comparisons, все ok=true, errors=[]. CI #141 дополнительно подтвердил вход в полицейскую ветку до page2.
+Последний полный успешный workflow: [CI #144](https://github.com/Antokolos/NLBNavigator/actions/runs/42496423107), HEAD ${baseSha} — 26 runtime reports и 13 comparisons, все ok=true, errors=[]. CI #144 дополнительно подтвердил police route до page2 и статическую проверку всех 15 зарегистрированных маршрутов.
 
 | Маршрут | INSTEAD | NLBNavigator | Результат |
 |---|---|---|---|
@@ -30,7 +30,7 @@
 | Охранник: `wolvesTalk=true` → page27 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Охранник: `wolvesTalk=false` → page28 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Охранник: `wolfiness=0` → page1.8 | `ok=true` | `ok=true` | Сравнение `ok=true` |
-| Полиция: первый выбор → page2 | `ok=true` | `ok=true` | CI #141; hp=2, wolfiness=0 |
+| Полиция: первый выбор → page2 | `ok=true` | `ok=true` | CI #144; hp=2, wolfiness=0 |
 
 CI #126 подтвердил все три guard routes; их NLB state-log валидирован на 163, 151 и 141 записях соответственно. Подробные конечные состояния перечислены в разделе «Охранник и выбор оружия».
 
@@ -46,9 +46,9 @@ CI #126 подтвердил все три guard routes; их NLB state-log ва
 
 ### Известное отличие пагинации
 
-На странице 8 (UUID `b2f0838e-3068-4850-ad2f-4944075de38b`) INSTEAD показывает 15 непустых порций, а NLBNavigator — 17. Два длинных абзаца философа разделяются на две порции только в NLBNavigator. Маршрут учитывает runtime-specific advancement: INSTEAD — 14 продвижений до последней порции, NLBNavigator — 16. Текст/переходы после этого корректно синхронизируются.
+Исторически страница 8 (UUID `b2f0838e-3068-4850-ad2f-4944075de38b`) показывала 15 непустых порций в старом INSTEAD export и 17 в NLBNavigator. PR #43 перегенерировал reference export текущим NLB exporter; актуальный pinned export теперь совпадает с NLB по разбиению.
 
-Это зарегистрировано в [Issue #37](https://github.com/Antokolos/NLBNavigator/issues/37). Issue остаётся открытым: ещё нужно согласовать контракт пагинации и решить, должен ли меняться движок/экспорт или допустимы разные границы порций. Успех CI не означает, что различие исчезло.
+Это было зарегистрировано в [Issue #37](https://github.com/Antokolos/NLBNavigator/issues/37), закрытой после PR #43 и проверки CI #144. Артефакт CI #144 подтверждает page 8 portion_count=17 и индексы 0–16 в INSTEAD trace и NLBNavigator state-log. Дополнительные advance clicks не использовались для маскировки различия.
 
 ## Граф истории
 
@@ -225,7 +225,7 @@ CI #128 подтвердил page1.8 (финальная порция 4/5) и в
 ## Связанные задачи
 
 - [PR #32](https://github.com/Antokolos/NLBNavigator/pull/32) — текущий Draft; не сливать без согласования.
-- [Issue #37](https://github.com/Antokolos/NLBNavigator/issues/37) — различие 15/17 порций на странице 8.
+- [Issue #37](https://github.com/Antokolos/NLBNavigator/issues/37) — закрыта: PR #43 обновил reference export, CI #144 подтвердил 17 порций в обоих движках.
 - [Issue #28](https://github.com/Antokolos/NLBNavigator/issues/28) — полное покрытие всех парных книг.
 
 
@@ -319,3 +319,28 @@ CI #141, HEAD 80ac36bf69789c52d3f249c435b5ed189adbfd33 — SUCCESS. Артефа
 - Оба движка достигают page2 UUID b12a01be-cd61-4dba-b427-1ce3afc06fc6, ресурсы 2.png / images/2.jpg, состояние wolfiness=0,hp=2.
 - До экрана choices требуется 10 кликов в INSTEAD и 9 в NLBNavigator; координата первого выбора INSTEAD — y_ratio=0.28. Эти параметры проверены локально в WSL2, затем в CI.
 - Дальнейший переход в hospital page3, выбор «Съесть врача» / «Съесть труп» и концовка page41 при hp<=1 остаются следующими задачами.
+
+
+## CI #144 — статическая проверка маршрутов и обновлённая пагинация
+
+[CI #144](https://github.com/Antokolos/NLBNavigator/actions/runs/42496423107),
+HEAD `c8640c6e0ce34054efad0a0491488d3331ecbe70` — SUCCESS. Все 53 рабочих шага завершились успешно.
+Артефакт `nlb-sdl-test-logs` (ID `13626431678`) проверен: 26 runtime route
+reports (13 сценариев × 2 движка) и 13 cross-runtime comparisons; все
+`ok=true`, `errors=[]`.
+
+Каталог содержит 15 маршрутов. `validate_catalog.py` вызывает
+`route_validation.validate_route` для каждого из них и проверяет уникальность
+route IDs, ссылки на файлы, соответствие ID, step IDs, `visual_change_from`,
+choices перед `select_choice` и portion index/count. Два robber route JSON
+в CI #144 не исполнялись как отдельные runtime jobs, но прошли эту статическую
+проверку. Локально прошли 12 unit tests и `run_route.py --check` для всех
+15 маршрутов.
+
+Для page 8 (UUID `b2f0838e-3068-4850-ad2f-4944075de38b`) traces подтверждают
+17 порций в обоих движках (индексы 0–16). Это проверено на нескольких
+forest/guard маршрутах. Issue #37 закрыта после обновления reference export
+в PR #43 и проверки CI #144.
+
+Police route всё ещё заканчивается на page2; hospital page3 и выбор врача/трупа
+остаются непокрытыми. Pixel diff между разными рендерерами остаётся advisory.

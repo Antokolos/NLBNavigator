@@ -1,23 +1,23 @@
 # Дифференциальное тестирование NLBNavigator ↔ INSTEAD — текущая контрольная точка
 
-Обновлено: 2026-11-08 (Asia/Bishkek). Подробный предыдущий журнал и переписка Claude Code сохранены в docs/archive/differential/.
+Обновлено: 2026-11-09 (Asia/Bishkek). Исторический журнал и переписка Claude Code сохранены в docs/archive/differential/.
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - PR #32: https://github.com/Antokolos/NLBNavigator/pull/32
 - Рабочая ветка: ci/nlb-sdl-wolfman-state-trace
-- HEAD до этой корректирующей документационной записи: b239488980bad6bafc96e5dc1ef8b64ecd0a7da0
-- PR #32 открыт, Draft, не смёржен. GitHub сообщает mergeable=true, mergeable_state=clean; перед слиянием повторно проверить актуальную main и обязательные checks.
-- PR #25 уже закрыт владельцем как заменённый #32.
+- HEAD: c8640c6e0ce34054efad0a0491488d3331ecbe70
+- PR #32 открыт, Draft, не смёржен. Merge делает владелец; автоматически не объединять.
+- PR #25 закрыт владельцем как заменённый PR #32.
 
 ## Правила
 
-- Не менять Source/**; тестовая автоматизация и маршруты не меняют игровой код.
+- Не менять Source/** в рамках differential testing.
 - Не редактировать исходные репозитории книг/INSTEAD; использовать pinned SHA и временный overlay.
-- Runtime discrepancy — отдельная issue с минимальным repro, обоими логами/traces и кадрами. Сначала исключить ошибку ввода, тайминг и неверное ожидание.
+- Runtime discrepancy оформлять отдельной issue с минимальным воспроизведением, обоими логами/traces и кадрами. Сначала исключить ошибку ввода, тайминг и неверное ожидание.
 - Pixel diff между рендерерами advisory, не pixel-perfect gate.
-- Каждый изменённый маршрут проверять локально в обоих движках под Xvfb до push. Полный CI занимает около 73 минут.
-- Всё по-русски; короткие PR по одной теме.
-- После каждого этапа обновлять issue #28: что сделано, ссылка на зелёный CI, покрытие, найденные issues.
+- Каждый изменённый маршрут проверять локально в обоих движках под Xvfb до push.
+- Пагинация — часть функционального differential testing: сравнивать portion index/count, порядок и переходы, не маскировать расхождения лишними кликами.
+- После каждого этапа обновлять issue #28: что сделано, ссылка на зелёный CI, покрытие и найденные issues.
 
 ## Pinned inputs
 
@@ -26,44 +26,75 @@
 - INSTEAD base theme: 1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e
 - wolfman и instead-am_i_a_monster_vn — две упаковки одной истории, подтверждено владельцем.
 
-## CI #141 — SUCCESS
+## Шаг 1 — статическая route validation завершён
 
-https://github.com/Antokolos/NLBNavigator/actions/runs/42430296127
+Добавлен validator, используемый как из run_route.py, так и из validate_catalog.py. Он проверяет:
 
-- HEAD: 80ac36bf69789c52d3f249c435b5ed189adbfd33.
-- Build, smoke-test, fixtures, validation и все маршруты прошли.
-- Проверен артефакт nlb-sdl-test-logs ID 13599641668: 26 runtime route reports (13 сценариев × 2 движка) и 13 comparisons; везде ok=true, errors=[].
-- Police route прошёл локально и в CI: оба движка достигли page2 UUID b12a01be-cd61-4dba-b427-1ce3afc06fc6, hp=2, wolfiness=0; INSTEAD trace фиксирует act 01.
-- Для открытия choices: 10 щелчков INSTEAD, 9 NLBNavigator; координата первого INSTEAD выбора y_ratio=0.28.
-- Продолжение в больницу/page3 и выбор врача/трупа не покрыты; police route подтверждён до page2.
-- Полный CI занял около 72 мин 35 с. Матрица/кэш ещё не внедрены.
+- непустой список шагов и уникальные непустые step ID;
+- visual_change_from ссылается только на непосредственно предыдущий шаг;
+- select_choice следует за checkpoint экрана choices с текстами вариантов обоих движков;
+- portion_index — неотрицательное целое число и строго возрастает;
+- portion_count остаётся стабильным в пределах посещения страницы и index не выходит за его пределы;
+- состояние пагинатора сбрасывается на checkpoint без portion_index и при смене page UUID;
+- некорректные JSON-типы не обходят проверку.
 
-## Покрытие / оставшиеся задачи
+Локальная проверка в WSL2:
+- 12/12 unit tests прошли, включая отрицательный тест на старой police route без opening-choices;
+- все 15 зарегистрированных маршрутов прошли run_route.py --check;
+- validate_catalog.py подтвердил 7 книг, 6 парных INSTEAD exports, 1 unpaired book и 15 routes;
+- git diff --check прошёл; Source/** не изменялся.
 
-Последняя опубликованная оценка wolfman: 42/54 страниц и 9/16 концовок. Автоматический coverage скрипт ещё не создан, значит это исходная оценка, а не новый пересчёт.
+В CI #144 validate_catalog.py также применил семантический validator ко всем 15 маршрутам. Отдельный unittest suite в этом workflow пока не запускается.
 
-Покрыто: начальная/robber-bar ветка; forest/traveler/bypass; три guard ветки; low-wolfiness route до page42; первый выбор police до page2.
+## CI #144 — SUCCESS
 
-Остаётся: hospital page3 и выбор врача/трупа; low-HP page41; все 16 концовок; английский язык; save/load; persisted achievement read-back/parity. Issue #37 открыта: page8 — 15 INSTEAD portions vs 17 NLBNavigator portions.
+https://github.com/Antokolos/NLBNavigator/actions/runs/42496423107
 
-## Очередность по Claude
+- Run 144, HEAD c8640c6e0ce34054efad0a0491488d3331ecbe70, push в ci/nlb-sdl-wolfman-state-trace.
+- Все 53 рабочих шага завершились SUCCESS: сборка nlb_sdl, smoke test, подготовка pinned inputs, каталог/маршруты, runtime и comparisons, проверка INSTEAD export и загрузка артефакта.
+- Артефакт nlb-sdl-test-logs: ID 13626431678, 81,618,544 bytes.
+- Артефакт проверен: 26 runtime route reports (13 сценариев × 2 движка) и 13 comparison reports; везде ok=true, errors=[].
+- В runtime CI исполнены opening, police, восемь forest/bypass и три guard routes. Два robber route JSON зарегистрированы и статически валидированы, но в run #144 отдельно не запускались.
+- Catalog validator: 7 books, 6 paired INSTEAD exports, 1 unpaired book, 15 routes.
+- Police route по-прежнему заканчивается на page2 UUID b12a01be-cd61-4dba-b427-1ce3afc06fc6; hospital page3 и выбор врача/трупа ещё не покрыты.
+- Междвижковые screenshot metrics остаются advisory.
 
-0. Выполнено: police route исправлен и локально/CI проверен.
-1. Статическая route validation: уникальные step ID; visual_change_from только на предыдущий шаг; select_choice только после choices; последовательность portion_index и неизменный portion_count внутри страницы; все route ID есть в catalog. Добавить отрицательный тест на старой police JSON без opening-choices.
-2. Подготовить PR #32: agent reviews/replies и старый progress log в docs/archive/differential; в tests/differential оставить README, WOLFMAN_BRANCH_MAP и этот краткий TESTING_PROGRESS. PR #25 закрыт. Оставить комментарии в #28/#32; merge делает владелец.
-3. Отдельная PR для CI speed: build job и artifact; vcpkg/SDL3 cache; route matrix fail-fast:false; exploratory routes отдельно continue-on-error; cancel-in-progress:false; на push только изменённые routes; dispatch + daily full run. Цель 15–20 мин. В repo нет vcpkg.json — кэшировать по версии vcpkg и явному списку портов.
-4. Runner actions advance_until choices/last_portion по trace/state-log; сравнивать portion_count отдельно; select_choice по тексту; мигрировать wolfman routes с локальной проверкой каждого.
-5. Coverage script по каталогу: страницы + terminal endings; artifact CI; сначала проверить прежние ориентиры 42/54 и 9/16.
-6. Добить wolfman: 16 концовок, RU+EN, save/load, achievement read-back и police/hospital. Дерево выборов искать машиной через nlb_main; в INSTEAD пройти по одному пути на концовку.
-7. Следующие книги — по DoD docs/differential-testing-plan.md §4.5, каждая отдельным PR; новые actions objects/inventory/use — отдельные PR перед книгами, где они нужны.
+## Пагинация страницы 8 и issue #37
+
+PR #43 перегенерировал эталонный INSTEAD export текущим NLB exporter; pinned export обновлён на 0db8d2c611faa596987baaf041763ef6c9282484. Это устранило старое расхождение 15/17, возникшее из-за устаревшего reference export.
+
+CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad2f-4944075de38b):
+- INSTEAD: portion_count=17, индексы 0–16;
+- NLBNavigator: portion.count=17, индексы 0–16.
+Результат повторяется на нескольких forest/guard маршрутах. Дополнительные клики не добавлялись для маскировки расхождения. Issue #37 закрыта после проверки артефакта CI #144.
+
+## Покрытие и оставшиеся задачи
+
+Покрыто runtime-маршрутами: вступление; лесные ветви wolfiness 0/2, встречи/обходы; три guard ветви; low-wolfiness путь до page42; police branch до page2.
+
+Остаётся:
+- продолжить police/hospital: page3, выбор врача/трупа и дальнейшие исходы;
+- low-HP page41;
+- все 16 концовок и полная инвентаризация достижений;
+- persisted achievement read-back/parity;
+- английский язык;
+- save/load;
+- автоматический coverage report по страницам и terminal endings;
+- runtime-запуски отдельных robber routes в текущей CI-схеме и расширение branch coverage.
+
+## Очередность
+
+1. [x] Статическая route validation, отрицательные unit tests и проверка всех 15 route definitions.
+2. [ ] Финальная подготовка PR #32: актуализировать документацию и PR summary, проверить diff/base/head/required checks. PR оставить Draft до отдельного подтверждения Ready for review. Merge выполняет владелец.
+3. [ ] Отдельный PR для ускорения CI: build once/artifact, vcpkg/SDL3 cache, route matrix fail-fast:false, changed-route push runs, manual/scheduled full run, concurrency.cancel-in-progress:false; цель 15–20 минут. В репозитории нет vcpkg.json, зависимости устанавливаются явно: sdl3, sdl3-image[png,jpeg], sdl3-ttf, sdl3-mixer.
+4. [ ] Устойчивые runner actions: advance_until choices/last_portion, синхронизация trace/state-log, выбор по тексту и миграция маршрутов с локальной проверкой.
+5. [ ] Coverage script по каталогу: страницы и концовки; сверить прежние ориентиры 42/54 и 9/16.
+6. [ ] Завершить wolfman: hospital/police, page41, 16 концовок, RU/EN, save/load и persisted achievements.
+7. [ ] Остальные книги по docs/differential-testing-plan.md §4.5; каждая книга — отдельный PR.
 
 ## WSL2
 
 - Ubuntu 24.04.5, user nlbdev, repo ~/work/NLBNavigator.
 - nlb_sdl built; vcpkg ~/work/vcpkg.
-- test-data pins — выше; root .gitignore игнорирует файлы внутри, но каталог может показываться как ?? test-data/. Не добавлять в git.
+- test-data — локальные pinned checkouts; не добавлять в Git.
 - local git identity: Anton P. Kolosov <antokolos@gmail.com>.
-
-## Следующее действие
-
-Начать шаг 1: изучить run_route.py, validate_catalog.py, catalog.json и все route JSON; реализовать статический validator и отрицательный тест для старого police-route fixture. Не менять Source/**. Проверить локально, затем отдельная PR/коммит по согласованному порядку.

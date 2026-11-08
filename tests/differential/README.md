@@ -6,7 +6,7 @@
 
 ## Текущая модель покрытия
 
-wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #141: 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. Подтверждены вступительная/robber ветка, forest/traveler/bypass/guard-маршруты и новый полицейский вход до страницы 2.
+wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #144: 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. В каталоге зарегистрировано 15 маршрутов; все 15 семантически проверены validator, а 13 исполнены в обоих runtime.
 
 В полицейском маршруте оба движка согласны по UUID страницы 2, hp=2, wolfiness=0; INSTEAD зафиксировал act 01. Больница и выбор врача/трупа после страницы 2 ещё не покрыты этим маршрутом. Полная сводка, SHA и остаток работ: TESTING_PROGRESS.md; граф ветвей: WOLFMAN_BRANCH_MAP.md.
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
@@ -53,6 +53,11 @@ python3 tests/differential/run_route.py \
 python3 tests/differential/validate_catalog.py
 ~~~
 
+Команда проверяет не только pins и регистрацию, но и семантическую структуру
+всех зарегистрированных route JSON через `route_validation.py`: step IDs,
+`visual_change_from`, checkpoint choices и portion index/count. Локальные
+положительные/отрицательные unit tests запускаются отдельно командой ниже.
+
 Статическая проверка одного маршрута (без запуска INSTEAD или NLBNavigator):
 
 ~~~bash
@@ -98,7 +103,7 @@ STANDARD/компонентов, но не подменяет текст VN-по
 ## Что уже покрывают маршруты
 
 - `wolfman-opening.json`: начальные сцены и выбор «Перепрыгнуть через забор».
-- `wolfman-police-hospital-corpse.json`: чистый вход по полицейской ветке до страницы 2; CI #141 подтвердил hp=2, wolfiness=0 в обоих движках. Продолжение через больницу ещё не добавлено.
+- `wolfman-police-hospital-corpse.json`: чистый вход по полицейской ветке до страницы 2; CI #144 подтвердил hp=2, wolfiness=0 в обоих движках. Продолжение через больницу ещё не добавлено.
 - `wolfman-eat-robber.json` и `wolfman-chase-robber.json`: ветви грабителя,
   зоопарка, бара и страницы 13, ведущие к page16/page17.
 - Четыре `wolfman-forest-wolfiness-*` маршрута: выборы page16/page17,
@@ -112,8 +117,12 @@ STANDARD/компонентов, но не подменяет текст VN-по
 CI #41695602249 (run 120) завершил все четыре расширенных forest routes в обоих
 движках и четыре comparisons: route reports и comparison reports имеют
 `ok=true`, `errors=[]`; state-log проверен на 139/151/136/139 строках.
-Страница 8 по-прежнему отличается числом непустых порций (INSTEAD 15,
-NLBNavigator 17), Issue #37 остаётся открытым.
+
+PR #43 перегенерировал эталонный INSTEAD export текущим NLB exporter и закрепил
+commit `0db8d2c611faa596987baaf041763ef6c9282484`. CI #144 подтвердил для page 8
+(UUID `b2f0838e-3068-4850-ad2f-4944075de38b`) 17 порций в обоих движках:
+INSTEAD trace и NLBNavigator state-log содержат индексы 0–16 и count=17.
+Issue #37 закрыта после проверки артефакта CI #144.
 
 CI #121 подтвердил page22 bypass-маршруты: все четыре INSTEAD/NLBNavigator route
 reports и четыре comparison reports прошли; конечные UUID, фон и `forestExit=true`
@@ -223,3 +232,18 @@ Low-wolfiness route прошёл в обоих runtime: по 44 шага и 36 �
 The run also confirms that the bounded process-group cleanup introduced after CI #134's shutdown timeout works. INSTEAD's session log records the `VILLAIN_PUNISHED` achievement call; persistent achievement-state parity is not yet verified. Pixel differences remain advisory.
 
 See [TESTING_PROGRESS.md](TESTING_PROGRESS.md) for the detailed CI history and [WOLFMAN_BRANCH_MAP.md](WOLFMAN_BRANCH_MAP.md) for the route/ending graph. Next coverage target: alternative police/hospital start and the page41 low-HP ending.
+
+
+## CI #144 — статический validator и runtime regression suite
+
+[CI #144](https://github.com/Antokolos/NLBNavigator/actions/runs/42496423107),
+HEAD `c8640c6e0ce34054efad0a0491488d3331ecbe70`, завершился SUCCESS. Артефакт `nlb-sdl-test-logs` (ID
+`13626431678`) содержит 26 runtime reports и 13 comparison reports; все
+`ok=true`, `errors=[]`. В runtime исполнены 13 маршрутов (opening, police,
+forest/bypass и guard); два robber routes зарегистрированы и статически
+валидированы, но отдельно в этом прогоне не исполнялись.
+
+`validate_catalog.py` проверил 15 зарегистрированных маршрутов через
+`route_validation.py`. Локально также прошли 12 unit tests и все 15 команд
+`run_route.py --check`. Issue #37 закрыта: страница 8 имеет 17 порций в обоих
+движках (индексы 0–16), подтверждено trace/state-log в артефакте CI #144.
