@@ -12,9 +12,9 @@ GitHub Actions.
 | Маршрутов / шагов | 15 маршрутов, 436 шагов (JSON по 800–1500 строк каждый) |
 | Покрыто страниц `wolfman` | **42 из 54** (без страниц-модулей) |
 | Покрыто концовок/тупиков (страниц без ссылок) | **9 из 16** |
-| Не начато в `wolfman` | английская версия, сохранение/загрузка, чтение достижений (сейчас доказан только вызов), ветка полиции (маршрут исследовательский, прогоны 138–139 падают на нём) |
+| Не начато в `wolfman` | английская версия, сохранение/загрузка, чтение сохранённых достижений; продолжение полицейской ветки после страницы 2 (больница и выбор врача/трупа) |
 | Время | 9 дней (31.10–07.11), 69 коммитов |
-| CI | 64 прогона за ветку: 20 успешных, 17 упавших, 26 отменённых; один прогон — **63–76 минут** |
+| Последний CI | [run #141](https://github.com/Antokolos/NLBNavigator/actions/runs/42430296127), HEAD 80ac36bf: SUCCESS, полный workflow около 72 мин 35 с |
 
 Итого: инфраструктура (раннер, trace INSTEAD, state-log NLBNavigator, каталог с закреплёнными
 коммитами) готова и работает; это главное достижение. Покрытие — около ¾ одной, самой
@@ -68,22 +68,26 @@ GitHub Actions.
      зелёные — по статусу прогона этого не видно;
   3. новый маршрут добавлен в конец последовательности, поэтому его ошибка видна последней.
 
+### 3.2. CI #141 — исправление маршрута полиции подтверждено
+
+[CI #141](https://github.com/Antokolos/NLBNavigator/actions/runs/42430296127), run ID 42430296127, HEAD 80ac36bf69789c52d3f249c435b5ed189adbfd33 — SUCCESS. Полный job завершился примерно за 72 мин 35 с.
+
+- Сборка nlb_sdl, smoke-test, checkout pinned inputs, validation, все route runs, comparisons, reference validation и upload artifact завершились успешно.
+- Артефакт nlb-sdl-test-logs, ID 13599641668.
+- Внутри артефакта проверены 26 route reports и 13 comparison reports; каждый имеет ok=true, errors=[].
+- Police route: оба runtime достигают page 2 UUID b12a01be-cd61-4dba-b427-1ce3afc06fc6, hp=2, wolfiness=0; INSTEAD trace фиксирует act 01. Маршрут пока покрывает только вход на page 2, не больницу/выбор трупа.
+- В CI осталась последовательная single-job архитектура; vcpkg cache, route matrix и cancel-in-progress:false ещё не реализованы.
 ## 4. Рекомендации
 
 ### 4.1. Слить в main сейчас (не ждать полного покрытия)
 
-- **Закрыть #25** как устаревший: #32 содержит всё из него, а вывод `[screen]` из
-  `Source/NLBSdl` заменён на `--state-log`, который уже в main.
-- **Слить #32 в main.** Сливается без конфликтов (проверено). Код плеера он не трогает: только
-  `tests/differential/**`, workflow, `README.md` и 5 строк `CMakeLists.txt` (поиск ZLIB для
-  SDL3_image/ttf). Workflow запускается только вручную и при push в ветки `ci/*`, так что на
-  разработку в main не повлияет.
-- Перед слиянием убрать из `tests/differential/` переписку агентов (`CLAUDE_CODE_ANSWERS.md`,
-  `CLAUDE_CODE_REPLY_2.md`, `CLAUDE_CODE_REVIEW.md`, `INDEPENDENT_REVIEW_CLAUDE.md`) — в
-  комментарии к #28 или в `docs/archive/`. В main оставить `README.md` (как запускать),
-  `WOLFMAN_BRANCH_MAP.md` (карта ветвей) и краткий `TESTING_PROGRESS.md`.
-- Дальше работать короткими PR в main: «маршрут X», «действие Y в раннере».
-
+- #25 уже закрыт владельцем 7 ноября 2026 года; в нём оставлен комментарий, что PR #25 полностью заменён PR #32.
+- PR #32 — основной накопленный результат. На HEAD 80ac36bf в нём 30 файлов; проверка diff не обнаружила изменений в Source/**. Включены workflow, SDL3/CMake ZLIB fix, каталог, общий runner, INSTEAD trace, NLB state-log validation, 15 route definitions и документация.
+- CI #141 зелёный на HEAD 80ac36bf: 26 runtime reports и 13 comparisons — все ok=true, errors=[]. Новый police route проверен до страницы 2 в обоих движках.
+- Переписка агентов и прежний подробный progress log перенесены в docs/archive/differential/; в tests/differential/ остаются рабочие README, WOLFMAN_BRANCH_MAP и краткий TESTING_PROGRESS.
+- Workflow имеет workflow_dispatch и push только для двух явных веток ci/*; обычный push в main не запускает его. Код плеера в PR #32 не менялся.
+- Последняя проверка GitHub REST для PR #32 показала mergeable=true, mergeable_state=clean; текущий main продвинулся относительно базы PR, поэтому перед фактическим слиянием владелец должен ещё раз проверить head/base и необходимые checks.
+- PR #32 не сливать автоматически: решение о слиянии принимает владелец. После слияния продолжать короткими PR в main из веток ci/*.
 ### 4.2. Ускорить CI (сделать до новых маршрутов)
 
 1. **Матрица по маршрутам**: job «build» один раз собирает `nlb_sdl` и выкладывает artifact;
@@ -148,13 +152,11 @@ GitHub Actions.
 
 ## 5. Ближайшие шаги по порядку
 
-0. Починить `wolfman-police-hospital-corpse.json` (добавить шаг `opening-choices`, как в
-   `wolfman-eat-robber.json`) или пометить его исследовательским — чтобы прогон снова был
-   зелёным.
-1. Закрыть #25; почистить переписку и слить #32 в main.
-2. CI: статическая проверка маршрутов, матрица + кэш + `cancel-in-progress: false`,
-   исследовательские маршруты отдельно (одна PR, проверить прогоном).
-3. Раннер: «листать до конца страницы / до вариантов», выбор по тексту.
-4. Отчёт покрытия.
-5. Добить `wolfman` до определения готовности (§4.5).
-6. Следующие книги — по таблице, каждая своим PR.
+0. Выполнено 08.11.2026. Маршрут wolfman-police-hospital-corpse.json исправлен: добавлен opening-choices; экспериментально подтверждены 10 щелчков INSTEAD / 9 NLBNavigator и координата первого варианта INSTEAD y_ratio=0.28. Локально прошёл в обоих движках. CI #141 на HEAD 80ac36bf: SUCCESS; все 26 runtime reports и 13 comparison reports успешны.
+1. Статическая проверка маршрутов (одна PR): уникальные step id, направленные ссылки visual_change_from, наличие choices до select_choice, последовательность portion_index / стабильный portion_count, наличие route в catalog.json; добавить отрицательный тест на старом police-route fixture без opening-choices.
+2. Подготовить #32 к слиянию: переписка агентов убрать из tests/differential/ в архив; оставить README, WOLFMAN_BRANCH_MAP и краткий TESTING_PROGRESS; зафиксировать в #28/#32 run #141 и scope. #25 уже закрыт владельцем. PR #32 сливает владелец.
+3. Ускорить CI отдельной PR: build job + artifact, vcpkg/SDL3 cache, route matrix (fail-fast:false), exploratory routes отдельно, cancel-in-progress:false, на push только изменённые маршруты, полный прогон вручную и ежедневно.
+4. Раннер: advance_until: choices / last_portion, отдельная проверка portion_count, select_choice по тексту; миграция wolfman routes с локальной проверкой каждого.
+5. Отчёт покрытия по страницам и концовкам.
+6. Довести wolfman до Definition of Done (§4.5): 16 концовок, RU+EN, save/load, persisted achievements и полицейская/больничная ветка.
+7. Следующие книги — по таблице §4.5, каждая своим PR; новые actions объектов/инвентаря/use — отдельными PR до соответствующих книг.

@@ -20,7 +20,7 @@
 
 ## Текущий проверенный охват
 
-Последний полный успешный workflow: [CI #41901754643, run 126](https://github.com/Antokolos/NLBNavigator/actions/runs/41901754643), HEAD `2cc7ace2613d6929d7ac1d55a3389fefc0d8d60f`.
+Последний полный успешный workflow: [CI #141](https://github.com/Antokolos/NLBNavigator/actions/runs/42430296127), HEAD 80ac36bf69789c52d3f249c435b5ed189adbfd33 — 26 runtime reports и 13 comparisons, все ok=true, errors=[]. CI #141 дополнительно подтвердил вход в полицейскую ветку до page2.
 
 | Маршрут | INSTEAD | NLBNavigator | Результат |
 |---|---|---|---|
@@ -30,6 +30,7 @@
 | Охранник: `wolvesTalk=true` → page27 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Охранник: `wolvesTalk=false` → page28 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Охранник: `wolfiness=0` → page1.8 | `ok=true` | `ok=true` | Сравнение `ok=true` |
+| Полиция: первый выбор → page2 | `ok=true` | `ok=true` | CI #141; hp=2, wolfiness=0 |
 
 CI #126 подтвердил все три guard routes; их NLB state-log валидирован на 163, 151 и 141 записях соответственно. Подробные конечные состояния перечислены в разделе «Охранник и выбор оружия».
 
@@ -59,7 +60,7 @@ CI #126 подтвердил все три guard routes; их NLB state-log ва
 - **Перепрыгнуть через забор** → страница 1.1, UUID `5b5d038f-ce4d-4cc8-8bee-81de8528b1a5`. Это путь, который сейчас используют оба расширенных маршрута.
 - **Попытаться прорваться сквозь полицию** → страница 2, UUID `b12a01be-cd61-4dba-b427-1ce3afc06fc6`; в её входном действии `hp -= 1`. Затем автоматический переход в больницу, страница 3, UUID `8c1fa8c6-8027-43c8-8d8b-0bf454d5e717`.
 
-Ветка полиции и больницы пока не включена в общие JSON-маршруты.
+Маршрут wolfman-police-hospital-corpse.json теперь покрывает входную часть ветки полиции: экран выбора и первый вариант до page2. CI #141 подтвердил это в обоих движках (hp=2, wolfiness=0). Продолжение автоматического перехода в больницу (page3), выбор врача/трупа и дальнейшие исходы пока не покрыты runtime-маршрутом.
 
 ### 2. Больница (непокрытая ранняя ветка)
 
@@ -308,3 +309,13 @@ The clean-state low-wolfiness route now completes all 46 checkpoints and 38 text
 CI #134's external timeout was traced to runner shutdown after the INSTEAD route had already reached page42. The bounded process-group cleanup added for CI #135 was exercised successfully in CI #136. CI #135 also exposed the terminal-screen expectation mismatch, corrected in the route JSON; no story/game source was changed.
 
 The route confirms the `wolfiness=0,hp=2` path to `VILLAIN_PUNISHED`. The separate `hp<=1` ending (page41) remains untested and can be targeted through the alternative police/hospital start. Achievement persistence/parity and the page8 pagination contract remain open tasks.
+
+## CI #141 — полицейская ветка до страницы 2 подтверждена
+
+CI #141, HEAD 80ac36bf69789c52d3f249c435b5ed189adbfd33 — SUCCESS. Артефакт nlb-sdl-test-logs, ID 13599641668.
+
+- Все 26 runtime route reports (13 сценариев × INSTEAD/NLBNavigator) и 13 comparison reports имеют ok=true, errors=[].
+- В новом wolfman-police-hospital-corpse оба runtime проходят экран вариантов и выбирают первый вариант: INSTEAD trace содержит act 01, NLBNavigator — выбор index=0.
+- Оба движка достигают page2 UUID b12a01be-cd61-4dba-b427-1ce3afc06fc6, ресурсы 2.png / images/2.jpg, состояние wolfiness=0,hp=2.
+- До экрана choices требуется 10 кликов в INSTEAD и 9 в NLBNavigator; координата первого выбора INSTEAD — y_ratio=0.28. Эти параметры проверены локально в WSL2, затем в CI.
+- Дальнейший переход в hospital page3, выбор «Съесть врача» / «Съесть труп» и концовка page41 при hp<=1 остаются следующими задачами.
