@@ -692,19 +692,22 @@ void GameScreen::navigate(float dx, float dy) {
     const bool haveFocus = navFocusCenter(cx, cy)
         && (m_menu == Menu::None || m_nav.kind == static_cast<int>(Hit::Kind::Menu));
     if (!haveFocus) {
-        // вниз, а текст ещё не дочитан и вариантов не видно — сначала листать (как пробел)
-        const bool choiceVisible = std::any_of(cands.begin(), cands.end(), [](const Hit* h) { return h->kind == Hit::Kind::Choice; });
-        if (dy > 0 && m_menu == Menu::None && m_moreText && !choiceVisible) {
-            key(Key::PageDown);
-            return;
-        }
-        // первое нажатие: пункт меню, вариант-переход (не ссылка заголовка), «ещё раз», предмет на
-        // сцене или в инвентаре, ссылки в тексте; кнопка меню — только если больше нечего (её
-        // открывает и кнопка «меню» геймпада)
+        // Вариант-переход — ссылка из списка вариантов страницы. Кликабельный заголовок комнаты
+        // (INSTEAD: щелчок — описание заново) — тоже область вида «ссылка», но не переход
         auto isRealChoice = [&](const Hit* h) {
             return h->kind == Hit::Kind::Choice && std::any_of(m_screen.choices.begin(), m_screen.choices.end(),
                 [&](const Choice& c) { return c.enabled && c.index == h->index; });
         };
+        // вниз, а текст ещё не дочитан и переходов не видно — сначала листать (как пробел), а не
+        // выбирать заголовок: иначе A по нему показывало описание заново и сбрасывало прокрутку
+        const bool choiceVisible = std::any_of(cands.begin(), cands.end(), isRealChoice);
+        if (dy > 0 && m_menu == Menu::None && m_moreText && !choiceVisible) {
+            key(Key::PageDown);
+            return;
+        }
+        // первое нажатие: пункт меню, вариант-переход, «ещё раз», предмет на сцене или в
+        // инвентаре, прочие ссылки; кнопка меню — только если больше нечего (её открывает и кнопка
+        // «меню» геймпада)
         for (const Hit* h : cands) if (h->kind == Hit::Kind::Menu) { select(*h); return; }
         for (const Hit* h : cands) if (isRealChoice(h)) { select(*h); return; }
         for (Hit::Kind want : {Hit::Kind::TryAgain, Hit::Kind::Object, Hit::Kind::Inventory, Hit::Kind::Choice,
