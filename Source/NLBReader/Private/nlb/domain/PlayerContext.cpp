@@ -398,16 +398,14 @@ bool PlayerContext::setAchievementsStorage(const std::string& path) {
 }
 
 bool PlayerContext::loadAchievements() {
-    // Путь хранится в UTF-8; nativePath передаёт его в WinAPI как UTF-16 (кириллица, длинные пути)
-    const std::filesystem::path file = FileUtils::nativePath(m_achievementsPath);
-    std::error_code ec;
     if (!FileUtils::exists(m_achievementsPath)) {
         return true;  // первый запуск — файла ещё нет
     }
-    std::ifstream in(file, std::ios::binary);
-    if (!in) {
+    std::string data;
+    if (!FileUtils::readFile(m_achievementsPath, data)) {
         return false;
     }
+    std::istringstream in(data);
     std::string line;
     while (std::getline(in, line)) {
         if (!line.empty() && line.back() == '\r') line.pop_back();
@@ -427,29 +425,20 @@ void PlayerContext::saveAchievements() const {
     if (m_achievementsPath.empty()) {
         return;
     }
-    // Пишем во временный файл и переименовываем, чтобы сбой не испортил прогресс
-    const std::filesystem::path file = FileUtils::nativePath(m_achievementsPath);
-    const std::filesystem::path tmp = FileUtils::nativePath(m_achievementsPath + ".tmp");
-    {
-        std::ofstream out(tmp, std::ios::binary | std::ios::trunc);
-        if (!out) {
-            return;
-        }
-        for (const auto& [name, max] : m_achievementMax) {
-            out << "max\t" << escapeField(name) << "\t" << max << "\n";
-        }
-        for (const auto& [name, ids] : m_achievementIds) {
-            for (const auto& id : ids) {
-                out << "id\t" << escapeField(name) << "\t" << escapeField(id) << "\n";
-            }
-        }
-        for (const auto& name : m_grantedAchievements) {
-            out << "granted\t" << escapeField(name) << "\n";
+    std::ostringstream out;
+    for (const auto& [name, max] : m_achievementMax) {
+        out << "max\t" << escapeField(name) << "\t" << max << "\n";
+    }
+    for (const auto& [name, ids] : m_achievementIds) {
+        for (const auto& id : ids) {
+            out << "id\t" << escapeField(name) << "\t" << escapeField(id) << "\n";
         }
     }
-    std::error_code ec;
-    // Через WinAPI: std::filesystem в MinGW не понимает пути с префиксом \\?\ (nativePath)
-    FileUtils::renameReplace(m_achievementsPath + ".tmp", m_achievementsPath);
+    for (const auto& name : m_grantedAchievements) {
+        out << "granted\t" << escapeField(name) << "\n";
+    }
+    // атомарно (временный файл и переименование), чтобы сбой не испортил прогресс
+    FileUtils::writeFileAtomic(m_achievementsPath, out.str());
 }
 
 int PlayerContext::achievementCount(const std::string& name) const {

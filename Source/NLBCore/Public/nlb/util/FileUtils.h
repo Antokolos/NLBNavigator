@@ -2,8 +2,54 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
+
+/*!
+ * \brief Файловая система для плеера: всё чтение и запись файлов ядра идёт через неё.
+ *
+ * По умолчанию — обычная (NativeFileSystem: WinAPI / POSIX). Фронтенд может подставить свою
+ * (FileUtils::setFileSystem): Unreal — через IPlatformFile движка (pak, данные игры на консолях,
+ * каталог сохранений платформы). Смонтированный пакет книги (BookPack) — слой над ней.
+ * Пути — UTF-8.
+ */
+class IFileSystem {
+public:
+    virtual ~IFileSystem() = default;
+
+    struct Info {
+        bool isDirectory = false;
+        uint64_t size = 0;
+        int64_t mtime = 0;  ///< только для сравнения «изменился ли»; единицы зависят от системы
+    };
+    /// false — нет такого файла или каталога
+    virtual bool info(const std::string& path, Info& out) = 0;
+    /// Имена файлов и подкаталогов (без «.» и «..»)
+    virtual std::vector<std::string> list(const std::string& dir) = 0;
+    virtual bool readAll(const std::string& path, std::string& out) = 0;
+
+    /// Чтение с произвольного места (большие файлы: пакет книги — не целиком в память)
+    class Reader {
+    public:
+        virtual ~Reader() = default;
+        virtual uint64_t size() = 0;
+        /// Прочитать size байт с offset; false — не удалось (конец файла, ошибка)
+        virtual bool read(uint64_t offset, size_t size, char* dst) = 0;
+    };
+    virtual std::unique_ptr<Reader> openRead(const std::string& path) = 0;
+
+    /// Записать файл целиком (append — дописать в конец)
+    virtual bool writeAll(const std::string& path, const std::string& data, bool append) = 0;
+    /// Создать один каталог (родитель должен существовать)
+    virtual bool makeDirectory(const std::string& path) = 0;
+    virtual bool removeFile(const std::string& path) = 0;
+    /// Удалить пустой каталог
+    virtual bool removeDirectory(const std::string& path) = 0;
+    /// Переименовать с заменой существующего
+    virtual bool rename(const std::string& from, const std::string& to) = 0;
+};
 
 /*!
  * \class FileUtils
@@ -99,6 +145,21 @@ public:
 
     /// Прочитать файл целиком (с учётом смонтированного пакета книги BookPack); false — нет файла
     static bool readFile(const std::string& path, std::string& content);
+    /// Записать файл целиком (сохранения, настройки, журналы); false — не удалось
+    static bool writeFile(const std::string& path, const std::string& content);
+    /// Записать атомарно: во временный файл рядом и переименовать (сбой не портит прежний файл)
+    static bool writeFileAtomic(const std::string& path, const std::string& content);
+    /// Поток записи в файл через файловую систему (журналы): копит текст и дописывает его в
+    /// файл при flush и при закрытии. nullptr — файл не создать
+    static std::unique_ptr<std::ostream> openWriteStream(const std::string& path);
+    /// Чтение с произвольного места (с учётом пакета — нет: для самого файла пакета и т. п.)
+    static std::unique_ptr<IFileSystem::Reader> openRead(const std::string& path);
+
+    /// Файловая система плеера (по умолчанию — обычная); фронтенд подставляет свою до открытия книги
+    static IFileSystem& fileSystem();
+    static void setFileSystem(std::shared_ptr<IFileSystem> fs);
+    /// Новая обычная файловая система (WinAPI / POSIX) — например, чтобы своя делегировала ей часть путей
+    static std::shared_ptr<IFileSystem> makeNativeFileSystem();
 
     /// Тип, размер и время изменения файла. В Windows — через WinAPI: функции std::filesystem
     /// в MinGW (stat из msvcrt) не принимают пути с префиксом \\?\, без которого не открыть

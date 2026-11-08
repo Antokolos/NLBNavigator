@@ -160,8 +160,7 @@ LogPlatformServices::LogPlatformServices(const std::string& path, std::string pl
     if (path.empty() || path == "-") {
         m_out = std::make_unique<std::ostream>(std::cerr.rdbuf());
     } else {
-        auto f = std::make_unique<std::ofstream>(FileUtils::nativePath(path), std::ios::binary | std::ios::trunc);
-        if (*f) m_out = std::move(f);
+        m_out = FileUtils::openWriteStream(path);  // через файловую систему плеера
     }
 }
 

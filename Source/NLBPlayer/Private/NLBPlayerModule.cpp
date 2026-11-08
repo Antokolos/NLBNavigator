@@ -1,11 +1,20 @@
 #include "Modules/ModuleManager.h"
 
+#include "NLBUnrealFileSystem.h"
+
 void NLBPlayer_CparseStartup();  // NLBCparseStartup.cpp
 
-/** Модуль плеера: при загрузке регистрирует встроенные функции выражений NLB (cparse) */
+/** Модуль плеера: при загрузке регистрирует встроенные функции выражений NLB (cparse) и ставит
+ *  файловую систему плеера через Unreal (книга, сохранения, журналы — файловым слоем движка) */
 class FNLBPlayerModule : public IModuleInterface {
 public:
-    virtual void StartupModule() override { NLBPlayer_CparseStartup(); }
+    virtual void StartupModule() override {
+        NLBPlayer_CparseStartup();
+        FileUtils::setFileSystem(MakeNLBUnrealFileSystem());
+    }
+    virtual void ShutdownModule() override {
+        FileUtils::setFileSystem(nullptr);  // снова обычная
+    }
 };
 
 IMPLEMENT_MODULE(FNLBPlayerModule, NLBPlayer)

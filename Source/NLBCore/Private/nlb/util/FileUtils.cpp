@@ -84,46 +84,74 @@ bool FileUtils::readFile(const std::string& path, std::string& content) {
     if (BookPack::resolve(path, rel)) {
         return BookPack::mounted()->readContent(rel, content);  // крупные файлы — с диска по запросу
     }
-    std::ifstream in(nativePath(path), std::ios::binary);
-    if (!in) return false;
-    content.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
-    return true;
+    return fileSystem().readAll(path, content);
+}
+
+bool FileUtils::writeFile(const std::string& path, const std::string& content) {
+    return fileSystem().writeAll(path, content, false);
+}
+
+bool FileUtils::writeFileAtomic(const std::string& path, const std::string& content) {
+    const std::string tmp = path + ".tmp";
+    return writeFile(tmp, content) && renameReplace(tmp, path);
+}
+
+namespace {
+/// Поток, который копит текст и дописывает его в файл через файловую систему
+class FsStreamBuf : public std::stringbuf {
+public:
+    explicit FsStreamBuf(std::string path) : m_path(std::move(path)) {}
+    ~FsStreamBuf() override { flushToFile(); }
+protected:
+    int sync() override { return flushToFile() ? 0 : -1; }
+private:
+    bool flushToFile() {
+        const std::string chunk = str();
+        if (chunk.empty()) return true;
+        str(std::string());
+        return FileUtils::fileSystem().writeAll(m_path, chunk, true);
+    }
+    std::string m_path;
+};
+
+class FsOStream : public std::ostream {
+public:
+    explicit FsOStream(const std::string& path) : std::ostream(nullptr), m_buf(path) { rdbuf(&m_buf); }
+    ~FsOStream() override { m_buf.pubsync(); }
+private:
+    FsStreamBuf m_buf;
+};
+}
+
+std::unique_ptr<std::ostream> FileUtils::openWriteStream(const std::string& path) {
+    if (!fileSystem().writeAll(path, std::string(), false)) return nullptr;  // создать / обнулить
+    return std::make_unique<FsOStream>(path);
+}
+
+std::unique_ptr<IFileSystem::Reader> FileUtils::openRead(const std::string& path) {
+    return fileSystem().openRead(path);
 }
 
 bool FileUtils::fileInfo(const std::string& path, bool& isDirectory, uint64_t& size, int64_t& mtime) {
-#ifdef _WIN32
-    WIN32_FILE_ATTRIBUTE_DATA data;
-    if (!GetFileAttributesExW(nativePath(path).c_str(), GetFileExInfoStandard, &data)) {
-        return false;
+    std::string rel;
+    if (BookPack::resolve(path, rel)) {
+        const BookPack::Entry* e = BookPack::mounted()->find(rel);
+        if (!e) return false;
+        isDirectory = e->type == BookPack::Entry::Type::Directory;
+        size = e->size;
+        mtime = e->mtime;
+        return true;
     }
-    isDirectory = (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
-    size = (static_cast<uint64_t>(data.nFileSizeHigh) << 32) | data.nFileSizeLow;
-    mtime = static_cast<int64_t>((static_cast<uint64_t>(data.ftLastWriteTime.dwHighDateTime) << 32)
-                                 | data.ftLastWriteTime.dwLowDateTime);
+    IFileSystem::Info info;
+    if (!fileSystem().info(path, info)) return false;
+    isDirectory = info.isDirectory;
+    size = info.size;
+    mtime = info.mtime;
     return true;
-#else
-    struct stat st;
-    if (stat(path.c_str(), &st) != 0) {
-        return false;
-    }
-    isDirectory = S_ISDIR(st.st_mode);
-    size = static_cast<uint64_t>(st.st_size);
-    mtime = static_cast<int64_t>(st.st_mtime) * 1000000000LL
-#if defined(__linux__)
-        + st.st_mtim.tv_nsec
-#endif
-        ;
-    return true;
-#endif
 }
 
 bool FileUtils::renameReplace(const std::string& from, const std::string& to) {
-#ifdef _WIN32
-    return MoveFileExW(nativePath(from).c_str(), nativePath(to).c_str(),
-                       MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != 0;
-#else
-    return std::rename(from.c_str(), to.c_str()) == 0;
-#endif
+    return fileSystem().rename(from, to);
 }
 
 std::filesystem::path FileUtils::pathFromUtf8(const std::string& utf8) {
@@ -193,13 +221,8 @@ std::string FileUtils::combinePath(const std::string& path1, const std::string& 
 bool FileUtils::exists(const std::string& path) {
     std::string rel;
     if (BookPack::resolve(path, rel)) return BookPack::mounted()->find(rel) != nullptr;
-#ifdef _WIN32
-    DWORD attrs = GetFileAttributesW(nativePath(path).c_str());
-    return (attrs != INVALID_FILE_ATTRIBUTES);
-#else
-    struct stat buffer;
-    return (stat(path.c_str(), &buffer) == 0);
-#endif
+    IFileSystem::Info info;
+    return fileSystem().info(path, info);
 }
 
 bool FileUtils::isDirectory(const std::string& path) {
@@ -208,57 +231,18 @@ bool FileUtils::isDirectory(const std::string& path) {
         const BookPack::Entry* e = BookPack::mounted()->find(rel);
         return e && e->type == BookPack::Entry::Type::Directory;
     }
-#ifdef _WIN32
-    DWORD attrs = GetFileAttributesW(nativePath(path).c_str());
-    return (attrs != INVALID_FILE_ATTRIBUTES && (attrs & FILE_ATTRIBUTE_DIRECTORY));
-#else
-    struct stat buffer;
-    return (stat(path.c_str(), &buffer) == 0 && S_ISDIR(buffer.st_mode));
-#endif
+    IFileSystem::Info info;
+    return fileSystem().info(path, info) && info.isDirectory;
 }
 
 std::vector<std::string> FileUtils::getDirectoryFiles(const std::string& path) {
-    std::vector<std::string> files;
     std::string rel;
     if (BookPack::resolve(path, rel)) return BookPack::mounted()->children(rel);
-
-#ifdef _WIN32
-    WIN32_FIND_DATAW findData;
-    const std::wstring pattern = nativePath(path).wstring() + L"\\*";
-    HANDLE hFind = FindFirstFileW(pattern.c_str(), &findData);
-    
-    if (hFind != INVALID_HANDLE_VALUE) {
-        do {
-            std::string filename = fromWide(findData.cFileName);
-            if (filename != "." && filename != "..") {
-                files.push_back(filename);
-            }
-        } while (FindNextFileW(hFind, &findData));
-        FindClose(hFind);
-    }
-#else
-    DIR* dir = opendir(path.c_str());
-    if (dir) {
-        struct dirent* entry;
-        while ((entry = readdir(dir))) {
-            std::string filename = entry->d_name;
-            if (filename != "." && filename != "..") {
-                files.push_back(filename);
-            }
-        }
-        closedir(dir);
-    }
-#endif
-
-    return files;
+    return fileSystem().list(path);
 }
 
 bool FileUtils::createDirectory(const std::string& path) {
-#ifdef _WIN32
-    return CreateDirectoryW(nativePath(path).c_str(), nullptr) != 0;
-#else
-    return mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
-#endif
+    return fileSystem().makeDirectory(path);
 }
 
 bool FileUtils::createDirectoryRecursive(const std::string& path) {
@@ -285,27 +269,15 @@ bool FileUtils::createDirectoryRecursive(const std::string& path) {
 
 bool FileUtils::remove(const std::string& path, bool recursive) {
     if (!exists(path)) return true;
-
     if (isDirectory(path)) {
         if (recursive) {
-            std::vector<std::string> files = getDirectoryFiles(path);
-            for (const auto& file : files) {
-                std::string fullPath = combinePath(path, file);
-                if (!remove(fullPath, true)) return false;
+            for (const auto& file : getDirectoryFiles(path)) {
+                if (!remove(combinePath(path, file), true)) return false;
             }
         }
-#ifdef _WIN32
-        return RemoveDirectoryW(nativePath(path).c_str()) != 0;
-#else
-        return rmdir(path.c_str()) == 0;
-#endif
-    } else {
-#ifdef _WIN32
-        return DeleteFileW(nativePath(path).c_str()) != 0;
-#else
-        return unlink(path.c_str()) == 0;
-#endif
+        return fileSystem().removeDirectory(path);
     }
+    return fileSystem().removeFile(path);
 }
 
 std::vector<std::string> FileUtils::splitPath(const std::string& path) {
@@ -348,4 +320,172 @@ std::string FileUtils::normalizePath(const std::string& path) {
     }
     
     return result;
+}
+
+// ============================================================================ NativeFileSystem
+// Обычная файловая система: WinAPI (UTF-16, длинные пути через nativePath) или POSIX
+
+namespace {
+class NativeReader : public IFileSystem::Reader {
+public:
+    explicit NativeReader(const std::string& path) : m_in(FileUtils::nativePath(path), std::ios::binary) {
+        if (m_in) {
+            m_in.seekg(0, std::ios::end);
+            m_size = static_cast<uint64_t>(m_in.tellg());
+        }
+    }
+    bool ok() const { return static_cast<bool>(m_in); }
+    uint64_t size() override { return m_size; }
+    bool read(uint64_t offset, size_t size, char* dst) override {
+        m_in.clear();
+        m_in.seekg(static_cast<std::streamoff>(offset));
+        return size == 0 || static_cast<bool>(m_in.read(dst, static_cast<std::streamsize>(size)));
+    }
+private:
+    std::ifstream m_in;
+    uint64_t m_size = 0;
+};
+
+class NativeFileSystem : public IFileSystem {
+public:
+    bool info(const std::string& path, Info& out) override {
+        bool isDirectory = false;
+        uint64_t size = 0;
+        int64_t mtime = 0;
+        if (!nativeInfo(path, isDirectory, size, mtime)) return false;
+        out.isDirectory = isDirectory;
+        out.size = size;
+        out.mtime = mtime;
+        return true;
+    }
+    std::vector<std::string> list(const std::string& path) override {
+        std::vector<std::string> files;
+
+#ifdef _WIN32
+    WIN32_FIND_DATAW findData;
+    const std::wstring pattern = FileUtils::nativePath(path).wstring() + L"\\*";
+    HANDLE hFind = FindFirstFileW(pattern.c_str(), &findData);
+    
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            std::string filename = FileUtils::fromWide(findData.cFileName);
+            if (filename != "." && filename != "..") {
+                files.push_back(filename);
+            }
+        } while (FindNextFileW(hFind, &findData));
+        FindClose(hFind);
+    }
+#else
+    DIR* dir = opendir(path.c_str());
+    if (dir) {
+        struct dirent* entry;
+        while ((entry = readdir(dir))) {
+            std::string filename = entry->d_name;
+            if (filename != "." && filename != "..") {
+                files.push_back(filename);
+            }
+        }
+        closedir(dir);
+    }
+#endif
+
+    return files;
+    }
+    bool readAll(const std::string& path, std::string& content) override {
+        bool isDirectory = false;
+        uint64_t size = 0;
+        int64_t mtime = 0;
+        if (!nativeInfo(path, isDirectory, size, mtime) || isDirectory) return false;  // каталог — не файл
+        std::ifstream in(FileUtils::nativePath(path), std::ios::binary);
+        if (!in) return false;
+        content.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+        return true;
+    }
+    std::unique_ptr<Reader> openRead(const std::string& path) override {
+        auto r = std::make_unique<NativeReader>(path);
+        if (!r->ok()) return nullptr;
+        return r;
+    }
+    bool writeAll(const std::string& path, const std::string& data, bool append) override {
+        std::ofstream out(FileUtils::nativePath(path), std::ios::binary | (append ? std::ios::app : std::ios::trunc));
+        if (!out) return false;
+        out.write(data.data(), static_cast<std::streamsize>(data.size()));
+        return static_cast<bool>(out);
+    }
+    bool makeDirectory(const std::string& path) override {
+#ifdef _WIN32
+    return CreateDirectoryW(FileUtils::nativePath(path).c_str(), nullptr) != 0;
+#else
+    return mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
+#endif
+    }
+    bool removeFile(const std::string& path) override {
+#ifdef _WIN32
+        return DeleteFileW(FileUtils::nativePath(path).c_str()) != 0;
+#else
+        return unlink(path.c_str()) == 0;
+#endif
+    }
+    bool removeDirectory(const std::string& path) override {
+#ifdef _WIN32
+        return RemoveDirectoryW(FileUtils::nativePath(path).c_str()) != 0;
+#else
+        return rmdir(path.c_str()) == 0;
+#endif
+    }
+    bool rename(const std::string& from, const std::string& to) override {
+#ifdef _WIN32
+    return MoveFileExW(FileUtils::nativePath(from).c_str(), FileUtils::nativePath(to).c_str(),
+                       MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED) != 0;
+#else
+    return std::rename(from.c_str(), to.c_str()) == 0;
+#endif
+
+    }
+
+private:
+    static bool nativeInfo(const std::string& path, bool& isDirectory, uint64_t& size, int64_t& mtime) {
+#ifdef _WIN32
+    WIN32_FILE_ATTRIBUTE_DATA data;
+    if (!GetFileAttributesExW(FileUtils::nativePath(path).c_str(), GetFileExInfoStandard, &data)) {
+        return false;
+    }
+    isDirectory = (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    size = (static_cast<uint64_t>(data.nFileSizeHigh) << 32) | data.nFileSizeLow;
+    mtime = static_cast<int64_t>((static_cast<uint64_t>(data.ftLastWriteTime.dwHighDateTime) << 32)
+                                 | data.ftLastWriteTime.dwLowDateTime);
+    return true;
+#else
+    struct stat st;
+    if (stat(path.c_str(), &st) != 0) {
+        return false;
+    }
+    isDirectory = S_ISDIR(st.st_mode);
+    size = static_cast<uint64_t>(st.st_size);
+    mtime = static_cast<int64_t>(st.st_mtime) * 1000000000LL
+#if defined(__linux__)
+        + st.st_mtim.tv_nsec
+#endif
+        ;
+    return true;
+#endif
+    }
+};
+
+std::shared_ptr<IFileSystem>& fileSystemSlot() {
+    static std::shared_ptr<IFileSystem> fs = std::make_shared<NativeFileSystem>();
+    return fs;
+}
+}
+
+IFileSystem& FileUtils::fileSystem() {
+    return *fileSystemSlot();
+}
+
+std::shared_ptr<IFileSystem> FileUtils::makeNativeFileSystem() {
+    return std::make_shared<NativeFileSystem>();
+}
+
+void FileUtils::setFileSystem(std::shared_ptr<IFileSystem> fs) {
+    fileSystemSlot() = fs ? std::move(fs) : std::make_shared<NativeFileSystem>();
 }

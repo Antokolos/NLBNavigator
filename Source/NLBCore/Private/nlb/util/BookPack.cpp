@@ -1,5 +1,7 @@
 #include "nlb/util/BookPack.h"
 
+#include <cstring>
+
 #include <cctype>
 
 #include "nlb/util/FileUtils.h"
@@ -227,13 +229,44 @@ bool BookPack::write(const std::string& packPath, std::string& error, const Writ
 }
 
 namespace {
-/// Чтение полей пакета из потока (тот же формат, что пишет write)
+/// Чтение пакета с буфером поверх файловой системы плеера (на консолях — файловый слой движка)
+struct PackInput {
+    IFileSystem::Reader& file;
+    uint64_t pos = 0;                 ///< текущее место в файле
+    std::vector<char> buf = std::vector<char>(1 << 20);
+    uint64_t bufStart = 0;
+    size_t bufLen = 0;
+    bool read(char* dst, size_t n) {
+        while (n > 0) {
+            if (pos >= bufStart && pos < bufStart + bufLen) {
+                const size_t take = std::min(n, static_cast<size_t>(bufStart + bufLen - pos));
+                std::memcpy(dst, buf.data() + (pos - bufStart), take);
+                dst += take; n -= take; pos += take;
+                continue;
+            }
+            const uint64_t total = file.size();
+            if (pos >= total) return false;
+            if (n >= buf.size()) {  // большой кусок — сразу в место назначения
+                if (pos + n > total || !file.read(pos, n, dst)) return false;
+                pos += n;
+                return true;
+            }
+            bufStart = pos;
+            bufLen = static_cast<size_t>(std::min<uint64_t>(buf.size(), total - pos));
+            if (!file.read(bufStart, bufLen, buf.data())) { bufLen = 0; return false; }
+        }
+        return true;
+    }
+    void skip(uint64_t n) { pos += n; }
+};
+
+/// Чтение полей пакета (тот же формат, что пишет write)
 struct StreamReader {
-    std::istream& in;
+    PackInput& in;
     bool ok = true;
     uint64_t u(int bytes) {
         unsigned char buf[8];
-        if (!in.read(reinterpret_cast<char*>(buf), bytes)) { ok = false; return 0; }
+        if (!in.read(reinterpret_cast<char*>(buf), static_cast<size_t>(bytes))) { ok = false; return 0; }
         uint64_t v = 0;
         for (int i = 0; i < bytes; ++i) v |= static_cast<uint64_t>(buf[i]) << (8 * i);
         return v;
@@ -241,7 +274,7 @@ struct StreamReader {
     std::string str() {
         const uint64_t n = u(4);
         std::string s(static_cast<size_t>(ok ? n : 0), '\0');
-        if (ok && n && !in.read(&s[0], static_cast<std::streamsize>(n))) ok = false;
+        if (ok && n && !in.read(&s[0], static_cast<size_t>(n))) ok = false;
         return s;
     }
 };
@@ -250,10 +283,9 @@ struct StreamReader {
 std::unique_ptr<BookPack> BookPack::read(const std::string& packPath, std::string& error) {
     // Читаем только описание дерева и мелкие файлы; крупные (медиа, шрифты) — пропускаем,
     // запоминая место: их прочитает readContent при первом обращении
-    std::ifstream f(FileUtils::nativePath(packPath), std::ios::binary);
-    if (!f) { error = "не удалось открыть " + packPath; return nullptr; }
-    std::vector<char> buffer(1 << 20);
-    f.rdbuf()->pubsetbuf(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+    auto file = FileUtils::openRead(packPath);  // через файловую систему плеера
+    if (!file) { error = "не удалось открыть " + packPath; return nullptr; }
+    PackInput f{*file};
     char magic[sizeof(MAGIC)];
     if (!f.read(magic, sizeof(MAGIC)) || std::string(magic, sizeof(MAGIC)) != std::string(MAGIC, sizeof(MAGIC))) {
         error = "это не пакет книги NLB";
@@ -275,12 +307,12 @@ std::unique_ptr<BookPack> BookPack::read(const std::string& packPath, std::strin
             e.length = r.u(4);
             if (e.length > LAZY_THRESHOLD) {
                 e.lazy = true;
-                e.offset = static_cast<uint64_t>(f.tellg());
-                f.seekg(static_cast<std::streamoff>(e.length), std::ios::cur);
-                if (!f) r.ok = false;
+                e.offset = f.pos;
+                f.skip(e.length);
+                if (f.pos > file->size()) r.ok = false;
             } else if (r.ok) {
                 e.content.resize(static_cast<size_t>(e.length));
-                if (e.length && !f.read(&e.content[0], static_cast<std::streamsize>(e.length))) r.ok = false;
+                if (e.length && !f.read(&e.content[0], static_cast<size_t>(e.length))) r.ok = false;
             }
         }
         pack->m_entries[rel] = std::move(e);
@@ -303,14 +335,12 @@ bool BookPack::readContent(const Entry& e, std::string& out) const {
     }
     // отложенное чтение: файл пакета открыт один раз; звук может читать другой поток
     std::lock_guard<std::mutex> lock(m_ioMutex);
-    if (!m_file.is_open()) {
-        m_file.open(FileUtils::nativePath(m_packPath), std::ios::binary);
+    if (!m_file) {
+        m_file = FileUtils::openRead(m_packPath);
         if (!m_file) return false;
     }
-    m_file.clear();
-    m_file.seekg(static_cast<std::streamoff>(e.offset));
     out.resize(static_cast<size_t>(e.length));
-    return e.length == 0 || static_cast<bool>(m_file.read(&out[0], static_cast<std::streamsize>(e.length)));
+    return e.length == 0 || m_file->read(e.offset, static_cast<size_t>(e.length), &out[0]);
 }
 
 void BookPack::index() {

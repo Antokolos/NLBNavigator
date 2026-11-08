@@ -6,6 +6,7 @@
 #include "nlb/api/Link.h"
 #include "nlb/api/Modification.h"
 #include "nlb/api/Variable.h"
+#include "nlb/api/SpecialVariablesNameHelper.h"
 #include "nlb/exception/NLBExceptions.h"
 #include "nlb/util/StringHelper.h"
 #include "nlb/api/Constants.h"
@@ -427,7 +428,30 @@ std::string ModificationInterpreter::valueToListItem(const std::string& name) co
     if (listName != name || m_context.listExists(listName)) {
         return LIST_REF_PREFIX + listName;
     }
-    return toDisplayString(m_context.getVar(name));
+    // константа или выражение (list INJECT 1, list PUSH codePos + 1) — его значение, как
+    // в экспорте NLB (ExportManager.decorateValue, Antokolos/NLB#300)
+    return isPlainName(name) ? toDisplayString(m_context.getVar(name)) : toDisplayString(evaluate(name));
+}
+
+bool ModificationInterpreter::isPlainName(const std::string& value) {
+    // [буква или _][буквы, цифры, _]* (буквы — и не латиница: UTF-8 байты >= 0x80), не true/false
+    std::string trimmed = value;
+    const auto first = trimmed.find_first_not_of(" \t\r\n");
+    if (first == std::string::npos) {
+        return false;
+    }
+    trimmed = trimmed.substr(first, trimmed.find_last_not_of(" \t\r\n") - first + 1);
+    if (trimmed == "true" || trimmed == "false") {
+        return false;
+    }
+    for (size_t i = 0; i < trimmed.size(); ++i) {
+        const unsigned char c = static_cast<unsigned char>(trimmed[i]);
+        const bool letter = std::isalpha(c) || c == '_' || c >= 0x80;
+        if (!(letter || (i > 0 && std::isdigit(c)))) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void ModificationInterpreter::printText(const std::string& text) {
@@ -822,7 +846,9 @@ ModificationInterpreter::Flow ModificationInterpreter::executeOne(const Modifica
             break;
 
         case Type::PRN:
-            printText(toDisplayString(m_context.getVar(exprValue)));
+            // PRN codeValue / codePos — значение выражения, как в экспорте (Antokolos/NLB#299)
+            printText(isPlainName(exprValue) ? toDisplayString(m_context.getVar(exprValue))
+                                             : toDisplayString(evaluate(exprValue)));
             break;
         case Type::DSC: {
             requireVar();
@@ -1045,10 +1071,15 @@ bool ModificationInterpreter::objUse(const std::string& sourceInstanceId,
         if (c && c->isDeleted()) c = nullptr;
         Variable* m = (link->isObeyToModuleConstraint() && !moduleConstrId.empty())
                       ? book->getVariableById(moduleConstrId) : nullptr;
-        if (!c && !m) {
+        if (!c && !m && !link->isOnce()) {
             return std::nullopt;  // неограниченная ссылка
         }
+        // createUseBuildingBlocks: (!lvs_<id>) && (модуль) && (условие), «не» — над всем;
+        // «Once» — применение срабатывает один раз, как переход по ссылке страницы
         bool value = true;
+        if (link->isOnce()) {
+            value = !isTruthy(m_context.getVar(SpecialVariablesNameHelper::decorateLinkVisitStateVar(link->getId())));
+        }
         if (m) value = value && isTruthy(evaluate(m->getValue()));
         if (c) value = value && isTruthy(evaluate(c->getValue()));
         return link->isPositiveConstraint() ? value : !value;
@@ -1096,6 +1127,9 @@ bool ModificationInterpreter::objUse(const std::string& sourceInstanceId,
             if (Variable* v = book->getVariableById(link->getVarId())) {
                 if (!v->isDeleted() && !v->getName().empty()) m_context.setVar(v->getName(), true);
             }
+        }
+        if (link->isOnce()) {
+            m_context.setVar(SpecialVariablesNameHelper::decorateLinkVisitStateVar(link->getId()), true);
         }
     }
     return wasText;

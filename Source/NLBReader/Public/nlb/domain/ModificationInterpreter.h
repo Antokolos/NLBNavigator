@@ -57,6 +57,8 @@ public:
     /// Значение выражения NLB (синтаксис как у ограничений: ==, !=, &&, ||, !).
     /// Неизвестные идентификаторы считаются false.
     cparse::packToken evaluate(const std::string& expression) const;
+    /// Просто имя (переменной, объекта, списка), а не константа и не выражение
+    static bool isPlainName(const std::string& value);
     /// Истинность по правилам Lua: false/nil -> ложь, всё остальное (включая 0 и "") -> истина
     static bool isTruthy(const cparse::packToken& value);
     /// Значение ограничения с id constrId в книге book (пустой id -> true)
