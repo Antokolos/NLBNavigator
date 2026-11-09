@@ -24,6 +24,51 @@ NLBNavigator/                     ← открытый репозиторий (�
 Подмодулем git закрытый репозиторий не подключать: в открытом осталась бы ссылка на него, а
 клонирование ломалось бы у всех без доступа.
 
+## Как склонировать и работать
+Два обычных клона, один внутри другого: открытый репозиторий — папка проекта, закрытый — её
+подпапка `Platforms`. Оба самостоятельные: свои коммиты, свой `git push`.
+
+```bash
+# 1. открытая часть — ветка UE (в ней проект Unreal)
+git clone -b UE git@github.com:Antokolos/NLBNavigator.git NLBNavigator
+cd NLBNavigator
+
+# 2. закрытая часть — прямо в Platforms/
+git clone git@github.com:Antokolos/NLBNavigatorPrivate.git Platforms
+```
+В SSH-адресе GitHub после `github.com` — двоеточие: `git@github.com:Antokolos/…`.
+
+**В корне закрытого репозитория папки `Platforms` нет — сразу её содержимое:**
+```
+NLBNavigatorPrivate/   ← корень закрытого репозитория (= NLBNavigator/Platforms/ на диске)
+  Switch/
+    Config/  Plugins/NLBSwitch/ ...
+  PS5/
+    Config/  Plugins/NLBPS5/ ...
+  README.md
+```
+Папкой `Platforms` он становится при клонировании: последний аргумент `git clone … Platforms` —
+имя каталога. Если положить в закрытый репозиторий ещё и папку `Platforms`, выйдет
+`NLBNavigator/Platforms/Platforms/Switch/…`, и Unreal её не найдёт.
+
+**Unreal:** правой кнопкой по `NLBNavigator.uproject` → «Generate Visual Studio project files» —
+исходники плагинов из `Platforms/` попадут в решение; `Platforms/<П>/Config` и `Plugins` движок
+находит сам.
+
+**Изменения** — git определяет репозиторий по папке, где вы находитесь:
+```bash
+cd NLBNavigator                       # открытая часть; Platforms/ git здесь не видит
+git add -A && git commit -m "…" && git push
+
+cd Platforms                          # закрытая часть
+git add -A && git commit -m "…" && git push
+```
+Или не переходя: `git -C Platforms status`, `git -C Platforms push`. Обновление: `git pull` в корне
+и `git -C Platforms pull`.
+
+Перед первым коммитом в открытой части проверьте `git status` в корне: из `Platforms/` в нём не
+должно быть ничего (строка `/Platforms/` в `.gitignore`).
+
 ## Что открытая часть даёт плагину
 `Source/NLBPlayer/Public/NLBPlatformHooks.h`, из `StartupModule` плагина:
 - **`SetFileSystemWrapper(...)`** — обернуть файловую систему плеера (`IFileSystem`, по умолчанию
