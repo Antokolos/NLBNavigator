@@ -1,13 +1,13 @@
 # Дифференциальное тестирование NLBNavigator ↔ INSTEAD — текущая контрольная точка
 
-Обновлено: 2026-11-09 (Asia/Bishkek). Исторический журнал и переписка Claude Code сохранены в docs/archive/differential/.
+Обновлено: 2026-11-10 (Asia/Bishkek).
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
-- PR #32: https://github.com/Antokolos/NLBNavigator/pull/32
-- Рабочая ветка: ci/nlb-sdl-wolfman-state-trace
-- HEAD до этого документационного обновления: bf45a65f429510c458280457442e63f2a24a2359 (merge актуального main в рабочую ветку).
-- PR #32 открыт, Draft, не смёржен. Merge делает владелец; автоматически не объединять.
-- PR #25 закрыт владельцем как заменённый PR #32.
+- Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
+- Последний интегрированный PR: #32 (merged).
+- Текущий PR: hospital continuation, branch `test/wolfman-hospital-page41`, base main `78e15633db451da573f0cc4697022cd7f79dbefd`.
+- Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
+- Два hospital routes и CI jobs подготовлены; локальные WSL2 runtime и GitHub Actions ещё не выполнены. Page3/doctor/corpse не считать подтверждёнными до paired runtime reports.
 
 ## Правила
 
@@ -70,17 +70,21 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 
 ## Покрытие и оставшиеся задачи
 
-Покрыто runtime-маршрутами: вступление; лесные ветви wolfiness 0/2, встречи/обходы; три guard ветви; low-wolfiness путь до page42; police branch до page2.
+Покрыто runtime-маршрутами: opening; forest/bypass и guard ветви wolfiness 0/2; low-wolfiness путь до page42; police entry до page2.
+
+Новый hospital PR добавляет два независимых clean-state маршрута:
+- police → page3 → «Съесть врача» → page4 → page5;
+- police → page3 → «Съесть труп» → page14 → page5.
+Для обоих добавлены page3 и choices checkpoints, но paired runtime/CI validation пока pending.
 
 Остаётся:
-- продолжить police/hospital: page3, выбор врача/трупа и дальнейшие исходы;
-- low-HP page41;
-- все 16 концовок и полная инвентаризация достижений;
-- persisted achievement read-back/parity;
+- low-HP page41 и все 16 концовок;
+- полная инвентаризация достижений и persisted achievement read-back/parity;
 - английский язык;
 - save/load;
 - автоматический coverage report по страницам и terminal endings;
-- runtime-запуски отдельных robber routes в текущей CI-схеме и расширение branch coverage.
+- локальные WSL2 прогоны hospital routes;
+- остальные парные книги.
 
 ## Очередность
 
@@ -100,7 +104,7 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 - local git identity: Anton P. Kolosov <antokolos@gmail.com>.
 
 
-## Интеграция с актуальным main — обновлена после CI #147
+## Интеграция с актуальным main — историческая заметка до merge PR #32
 
 - Актуальный `main`: `620f2ee9ec98c08ecc8a240c47f5e079b071d3aa`.
 - После CI #147 в `main` появились ещё два коммита: `deecac53888fb424a34b4b29deff407e4d026175` (platform hooks и изменения Unreal source) и `620f2ee9ec98c08ecc8a240c47f5e079b071d3aa` (документация закрытой платформенной части).
@@ -120,13 +124,6 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 
 
 
-## CI #147 — SUCCESS
+## CI #148 — SUCCESS после merge PR #32
 
-[CI #147](https://github.com/Antokolos/NLBNavigator/actions/runs/42537254808), HEAD `88bbcbcb380d57895b0899f52e36ada5f645d044`.
-
-- Все 53 шага завершились SUCCESS: установка зависимостей, CMake configure, сборка `nlb_sdl`, smoke-test, статическая проверка маршрутов, runtime INSTEAD/NLBNavigator, comparisons и проверка reference export.
-- Артефакт [`nlb-sdl-test-logs`](https://github.com/Antokolos/NLBNavigator/actions/runs/42537254808/artifacts/13642610939), ID `13642610939`, размер 81,616,011 bytes.
-- Артефакт проверен: 26 runtime reports (13 сценариев × 2 движка), 13 comparison reports; у всех reports `ok=true`, `errors=[]`. Всего 592 runtime text checks и 768 captured checkpoints.
-- Ветка успешно прошла forest/bypass, guard и police сценарии. В длинных forest/guard прогонах встречаются ветви eat/chase robber; два robber JSON-маршрута всё ещё не запускались отдельными CI jobs.
-- Пагинация и runtime state traces сохраняются в отчётах; pixel diff по-прежнему advisory.
-- CI #147 проверил HEAD до двух последующих коммитов main. Поэтому CI #148 обязателен после интеграции `620f2ee9...`.
+[CI #148](https://github.com/Antokolos/NLBNavigator/actions/runs/42669487250), HEAD `56d6ecabbaaa791c2e254fba747682f5b9cf6ab0`: все 53 шага успешны. 26 runtime reports (13 сценариев × 2 движка), 13 comparisons, 592 text checks, 768 checkpoint/state records; все отчёты `ok=true`, `errors=[]`. Этот прогон не включал новые hospital routes.

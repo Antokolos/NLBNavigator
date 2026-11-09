@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "wolfman-police-hospital-corpse",
   "story_id": "am-i-a-monster",
-  "title": "Am I a Monster? — полиция, больница и выбор трупа",
+  "title": "Am I a Monster? — полиция и больница: съесть труп",
   "mode": "vn",
   "language": "ru",
   "window": {
@@ -75,7 +75,7 @@
         "x_ratio": 0.5,
         "y_ratio": 0.5,
         "clicks": {
-          "instead": 10,
+          "instead": 9,
           "nlbnavigator": 9
         }
       },
@@ -124,11 +124,131 @@
           "hp": 2
         }
       }
+    },
+    {
+      "id": "hospital-page3",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "05-hospital-page3.png",
+      "visual_change_from": "try-to-break-through-police",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вы очнулись от яркого света",
+        "instead_text_contains": "Вы очнулись от яркого света",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "hospital-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "06-hospital-choices.png",
+      "visual_change_from": "hospital-page3",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "instead_choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "eat-corpse",
+      "action": {
+        "type": "select_choice",
+        "index": 1,
+        "instead": {
+          "x_ratio": 0.28,
+          "y_ratio": 0.35
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "07-eat-corpse.png",
+      "visual_change_from": "hospital-choices",
+      "expect": {
+        "page_id": "a2b6a777-a95c-4518-8623-ec797a483c46",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Оскалив зубы, вы начали медленно подниматься",
+        "instead_text_contains": "Оскалив зубы, вы начали медленно подниматься",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "page5-after-corpse",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "08-page5-after-corpse.png",
+      "visual_change_from": "eat-corpse",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вы мчались по пустынным ночным улицам",
+        "instead_text_contains": "Вы мчались по пустынным ночным улицам",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
     }
   ],
   "notes": [
-    "Exploratory clean-state route: title -> opening -> first choice -> police branch page 2.",
-    "The police choice is selected in both runtimes. Page 2 should decrement hp from 3 to 2 while wolfiness remains 0.",
-    "This first stage deliberately captures the first visible portion of page 2 without assuming its runtime-specific pagination. Extend through the hospital and corpse choice after inspecting both route reports."
+    "Independent clean-state route through police -> hospital -> corpse branch.",
+    "Page 3 calls THE_HOSPITAL on non-autowired entry; persistent achievement read-back is not asserted.",
+    "The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.",
+    "Selecting index 1 is observed by INSTEAD as act 02 and by NLBNavigator as clickchoice:1.",
+    "Page14 caption says '+1 к чел нав.', but its entry block has no explicit hp/wolfiness assignment. Expected state wolfiness=0,hp=2 remains a runtime hypothesis.",
+    "The corpse branch automatically converges on page5."
   ]
 }

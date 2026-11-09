@@ -17,10 +17,19 @@ name: NLB SDL manual test
         required: true
         default: "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
         type: string
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/nlb-sdl-test.yml
+      - CMakeLists.txt
+      - Source/NLBSdl/**
+      - Source/NLBAudioSDL/**
+      - tests/differential/**
   push:
     branches:
-      - ci/nlb-sdl-wolfman
-      - ci/nlb-sdl-wolfman-state-trace
+      - main
+      - test/wolfman-hospital-page41
     paths:
       - .github/workflows/nlb-sdl-test.yml
       - CMakeLists.txt
@@ -142,6 +151,7 @@ jobs:
           python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py
           python3 -m json.tool tests/differential/catalog.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-opening.json > /dev/null
+          python3 -m json.tool tests/differential/routes/wolfman-police-hospital-doctor.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-police-hospital-corpse.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-eat-robber.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-chase-robber.json > /dev/null
@@ -156,6 +166,7 @@ jobs:
           python3 -m json.tool tests/differential/routes/wolfman-guard-high-wolves-talk.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-guard-high-wolves-attack.json > /dev/null
           python3 -m json.tool tests/differential/routes/wolfman-guard-low-wolfiness-escape.json > /dev/null
+          python3 -m unittest discover -s tests/differential -p 'test_*.py'
           python3 tests/differential/validate_catalog.py
           python3 tests/differential/run_route.py --help
 
@@ -578,11 +589,46 @@ jobs:
             --output test-results/wolfman-guard-low-wolfiness-escape
 
 
-      - name: Run wolfman police branch in INSTEAD
+      - name: Run wolfman hospital doctor branch in INSTEAD
+        run: |
+          output="test-results/wolfman-police-hospital-doctor/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 150s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            python3 tests/differential/run_route.py \
+              --runtime instead \
+              --route tests/differential/routes/wolfman-police-hospital-doctor.json \
+              --game test-data/instead-am_i_a_monster_vn \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Run wolfman hospital doctor branch in NLBNavigator
+        run: |
+          output="test-results/wolfman-police-hospital-doctor/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s 180s xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/run_route.py \
+              --runtime nlbnavigator \
+              --timeout 150 \
+              --route tests/differential/routes/wolfman-police-hospital-doctor.json \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output "$output"
+
+      - name: Compare wolfman hospital doctor branch
+        run: |
+          python3 tests/differential/run_route.py \
+            --runtime compare \
+            --route tests/differential/routes/wolfman-police-hospital-doctor.json \
+            --output test-results/wolfman-police-hospital-doctor
+
+      - name: Run wolfman hospital corpse branch in INSTEAD
         run: |
           output="test-results/wolfman-police-hospital-corpse/instead"
           mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 120s xvfb-run -a -s "-screen 0 1920x1080x24" \
+          timeout --signal=TERM --kill-after=3s 150s xvfb-run -a -s "-screen 0 1920x1080x24" \
             python3 tests/differential/run_route.py \
               --runtime instead \
               --route tests/differential/routes/wolfman-police-hospital-corpse.json \
@@ -590,15 +636,15 @@ jobs:
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
-      - name: Run wolfman police branch in NLBNavigator
+      - name: Run wolfman hospital corpse branch in NLBNavigator
         run: |
           output="test-results/wolfman-police-hospital-corpse/nlbnavigator"
           mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 150s xvfb-run -a -s "-screen 0 1920x1080x24" \
+          timeout --signal=TERM --kill-after=3s 180s xvfb-run -a -s "-screen 0 1920x1080x24" \
             env SDL_AUDIODRIVER=dummy \
             python3 tests/differential/run_route.py \
               --runtime nlbnavigator \
-              --timeout 120 \
+              --timeout 150 \
               --route tests/differential/routes/wolfman-police-hospital-corpse.json \
               --player ./build/nlb_sdl \
               --book test-data/wolfman \
@@ -606,7 +652,7 @@ jobs:
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
-      - name: Compare wolfman police branch
+      - name: Compare wolfman hospital corpse branch
         run: |
           python3 tests/differential/run_route.py \
             --runtime compare \

@@ -6,6 +6,10 @@
 
 ## Текущая модель покрытия
 
+wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. PR #32 merged; CI #148 на merge HEAD SUCCESS: 26 runtime reports, 13 comparisons, 592 text checks, 768 checkpoints. Новые hospital routes в CI #148 не запускались.
+
+Новый PR добавляет два clean-state маршрута до page5 (doctor/corpse), с отдельным page3 choices checkpoint. Они ждут paired runtime/CI verification; persistent achievement read-back, page41, 16 endings, RU/EN и save/load остаются отдельными задачами.
+
 wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #145 (до интеграции актуального main): 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. Следующий CI запускается после merge актуального main в рабочую ветку. В каталоге зарегистрировано 15 маршрутов; все 15 семантически проверены validator, а 13 исполнены в обоих runtime.
 
 В полицейском маршруте оба движка согласны по UUID страницы 2, hp=2, wolfiness=0; INSTEAD зафиксировал act 01. Больница и выбор врача/трупа после страницы 2 ещё не покрыты этим маршрутом. Полная сводка, SHA и остаток работ: TESTING_PROGRESS.md; граф ветвей: WOLFMAN_BRANCH_MAP.md.
