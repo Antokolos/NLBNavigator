@@ -1,5 +1,6 @@
 #include "NLBPlayerSubsystem.h"
 
+#include "NLBPlatformHooks.h"
 #include "Engine/Texture2D.h"
 #include "ImageUtils.h"
 #include "HAL/FileManager.h"
@@ -107,7 +108,8 @@ bool UNLBPlayerSubsystem::OpenBook(const FString& BookPath, bool bVisualNovel, c
     }
     Options.bookPath = U(Book);
     Options.exportMode = bVisualNovel ? PlayerEngine::ExportMode::VN : PlayerEngine::ExportMode::Standard;
-    const FString SaveDir = FPaths::ProjectSavedDir() / TEXT("NLBNavigator");
+    // каталог данных: общий или пользователя платформы (FNLBPlatformHooks::SaveUserId — консоли)
+    const FString SaveDir = FNLBPlatformHooks::UserSaveDir();
     IFileManager::Get().MakeDirectory(*(SaveDir / TEXT("saves")), true);
     // плеер пишет сохранения и достижения обычным файловым вводом-выводом — нужен путь на диске
     Options.savesDir = U(DiskPath(SaveDir / TEXT("saves")));

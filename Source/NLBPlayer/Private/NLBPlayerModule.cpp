@@ -1,6 +1,7 @@
 #include "Modules/ModuleManager.h"
 
-#include "NLBUnrealFileSystem.h"
+#include "NLBPlatformHooks.h"
+#include "nlb/util/FileUtils.h"
 
 void NLBPlayer_CparseStartup();  // NLBCparseStartup.cpp
 
@@ -10,7 +11,8 @@ class FNLBPlayerModule : public IModuleInterface {
 public:
     virtual void StartupModule() override {
         NLBPlayer_CparseStartup();
-        FileUtils::setFileSystem(MakeNLBUnrealFileSystem());
+        // Unreal, или обёртка закрытого плагина платформы над ней (FNLBPlatformHooks)
+        FNLBPlatformHooks::InstallFileSystem();
     }
     virtual void ShutdownModule() override {
         FileUtils::setFileSystem(nullptr);  // снова обычная

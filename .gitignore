@@ -76,3 +76,7 @@ Session.vim
 /integrations/godot/demo/bin/
 /integrations/godot/demo/.godot/
 /integrations/**/build/
+
+# Расширения платформ консолей (Platforms/<платформа>) — в закрытом репозитории (docs/consoles.md):
+# код под SDK закрыт NDA и в этот, открытый, репозиторий не попадает
+/Platforms/
