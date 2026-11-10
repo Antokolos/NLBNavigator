@@ -89,3 +89,11 @@ function iface:cmd(inp)
     if inp:find('nlbnoop', 1, true) then return 'NOOP', true end
     return nlbnav_cmd5(self, inp)
 end
+
+-- "/nlbhere" — текущая комната: имя объекта STEAD (страница экспорта — v_<uuid с _>), для сверки
+-- страницы с pageId плеера
+local nlbnav_cmd6 = iface.cmd
+function iface:cmd(inp)
+    if inp == 'nlbhere' then return 'NLBHERE ' .. tostring(stead.deref(here())), true end
+    return nlbnav_cmd6(self, inp)
+end
