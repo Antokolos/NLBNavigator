@@ -483,7 +483,19 @@ def run_nlbnavigator(args, route, output_dir):
         "--state-log", str(state_log_path.resolve()),
         "--state-vars", "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone",
     ]
+    # Свой HOME на каждый прогон, как у INSTEAD: nlb_sdl хранит в ~/.nlbnavigator сохранения,
+    # settings.ini и достижения, а язык из settings.ini важнее --lang. Без изоляции прогоны (и
+    # маршруты одного CI job) влияли бы друг на друга, а EN-маршрут мог пойти на русском.
+    isolated_home = output_dir / "nlbnavigator-home"
+    if isolated_home.exists():
+        shutil.rmtree(isolated_home)
+    for name in ("", ".config", ".local/share", ".cache"):
+        (isolated_home / name).mkdir(parents=True, exist_ok=True)
     environment = dict(os.environ)
+    environment["HOME"] = str(isolated_home.resolve())
+    environment["XDG_CONFIG_HOME"] = str((isolated_home / ".config").resolve())
+    environment["XDG_DATA_HOME"] = str((isolated_home / ".local/share").resolve())
+    environment["XDG_CACHE_HOME"] = str((isolated_home / ".cache").resolve())
     environment["SDL_AUDIODRIVER"] = "dummy"
     completed = subprocess.run(
         command, cwd=Path.cwd(), env=environment, stdout=subprocess.PIPE,
