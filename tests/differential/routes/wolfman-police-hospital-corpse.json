@@ -194,7 +194,7 @@
       },
       "settle_ms": 2500,
       "screenshot": "06-hospital-choices.png",
-      "visual_change_from": "hospital-page3",
+      "visual_change_from": "hospital-page3-last",
       "expect": {
         "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
         "image_suffix": "3.png",

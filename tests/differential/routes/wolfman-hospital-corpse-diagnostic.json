@@ -194,7 +194,7 @@
       },
       "settle_ms": 2500,
       "screenshot": "06-hospital-choices.png",
-      "visual_change_from": "hospital-page3",
+      "visual_change_from": "hospital-page3-last",
       "expect": {
         "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
         "image_suffix": "3.png",
@@ -228,19 +228,7 @@
       "settle_ms": 3000,
       "screenshot": "07-eat-corpse.png",
       "visual_change_from": "hospital-choices",
-      "expect": {
-        "page_id": "a2b6a777-a95c-4518-8623-ec797a483c46",
-        "image_suffix": "3.png",
-        "instead_background_suffix": "images/3.jpg",
-        "screen": "page",
-        "instead_screen_kind": "page",
-        "text_contains": "Оскалив зубы, вы начали медленно подниматься",
-        "instead_text_contains": "Оскалив зубы, вы начали медленно подниматься",
-        "variables": {
-          "wolfiness": 0,
-          "hp": 2
-        }
-      }
+      "expect": {}
     },
     {
       "id": "diagnostic-advance-01",
@@ -253,18 +241,535 @@
           "nlbnavigator": 1
         }
       },
-      "settle_ms": 2000,
+      "settle_ms": 1200,
       "screenshot": "diagnostic-advance-01.png",
-      "visual_change_from": "eat-corpse",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-02",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-02.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-03",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-03.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-04",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-04.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-05",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-05.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-06",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-06.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-07",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-07.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-08",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-08.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-09",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-09.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-10",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-10.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-11",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-11.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-12",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-12.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-13",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-13.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-14",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-14.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-15",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-15.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-16",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-16.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-17",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-17.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-18",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-18.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-19",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-19.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-20",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-20.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-21",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-21.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-22",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-22.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-23",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-23.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-24",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-24.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-25",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-25.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-26",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-26.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-27",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-27.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-28",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-28.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-29",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-29.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-30",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-30.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-31",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-31.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-32",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-32.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-33",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-33.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-34",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-34.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-35",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-35.png",
+      "expect": {}
+    },
+    {
+      "id": "diagnostic-advance-36",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 1200,
+      "screenshot": "diagnostic-advance-36.png",
       "expect": {}
     }
   ],
-  "notes": [
-    "Independent clean-state route through police -> hospital -> corpse branch.",
-    "Page 3 calls THE_HOSPITAL on non-autowired entry; persistent achievement read-back is not asserted.",
-    "The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.",
-    "Selecting index 1 is observed by INSTEAD as act 02 and by NLBNavigator as clickchoice:1.",
-    "Page14 caption says '+1 к чел нав.', but its entry block has no explicit hp/wolfiness assignment. Expected state wolfiness=0,hp=2 remains a runtime hypothesis.",
-    "The corpse branch automatically converges on page5."
-  ]
+  "notes": "Independent clean-state route through police -> hospital -> corpse branch.,Page 3 calls THE_HOSPITAL on non-autowired entry; persistent achievement read-back is not asserted.,The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.,Selecting index 1 is observed by INSTEAD as act 02 and by NLBNavigator as clickchoice:1.,Page14 caption says '+1 к чел нав.', but its entry block has no explicit hp/wolfiness assignment. Expected state wolfiness=0,hp=2 remains a runtime hypothesis.,The corpse branch automatically converges on page5.\n\nДиагностический маршрут: 36 последовательных одиночных advances после выбора. Каждый checkpoint записывает состояние runtime; ожидаемые page/portion значения намеренно не заданы. Допускается пройти дальше page5."
 }
