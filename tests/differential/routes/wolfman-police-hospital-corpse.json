@@ -132,8 +132,8 @@
         "x_ratio": 0.5,
         "y_ratio": 0.5,
         "clicks": {
-          "instead": 1,
-          "nlbnavigator": 1
+          "instead": 10,
+          "nlbnavigator": 10
         }
       },
       "settle_ms": 3000,
@@ -150,7 +150,35 @@
         "variables": {
           "wolfiness": 0,
           "hp": 2
+        },
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2
+      }
+    },
+    {
+      "id": "hospital-page3-last",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
         }
+      },
+      "settle_ms": 2000,
+      "screenshot": "hospital-page3-last.png",
+      "visual_change_from": "hospital-page3",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "3.jpg",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2
       }
     },
     {
