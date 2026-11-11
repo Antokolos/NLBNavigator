@@ -6,9 +6,9 @@
 
 ## Текущая модель покрытия
 
-wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. PR #32 merged; CI #148 на merge HEAD SUCCESS: 26 runtime reports, 13 comparisons, 592 text checks, 768 checkpoints. Новые hospital routes в CI #148 не запускались.
+wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. PR #32 merged. Последний полный прогон на main — CI #152 SUCCESS: 15 route jobs, включая отдельные paired runtime jobs для обоих robber routes. Артефакт `nlb-sdl-test-logs`, ID `13770101592`.
 
-Новый PR добавляет два clean-state маршрута до page5 (doctor/corpse), с отдельным page3 choices checkpoint. Они ждут paired runtime/CI verification; persistent achievement read-back, page41, 16 endings, RU/EN и save/load остаются отдельными задачами.
+PR #44 добавляет два hospital clean-state маршрута. Page2/page3 pagination локально проверена в обоих движках; основные маршруты обновлены на 10 + 1 + 1 advances. CI #152 не запускал hospital routes; для PR #44 будет собственный новый CI номер. Page4/page14/page5 pagination пока требует runtime-диагностики.
 
 wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #145 (до интеграции актуального main): 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. Следующий CI запускается после merge актуального main в рабочую ветку. В каталоге зарегистрировано 15 маршрутов; все 15 семантически проверены validator, а 13 исполнены в обоих runtime.
 
@@ -185,6 +185,8 @@ NLBNavigator запускается с `--state-log` и `--state-vars wolfiness,
 - `wolfman-chase-robber.json`: INSTEAD `act 02` / NLBNavigator `clickchoice:1`.
   Переход на 1.2 оставляет `wolfiness=0`. После общей страницы 1.4
   условие приводит на 1.6, `hp` остаётся 3. Дальше маршрут выбирает еду на\n  кухне на нулевом варианте страницы 13: страница 11 сохраняет значения 0/3,\n  а лесное условие ведёт на страницу 17.
+
+CI #152 подтвердил оба маршрута: отдельные INSTEAD/NLBNavigator jobs и comparisons успешны.
 
 Workflow выполняет каждую ветвь отдельно в обоих движках, сохраняет текстовые и
 семантические проверки, state trace и скриншоты, затем формирует отдельное
