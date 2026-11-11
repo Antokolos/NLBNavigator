@@ -127,3 +127,47 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 ## CI #148 — SUCCESS после merge PR #32
 
 [CI #148](https://github.com/Antokolos/NLBNavigator/actions/runs/42669487250), HEAD `56d6ecabbaaa791c2e254fba747682f5b9cf6ab0`: все 53 шага успешны. 26 runtime reports (13 сценариев × 2 движка), 13 comparisons, 592 text checks, 768 checkpoint/state records; все отчёты `ok=true`, `errors=[]`. Этот прогон не включал новые hospital routes.
+
+
+---
+
+## Актуализация состояния на 2026-11-11 (после PR #46)
+
+Этот раздел — актуальная контрольная точка; записи CI #144–#148 ниже сохранены как исторический журнал.
+
+### Репозиторий и PR
+
+- PR #32 **merged**; дальнейшее развитие differential suite ведётся в PR #44.
+- PR #44: Draft, ветка `test/wolfman-hospital-page41`, исходный HEAD до обновления `88d0c037a19055de5094f9543d83d369c645f405`. На момент проверки ветка отставала от `main` на 5 коммитов; `main` = `2e1441a846ccb771ba43cba3bb217a395c960876` (merge PR #46).
+- Не переводить PR #44 в Ready до локальной/CI-проверки hospital-маршрутов, проверки артефакта и обновления issue #28. Merge выполняет владелец.
+- PR #46 merged. Он внедрил новую схему CI (validate → plan → build once → route matrix → report), кэш vcpkg, запуск изменённых маршрутов и выбор routes при ручном запуске. Изоляция HOME для NLBNavigator также уже включена; отдельный PR не нужен.
+- При обновлении PR #44 workflow целиком брать из `main`; не возвращать старые hospital-specific jobs, PR trigger и unit tests — новая матрица берёт маршруты из `catalog.json`.
+
+### CI после PR #46
+
+- [CI #151](https://github.com/Antokolos/NLBNavigator/actions/runs/42810870917) — **SUCCESS**, событие `pull_request`, ветка PR #46 `ci/route-matrix`, HEAD `33a5fe14c5ca33178bb760c75986f44fedf69fe1`. Это прогон PR #46, не PR #44.
+- [CI #152](https://github.com/Antokolos/NLBNavigator/actions/runs/42822208217) — **SUCCESS**, событие `push` на `main`, HEAD `2e1441a846ccb771ba43cba3bb217a395c960876` (merge PR #46). Успешны validate, plan, build, все 15 route jobs и report.
+- Артефакт CI #152: `nlb-sdl-test-logs`, ID `13770101592` (93,032,473 bytes).
+- В CI #152 впервые в этой новой матрице исполнены отдельными paired runtime jobs оба robber-маршрута: `wolfman-chase-robber` и `wolfman-eat-robber`. Для каждого успешны INSTEAD, NLBNavigator и comparison. Это **runtime-подтверждение**, а не только статическая валидация. Покрытие зафиксировано также в `WOLFMAN_BRANCH_MAP.md` и differential README.
+- CI #151 и #152 не включали hospital-маршруты PR #44: они пока существуют только в ветке PR #44. Не использовать номера #151/#152 как CI PR #44. Следующий CI на обновлённой ветке PR #44 получит собственный номер.
+
+### Hospital: подтверждённое и pending
+
+- Локально в диагностическом прогоне 2026-11-10 оба движка показали page2 = 10 порций и page3 = 2 порции.
+- Переходы в основных hospital routes должны быть: `hospital-page3` — 10 clicks → page3 portion 0; `hospital-page3-last` — 1 click → page3 portion 1; `hospital-choices` — 1 click → экран choices. Это runtime-проверено локально для обоих движков.
+- После выбора врача/трупа фактические количества порций page4/page14/page5 ещё неизвестны. Значения wolfiness/hp из исходника пока считать ожиданиями, не runtime-фактами.
+- Диагностику page4/page14/page5 выполнить через GitHub Actions вручную: временный маршрут зарегистрировать в `catalog.json`, запустить workflow_dispatch с route ID в поле `routes`, скачать и проверить общий артефакт обоих движков. Временные checkpoints должны фиксировать каждый переход/portion без угадывания количества кликов. После получения runtime-данных перенести точные значения в основные маршруты и удалить временный маршрут.
+- Ошибка CI #150 на исходном HEAD PR #44 связана с вводом маршрута; она не является доказательством расхождения движков. CI #149 также завершился ошибкой на том же исходном HEAD. Hospital runtime на CI #44 ещё не подтверждён.
+- Запрещено менять `Source/**`, исходные книги/INSTEAD, runner action `menu` и `--deterministic`: последние два пункта делает Claude Code отдельно.
+
+### Следующие действия
+
+1. [x] Проверить PR #46, CI #151 и CI #152; подтвердить отдельные runtime jobs обоих robber routes.
+2. [ ] Первым отдельным коммитом актуализировать этот файл в ветке PR #44.
+3. [ ] Влить актуальный `main` в ветку PR #44. В конфликте `.github/workflows/nlb-sdl-test.yml` полностью принять версию из `main`; hospital jobs не добавлять.
+4. [ ] Обновить `WOLFMAN_BRANCH_MAP.md`, differential README и корневой README: отметить robber runtime как подтверждённый CI #152; обновить latest verified run.
+5. [ ] Исправить hospital routes на последовательность 10 + 1 + 1 clicks и проверить JSON/validator.
+6. [ ] Добавить временный диагностический маршрут для page4/page14/page5 и запустить его вручную через workflow_dispatch `routes`.
+7. [ ] По артефакту проверить оба runtime report и traces; зафиксировать точные portion index/count, затем обновить основные маршруты и удалить временный маршрут.
+8. [ ] Запустить локально доступные проверки (если возможно) и новый CI PR #44; проверить все route reports, comparisons и общий артефакт.
+9. [ ] Обновить issue #28 с правильными номерами CI: #151 — PR #46, #152 — main после PR #46, отдельный новый номер — PR #44. Только после проверок обсуждать Ready for review.
