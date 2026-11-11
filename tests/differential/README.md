@@ -12,7 +12,7 @@ PR #44 добавляет два hospital clean-state маршрута. Page2/pa
 
 wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #145 (до интеграции актуального main): 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. Следующий CI запускается после merge актуального main в рабочую ветку. В каталоге зарегистрировано 15 маршрутов; все 15 семантически проверены validator, а 13 исполнены в обоих runtime.
 
-В полицейском маршруте оба движка согласны по UUID страницы 2, hp=2, wolfiness=0; INSTEAD зафиксировал act 01. Больница и выбор врача/трупа после страницы 2 ещё не покрыты этим маршрутом. Полная сводка, SHA и остаток работ: TESTING_PROGRESS.md; граф ветвей: WOLFMAN_BRANCH_MAP.md.
+В полицейском маршруте оба движка согласны по UUID страницы 2, hp=2, wolfiness=0; INSTEAD зафиксировал act 01. Отдельные hospital routes PR #44 продолжают эту ветку; page2/page3 pagination подтверждена локально, page4/page14/page5 ждут CI diagnostics. Полная сводка, SHA и остаток работ: TESTING_PROGRESS.md; граф ветвей: WOLFMAN_BRANCH_MAP.md.
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
 контрольная точка, CI и процедура handoff), затем `WOLFMAN_BRANCH_MAP.md` (граф
 сценария, статусы покрытия, игровые переменные и достижения). Обновляйте эти

@@ -1,13 +1,13 @@
 # Дифференциальное тестирование NLBNavigator ↔ INSTEAD — текущая контрольная точка
 
-Обновлено: 2026-11-10 (Asia/Bishkek).
+Обновлено: 2026-11-11 (Asia/Bishkek).
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
 - Последний интегрированный PR: #32 (merged).
-- Текущий PR: hospital continuation, branch `test/wolfman-hospital-page41`, base main `78e15633db451da573f0cc4697022cd7f79dbefd`.
+- Текущий PR: #44, branch `test/wolfman-hospital-page41`, base `main` на `2e1441a846ccb771ba43cba3bb217a395c960876`; branch updated with merge commit `80a7db9717494782830c403f6b2e4353673bb00e`.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
-- Два hospital routes и CI jobs подготовлены; локальные WSL2 runtime и GitHub Actions ещё не выполнены. Page3/doctor/corpse не считать подтверждёнными до paired runtime reports.
+- Два основных hospital routes и два временных diagnostic routes зарегистрированы; page2/page3 pagination подтверждена локально в обоих движках. Основные маршруты используют 10 + 1 + 1 advances до choices. CI #158 для текущей ветки pending/queued; paired hospital runtime ещё не подтверждён.
 
 ## Правила
 
@@ -15,7 +15,7 @@
 - Не редактировать исходные репозитории книг/INSTEAD; использовать pinned SHA и временный overlay.
 - Runtime discrepancy оформлять отдельной issue с минимальным воспроизведением, обоими логами/traces и кадрами. Сначала исключить ошибку ввода, тайминг и неверное ожидание.
 - Pixel diff между рендерерами advisory, не pixel-perfect gate.
-- Каждый изменённый маршрут проверять локально в обоих движках под Xvfb до push.
+- Каждый изменённый маршрут проверять парно в обоих движках до завершения этапа; допустим локальный Xvfb или GitHub Actions runtime. Для CI использовать route matrix и сохранять общий артефакт.
 - Пагинация — часть функционального differential testing: сравнивать portion index/count, порядок и переходы, не маскировать расхождения лишними кликами.
 - После каждого этапа обновлять issue #28: что сделано, ссылка на зелёный CI, покрытие и найденные issues.
 
@@ -168,6 +168,13 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 4. [ ] Обновить `WOLFMAN_BRANCH_MAP.md`, differential README и корневой README: отметить robber runtime как подтверждённый CI #152; обновить latest verified run.
 5. [ ] Исправить hospital routes на последовательность 10 + 1 + 1 clicks и проверить JSON/validator.
 6. [ ] Добавить временный диагностический маршрут для page4/page14/page5 и запустить его вручную через workflow_dispatch `routes`.
-7. [ ] По артефакту проверить оба runtime report и traces; зафиксировать точные portion index/count, затем обновить основные маршруты и удалить временный маршрут.
+7. [ ] По артефакту проверить оба runtime report и traces; зафиксировать точные portion index/count, затем обновить основные маршруты и удалить оба временных маршрута.
 8. [ ] Запустить локально доступные проверки (если возможно) и новый CI PR #44; проверить все route reports, comparisons и общий артефакт.
 9. [ ] Обновить issue #28 с правильными номерами CI: #151 — PR #46, #152 — main после PR #46, отдельный новый номер — PR #44. Только после проверок обсуждать Ready for review.
+
+
+### Временная диагностика в PR #44
+
+На текущем HEAD `75ccbb46651feb3859db125cfb8596a89d03ce46` каталог содержит 18 записей: 16 постоянных маршрутов и два временных (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`). В каждом временном маршруте после соответствующего выбора выполняется один advance с пустым `expect`, чтобы зафиксировать фактическую страницу и portion state без заранее заданного количества. Далее маршрут будет расширяться на один advance checkpoint после анализа предыдущего runtime artifact. После завершения page4/page14/page5 диагностики оба временных маршрута будут удалены.
+
+Текущий CI PR #44 — [#158](https://github.com/Antokolos/NLBNavigator/actions/runs/42989851487), pending/queued на этом HEAD. CI #154 относится к более раннему merge HEAD; CI #153 запущен по старому workflow до интеграции main и не заменяет текущую проверку.
