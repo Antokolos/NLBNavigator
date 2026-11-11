@@ -43,7 +43,7 @@ CI #126 подтвердил все три guard routes; их NLB state-log ва
 
 Во всех случаях `barExit=true,forestExit=false,guardDone=false`. Page16/page17 направления, приводящие к page18/page24/page25, подтверждены CI #119. Междвижковые пиксельные различия — advisory.
 
-Следующий CI должен проверить четыре правых поворота на page18/24/25: обход путника → page22 и `forestExit=true`. До успешного CI page22 не входит в runtime-подтверждённое покрытие.
+CI #152 подтвердил четыре правых bypass-маршрута page18/page24/page25 → page22: paired runtime и comparisons успешны, `forestExit=true` в обоих движках. Page22 входит в runtime-подтверждённое покрытие.
 
 ### Известное отличие пагинации
 
@@ -341,8 +341,7 @@ choices перед `select_choice` и portion index/count. Два robber route J
 forest/guard маршрутах. Issue #37 закрыта после обновления reference export
 в PR #43 и проверки CI #144.
 
-Police route всё ещё заканчивается на page2; hospital page3 и выбор врача/трупа
-остаются непокрытыми. Pixel diff между разными рендерерами остаётся advisory.
+Основной police route заканчивается на page2. Отдельные hospital routes находятся в PR #44: page2/page3 pagination подтверждена локально, paired CI для doctor/corpse и точная pagination page4/page14/page5 ещё ожидаются. Pixel diff между разными рендерерами остаётся advisory.
 
 
 ## CI #145 и обновление ветки
