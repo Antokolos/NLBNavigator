@@ -7,7 +7,7 @@
 - Последний интегрированный PR: #32 (merged).
 - Текущий PR: #44, branch `test/wolfman-hospital-page41`, base `main` на `2e1441a846ccb771ba43cba3bb217a395c960876`; branch updated with merge commit `80a7db9717494782830c403f6b2e4353673bb00e`.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
-- Два основных hospital routes и два временных diagnostic routes зарегистрированы; page2/page3 pagination подтверждена локально в обоих движках. Основные маршруты используют 10 + 1 + 1 advances до choices. CI #158 для текущей ветки pending/queued; paired hospital runtime ещё не подтверждён.
+- Два основных hospital routes и два временных diagnostic routes зарегистрированы; page2/page3 pagination подтверждена локально в обоих движках. Основные маршруты используют 10 + 1 + 1 advances до choices. CI #160 для текущей ветки pending/queued; paired hospital runtime ещё не подтверждён.
 
 ## Правила
 
@@ -175,6 +175,6 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 
 ### Временная диагностика в PR #44
 
-На текущем HEAD `75ccbb46651feb3859db125cfb8596a89d03ce46` каталог содержит 18 записей: 16 постоянных маршрутов и два временных (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`). В каждом временном маршруте после соответствующего выбора выполняется один advance с пустым `expect`, чтобы зафиксировать фактическую страницу и portion state без заранее заданного количества. Далее маршрут будет расширяться на один advance checkpoint после анализа предыдущего runtime artifact. После завершения page4/page14/page5 диагностики оба временных маршрута будут удалены.
+На текущем HEAD `59f200b1babdf8b28266fe4a4a9fef29f69e88cb` каталог содержит 18 записей: 16 постоянных маршрутов и два временных (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`). В каждом временном маршруте после соответствующего выбора выполняется один advance с пустым `expect`, чтобы зафиксировать фактическую страницу и portion state без заранее заданного количества. Далее маршрут будет расширяться на один advance checkpoint после анализа предыдущего runtime artifact. После завершения page4/page14/page5 диагностики оба временных маршрута будут удалены.
 
-Текущий CI PR #44 — [#158](https://github.com/Antokolos/NLBNavigator/actions/runs/42989851487), pending/queued на этом HEAD. CI #154 относится к более раннему merge HEAD; CI #153 запущен по старому workflow до интеграции main и не заменяет текущую проверку.
+Текущий CI PR #160 — [run](https://github.com/Antokolos/NLBNavigator/actions/runs/42990607138), pending/queued на этом HEAD. CI #159 отменён при появлении более нового HEAD. CI #154 выполняет 16 route jobs на более раннем merge HEAD; его hospital-маршруты ещё содержат прежнюю пагинацию, поэтому их результаты не заменяют текущую проверку. CI #153 запущен по старому workflow до интеграции main и не заменяет текущую проверку.
