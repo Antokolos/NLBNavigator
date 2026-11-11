@@ -6,6 +6,10 @@
 
 ## Текущая модель покрытия
 
+wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. PR #32 merged; CI #148 на merge HEAD SUCCESS: 26 runtime reports, 13 comparisons, 592 text checks, 768 checkpoints. Новые hospital routes в CI #148 не запускались.
+
+Новый PR добавляет два clean-state маршрута до page5 (doctor/corpse), с отдельным page3 choices checkpoint. Они ждут paired runtime/CI verification; persistent achievement read-back, page41, 16 endings, RU/EN и save/load остаются отдельными задачами.
+
 wolfman и instead-am_i-a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный зелёный прогон — CI #145 (до интеграции актуального main): 26 runtime route reports (13 сценариев × 2 движка) и 13 междвижковых comparisons, все ok=true, errors=[]. Следующий CI запускается после merge актуального main в рабочую ветку. В каталоге зарегистрировано 15 маршрутов; все 15 семантически проверены validator, а 13 исполнены в обоих runtime.
 
 В полицейском маршруте оба движка согласны по UUID страницы 2, hp=2, wolfiness=0; INSTEAD зафиксировал act 01. Больница и выбор врача/трупа после страницы 2 ещё не покрыты этим маршрутом. Полная сводка, SHA и остаток работ: TESTING_PROGRESS.md; граф ветвей: WOLFMAN_BRANCH_MAP.md.
@@ -146,31 +150,11 @@ session logs, но сохранённое состояние достижени�
 key/click раннер проверяет свежую команду ввода и новое семантическое состояние.
 State-log NLBNavigator проверяется через `tools/check_state_log.py`.
 
-## CI (`.github/workflows/nlb-sdl-test.yml`)
-
-- `validate` — статическая проверка каталога, маршрутов, раннера и unit tests (`test_*.py`).
-- `plan` — какие маршруты прогонять (`ci/select_routes.py`): на push в `main` и в pull request —
-  только изменённые JSON маршрутов, а если изменились раннер, workflow, каталог, файлы `ci/` или
-  ядро/SDL-фронтенд плеера — все; только документация — ни одного. Вручную (Run workflow, поле
-  `routes` — id через запятую, пусто — все) и раз в неделю по расписанию — все.
-- `build` — `nlb_sdl` один раз; vcpkg закреплён (`VCPKG_COMMIT`) и кэширует собранные пакеты,
-  повторная сборка зависимостей не нужна. Бинарник уходит в artifact `nlb-sdl-binary`.
-- `route` — матрица, по job на маршрут, `fail-fast: false`: INSTEAD, затем NLBNavigator (даже если
-  INSTEAD упал — для разбора нужны отчёты обоих), затем сравнение. Таймауты — по числу шагов
-  маршрута. Тестовые данные (`ci/fetch_test_data.sh`, закреплённые SHA) кэшируются.
-- `report` — общий artifact `nlb-sdl-test-logs` (каталог `<маршрут>/{instead,nlbnavigator}` и
-  `comparison-report.json`, как раньше) и таблица ok/ошибка по маршрутам в сводке прогона.
-- Новый маршрут достаточно добавить в `catalog.json`: шаги в workflow не нужны.
-- Прогон не отменяется следующим коммитом (`cancel-in-progress: false`).
-
 ## Правила воспроизводимости
 
 - В каждом отчёте сохранять SHA книги, экспорта, темы и NLBNavigator.
 - Клонировать книги с --recurse-submodules.
-- Отдельные HOME/XDG-каталоги на каждый запуск — у обоих движков: у INSTEAD
-  (`instead-home`, `instead-appdata`) и у NLBNavigator (`nlbnavigator-home` в каталоге
-  `--output`). nlb_sdl хранит в `~/.nlbnavigator` сохранения, `settings.ini` и достижения, а
-  язык из `settings.ini` важнее `--lang`; без изоляции прогоны влияли бы друг на друга.
+- Использовать отдельные HOME/XDG-каталоги для каждого запуска INSTEAD.
 - Не изменять исходные игровые репозитории: адаптеры и тестовые хуки живут здесь.
 - Новые расхождения сначала сохранять как артефакты и отчёт; не добавлять
   безусловный pixel-perfect gate до согласования допустимых различий рендереров.
