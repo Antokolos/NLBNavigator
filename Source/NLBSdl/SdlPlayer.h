@@ -38,6 +38,9 @@ public:
         std::string stateLogPath;
         /// --state-vars: какие переменные книги писать в снимок (через запятую; «*» — все)
         std::vector<std::string> stateVars;
+        /// --deterministic[=n]: воспроизводимая случайность, как у nlb_main (-1 — выключена, иначе
+        /// начало счётчика): маршруты книг с RND/SHUFFLE (Frontier, «Варвар») и сверка с INSTEAD
+        int64_t deterministicStart = -1;
         int windowWidth = 1280, windowHeight = 720;
         bool fullscreen = false;                 ///< --fullscreen: сразу во весь экран (F11 — переключить)
         float textScale = 1.0f;                  ///< --text-scale: размер текста (1 — как в теме; меню главнее)

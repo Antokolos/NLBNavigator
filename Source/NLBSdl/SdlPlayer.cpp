@@ -97,6 +97,10 @@ bool SdlPlayer::init() {
     so.exportMode = m_options.exportMode;
     so.achievementsPath = m_options.achievementsPath;
     so.savesDir = m_options.savesDir;
+    if (m_options.deterministicStart >= 0) {
+        so.deterministic = true;
+        so.deterministicStart = m_options.deterministicStart;
+    }
     // язык: ключ запуска (--lang, -epiclocale от Epic Games Launcher…), затем языки системы
     {
         const std::string fromArgs = nlb::presentation::languageFromArgs(m_options.args);
@@ -656,7 +660,8 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         else if (k == "f5") m_screen->key(Key::Save);
         else if (k == "f9") m_screen->key(Key::Load);
         else if (k == "space") m_screen->key(Key::Space);
-        else m_screen->key(Key::Digit, std::stoi(k));
+        else if (k.size() == 1 && k[0] >= '0' && k[0] <= '9') m_screen->key(Key::Digit, k[0] - '0');
+        else ok = false;  // незнакомая клавиша — команда не выполнена (раньше std::stoi бросал исключение)
         renderFrame();
     } else if (starts("shot:")) {
         ok = saveScreenshot(line.substr(5));
