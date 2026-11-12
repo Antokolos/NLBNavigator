@@ -88,3 +88,7 @@ Session.vim
 !/tests/differential/ci/
 !/tests/differential/ci/*.py
 !/tests/differential/ci/*.sh
+
+# Python: байт-код
+__pycache__/
+*.pyc
