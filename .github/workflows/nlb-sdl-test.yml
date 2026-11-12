@@ -1,4 +1,11 @@
-name: NLB SDL manual test
+name: NLB SDL differential test
+
+# Дифференциальные маршруты NLBNavigator ↔ INSTEAD (tests/differential, issue #28).
+# build — nlb_sdl один раз (vcpkg с бинарным кэшем), plan — какие маршруты прогонять,
+# route — матрица: каждый маршрут своим job в обоих движках и сравнение,
+# report — общий артефакт nlb-sdl-test-logs и сводка по маршрутам.
+# На push и pull request — только изменённые маршруты (или все, если изменились раннер, workflow,
+# каталог или плеер); вручную и по расписанию — все (вручную можно выбрать маршруты).
 
 "on":
   workflow_dispatch:
@@ -12,41 +19,117 @@ name: NLB SDL manual test
         description: "Commit SHA, branch, or tag of INSTEAD export (default: pinned export)"
         required: true
         default: "0db8d2c611faa596987baaf041763ef6c9282484"
+        type: string
       base_theme_ref:
         description: "Commit SHA, branch, or tag of instead-hub/instead base theme"
         required: true
         default: "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
         type: string
-  push:
+      routes:
+        description: "Route ids from catalog.json, comma-separated (empty: all routes)"
+        required: false
+        default: ""
+        type: string
+  schedule:
+    # полный прогон раз в неделю (понедельник, 03:17 UTC)
+    - cron: "17 3 * * 1"
+  pull_request:
     branches:
-      - ci/nlb-sdl-wolfman
-      - ci/nlb-sdl-wolfman-state-trace
+      - main
     paths:
       - .github/workflows/nlb-sdl-test.yml
       - CMakeLists.txt
+      - Source/*
+      - Source/NLBCore/**
+      - Source/NLBReader/**
+      - Source/NLBPresentation/**
       - Source/NLBSdl/**
       - Source/NLBAudioSDL/**
+      - Source/thirdparty/**
+      - tests/differential/**
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/nlb-sdl-test.yml
+      - CMakeLists.txt
+      - Source/*
+      - Source/NLBCore/**
+      - Source/NLBReader/**
+      - Source/NLBPresentation/**
+      - Source/NLBSdl/**
+      - Source/NLBAudioSDL/**
+      - Source/thirdparty/**
       - tests/differential/**
 
 permissions:
   contents: read
 
+# Прогон не отменяется новым коммитом: незаконченный прогон тоже даёт артефакт для разбора.
 concurrency:
-  group: nlb-sdl-manual-test-${{ github.ref }}
-  cancel-in-progress: true
+  group: nlb-sdl-test-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  GAME_REF: ${{ github.event.inputs.game_ref || '888b4b7a7a564693274f53341728ee9f3b4c2879' }}
+  REFERENCE_REF: ${{ github.event.inputs.reference_ref || '0db8d2c611faa596987baaf041763ef6c9282484' }}
+  BASE_THEME_REF: ${{ github.event.inputs.base_theme_ref || '1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e' }}
+  # vcpkg закреплён: от его коммита зависит ключ бинарного кэша
+  VCPKG_COMMIT: 5363acb796e576328288fae60c25304e227e9839
 
 jobs:
-  build-and-prepare:
-    name: Build nlb_sdl and prepare test books
+  validate:
+    name: Validate route definitions
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
-    env:
-      GAME_REF: ${{ github.event.inputs.game_ref || '888b4b7a7a564693274f53341728ee9f3b4c2879' }}
-      REFERENCE_REF: ${{ github.event.inputs.reference_ref || '0db8d2c611faa596987baaf041763ef6c9282484' }}
-      BASE_THEME_REF: ${{ github.event.inputs.base_theme_ref || '1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e' }}
+    timeout-minutes: 10
     steps:
-      - name: Check out NLBNavigator
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: Static checks of catalog, routes and runner
+        run: |
+          python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py \
+            tests/differential/ci/select_routes.py
+          python3 -m json.tool tests/differential/catalog.json > /dev/null
+          for route in tests/differential/routes/*.json; do python3 -m json.tool "$route" > /dev/null; done
+          python3 -m unittest discover -s tests/differential -p 'test_*.py'
+          python3 tests/differential/validate_catalog.py
+          python3 tests/differential/run_route.py --help > /dev/null
+
+  plan:
+    name: Select routes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+      count: ${{ steps.select.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: select
+        env:
+          EVENT: ${{ github.event_name }}
+          ONLY: ${{ github.event.inputs.routes }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          case "$EVENT" in
+            workflow_dispatch) python3 tests/differential/ci/select_routes.py --all --only "$ONLY" ;;
+            schedule) python3 tests/differential/ci/select_routes.py --all ;;
+            pull_request) python3 tests/differential/ci/select_routes.py --base "$PR_BASE" --head HEAD ;;
+            *) python3 tests/differential/ci/select_routes.py --base "$PUSH_BEFORE" --head HEAD ;;
+          esac
+
+  build:
+    name: Build nlb_sdl
+    needs: plan
+    if: needs.plan.outputs.count != '0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      VCPKG_ROOT: ${{ github.workspace }}/../vcpkg
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/../vcpkg-cache,readwrite
+    steps:
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -61,22 +144,26 @@ jobs:
             libwayland-dev libxkbcommon-dev wayland-protocols \
             libegl1-mesa-dev libgl1-mesa-dev libdbus-1-dev libibus-1.0-dev \
             libudev-dev libasound2-dev libpulse-dev libsndio-dev libdecor-0-dev \
-            libfreetype-dev python3-pil xvfb xauth \
-            instead xdotool imagemagick x11-utils openbox
+            libfreetype-dev
+
+      - name: Restore vcpkg binary cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/../vcpkg-cache
+          key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMIT }}-sdl3-image-ttf-mixer-v1
 
       - name: Install SDL3 dependencies with vcpkg
-        env:
-          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
         run: |
-          git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          git init -q "$VCPKG_ROOT"
+          git -C "$VCPKG_ROOT" fetch -q --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_COMMIT"
+          git -C "$VCPKG_ROOT" checkout -q FETCH_HEAD
+          mkdir -p "${{ github.workspace }}/../vcpkg-cache"
           "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
           "$VCPKG_ROOT/vcpkg" install \
             sdl3 'sdl3-image[png,jpeg]' sdl3-ttf sdl3-mixer \
             --triplet x64-linux
 
-      - name: Configure NLBNavigator
-        env:
-          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+      - name: Configure and build nlb_sdl
         run: |
           cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
@@ -84,10 +171,7 @@ jobs:
             -DVCPKG_TARGET_TRIPLET=x64-linux \
             -DNLB_BUILD_APPS=ON \
             -DNLB_WITH_SDL3=ON
-
-      - name: Build nlb_sdl
-        run: |
-          cmake --build build --target nlb_sdl --parallel 2
+          cmake --build build --target nlb_sdl --parallel 4
           test -x build/nlb_sdl
 
       - name: Smoke-test executable
@@ -100,526 +184,97 @@ jobs:
           grep -q "Usage: nlb_sdl" nlb_sdl-usage.log
           cat nlb_sdl-usage.log
 
-      - name: Check out wolfman with all nested modules
-        run: |
-          git clone --no-checkout --filter=blob:none \
-            https://github.com/nlbproject/wolfman.git test-data/wolfman
-          git -C test-data/wolfman fetch --depth 1 origin "$GAME_REF"
-          git -C test-data/wolfman checkout --detach FETCH_HEAD
-          git -C test-data/wolfman submodule update --init --recursive
-          git -C test-data/wolfman log -1 --format='NLB book commit: %H %s'
-          test -d test-data/wolfman
-          test -s test-data/wolfman/images/title.png
-          test -s test-data/wolfman/images/1.png
-          file test-data/wolfman/images/title.png test-data/wolfman/images/1.png
-          find test-data/wolfman -maxdepth 2 -type f | head -n 30
+      - name: Upload nlb_sdl
+        uses: actions/upload-artifact@v4
+        with:
+          name: nlb-sdl-binary
+          path: |
+            build/nlb_sdl
+            build/CMakeCache.txt
+            nlb_sdl-usage.log
+          retention-days: 3
 
-      - name: Check out INSTEAD reference export
-        run: |
-          git clone --no-checkout --filter=blob:none \
-            https://github.com/nlbproject/instead-am_i_a_monster_vn.git test-data/instead-am_i_a_monster_vn
-          git -C test-data/instead-am_i_a_monster_vn fetch --depth 1 origin "$REFERENCE_REF"
-          git -C test-data/instead-am_i_a_monster_vn checkout --detach FETCH_HEAD
-          git -C test-data/instead-am_i_a_monster_vn submodule update --init --recursive
-          test -d test-data/instead-am_i_a_monster_vn
-          test -s test-data/instead-am_i_a_monster_vn/luapassing.lua
-          git -C test-data/instead-am_i_a_monster_vn log -1 --format='INSTEAD reference commit: %H %s'
-          find test-data/instead-am_i_a_monster_vn -maxdepth 2 -type f | head -n 30
+  route:
+    name: ${{ matrix.id }}
+    needs: [plan, build, validate]
+    if: needs.plan.outputs.count != '0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Check out INSTEAD base theme
+      - name: Install runtime dependencies
         run: |
-          git clone --no-checkout --filter=blob:none \
-            https://github.com/instead-hub/instead.git test-data/instead
-          git -C test-data/instead sparse-checkout init --cone
-          git -C test-data/instead sparse-checkout set themes/default
-          git -C test-data/instead fetch --depth 1 origin "$BASE_THEME_REF"
-          git -C test-data/instead checkout --detach FETCH_HEAD
-          git -C test-data/instead log -1 --format='INSTEAD base theme commit: %H %s'
-          test -s test-data/instead/themes/default/theme.ini
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pil xvfb xauth instead xdotool imagemagick x11-utils openbox \
+            libx11-6 libxext6 libxrandr2 libxcursor1 libxi6 libxinerama1 libxss1 libxkbcommon0 \
+            libwayland-client0 libwayland-cursor0 libwayland-egl1 libdecor-0-0 \
+            libegl1 libgl1 libdbus-1-3 libudev1 libasound2t64 libpulse0 libfreetype6
 
-      - name: Validate differential test definitions
-        run: |
-          python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py
-          python3 -m json.tool tests/differential/catalog.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-opening.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-police-hospital-corpse.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-eat-robber.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-chase-robber.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-right.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-left.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-right.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-left.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-guard-high-wolves-talk.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-guard-high-wolves-attack.json > /dev/null
-          python3 -m json.tool tests/differential/routes/wolfman-guard-low-wolfiness-escape.json > /dev/null
-          python3 tests/differential/validate_catalog.py
-          python3 tests/differential/run_route.py --help
+      - name: Download nlb_sdl
+        uses: actions/download-artifact@v4
+        with:
+          name: nlb-sdl-binary
 
-      - name: Run shared route in INSTEAD
+      - name: Restore test data
+        uses: actions/cache@v4
+        with:
+          path: test-data
+          key: test-data-${{ env.GAME_REF }}-${{ env.REFERENCE_REF }}-${{ env.BASE_THEME_REF }}
+
+      - name: Fetch pinned test data
         run: |
-          mkdir -p test-results
-          timeout --signal=TERM --kill-after=3s 60s xvfb-run -a -s "-screen 0 1920x1080x24" \
+          chmod +x build/nlb_sdl
+          bash tests/differential/ci/fetch_test_data.sh
+
+      - name: Run in INSTEAD
+        id: instead
+        continue-on-error: true
+        run: |
+          output="test-results/${{ matrix.id }}/instead"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s ${{ matrix.instead_timeout }}s \
+            xvfb-run -a -s "-screen 0 1920x1080x24" \
             python3 tests/differential/run_route.py \
               --runtime instead \
-              --route tests/differential/routes/wolfman-opening.json \
+              --route "${{ matrix.path }}" \
               --game test-data/instead-am_i_a_monster_vn \
               --base-theme test-data/instead/themes/default \
-              --output test-results/instead
+              --output "$output"
 
-      - name: Run shared route in NLBNavigator
+      # NLBNavigator идёт и после падения INSTEAD: для разбора нужны отчёты обоих движков
+      - name: Run in NLBNavigator
+        id: nlbnavigator
+        continue-on-error: true
         run: |
-          mkdir -p test-results
-          timeout --signal=TERM --kill-after=3s 90s xvfb-run -a -s "-screen 0 1920x1080x24" \
+          output="test-results/${{ matrix.id }}/nlbnavigator"
+          mkdir -p "$output"
+          timeout --signal=TERM --kill-after=3s $(( ${{ matrix.nlb_timeout }} + 30 ))s \
+            xvfb-run -a -s "-screen 0 1920x1080x24" \
             env SDL_AUDIODRIVER=dummy \
             python3 tests/differential/run_route.py \
               --runtime nlbnavigator \
-              --route tests/differential/routes/wolfman-opening.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output test-results/nlbnavigator
-
-      - name: Compare INSTEAD and NLBNavigator screenshots
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-opening.json \
-            --output test-results
-
-      - name: Run forest wolfiness two left in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-left/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-left.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run forest wolfiness two right in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-right/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-right.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run forest wolfiness zero left in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-left/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-left.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run forest wolfiness zero right in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-right/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-right.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-two-page18-bypass in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-page18-bypass/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-two-page24-bypass in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-page24-bypass/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-zero-page18-bypass in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-page18-bypass/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-zero-page25-bypass in INSTEAD
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-page25-bypass/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run forest wolfiness two left in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-left/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-left.json \
+              --timeout ${{ matrix.nlb_timeout }} \
+              --route "${{ matrix.path }}" \
               --player ./build/nlb_sdl \
               --book test-data/wolfman \
               --theme test-data/instead-am_i_a_monster_vn/themes/default \
               --base-theme test-data/instead/themes/default \
               --output "$output"
 
-      - name: Run forest wolfiness two right in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-right/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-right.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run forest wolfiness zero left in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-left/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-left.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run forest wolfiness zero right in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-right/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-right.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-two-page18-bypass in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-page18-bypass/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-two-page24-bypass in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-two-page24-bypass/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-zero-page18-bypass in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-page18-bypass/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-forest-wolfiness-zero-page25-bypass in NLBNavigator
-        run: |
-          output="test-results/wolfman-forest-wolfiness-zero-page25-bypass/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Compare wolfman-forest-wolfiness-two-left
+      - name: Compare INSTEAD and NLBNavigator
+        id: compare
+        if: steps.instead.outcome == 'success' && steps.nlbnavigator.outcome == 'success'
+        continue-on-error: true
         run: |
           python3 tests/differential/run_route.py \
             --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-two-left.json \
-            --output test-results/wolfman-forest-wolfiness-two-left
-
-      - name: Compare wolfman-forest-wolfiness-two-right
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-two-right.json \
-            --output test-results/wolfman-forest-wolfiness-two-right
-
-      - name: Compare wolfman-forest-wolfiness-zero-left
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-zero-left.json \
-            --output test-results/wolfman-forest-wolfiness-zero-left
-
-      - name: Compare wolfman-forest-wolfiness-zero-right
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-zero-right.json \
-            --output test-results/wolfman-forest-wolfiness-zero-right
-
-      - name: Compare wolfman-forest-wolfiness-two-page18-bypass
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-two-page18-bypass.json \
-            --output test-results/wolfman-forest-wolfiness-two-page18-bypass
-
-      - name: Compare wolfman-forest-wolfiness-two-page24-bypass
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-two-page24-bypass.json \
-            --output test-results/wolfman-forest-wolfiness-two-page24-bypass
-
-      - name: Compare wolfman-forest-wolfiness-zero-page18-bypass
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-zero-page18-bypass.json \
-            --output test-results/wolfman-forest-wolfiness-zero-page18-bypass
-
-      - name: Compare wolfman-forest-wolfiness-zero-page25-bypass
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-forest-wolfiness-zero-page25-bypass.json \
-            --output test-results/wolfman-forest-wolfiness-zero-page25-bypass
-
-      - name: Run wolfman-guard-high-wolves-talk in INSTEAD
-        run: |
-          output="test-results/wolfman-guard-high-wolves-talk/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-guard-high-wolves-talk.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-guard-high-wolves-talk in NLBNavigator
-        run: |
-          output="test-results/wolfman-guard-high-wolves-talk/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-guard-high-wolves-talk.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Compare wolfman-guard-high-wolves-talk
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-guard-high-wolves-talk.json \
-            --output test-results/wolfman-guard-high-wolves-talk
-
-      - name: Run wolfman-guard-high-wolves-attack in INSTEAD
-        run: |
-          output="test-results/wolfman-guard-high-wolves-attack/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 240s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-guard-high-wolves-attack.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-guard-high-wolves-attack in NLBNavigator
-        run: |
-          output="test-results/wolfman-guard-high-wolves-attack/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-guard-high-wolves-attack.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Compare wolfman-guard-high-wolves-attack
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-guard-high-wolves-attack.json \
-            --output test-results/wolfman-guard-high-wolves-attack
-
-      - name: Run wolfman-guard-low-wolfiness-escape in INSTEAD
-        run: |
-          output="test-results/wolfman-guard-low-wolfiness-escape/instead"
-          mkdir -p "$output"
-          # This 46-step reference route needs more than four minutes on hosted runners.
-          timeout --signal=TERM --kill-after=3s 360s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-guard-low-wolfiness-escape.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman-guard-low-wolfiness-escape in NLBNavigator
-        run: |
-          output="test-results/wolfman-guard-low-wolfiness-escape/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 270s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 240 \
-              --route tests/differential/routes/wolfman-guard-low-wolfiness-escape.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Compare wolfman-guard-low-wolfiness-escape
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-guard-low-wolfiness-escape.json \
-            --output test-results/wolfman-guard-low-wolfiness-escape
-
-
-      - name: Run wolfman police branch in INSTEAD
-        run: |
-          output="test-results/wolfman-police-hospital-corpse/instead"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 120s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            python3 tests/differential/run_route.py \
-              --runtime instead \
-              --route tests/differential/routes/wolfman-police-hospital-corpse.json \
-              --game test-data/instead-am_i_a_monster_vn \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Run wolfman police branch in NLBNavigator
-        run: |
-          output="test-results/wolfman-police-hospital-corpse/nlbnavigator"
-          mkdir -p "$output"
-          timeout --signal=TERM --kill-after=3s 150s xvfb-run -a -s "-screen 0 1920x1080x24" \
-            env SDL_AUDIODRIVER=dummy \
-            python3 tests/differential/run_route.py \
-              --runtime nlbnavigator \
-              --timeout 120 \
-              --route tests/differential/routes/wolfman-police-hospital-corpse.json \
-              --player ./build/nlb_sdl \
-              --book test-data/wolfman \
-              --theme test-data/instead-am_i_a_monster_vn/themes/default \
-              --base-theme test-data/instead/themes/default \
-              --output "$output"
-
-      - name: Compare wolfman police branch
-        run: |
-          python3 tests/differential/run_route.py \
-            --runtime compare \
-            --route tests/differential/routes/wolfman-police-hospital-corpse.json \
-            --output test-results/wolfman-police-hospital-corpse
-
-      - name: Validate INSTEAD reference export
-        run: |
-          test -s test-data/instead-am_i_a_monster_vn/main.lua
-          test -d test-data/instead-am_i_a_monster_vn/images
-          test -d test-data/instead-am_i_a_monster_vn/themes
-          find test-data/instead-am_i_a_monster_vn/images -type f | grep -q .
-          printf 'Reference export structure OK\\n' | tee test-results/reference-validation.log
+            --route "${{ matrix.path }}" \
+            --output "test-results/${{ matrix.id }}"
 
       - name: Prepare compact diagnostic artifacts
         if: always()
@@ -653,14 +308,62 @@ jobs:
                           print(f"Skipping image {path}: {error}")
           PY
 
-      - name: Upload build and preparation logs
+      - name: Upload route results
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          name: route-${{ matrix.id }}
+          path: ci-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verdict
+        if: always()
+        run: |
+          echo "INSTEAD: ${{ steps.instead.outcome }}, NLBNavigator: ${{ steps.nlbnavigator.outcome }}, compare: ${{ steps.compare.outcome }}"
+          test "${{ steps.instead.outcome }}" = success
+          test "${{ steps.nlbnavigator.outcome }}" = success
+          test "${{ steps.compare.outcome }}" = success
+
+  report:
+    name: Report
+    needs: [plan, route]
+    if: always() && needs.plan.outputs.count != '0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Download route results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: route-*
+          path: route-results
+      - name: Merge into nlb-sdl-test-logs
+        run: |
+          mkdir -p ci-artifacts
+          for dir in route-results/route-*; do
+            [ -d "$dir" ] && cp -r "$dir"/. ci-artifacts/
+          done
+          python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          root = Path("ci-artifacts")
+          print("| маршрут | INSTEAD | NLBNavigator | сравнение |")
+          print("|---|---|---|---|")
+          def state(path):
+              if not path.is_file():
+                  return "нет отчёта"
+              report = json.loads(path.read_text(encoding="utf-8"))
+              return "ok" if report.get("ok") else "**ошибка**"
+          for route in sorted(p for p in root.iterdir() if p.is_dir()):
+              print("| {} | {} | {} | {} |".format(route.name,
+                    state(route / "instead/route-report.json"),
+                    state(route / "nlbnavigator/route-report.json"),
+                    state(route / "comparison-report.json")))
+          PY
+      - name: Upload nlb-sdl-test-logs
+        uses: actions/upload-artifact@v4
+        with:
           name: nlb-sdl-test-logs
-          path: |
-            nlb_sdl-usage.log
-            build/CMakeCache.txt
-            ci-artifacts/
+          path: ci-artifacts/
           if-no-files-found: warn
           retention-days: 14

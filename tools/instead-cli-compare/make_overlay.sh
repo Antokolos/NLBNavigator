@@ -5,7 +5,7 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 SRC="$1"; DST="$2"
-rm -rf "$DST" && cp -r "$SRC" "$DST" && rm -rf "$DST/.git"
+mkdir -p "$(dirname "$DST")" && rm -rf "$DST" && cp -r "$SRC" "$DST" && rm -rf "$DST/.git"
 cat "$HERE/instead_main_append.lua" >> "$DST/main.lua"
 if [ "${3:-}" = "rnd" ]; then cat "$HERE/instead_rnd_append.lua" >> "$DST/main.lua"; fi
 echo "Копия: $DST"

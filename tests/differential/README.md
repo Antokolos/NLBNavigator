@@ -146,11 +146,31 @@ session logs, но сохранённое состояние достижени�
 key/click раннер проверяет свежую команду ввода и новое семантическое состояние.
 State-log NLBNavigator проверяется через `tools/check_state_log.py`.
 
+## CI (`.github/workflows/nlb-sdl-test.yml`)
+
+- `validate` — статическая проверка каталога, маршрутов, раннера и unit tests (`test_*.py`).
+- `plan` — какие маршруты прогонять (`ci/select_routes.py`): на push в `main` и в pull request —
+  только изменённые JSON маршрутов, а если изменились раннер, workflow, каталог, файлы `ci/` или
+  ядро/SDL-фронтенд плеера — все; только документация — ни одного. Вручную (Run workflow, поле
+  `routes` — id через запятую, пусто — все) и раз в неделю по расписанию — все.
+- `build` — `nlb_sdl` один раз; vcpkg закреплён (`VCPKG_COMMIT`) и кэширует собранные пакеты,
+  повторная сборка зависимостей не нужна. Бинарник уходит в artifact `nlb-sdl-binary`.
+- `route` — матрица, по job на маршрут, `fail-fast: false`: INSTEAD, затем NLBNavigator (даже если
+  INSTEAD упал — для разбора нужны отчёты обоих), затем сравнение. Таймауты — по числу шагов
+  маршрута. Тестовые данные (`ci/fetch_test_data.sh`, закреплённые SHA) кэшируются.
+- `report` — общий artifact `nlb-sdl-test-logs` (каталог `<маршрут>/{instead,nlbnavigator}` и
+  `comparison-report.json`, как раньше) и таблица ok/ошибка по маршрутам в сводке прогона.
+- Новый маршрут достаточно добавить в `catalog.json`: шаги в workflow не нужны.
+- Прогон не отменяется следующим коммитом (`cancel-in-progress: false`).
+
 ## Правила воспроизводимости
 
 - В каждом отчёте сохранять SHA книги, экспорта, темы и NLBNavigator.
 - Клонировать книги с --recurse-submodules.
-- Использовать отдельные HOME/XDG-каталоги для каждого запуска INSTEAD.
+- Отдельные HOME/XDG-каталоги на каждый запуск — у обоих движков: у INSTEAD
+  (`instead-home`, `instead-appdata`) и у NLBNavigator (`nlbnavigator-home` в каталоге
+  `--output`). nlb_sdl хранит в `~/.nlbnavigator` сохранения, `settings.ini` и достижения, а
+  язык из `settings.ini` важнее `--lang`; без изоляции прогоны влияли бы друг на друга.
 - Не изменять исходные игровые репозитории: адаптеры и тестовые хуки живут здесь.
 - Новые расхождения сначала сохранять как артефакты и отчёт; не добавлять
   безусловный pixel-perfect gate до согласования допустимых различий рендереров.
@@ -193,6 +213,33 @@ Workflow выполняет каждую ветвь отдельно в обои
 клика; успешный переход всё равно проверяется по UUID страницы, фрагменту текста
 и игровым переменным. Обычные панели выбора по-прежнему используют
 `select_choice.index` и `clickchoice:N`.
+
+Меню игры (сохранить, загрузить, выход…) — действие `menu`. Меню у движков разные, поэтому ввод
+задаётся для каждого отдельно:
+
+```json
+{"type": "menu",
+ "nlbnavigator": ["F5", 1],
+ "instead": [{"key": "F2"}, {"x_ratio": 0.5, "y_ratio": 0.4}]}
+```
+
+- `nlbnavigator` — клавиши (`Escape`, `F5`, `F9`, `space`, как в xdotool; в сценарии `nlb_sdl` —
+  `key:esc`, `key:f5`, `key:f9`, `key:space`) и номера пунктов открытого меню (`menu:N`, 0 — первый
+  пункт; в меню сохранения и загрузки 0 — «Назад», 1 — первый слот);
+- `instead` — нажатия (`{"key": …}`, xdotool) и щелчки по координатам окна, по порядку.
+
+Меню может не менять сцену (сохранение), поэтому после `menu` новой сцены и смены экрана не
+требуется (как у `capture`); проверки шага (`expect`) — как обычно: после загрузки — страница и
+переменные сохранённой игры. Действие `key` тоже понимает имена xdotool: `Escape`, `F5`, `F9`
+превращаются в команды `nlb_sdl` (раньше незнакомая клавиша останавливала `nlb_sdl`: `std::stoi`).
+Проверено в `nlb_sdl` («Слуга Ра»): `key:f5`, `menu:1`, семь ходов (энергия 100 -> 80, жизнь 100 ->
+95), `key:f9`, `menu:1` — снова страница и переменные на момент сохранения. Часть INSTEAD (xdotool)
+вживую не прогонялась: координаты пунктов меню INSTEAD нужно снять со скриншотов перед первым
+маршрутом сохранения.
+
+Воспроизводимая случайность: `nlb_sdl --deterministic[=N]` (как у `nlb_main`: k-й rnd(n) даёт
+(k mod n) + 1, SHUFFLE разворачивает список, N — начало счётчика) — для маршрутов книг с RND/SHUFFLE
+(Frontier); пара в INSTEAD — `tools/instead-cli-compare/instead_rnd_append.lua` (`/rndstart N`).
 
 
 CI #41597493394 (run 116) reached the page16 choice screen successfully in the new `wolfiness=2 / left` route, with both choice texts in the INSTEAD trace. Its final click missed the short “Налево” hit area at x=499; no `act 01` or new scene was recorded. All four route JSONs now use a revised INSTEAD x coordinate ratio of 0.23, centred on the visible links. This is a test-coordinate correction, not a game-code change. A new CI run is required for verification.

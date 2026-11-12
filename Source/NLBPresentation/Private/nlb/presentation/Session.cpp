@@ -39,6 +39,8 @@ bool Session::open(const Options& options, std::string& error) {
     settings.exportMode = options.exportMode;
     settings.realTime = true;
     settings.achievementsPath = options.achievementsPath;
+    settings.deterministic = options.deterministic;
+    settings.deterministicStart = options.deterministicStart;
     m_engine = std::make_unique<PlayerEngine>(m_book.get(), settings);
     const std::vector<std::string> games = options.externalGames;
     m_engine->setExternalGameFilter([games](const std::string& name) {

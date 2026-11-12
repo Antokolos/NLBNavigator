@@ -11,6 +11,7 @@
 #endif
 #include <SDL3/SDL_main.h>
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -159,6 +160,8 @@ int main(int argc, char** argv) {
                 else if (c != ' ') item += c;
             }
         }
+        else if (a == "--deterministic") options.deterministicStart = 0;
+        else if (a.rfind("--deterministic=", 0) == 0) options.deterministicStart = std::atoll(a.c_str() + 16);
         else if (a == "--window" && i + 1 < args.size()) std::sscanf(args[++i].c_str(), "%dx%d", &options.windowWidth, &options.windowHeight);
         else positional.push_back(a);
     }
@@ -182,10 +185,12 @@ int main(int argc, char** argv) {
         std::cout << "Usage: nlb_sdl <book directory | file.nlbpack> [explore] [vn|standard] [--theme <INSTEAD theme dir>] [--base-theme <dir>] [--font <ttf>] [--no-sound]"
                      " [--choices-screen | --choices-in-text] [--window WxH] [--fullscreen] [--transitions | --no-transitions] [--text-scale 1.5] [--log <file>]"
                      " [--platform steam|epic|log[:file]]... [--platform-config <platform.ini>] [--lang <ru|en|…>]"
-                     " [--script <file> [--state-log <file.jsonl>] [--state-vars <a,b|*>]]" << std::endl;
+                     " [--script <file> [--state-log <file.jsonl>] [--state-vars <a,b|*>]] [--deterministic[=<n>]]" << std::endl;
         std::cout << "  vn            - as exported to VN-INSTEAD; choices on a separate screen by default" << std::endl;
         std::cout << "  standard      - as exported to INSTEAD; choices at the end of the text by default" << std::endl;
         std::cout << "  (no mode)     - by the book theme: standard for a STANDARD book, otherwise vn" << std::endl;
+        std::cout << "  --deterministic[=<n>] - reproducible random, as in nlb_main: k-th rnd(n) gives (k mod n) + 1," << std::endl;
+        std::cout << "                SHUFFLE reverses the list; <n> - start of the counter (default 0)" << std::endl;
         return 1;
     }
     options.bookPath = positional[0];

@@ -84,3 +84,11 @@ Session.vim
 # Differential route validator and its unit tests.
 !/tests/differential/route_validation.py
 !/tests/differential/test_route_validation.py
+!/tests/differential/test_select_routes.py
+!/tests/differential/ci/
+!/tests/differential/ci/*.py
+!/tests/differential/ci/*.sh
+
+# Python: байт-код
+__pycache__/
+*.pyc
