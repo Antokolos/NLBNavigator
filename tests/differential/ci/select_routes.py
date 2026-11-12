@@ -64,9 +64,20 @@ def changed_files(base, head):
     return [line for line in result.stdout.splitlines() if line]
 
 
+def is_doc(path):
+    """Документ (.md): на маршруты не влияет"""
+    return path.lower().endswith(".md")
+
+
+def docs_only(files):
+    """Изменились только документы (известный непустой список .md)"""
+    return bool(files) and all(is_doc(f) for f in files)
+
+
 def select(routes, files):
     if files is None:
         return routes, "все маршруты: база сравнения неизвестна"
+    files = [f for f in files if not is_doc(f)]
     if any(f.startswith(ALL_PREFIXES) or (f.startswith("Source/") and f.count("/") == 1) for f in files):
         return routes, "все маршруты: изменились раннер, workflow, каталог или плеер"
     changed = set(f for f in files if f.startswith(ROUTES_DIR) and f.endswith(".json"))
@@ -80,6 +91,10 @@ def main():
     parser.add_argument("--only", default="")
     parser.add_argument("--base", default="")
     parser.add_argument("--head", default="HEAD")
+    # PR: если в последнем push (от этого коммита до --docs-head) одни документы, маршруты не
+    # прогоняются — иначе каждый коммит с документами в PR заново гоняет все его маршруты
+    parser.add_argument("--docs-only-since", default="")
+    parser.add_argument("--docs-head", default="")
     args = parser.parse_args()
 
     routes = load_routes()
@@ -91,12 +106,15 @@ def main():
         chosen, why = [r for r in routes if r["id"] in wanted], "выбраны вручную"
     elif args.all:
         chosen, why = routes, "все маршруты"
+    elif args.docs_only_since and docs_only(changed_files(args.docs_only_since, args.docs_head or args.head)):
+        chosen, why = [], "последний push — только документы (.md): маршруты не прогонялись"
     else:
         chosen, why = select(routes, changed_files(args.base, args.head))
 
     include = [dict(id=r["id"], path=r["path"], **timeouts(r["path"])) for r in chosen]
     print("{} ({})".format(why, len(include)), file=sys.stderr)
-    lines = ["matrix=" + json.dumps({"include": include}, ensure_ascii=False), "count={}".format(len(include))]
+    lines = ["matrix=" + json.dumps({"include": include}, ensure_ascii=False), "count={}".format(len(include)),
+             "reason={} ({})".format(why, len(include))]
     output = os.environ.get("GITHUB_OUTPUT")
     if output:
         with open(output, "a", encoding="utf-8") as stream:
