@@ -19,13 +19,25 @@ class SelectRoutesTest(unittest.TestCase):
     def test_changed_route_only(self):
         self.assertEqual(self.ids(["tests/differential/routes/b.json"]), ["b"])
 
-    def test_docs_only(self):
+    def test_docs_only_changes_select_nothing(self):
         self.assertEqual(self.ids(["tests/differential/README.md", "docs/state-log.md"]), [])
 
     def test_runner_or_player_changes_run_all(self):
         for changed in ("tests/differential/run_route.py", ".github/workflows/nlb-sdl-test.yml",
                         "Source/NLBSdl/SdlPlayer.cpp", "Source/SessionLog.cpp", "tests/differential/catalog.json"):
             self.assertEqual(self.ids([changed]), ["a", "b"], changed)
+
+    def test_docs_never_select_routes(self):
+        # .md даже в каталогах «прогнать всё» (ci/) маршрутов не добавляет
+        self.assertEqual(self.ids(["tests/differential/ci/README.md", "Source/NLBSdl/NOTES.md"]), [])
+        self.assertEqual(self.ids(["tests/differential/README.md", "tests/differential/routes/a.json"]), ["a"])
+        self.assertEqual(self.ids(["docs/state-log.md", "tests/differential/run_route.py"]), ["a", "b"])
+
+    def test_docs_only(self):
+        self.assertTrue(select_routes.docs_only(["tests/differential/README.md", "docs/A.MD"]))
+        self.assertFalse(select_routes.docs_only(["tests/differential/README.md", "tests/differential/routes/a.json"]))
+        self.assertFalse(select_routes.docs_only([]))
+        self.assertFalse(select_routes.docs_only(None))
 
     def test_other_source_does_not_run(self):
         self.assertEqual(self.ids(["Source/NLBPlayer/Private/Foo.cpp"]), [])
