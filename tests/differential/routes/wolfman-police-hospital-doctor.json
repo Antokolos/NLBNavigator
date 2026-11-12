@@ -239,7 +239,107 @@
         "variables": {
           "wolfiness": 1,
           "hp": 3
+        },
+        "portion_index": 0,
+        "portion_count": 4,
+        "instead_portion_index": 0,
+        "instead_portion_count": 4
+      }
+    },
+    {
+      "id": "doctor-page4-portion-1",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
         }
+      },
+      "settle_ms": 2000,
+      "screenshot": "08-doctor-page4-portion-1.png",
+      "visual_change_from": "eat-doctor",
+      "expect": {
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "image_suffix": "4.png",
+        "instead_background_suffix": "images/4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вновь обретя звериный облик",
+        "instead_text_contains": "Вновь обретя звериный облик",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        },
+        "portion_index": 1,
+        "portion_count": 4,
+        "instead_portion_index": 1,
+        "instead_portion_count": 4
+      }
+    },
+    {
+      "id": "doctor-page4-portion-2",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "08-doctor-page4-portion-2.png",
+      "visual_change_from": "doctor-page4-portion-1",
+      "expect": {
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "image_suffix": "4.png",
+        "instead_background_suffix": "images/4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Но надо было поторапливаться",
+        "instead_text_contains": "Но надо было поторапливаться",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        },
+        "portion_index": 2,
+        "portion_count": 4,
+        "instead_portion_index": 2,
+        "instead_portion_count": 4
+      }
+    },
+    {
+      "id": "doctor-page4-portion-3",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "08-doctor-page4-portion-3.png",
+      "visual_change_from": "doctor-page4-portion-2",
+      "expect": {
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "image_suffix": "4.png",
+        "instead_background_suffix": "images/4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Напугав по пути уборщицу",
+        "instead_text_contains": "Напугав по пути уборщицу",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        },
+        "portion_index": 3,
+        "portion_count": 4,
+        "instead_portion_index": 3,
+        "instead_portion_count": 4
       }
     },
     {
@@ -254,8 +354,8 @@
         }
       },
       "settle_ms": 3000,
-      "screenshot": "08-page5-after-doctor.png",
-      "visual_change_from": "eat-doctor",
+      "screenshot": "11-page5-after-doctor.png",
+      "visual_change_from": "doctor-page4-portion-3",
       "expect": {
         "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
         "image_suffix": "5.png",
@@ -267,7 +367,11 @@
         "variables": {
           "wolfiness": 1,
           "hp": 3
-        }
+        },
+        "portion_index": 0,
+        "portion_count": 6,
+        "instead_portion_index": 0,
+        "instead_portion_count": 6
       }
     }
   ],
@@ -276,7 +380,7 @@
     "Page 3 calls THE_HOSPITAL on non-autowired entry; persistent achievement read-back is not asserted.",
     "The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.",
     "Selecting index 0 is observed by INSTEAD as act 01 and by NLBNavigator as clickchoice:0.",
-    "The pinned NLB page4 caption says it restores one HP and adds one wolfiness; expected state is wolfiness=1,hp=3.",
+    "Page4 state wolfiness=1,hp=3 and 4 portions are confirmed by runtime in both engines (CI #162).",
     "The route ends at the automatic convergence on page5."
   ]
 }

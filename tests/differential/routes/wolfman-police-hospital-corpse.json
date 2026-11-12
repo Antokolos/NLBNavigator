@@ -239,7 +239,43 @@
         "variables": {
           "wolfiness": 0,
           "hp": 2
+        },
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2
+      }
+    },
+    {
+      "id": "corpse-page14-portion-1",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
         }
+      },
+      "settle_ms": 2000,
+      "screenshot": "08-corpse-page14-portion-1.png",
+      "visual_change_from": "eat-corpse",
+      "expect": {
+        "page_id": "a2b6a777-a95c-4518-8623-ec797a483c46",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вы снова приняли звериное обличье",
+        "instead_text_contains": "Вы снова приняли звериное обличье",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2
       }
     },
     {
@@ -254,8 +290,8 @@
         }
       },
       "settle_ms": 3000,
-      "screenshot": "08-page5-after-corpse.png",
-      "visual_change_from": "eat-corpse",
+      "screenshot": "09-page5-after-corpse.png",
+      "visual_change_from": "corpse-page14-portion-1",
       "expect": {
         "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
         "image_suffix": "5.png",
@@ -267,7 +303,11 @@
         "variables": {
           "wolfiness": 0,
           "hp": 2
-        }
+        },
+        "portion_index": 0,
+        "portion_count": 6,
+        "instead_portion_index": 0,
+        "instead_portion_count": 6
       }
     }
   ],
@@ -276,7 +316,7 @@
     "Page 3 calls THE_HOSPITAL on non-autowired entry; persistent achievement read-back is not asserted.",
     "The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.",
     "Selecting index 1 is observed by INSTEAD as act 02 and by NLBNavigator as clickchoice:1.",
-    "Page14 caption says '+1 к чел нав.', but its entry block has no explicit hp/wolfiness assignment. Expected state wolfiness=0,hp=2 remains a runtime hypothesis.",
+    "Page14 state wolfiness=0,hp=2 is confirmed by runtime in both engines (CI #162).",
     "The corpse branch automatically converges on page5."
   ]
 }

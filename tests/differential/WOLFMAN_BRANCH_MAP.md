@@ -364,3 +364,17 @@ Pixel diff остаётся advisory. После CI #147 ветка интегр
 - CI #152 подтвердил отдельные runtime jobs и comparisons для `wolfman-chase-robber` и `wolfman-eat-robber`.
 - Hospital page3 pagination локально подтверждена в обоих движках: portion_count=2, индексы 0–1. Основные маршруты PR #44 обновлены на 10 + 1 + 1 advances до экрана choices; их paired CI ещё ожидается.
 - Page4/page14/page5 portion counts и переменные после выбора остаются pending runtime-диагностики.
+
+
+## Hospital branch runtime-confirmed (CI #162)
+
+| Ветка | Страница | Порции | wolfiness | hp |
+|---|---:|---:|---:|---:|
+| doctor | page4 | 0/4 → 3/4 | 1 | 3 |
+| doctor | page5 | 0/6 | 1 | 3 |
+| corpse | page14 | 0/2 → 1/2 | 0 | 2 |
+| corpse | page5 | 0/6 | 0 | 2 |
+
+Оба движка согласны по указанным UUID, порциям и wolfiness/hp согласно state_records CI #162. Фон INSTEAD для page14 — `images/3.jpg`, пока source-derived, не runtime-confirmed.
+
+Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33). Осознанное отличие, см. CLAUDE.md в main (PR #48); расхождением не считается. В маршрутах экран вариантов покидается только через `select_choice`.

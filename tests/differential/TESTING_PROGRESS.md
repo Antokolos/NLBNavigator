@@ -1,6 +1,6 @@
 # Дифференциальное тестирование NLBNavigator ↔ INSTEAD — текущая контрольная точка
 
-Обновлено: 2026-11-11 (Asia/Bishkek).
+Обновлено: 2026-11-12 (Asia/Bishkek).
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
@@ -178,3 +178,21 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 На текущем HEAD `59f200b1babdf8b28266fe4a4a9fef29f69e88cb` каталог содержит 18 записей: 16 постоянных маршрутов и два временных (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`). В каждом временном маршруте после соответствующего выбора выполняется один advance с пустым `expect`, чтобы зафиксировать фактическую страницу и portion state без заранее заданного количества. Далее маршрут будет расширяться на один advance checkpoint после анализа предыдущего runtime artifact. После завершения page4/page14/page5 диагностики оба временных маршрута будут удалены.
 
 Текущий CI PR #160 — [run](https://github.com/Antokolos/NLBNavigator/actions/runs/42990607138), pending/queued на этом HEAD. CI #159 отменён при появлении более нового HEAD. CI #154 выполняет 16 route jobs на более раннем merge HEAD; его hospital-маршруты ещё содержат прежнюю пагинацию, поэтому их результаты не заменяют текущую проверку. CI #153 запущен по старому workflow до интеграции main и не заменяет текущую проверку.
+
+
+## Актуализация 2026-11-12 — hospital pagination
+
+- PR #44: ветка `test/wolfman-hospital-page41`; перед изменениями выполнен merge `main` на `0d05fd69547cccd4dd8d589f53f8a14713aa73a1` (PR #47–#51 включены). Workflow, `run_route.py`, `ci/select_routes.py` и тесты берутся из main без локальных изменений.
+- CI #162 (HEAD `22d3a8c48d66d5f3f0c8f3907ae95cf984e1b17a`) использован как runtime evidence для hospital pagination. Второй ревьюер проверил подготовленные изменения: 20 unit tests OK, `validate_catalog.py` — 16 routes; после merge main ожидается 28 unit tests.
+- Подтверждённые состояния INSTEAD и NLBNavigator:
+  | Ветка | Страница | Порции | wolfiness | hp |
+  |---|---:|---:|---:|---:|
+  | doctor | page4 | 0/4 → 3/4 | 1 | 3 |
+  | doctor | page5 | 0/6 | 1 | 3 |
+  | corpse | page14 | 0/2 → 1/2 | 0 | 2 |
+  | corpse | page5 | 0/6 | 0 | 2 |
+- Постоянные маршруты содержат checkpoints каждой порции page4 и второй порции page14; временные диагностические маршруты удалены, каталог содержит 16 маршрутов.
+- Фон INSTEAD на page14: `images/3.jpg` — пока source-derived (по исходнику), не runtime-confirmed.
+- Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33). Осознанное отличие, см. CLAUDE.md в main (PR #48); расхождением не считается.
+- Правило маршрутов: не выполнять `advance/click` по пустой области на choices screen; выходить только через `select_choice`.
+- Ожидается новый полный CI на merge+route update HEAD; он должен выполнить 16 маршрутов. Номер прогона и его артефакт будут внесены отдельным документационным коммитом после проверки обоих runtime reports и comparisons.

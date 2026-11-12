@@ -259,16 +259,6 @@
       "id": "wolfman-police-hospital-corpse",
       "book_id": "wolfman",
       "path": "tests/differential/routes/wolfman-police-hospital-corpse.json"
-    },
-    {
-      "id": "wolfman-hospital-doctor-diagnostic",
-      "book_id": "wolfman",
-      "path": "tests/differential/routes/wolfman-hospital-doctor-diagnostic.json"
-    },
-    {
-      "id": "wolfman-hospital-corpse-diagnostic",
-      "book_id": "wolfman",
-      "path": "tests/differential/routes/wolfman-hospital-corpse-diagnostic.json"
     }
   ]
 }

@@ -153,3 +153,10 @@
 5. Отчёт покрытия по страницам и концовкам.
 6. Довести wolfman до Definition of Done (§4.5): 16 концовок, RU+EN, save/load, persisted achievements и полицейская/больничная ветка.
 7. Следующие книги — по таблице §4.5, каждая своим PR; новые actions объектов/инвентаря/use — отдельными PR до соответствующих книг.
+
+
+## Актуализация PR #44 — 2026-11-12
+
+CI #162 runtime state_records подтвердили page4 (4 portions), page14 (2 portions) и page5 (6 portions) в обоих движках. Значения после выбора врача: wolfiness=1,hp=3; после выбора трупа: wolfiness=0,hp=2. См. `tests/differential/TESTING_PROGRESS.md` и `WOLFMAN_BRANCH_MAP.md`.
+
+Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Это осознанное отличие, см. CLAUDE.md в main (PR #48); в маршрутах выходить с choices screen только через `select_choice`.
