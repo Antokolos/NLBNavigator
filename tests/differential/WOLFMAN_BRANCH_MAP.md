@@ -1,5 +1,7 @@
 # Wolfman — карта ветвлений, условий и концовок
 
+Распределение ролей и ответственности участников приведено в [таблице ролей](TESTING_PROGRESS.md#участники-и-роли).
+
 > Документ описывает историю `wolfman` / `instead-am_i_a_monster_vn` по закреплённым исходникам. Он нужен для планирования маршрутов и восстановления контекста. **Наличие перехода в исходном сценарии не означает, что этот переход уже пройден в обоих движках.**
 >
 > Сначала прочитайте `TESTING_PROGRESS.md`: там текущая контрольная точка, последние CI, правила работы и ближайшая задача.
@@ -69,7 +71,7 @@ Page3 UUID `8c1fa8c6-8027-43c8-8d8b-0bf454d5e717`, NLB resource `3.png`, INSTEAD
 - **Съесть врача** → page4, UUID `d937c5c1-766c-4581-a03e-736560b0cc8f`; runtime подтверждено CI #171: 4 порции, затем page5 (UUID `c28ae684-785a-4442-8756-8f5a7e9fb0c1`, 6 порций), итог `wolfiness=1,hp=3`. Route: `wolfman-police-hospital-doctor.json` (13 шагов).
 - **Съесть труп** → page14, UUID `a2b6a777-a95c-4518-8623-ec797a483c46`; runtime подтверждено CI #171: 2 порции, затем page5 (6 порций), итог `wolfiness=0,hp=2`. Route: `wolfman-police-hospital-corpse.json` (11 шагов).
 
-Оба пути и comparisons прошли в INSTEAD и NLBNavigator в CI #171. Локальные парные прогоны обоих маршрутов в обоих движках также завершены в сессии Claude Fable; все шесть отчётов успешны. INSTEAD trace на обоих page14 checkpoints сообщает background `images/3.jpg`; это runtime trace, визуальная сверка снимка не выполнялась. Persistent achievement read-back/parity пока не проверены.
+Оба пути и comparisons прошли в INSTEAD и NLBNavigator в CI #171. Локальные парные прогоны обоих маршрутов в обоих движках также выполнены Ревьюером; все шесть отчётов успешны. INSTEAD trace на обоих page14 checkpoints сообщает background `images/3.jpg`; это runtime trace, визуальная сверка снимка не выполнялась. Persistent achievement read-back/parity пока не проверены.
 
 ### 3. Разбойник, зоопарк и бар
 
