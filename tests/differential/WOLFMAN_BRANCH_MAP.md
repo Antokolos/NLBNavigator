@@ -20,7 +20,7 @@
 
 ## Текущий проверенный охват
 
-Последний полный workflow на `main`: [CI #152](https://github.com/Antokolos/NLBNavigator/actions/runs/42822208217), HEAD `2e1441a846ccb771ba43cba3bb217a395c960876` — SUCCESS. Успешны validate, plan, build, все 15 route jobs и report; оба robber routes впервые исполнены отдельными paired runtime jobs и сравнены. Артефакт `nlb-sdl-test-logs`, ID `13770101592`. [CI #151](https://github.com/Antokolos/NLBNavigator/actions/runs/42810870917) — SUCCESS на PR #46; не путать его с будущим CI PR #44.
+Последний проверенный прогон PR #44 — CI #171 на HEAD `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`: 16 постоянных маршрутов, 48 успешных отчётов (32 runtime и 16 comparisons). Полные run/artifact IDs, шаги и проверки — в `TESTING_PROGRESS.md`.
 
 | Маршрут | INSTEAD | NLBNavigator | Результат |
 |---|---|---|---|
@@ -31,6 +31,8 @@
 | Охранник: `wolvesTalk=false` → page28 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Охранник: `wolfiness=0` → page1.8 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Полиция: первый выбор → page2 | `ok=true` | `ok=true` | CI #144; hp=2, wolfiness=0 |
+| Hospital: выбор врача → page4/page5 | `ok=true` | `ok=true` | CI #171; 13 шагов, 4/6 порций, wolfiness=1, hp=3 |
+| Hospital: выбор трупа → page14/page5 | `ok=true` | `ok=true` | CI #171; 11 шагов, 2/6 порций, wolfiness=0, hp=2 |
 | Грабитель: съесть / прогнать | `ok=true` | `ok=true` | CI #152; оба отдельных route jobs и comparisons успешны |
 
 CI #126 подтвердил все три guard routes; их NLB state-log валидирован на 163, 151 и 141 записях соответственно. Подробные конечные состояния перечислены в разделе «Охранник и выбор оружия».
@@ -64,10 +66,10 @@ CI #152 подтвердил четыре правых bypass-маршрута p
 
 Page3 UUID `8c1fa8c6-8027-43c8-8d8b-0bf454d5e717`, NLB resource `3.png`, INSTEAD background `images/3.jpg`. При non-autowired входе вызывается достижение `THE_HOSPITAL` (ID `13728a8e-885d-40db-ad42-adf784325337`). Два непустых текстовых фрагмента разделены пустыми `pn()`; после последнего фрагмента `walk_to` переводит игру в отдельный `vn_choices` экран. Поэтому маршрут фиксирует page3, затем отдельный choices checkpoint.
 
-- **Съесть врача** → page4, UUID `d937c5c1-766c-4581-a03e-736560b0cc8f`; подпись NLB говорит «Восстанавливает одну жизнь +1 к волч нав.». Ожидаемое состояние из `wolfiness=0,hp=2`: `wolfiness=1,hp=3`. Route: `wolfman-police-hospital-doctor.json`.
-- **Съесть труп** → page14, UUID `a2b6a777-a95c-4518-8623-ec797a483c46`. Подпись «+1 к чел нав.» не подтверждает изменение wolfiness/hp; ожидаемые `0/2` — гипотеза до paired runtime. Route: `wolfman-police-hospital-corpse.json`.
+- **Съесть врача** → page4, UUID `d937c5c1-766c-4581-a03e-736560b0cc8f`; runtime подтверждено CI #171: 4 порции, затем page5 (UUID `c28ae684-785a-4442-8756-8f5a7e9fb0c1`, 6 порций), итог `wolfiness=1,hp=3`. Route: `wolfman-police-hospital-doctor.json` (13 шагов).
+- **Съесть труп** → page14, UUID `a2b6a777-a95c-4518-8623-ec797a483c46`; runtime подтверждено CI #171: 2 порции, затем page5 (6 порций), итог `wolfiness=0,hp=2`. Route: `wolfman-police-hospital-corpse.json` (11 шагов).
 
-Оба пути сходятся на page5, UUID `c28ae684-785a-4442-8756-8f5a7e9fb0c1`. Hospital routes в PR #44 ещё не прошли paired CI. Локально подтверждены page2 (10 порций) и page3 (2 порции) в обоих движках; точные порции page4/page14/page5 pending. Persistent achievement read-back/parity пока не проверены.
+Оба пути и comparisons прошли в INSTEAD и NLBNavigator в CI #171. Локальные парные прогоны обоих маршрутов в обоих движках также завершены в сессии Claude Fable; все шесть отчётов успешны. INSTEAD trace на обоих page14 checkpoints сообщает background `images/3.jpg`; это runtime trace, визуальная сверка снимка не выполнялась. Persistent achievement read-back/parity пока не проверены.
 
 ### 3. Разбойник, зоопарк и бар
 
@@ -366,7 +368,7 @@ Pixel diff остаётся advisory. После CI #147 ветка интегр
 - Page4/page14/page5 portion counts и переменные после выбора остаются pending runtime-диагностики.
 
 
-## Hospital branch runtime-confirmed (CI #162)
+## Hospital branch runtime-confirmed (CI #171)
 
 | Ветка | Страница | Порции | wolfiness | hp |
 |---|---:|---:|---:|---:|
@@ -375,6 +377,6 @@ Pixel diff остаётся advisory. После CI #147 ветка интегр
 | corpse | page14 | 0/2 → 1/2 | 0 | 2 |
 | corpse | page5 | 0/6 | 0 | 2 |
 
-Оба движка согласны по указанным UUID, порциям и wolfiness/hp согласно state_records CI #162. Фон INSTEAD для page14 — `images/3.jpg`, пока source-derived, не runtime-confirmed.
+Оба движка согласны по указанным UUID, порциям и wolfiness/hp согласно артефакту CI #171. Врачебный маршрут — 13 шагов, маршрут трупа — 11 шагов. Фон INSTEAD для page14 — `images/3.jpg` в runtime trace; визуальная сверка снимка не выполнялась.
 
 Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33). Осознанное отличие, см. CLAUDE.md в main (PR #48); расхождением не считается. В маршрутах экран вариантов покидается только через `select_choice`.

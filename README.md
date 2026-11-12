@@ -8,4 +8,4 @@ NLBNavigator is a visual-novel reader/player. The repository also contains a dif
 - [Persistent testing progress and CI handoff](tests/differential/TESTING_PROGRESS.md)
 - [Wolfman branch and ending map](tests/differential/WOLFMAN_BRANCH_MAP.md)
 
-Hospital route update is being validated in PR #44 after merging `main` at `0d05fd69547cccd4dd8d589f53f8a14713aa73a1`. CI #162 supplied runtime evidence for page4/page14/page5 pagination and state; the next PR #44 CI run is expected to execute all 16 catalog routes. See `tests/differential/TESTING_PROGRESS.md` for the handoff and evidence.
+PR #44 hospital routes are confirmed by CI #171 on HEAD `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`: all 16 permanent catalog routes passed in both engines, with 16 successful comparisons. Hospital pagination, runtime state and local paired runs (Claude Fable session) are documented in `tests/differential/TESTING_PROGRESS.md`.

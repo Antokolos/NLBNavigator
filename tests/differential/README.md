@@ -6,13 +6,9 @@
 
 ## Текущая модель покрытия
 
-wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. PR #32 merged. Последний полный прогон на main — CI #152 SUCCESS: 15 route jobs, включая отдельные paired runtime jobs для обоих robber routes. Артефакт `nlb-sdl-test-logs`, ID `13770101592`.
+wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный прогон PR #44 — CI #171, HEAD `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`: SUCCESS. По артефакту CI #171, перепроверено Claude: 48 отчётов (`16` INSTEAD, `16` NLBNavigator, `16` comparisons), все `ok=true`, `errors=[]`; каждый движок выполнил 456 шагов, текстовые проверки — 352 + 352 = 704. Каталог содержит 16 постоянных маршрутов; диагностические маршруты удалены. Подробные run/artifact IDs и детали — в `TESTING_PROGRESS.md`.
 
-PR #44 добавляет два hospital clean-state маршрута. Page2/page3 pagination локально проверена в обоих движках; основные маршруты обновлены на 10 + 1 + 1 advances. CI #152 не запускал hospital routes; для PR #44 будет собственный новый CI номер. Page4/page14/page5 pagination пока требует runtime-диагностики.
-
-wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. CI #151 — успешный прогон PR #46; CI #152 — успешный прогон `main` после merge PR #46. Оба robber routes (eat/chase) подтверждены runtime в обоих движках и отдельными comparisons в CI #152. На диагностической ветке PR #44 каталог временно содержит 18 записей: 16 постоянных маршрутов и 2 временных hospital diagnostic routes. CI #159 отменён после обновления документации; текущий прогон PR #44 — CI #160, pending/queued на актуальном HEAD.
-
-В полицейском маршруте оба движка согласны по UUID страницы 2, hp=2, wolfiness=0; INSTEAD зафиксировал act 01. Отдельные hospital routes PR #44 продолжают эту ветку; page2/page3 pagination подтверждена локально, page4/page14/page5 ждут CI diagnostics. Полная сводка, SHA и остаток работ: TESTING_PROGRESS.md; граф ветвей: WOLFMAN_BRANCH_MAP.md.
+Hospital-ветка PR #44 подтверждена CI #171: врач — 13 шагов, труп — 11; page4 — 4 порции, page14 — 2, page5 — 6; итоговые состояния `wolfiness=1,hp=3` и `wolfiness=0,hp=2`. INSTEAD trace для page14 сообщает `images/3.jpg`; снимок визуально не сверялся. Локальные парные прогоны обоих маршрутов в обоих движках также завершены в сессии Claude Fable; все шесть отчётов успешны. Подробные доказательства и ограничения — в `TESTING_PROGRESS.md`; граф ветвей — в `WOLFMAN_BRANCH_MAP.md`.
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
 контрольная точка, CI и процедура handoff), затем `WOLFMAN_BRANCH_MAP.md` (граф
 сценария, статусы покрытия, игровые переменные и достижения). Обновляйте эти
@@ -107,7 +103,7 @@ STANDARD/компонентов, но не подменяет текст VN-по
 ## Что уже покрывают маршруты
 
 - `wolfman-opening.json`: начальные сцены и выбор «Перепрыгнуть через забор».
-- `wolfman-police-hospital-corpse.json`: чистый вход по полицейской ветке до страницы 2; CI #144 подтвердил hp=2, wolfiness=0 в обоих движках. Продолжение через больницу ещё не добавлено.
+- `wolfman-police-hospital-doctor.json` и `wolfman-police-hospital-corpse.json`: независимые clean-state пути через police → hospital → выбор врача/трупа → page4/page14 → page5; оба маршрута и comparisons подтверждены CI #171 в обоих движках.
 - `wolfman-eat-robber.json` и `wolfman-chase-robber.json`: ветви грабителя,
   зоопарка, бара и страницы 13, ведущие к page16/page17.
 - Четыре `wolfman-forest-wolfiness-*` маршрута: выборы page16/page17,
@@ -140,6 +136,15 @@ CI #126 подтвердил три guard routes: все шесть runtime rout
 163/151/141 записях. Страница 1.7 имеет 3 порции, страница 26 — 8 порций в обоих
 движках. Артефакт CI #126: `nlb-sdl-test-logs`, ID `13363351670`.
 
+## Hospital branch — runtime подтверждено CI #171
+
+- Врач (`wolfman-police-hospital-doctor`): 13 шагов; page4 UUID `d937c5c1-766c-4581-a03e-736560b0cc8f` — 4 порции; page5 UUID `c28ae684-785a-4442-8756-8f5a7e9fb0c1` — 6 порций; итог `wolfiness=1,hp=3`.
+- Труп (`wolfman-police-hospital-corpse`): 11 шагов; page14 UUID `a2b6a777-a95c-4518-8623-ec797a483c46` — 2 порции; page5 — 6 порций; итог `wolfiness=0,hp=2`.
+- Оба движка прошли оба маршрута и comparisons. INSTEAD trace на обоих checkpoint page14 сообщает background `images/3.jpg`; визуальная сверка по снимку не выполнялась.
+- Локальные парные прогоны двух маршрутов в обоих движках завершены в сессии Claude Fable (Ubuntu 24.04, INSTEAD из пакета, `nlb_sdl` собран из `c94eeabc`); все шесть отчётов имеют `ok=true`, `errors=[]`, порции и переменные совпали с CI #171.
+- Полные CI #171 run/artifact IDs и счётчики — в `TESTING_PROGRESS.md`.
+
+
 CI #128 также подтвердил переход page1.8 → page1.9 и пагинацию page1.9 (3 порции). Вне runtime-покрытия пока остаются page30, выбор оружия и его результаты, альтернативный старт через больницу и шесть концовок. Достижения
 `INFO_FOR_GUARD` и `GUARD_NOT_A_PROBLEM` зафиксированы как вызовы в INSTEAD
 session logs, но сохранённое состояние достижений и parity с NLBNavigator не проверены.
@@ -150,11 +155,37 @@ session logs, но сохранённое состояние достижени�
 key/click раннер проверяет свежую команду ввода и новое семантическое состояние.
 State-log NLBNavigator проверяется через `tools/check_state_log.py`.
 
-## Правила написания маршрутов\n\n- На экране вариантов выходить только через `select_choice`. Не использовать `advance`/`click` по пустой области, ожидая, что экран вариантов останется открытым: NLBNavigator возвращает к тексту, INSTEAD — нет. Это осознанное отличие, см. `CLAUDE.md` в main (PR #48).\n\n## Правила воспроизводимости
+## CI (`.github/workflows/nlb-sdl-test.yml`)
+
+- `validate` — статическая проверка каталога, маршрутов, раннера и unit tests (`test_*.py`).
+- `plan` — какие маршруты прогонять (`ci/select_routes.py`): на push в `main` и в pull request —
+  только изменённые JSON маршрутов, а если изменились раннер, workflow, каталог, файлы `ci/` или
+  ядро/SDL-фронтенд плеера — все; только документация — ни одного. Вручную (Run workflow, поле
+  `routes` — id через запятую, пусто — все) и раз в неделю по расписанию — все.
+- `build` — `nlb_sdl` один раз; vcpkg закреплён (`VCPKG_COMMIT`) и кэширует собранные пакеты,
+  повторная сборка зависимостей не нужна. Бинарник уходит в artifact `nlb-sdl-binary`.
+- `route` — матрица, по job на маршрут, `fail-fast: false`: INSTEAD, затем NLBNavigator (даже если
+  INSTEAD упал — для разбора нужны отчёты обоих), затем сравнение. Таймауты — по числу шагов
+  маршрута. Тестовые данные (`ci/fetch_test_data.sh`, закреплённые SHA) кэшируются.
+- `report` — общий artifact `nlb-sdl-test-logs` (каталог `<маршрут>/{instead,nlbnavigator}` и
+  `comparison-report.json`, как раньше) и таблица ok/ошибка по маршрутам в сводке прогона.
+- `Differential gate` — итоговый gate job: проверяет завершение выбранных route jobs и их результат; если `plan` выбрал 0 маршрутов (например, PR-коммиты меняют только документацию), gate завершается успешно с `COUNT 0`.
+- Для pull request `plan` определяет изменения относительно предыдущей головы PR и выбирает затронутые маршруты. Коммиты, меняющие только документацию маршрутов (`.md`), не запускают маршруты; это поведение добавлено PR #50.
+- Новый маршрут достаточно добавить в `catalog.json`: шаги в workflow не нужны.
+- Прогон не отменяется следующим коммитом (`cancel-in-progress: false`).
+
+## Правила написания маршрутов
+
+- На экране вариантов выходить только через `select_choice`. Не использовать `advance` или `click` по пустой области в ожидании, что экран вариантов останется открытым: NLBNavigator возвращает к тексту, INSTEAD — нет. Это осознанное отличие, а не расхождение; см. `CLAUDE.md` в main (PR #48).
+
+## Правила воспроизводимости
 
 - В каждом отчёте сохранять SHA книги, экспорта, темы и NLBNavigator.
 - Клонировать книги с --recurse-submodules.
-- Использовать отдельные HOME/XDG-каталоги для каждого запуска INSTEAD.
+- Отдельные HOME/XDG-каталоги на каждый запуск — у обоих движков: у INSTEAD
+  (`instead-home`, `instead-appdata`) и у NLBNavigator (`nlbnavigator-home` в каталоге
+  `--output`). nlb_sdl хранит в `~/.nlbnavigator` сохранения, `settings.ini` и достижения, а
+  язык из `settings.ini` важнее `--lang`; без изоляции прогоны влияли бы друг на друга.
 - Не изменять исходные игровые репозитории: адаптеры и тестовые хуки живут здесь.
 - Новые расхождения сначала сохранять как артефакты и отчёт; не добавлять
   безусловный pixel-perfect gate до согласования допустимых различий рендереров.
@@ -186,8 +217,6 @@ NLBNavigator запускается с `--state-log` и `--state-vars wolfiness,
   Переход на 1.2 оставляет `wolfiness=0`. После общей страницы 1.4
   условие приводит на 1.6, `hp` остаётся 3. Дальше маршрут выбирает еду на\n  кухне на нулевом варианте страницы 13: страница 11 сохраняет значения 0/3,\n  а лесное условие ведёт на страницу 17.
 
-CI #152 подтвердил оба маршрута: отдельные INSTEAD/NLBNavigator jobs и comparisons успешны.
-
 Workflow выполняет каждую ветвь отдельно в обоих движках, сохраняет текстовые и
 семантические проверки, state trace и скриншоты, затем формирует отдельное
 сравнение для каждой ветви.
@@ -199,6 +228,33 @@ Workflow выполняет каждую ветвь отдельно в обои
 клика; успешный переход всё равно проверяется по UUID страницы, фрагменту текста
 и игровым переменным. Обычные панели выбора по-прежнему используют
 `select_choice.index` и `clickchoice:N`.
+
+Меню игры (сохранить, загрузить, выход…) — действие `menu`. Меню у движков разные, поэтому ввод
+задаётся для каждого отдельно:
+
+```json
+{"type": "menu",
+ "nlbnavigator": ["F5", 1],
+ "instead": [{"key": "F2"}, {"x_ratio": 0.5, "y_ratio": 0.4}]}
+```
+
+- `nlbnavigator` — клавиши (`Escape`, `F5`, `F9`, `space`, как в xdotool; в сценарии `nlb_sdl` —
+  `key:esc`, `key:f5`, `key:f9`, `key:space`) и номера пунктов открытого меню (`menu:N`, 0 — первый
+  пункт; в меню сохранения и загрузки 0 — «Назад», 1 — первый слот);
+- `instead` — нажатия (`{"key": …}`, xdotool) и щелчки по координатам окна, по порядку.
+
+Меню может не менять сцену (сохранение), поэтому после `menu` новой сцены и смены экрана не
+требуется (как у `capture`); проверки шага (`expect`) — как обычно: после загрузки — страница и
+переменные сохранённой игры. Действие `key` тоже понимает имена xdotool: `Escape`, `F5`, `F9`
+превращаются в команды `nlb_sdl` (раньше незнакомая клавиша останавливала `nlb_sdl`: `std::stoi`).
+Проверено в `nlb_sdl` («Слуга Ра»): `key:f5`, `menu:1`, семь ходов (энергия 100 -> 80, жизнь 100 ->
+95), `key:f9`, `menu:1` — снова страница и переменные на момент сохранения. Часть INSTEAD (xdotool)
+вживую не прогонялась: координаты пунктов меню INSTEAD нужно снять со скриншотов перед первым
+маршрутом сохранения.
+
+Воспроизводимая случайность: `nlb_sdl --deterministic[=N]` (как у `nlb_main`: k-й rnd(n) даёт
+(k mod n) + 1, SHUFFLE разворачивает список, N — начало счётчика) — для маршрутов книг с RND/SHUFFLE
+(Frontier); пара в INSTEAD — `tools/instead-cli-compare/instead_rnd_append.lua` (`/rndstart N`).
 
 
 CI #41597493394 (run 116) reached the page16 choice screen successfully in the new `wolfiness=2 / left` route, with both choice texts in the INSTEAD trace. Its final click missed the short “Налево” hit area at x=499; no `act 01` or new scene was recorded. All four route JSONs now use a revised INSTEAD x coordinate ratio of 0.23, centred on the visible links. This is a test-coordinate correction, not a game-code change. A new CI run is required for verification.

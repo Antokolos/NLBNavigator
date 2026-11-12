@@ -5,9 +5,11 @@
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
 - Последний интегрированный PR: #32 (merged).
-- Текущий PR: #44, branch `test/wolfman-hospital-page41`, base `main` на `2e1441a846ccb771ba43cba3bb217a395c960876`; branch updated with merge commit `80a7db9717494782830c403f6b2e4353673bb00e`.
+- Текущий PR: #44, Draft, ветка `test/wolfman-hospital-page41`, base `main`.
+- `main` интегрирован merge-коммитом `dc54e59031978d4d7b5c93fe066c2975a51a1803` (первый родитель `0d05fd69547cccd4dd8d589f53f8a14713aa73a1`).
+- Проверенный HEAD PR: `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`; CI #171 выполнен именно на этой голове.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
-- Два основных hospital routes и два временных diagnostic routes зарегистрированы; page2/page3 pagination подтверждена локально в обоих движках. Основные маршруты используют 10 + 1 + 1 advances до choices. CI #160 для текущей ветки pending/queued; paired hospital runtime ещё не подтверждён.
+- Каталог содержит 16 постоянных маршрутов; два hospital routes прошли paired runtime и comparison в CI #171. Временные диагностические маршруты удалены.
 
 ## Правила
 
@@ -151,48 +153,59 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 - В CI #152 впервые в этой новой матрице исполнены отдельными paired runtime jobs оба robber-маршрута: `wolfman-chase-robber` и `wolfman-eat-robber`. Для каждого успешны INSTEAD, NLBNavigator и comparison. Это **runtime-подтверждение**, а не только статическая валидация. Покрытие зафиксировано также в `WOLFMAN_BRANCH_MAP.md` и differential README.
 - CI #151 и #152 не включали hospital-маршруты PR #44: они пока существуют только в ветке PR #44. Не использовать номера #151/#152 как CI PR #44. Следующий CI на обновлённой ветке PR #44 получит собственный номер.
 
-### Hospital: подтверждённое и pending
+### Hospital: runtime подтверждено CI #171 и локально
 
-- Локально в диагностическом прогоне 2026-11-10 оба движка показали page2 = 10 порций и page3 = 2 порции.
-- Переходы в основных hospital routes должны быть: `hospital-page3` — 10 clicks → page3 portion 0; `hospital-page3-last` — 1 click → page3 portion 1; `hospital-choices` — 1 click → экран choices. Это runtime-проверено локально для обоих движков.
-- После выбора врача/трупа фактические количества порций page4/page14/page5 ещё неизвестны. Значения wolfiness/hp из исходника пока считать ожиданиями, не runtime-фактами.
-- Диагностику page4/page14/page5 выполнить через GitHub Actions вручную: временный маршрут зарегистрировать в `catalog.json`, запустить workflow_dispatch с route ID в поле `routes`, скачать и проверить общий артефакт обоих движков. Временные checkpoints должны фиксировать каждый переход/portion без угадывания количества кликов. После получения runtime-данных перенести точные значения в основные маршруты и удалить временный маршрут.
-- Ошибка CI #150 на исходном HEAD PR #44 связана с вводом маршрута; она не является доказательством расхождения движков. CI #149 также завершился ошибкой на том же исходном HEAD. Hospital runtime на CI #44 ещё не подтверждён.
-- Запрещено менять `Source/**`, исходные книги/INSTEAD, runner action `menu` и `--deterministic`: последние два пункта делает Claude Code отдельно.
+- Врач: 13 шагов; page4 — 4 порции, page5 — 6; итог `wolfiness=1,hp=3`.
+- Труп: 11 шагов; page14 — 2 порции, page5 — 6; итог `wolfiness=0,hp=2`.
+- CI #171 подтвердил оба маршрута в обоих движках и comparisons. INSTEAD trace на обоих page14 checkpoints сообщает background `images/3.jpg`; это runtime trace, визуальная сверка снимка не выполнялась.
+- Локальные парные прогоны обоих маршрутов в обоих движках выполнены в сессии Claude Fable (Ubuntu 24.04, INSTEAD из пакета, `nlb_sdl` собран из `c94eeabc`). Все шесть отчётов имеют `ok=true`, `errors=[]`; порции и переменные совпадают с CI #171.
+
+### CI PR #44 — сводка прогонов
+
+| CI | HEAD PR | Результат | Что проверено |
+|---|---|---|---|
+| #161 | `b475cad8` | failure | Ошибка `validate` (`visual_change_from`); маршруты не запускались. |
+| #162 | `22d3a8c4` | failure | Run ID `43076636172`, artifact `nlb-sdl-test-logs` ID `13883541996`. Упали четыре маршрута: два основных hospital и два диагностических (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`); runtime-диагностика порций page4/page14/page5. |
+| #170 | `dc54e590` (workflow запущен на merge-коммите `5b5b234b`) | failure | Run ID `43200939562`, artifact `nlb-sdl-test-logs` ID `13936431588`. Упали те же четыре маршрута; оба движка остановились на второй порции page4 (index 1/4) и page14 (index 1/2), поэтому ожидания page5 были преждевременными. Differential gate также красный. |
+| #171 | `c94eeabc` | success | 16 постоянных маршрутов; диагностические маршруты удалены. 48 отчётов, все успешны. |
+
+#### CI #170 — причина падения
+
+Подтверждено по артефакту CI #170: в обоих движках врачебный маршрут остался на page4, portion index 1 из 4; маршрут трупа — на page14, portion index 1 из 2. Индексация с нуля: это вторая порция каждой страницы. Поэтому проверки page5 не прошли. Это преждевременные ожидания маршрутов, а не расхождение движков. Дополнительно падали `wolfman-hospital-doctor-diagnostic` и `wolfman-hospital-corpse-diagnostic`; Differential gate завершился failure.
+
+#### CI #171 — полное подтверждение
+
+[CI #171](https://github.com/Antokolos/NLBNavigator/actions/runs/43201105370), run ID `43201105370`, HEAD PR `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9` — SUCCESS; все 21 jobs завершились успешно. Артефакт `nlb-sdl-test-logs`, ID `13936673929`.
+
+По артефакту CI #171, перепроверено Claude:
+- 48 отчётов: 16 INSTEAD route reports, 16 NLBNavigator route reports и 16 comparison reports; везде `ok=true`, `errors=[]`.
+- INSTEAD — 456 шагов; NLBNavigator — 456 шагов.
+- Текстовые проверки: 352 + 352 = 704, все `passed=true`.
+- Врач — 13 шагов; page4 — 4 порции, page5 — 6; итог `wolfiness=1,hp=3`.
+- Труп — 11 шагов; page14 — 2 порции, page5 — 6; итог `wolfiness=0,hp=2`.
+- INSTEAD trace на обоих page14 checkpoints сообщает background `images/3.jpg`; визуальная сверка по снимку не выполнялась.
+- В CI #171 исполнялись 16 маршрутов, поскольку два временных диагностических маршрута были удалены.
+
+Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33). Осознанное отличие, см. CLAUDE.md в main (PR #48); расхождением не считается.
 
 ### Следующие действия
 
-1. [x] Проверить PR #46, CI #151 и CI #152; подтвердить отдельные runtime jobs обоих robber routes.
-2. [ ] Первым отдельным коммитом актуализировать этот файл в ветке PR #44.
-3. [ ] Влить актуальный `main` в ветку PR #44. В конфликте `.github/workflows/nlb-sdl-test.yml` полностью принять версию из `main`; hospital jobs не добавлять.
-4. [ ] Обновить `WOLFMAN_BRANCH_MAP.md`, differential README и корневой README: отметить robber runtime как подтверждённый CI #152; обновить latest verified run.
-5. [ ] Исправить hospital routes на последовательность 10 + 1 + 1 clicks и проверить JSON/validator.
-6. [ ] Добавить временный диагностический маршрут для page4/page14/page5 и запустить его вручную через workflow_dispatch `routes`.
-7. [ ] По артефакту проверить оба runtime report и traces; зафиксировать точные portion index/count, затем обновить основные маршруты и удалить оба временных маршрута.
-8. [ ] Запустить локально доступные проверки (если возможно) и новый CI PR #44; проверить все route reports, comparisons и общий артефакт.
-9. [ ] Обновить issue #28 с правильными номерами CI: #151 — PR #46, #152 — main после PR #46, отдельный новый номер — PR #44. Только после проверок обсуждать Ready for review.
+1. [x] Обновить документацию PR #44 по CI #171, восстановить README из main и вернуть исторические рекомендации §4.2 с актуальным статусом.
+2. [ ] Выполнить один документационный коммит и проверить новый CI по логам: Select routes должен выбрать 0 маршрутов; Differential gate — success, COUNT 0.
+3. [x] Выполнить локальные парные прогоны двух hospital routes в обоих движках (сессия Claude Fable); все шесть отчётов успешны.
+4. [ ] Подготовить комментарий в issue #28, проверить его со вторым ревьюером и опубликовать.
+5. [ ] После проверки комментария предложить владельцу перевести PR #44 в Ready for review. Merge выполняет владелец.
 
+## Актуализация 2026-11-12 — CI #161–#171 и hospital coverage
 
-### Временная диагностика в PR #44
+- PR #44: ветка `test/wolfman-hospital-page41`; `main` интегрирован merge-коммитом `dc54e59031978d4d7b5c93fe066c2975a51a1803` от `0d05fd69547cccd4dd8d589f53f8a14713aa73a1`.
+- CI #161, HEAD PR `b475cad8`: FAILURE на `validate` из-за `visual_change_from`; маршруты не запускались.
+- CI #162, HEAD PR `22d3a8c4`: FAILURE; упали четыре маршрута — два основных hospital и два временных диагностических (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`). Runtime-диагностика позволила установить количества порций page4/page14/page5.
+- CI #170, HEAD PR `dc54e590` (workflow HEAD — merge-коммит `5b5b234b`): FAILURE; упали те же четыре маршрута, Differential gate также FAILURE. В обоих движках page4 оставался на portion index 1/4, page14 — index 1/2; нулевая индексация означает вторую порцию. Page5 checks были преждевременны.
+- CI #171, HEAD PR `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`: SUCCESS. По артефакту CI #171, перепроверено Claude: 48 отчётов (16 INSTEAD, 16 NLBNavigator, 16 comparisons), все `ok=true`, `errors=[]`; 456 шагов на каждый движок; 352 + 352 = 704 текстовые проверки. Артефакт `nlb-sdl-test-logs`, ID `13936673929`.
+- Hospital doctor: 13 шагов; page4 — 4 порции; page5 — 6; итог `wolfiness=1,hp=3`. Hospital corpse: 11 шагов; page14 — 2 порции; page5 — 6; итог `wolfiness=0,hp=2`.
+- INSTEAD trace на обоих page14 checkpoints сообщает фон `images/3.jpg`; снимки визуально не сверялись.
+- Два диагностических маршрута удалены до CI #171, поэтому в нём исполнялись 16 постоянных маршрутов.
+- Локальные парные прогоны doctor/corpse в обоих движках выполнены в сессии Claude Fable (Ubuntu 24.04, INSTEAD из пакета, `nlb_sdl` собран из `c94eeabc`). Все шесть отчётов имеют `ok=true`, `errors=[]`; порции и переменные соответствуют CI #171.
+- Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33); осознанное отличие, см. CLAUDE.md в main (PR #48), не расхождение.
 
-На текущем HEAD `59f200b1babdf8b28266fe4a4a9fef29f69e88cb` каталог содержит 18 записей: 16 постоянных маршрутов и два временных (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`). В каждом временном маршруте после соответствующего выбора выполняется один advance с пустым `expect`, чтобы зафиксировать фактическую страницу и portion state без заранее заданного количества. Далее маршрут будет расширяться на один advance checkpoint после анализа предыдущего runtime artifact. После завершения page4/page14/page5 диагностики оба временных маршрута будут удалены.
-
-Текущий CI PR #160 — [run](https://github.com/Antokolos/NLBNavigator/actions/runs/42990607138), pending/queued на этом HEAD. CI #159 отменён при появлении более нового HEAD. CI #154 выполняет 16 route jobs на более раннем merge HEAD; его hospital-маршруты ещё содержат прежнюю пагинацию, поэтому их результаты не заменяют текущую проверку. CI #153 запущен по старому workflow до интеграции main и не заменяет текущую проверку.
-
-
-## Актуализация 2026-11-12 — hospital pagination
-
-- PR #44: ветка `test/wolfman-hospital-page41`; перед изменениями выполнен merge `main` на `0d05fd69547cccd4dd8d589f53f8a14713aa73a1` (PR #47–#51 включены). Workflow, `run_route.py`, `ci/select_routes.py` и тесты берутся из main без локальных изменений.
-- CI #162 (HEAD `22d3a8c48d66d5f3f0c8f3907ae95cf984e1b17a`) использован как runtime evidence для hospital pagination. Второй ревьюер проверил подготовленные изменения: 20 unit tests OK, `validate_catalog.py` — 16 routes; после merge main ожидается 28 unit tests.
-- Подтверждённые состояния INSTEAD и NLBNavigator:
-  | Ветка | Страница | Порции | wolfiness | hp |
-  |---|---:|---:|---:|---:|
-  | doctor | page4 | 0/4 → 3/4 | 1 | 3 |
-  | doctor | page5 | 0/6 | 1 | 3 |
-  | corpse | page14 | 0/2 → 1/2 | 0 | 2 |
-  | corpse | page5 | 0/6 | 0 | 2 |
-- Постоянные маршруты содержат checkpoints каждой порции page4 и второй порции page14; временные диагностические маршруты удалены, каталог содержит 16 маршрутов.
-- Фон INSTEAD на page14: `images/3.jpg` — пока source-derived (по исходнику), не runtime-confirmed.
-- Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33). Осознанное отличие, см. CLAUDE.md в main (PR #48); расхождением не считается.
-- Правило маршрутов: не выполнять `advance/click` по пустой области на choices screen; выходить только через `select_choice`.
-- Ожидается новый полный CI на merge+route update HEAD; он должен выполнить 16 маршрутов. Номер прогона и его артефакт будут внесены отдельным документационным коммитом после проверки обоих runtime reports и comparisons.
