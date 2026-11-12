@@ -1,8 +1,8 @@
 # Дифференциальное тестирование NLBNavigator ↔ INSTEAD: состояние, оценка, рекомендации
 
-Состояние на 7 ноября 2026, ветка `ci/nlb-sdl-wolfman-state-trace` (PR #32, HEAD `6afe4a4`,
-CI run 140), задача #28. Цифры ниже посчитаны по маршрутам ветки, книге `nlbproject/wolfman` и истории
-GitHub Actions.
+Исторический срез на 7 ноября 2026: ветка `ci/nlb-sdl-wolfman-state-trace` (PR #32, HEAD `6afe4a4`, CI run 140). Цифры и наблюдения в разделах 1–3 относятся к этому срезу, а не к текущему состоянию.
+
+Актуализация на 11 ноября 2026: PR #32 merged; ускорение CI и изоляция HOME выполнены в PR #46. CI #151 (PR #46) и CI #152 (`main` после merge PR #46) завершились SUCCESS. В CI #152 все 15 route jobs и 45 JSON-отчётов успешны; оба robber routes получили отдельные paired runtime jobs и comparisons. PR #44 продолжает hospital coverage; текущий handoff и актуальные статусы находятся в `tests/differential/TESTING_PROGRESS.md`.
 
 ## 1. Где мы сейчас
 
@@ -88,25 +88,18 @@ GitHub Actions.
 - Workflow имеет workflow_dispatch и push только для двух явных веток ci/*; обычный push в main не запускает его. Код плеера в PR #32 не менялся.
 - Последняя проверка GitHub REST для PR #32 показала mergeable=true, mergeable_state=clean; текущий main продвинулся относительно базы PR, поэтому перед фактическим слиянием владелец должен ещё раз проверить head/base и необходимые checks.
 - PR #32 не сливать автоматически: решение о слиянии принимает владелец. После слияния продолжать короткими PR в main из веток ci/*.
-### 4.2. Ускорить CI (сделать до новых маршрутов)
+### 4.2. Ускорение CI — выполнено PR #46 (merged 2026-11-10)
 
-1. **Матрица по маршрутам**: job «build» один раз собирает `nlb_sdl` и выкладывает artifact;
-   job «route» (`strategy.matrix.route`) — по маршруту на job, INSTEAD + NLBNavigator + сравнение.
-   15 маршрутов идут параллельно: **≈15–20 минут вместо часа**, и таймаут больше не грозит.
-2. **Кэш vcpkg/SDL3** (`actions/cache` по хэшу `vcpkg.json`/версии) — сборка из минут в секунды.
-3. **`cancel-in-progress: false`** (или группа по маршруту) — не выбрасывать почти готовые прогоны.
-4. **На push — только изменённые маршруты** (по `git diff` списка `routes/*.json`), полный набор —
-   вручную и по расписанию (раз в сутки).
-5. **Статическая проверка маршрутов за секунды** (`run_route.py --check` или
-   `validate_catalog.py`): уникальные id шагов, `visual_change_from` ссылается на шаг выше,
-   перед `select_choice` есть шаг, который ведёт к экрану вариантов, последовательные
-   `portion_index` на одной странице, `portion_count` одинаков на странице. Запускать в
-   первом шаге CI и локально перед push.
-6. **Исследовательские маршруты** — с пометкой в JSON (`"status": "exploratory"`) и в
-   отдельном job с `continue-on-error: true`: их падение видно, но не красит основной прогон.
-7. **Новые и изменённые маршруты — первыми** (или локально: INSTEAD ставится из пакета
-   `instead`, маршрут проходит за 1–5 минут под `xvfb-run`; нужны `openbox`, `xdotool`,
-   `x11-utils`).
+Реализовано в PR #46:
+
+- `validate` → `plan` → `build` (одна сборка `nlb_sdl` и artifact) → `route` (matrix, один job на маршрут, `fail-fast: false`) → `report` (общий artifact и summary).
+- vcpkg binary cache; NLBNavigator запускается даже при ошибке INSTEAD, чтобы сохранить оба runtime-отчёта.
+- На push/PR запускаются только затронутые маршруты; изменения runner/workflow/catalog/player запускают полный набор. Ручной `workflow_dispatch` принимает route IDs через поле `routes`; полный плановый прогон — по расписанию.
+- Статическая проверка каталога, маршрутов, runner и unit tests validator выполняется до сборки.
+- HOME/XDG изоляция NLBNavigator реализована в `run_route.py` и уже входит в main.
+- Подтверждение: CI #151 — PR #46 SUCCESS; CI #152 — main SUCCESS. CI #152 исполнил 15 маршрутов, включая отдельные paired jobs и comparisons для обоих robber routes.
+
+Открытая рекомендация: для неизвестной pagination продолжать добавлять короткие диагностические routes/checkpoints, не угадывая количество advances. Это используется в PR #44 для page4/page14/page5.
 
 ### 4.3. Сделать маршруты устойчивыми
 
@@ -155,7 +148,7 @@ GitHub Actions.
 0. Выполнено 08.11.2026. Маршрут wolfman-police-hospital-corpse.json исправлен: добавлен opening-choices; экспериментально подтверждены 10 щелчков INSTEAD / 9 NLBNavigator и координата первого варианта INSTEAD y_ratio=0.28. Локально прошёл в обоих движках. CI #141 на HEAD 80ac36bf: SUCCESS; все 26 runtime reports и 13 comparison reports успешны.
 1. Статическая проверка маршрутов (одна PR): уникальные step id, направленные ссылки visual_change_from, наличие choices до select_choice, последовательность portion_index / стабильный portion_count, наличие route в catalog.json; добавить отрицательный тест на старом police-route fixture без opening-choices.
 2. Подготовить #32 к слиянию: переписка агентов убрать из tests/differential/ в архив; оставить README, WOLFMAN_BRANCH_MAP и краткий TESTING_PROGRESS; зафиксировать в #28/#32 run #141 и scope. #25 уже закрыт владельцем. PR #32 сливает владелец.
-3. Ускорить CI отдельной PR: build job + artifact, vcpkg/SDL3 cache, route matrix (fail-fast:false), exploratory routes отдельно, cancel-in-progress:false, на push только изменённые маршруты, полный прогон вручную и ежедневно.
+3. [x] Ускорение CI и HOME isolation — выполнено и merged в PR #46; CI #151 и #152 успешны. Отдельные runtime jobs robber routes подтверждены CI #152.
 4. Раннер: advance_until: choices / last_portion, отдельная проверка portion_count, select_choice по тексту; миграция wolfman routes с локальной проверкой каждого.
 5. Отчёт покрытия по страницам и концовкам.
 6. Довести wolfman до Definition of Done (§4.5): 16 концовок, RU+EN, save/load, persisted achievements и полицейская/больничная ветка.

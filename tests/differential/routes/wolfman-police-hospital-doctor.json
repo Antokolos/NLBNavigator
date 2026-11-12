@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-police-hospital-doctor",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — полиция и больница: съесть врача",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "steps": [
+    {
+      "id": "title",
+      "action": {
+        "type": "capture"
+      },
+      "settle_ms": 2000,
+      "screenshot": "00-title.png",
+      "expect": {
+        "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "image_suffix": "title.png",
+        "instead_background_suffix": "title.jpg"
+      }
+    },
+    {
+      "id": "opening",
+      "action": {
+        "type": "key",
+        "key": "space"
+      },
+      "settle_ms": 2000,
+      "screenshot": "01-opening.png",
+      "visual_change_from": "title",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "text_contains": "Вы очнулись лежащим посреди тротуара",
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Вы очнулись лежащим посреди тротуара",
+        "portion_index": 0,
+        "portion_count": 10,
+        "instead_portion_index": 0,
+        "instead_portion_count": 10
+      }
+    },
+    {
+      "id": "opening-next-portion",
+      "action": {
+        "type": "click",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5
+      },
+      "settle_ms": 2000,
+      "screenshot": "02-opening-next-portion.png",
+      "visual_change_from": "opening",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "min_changed_pixels": 1000,
+        "instead_background_suffix": "1.jpg",
+        "instead_text_contains": "Интересно, сколько я тут валяюсь",
+        "text_contains": "Интересно, сколько я тут валяюсь",
+        "portion_index": 1,
+        "portion_count": 10,
+        "instead_portion_index": 1,
+        "instead_portion_count": 10
+      }
+    },
+    {
+      "id": "opening-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 9,
+          "nlbnavigator": 9
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "03-opening-choices.png",
+      "visual_change_from": "opening-next-portion",
+      "expect": {
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "image_suffix": "1.png",
+        "instead_background_suffix": "1.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Попытаться прорваться сквозь полицию",
+          "Перепрыгнуть через забор"
+        ],
+        "instead_choices_contains": [
+          "Попытаться прорваться сквозь полицию",
+          "Перепрыгнуть через забор"
+        ]
+      }
+    },
+    {
+      "id": "try-to-break-through-police",
+      "action": {
+        "type": "select_choice",
+        "index": 0,
+        "instead": {
+          "x_ratio": 0.28,
+          "y_ratio": 0.28
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "04-police-branch.png",
+      "visual_change_from": "opening-choices",
+      "expect": {
+        "page_id": "b12a01be-cd61-4dba-b427-1ce3afc06fc6",
+        "image_suffix": "2.png",
+        "instead_background_suffix": "images/2.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Сделав ставку на внезапность",
+        "instead_text_contains": "Сделав ставку на внезапность",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "hospital-page3",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 10,
+          "nlbnavigator": 10
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "05-hospital-page3.png",
+      "visual_change_from": "try-to-break-through-police",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вы очнулись от яркого света",
+        "instead_text_contains": "Вы очнулись от яркого света",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2
+      }
+    },
+    {
+      "id": "hospital-page3-last",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "hospital-page3-last.png",
+      "visual_change_from": "hospital-page3",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "3.jpg",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2
+      }
+    },
+    {
+      "id": "hospital-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "06-hospital-choices.png",
+      "visual_change_from": "hospital-page3-last",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "instead_choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "eat-doctor",
+      "action": {
+        "type": "select_choice",
+        "index": 0,
+        "instead": {
+          "x_ratio": 0.28,
+          "y_ratio": 0.28
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "07-eat-doctor.png",
+      "visual_change_from": "hospital-choices",
+      "expect": {
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "image_suffix": "4.png",
+        "instead_background_suffix": "images/4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Ощутив запах панического ужаса",
+        "instead_text_contains": "Ощутив запах панического ужаса",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page5-after-doctor",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "08-page5-after-doctor.png",
+      "visual_change_from": "eat-doctor",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вы мчались по пустынным ночным улицам",
+        "instead_text_contains": "Вы мчались по пустынным ночным улицам",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Independent clean-state route through police -> hospital -> doctor branch.",
+    "Page 3 calls THE_HOSPITAL on non-autowired entry; persistent achievement read-back is not asserted.",
+    "The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.",
+    "Selecting index 0 is observed by INSTEAD as act 01 and by NLBNavigator as clickchoice:0.",
+    "The pinned NLB page4 caption says it restores one HP and adds one wolfiness; expected state is wolfiness=1,hp=3.",
+    "The route ends at the automatic convergence on page5."
+  ]
+}

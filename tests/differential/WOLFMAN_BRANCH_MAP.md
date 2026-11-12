@@ -20,7 +20,7 @@
 
 ## Текущий проверенный охват
 
-Последний успешный полный workflow до интеграции актуального main: [CI #145](https://github.com/Antokolos/NLBNavigator/actions/runs/42520125450), HEAD `29d3d9cbde282699d796e9184b2405eece8d1a95` — 26 runtime reports и 13 comparisons, все ok=true, errors=[]. CI #145 подтвердил police route до page2 и статическую проверку всех 15 зарегистрированных маршрутов. После этого рабочая ветка обновлена от main; новый интеграционный CI ожидается.
+Последний полный workflow на `main`: [CI #152](https://github.com/Antokolos/NLBNavigator/actions/runs/42822208217), HEAD `2e1441a846ccb771ba43cba3bb217a395c960876` — SUCCESS. Успешны validate, plan, build, все 15 route jobs и report; оба robber routes впервые исполнены отдельными paired runtime jobs и сравнены. Артефакт `nlb-sdl-test-logs`, ID `13770101592`. [CI #151](https://github.com/Antokolos/NLBNavigator/actions/runs/42810870917) — SUCCESS на PR #46; не путать его с будущим CI PR #44.
 
 | Маршрут | INSTEAD | NLBNavigator | Результат |
 |---|---|---|---|
@@ -31,6 +31,7 @@
 | Охранник: `wolvesTalk=false` → page28 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Охранник: `wolfiness=0` → page1.8 | `ok=true` | `ok=true` | Сравнение `ok=true` |
 | Полиция: первый выбор → page2 | `ok=true` | `ok=true` | CI #144; hp=2, wolfiness=0 |
+| Грабитель: съесть / прогнать | `ok=true` | `ok=true` | CI #152; оба отдельных route jobs и comparisons успешны |
 
 CI #126 подтвердил все три guard routes; их NLB state-log валидирован на 163, 151 и 141 записях соответственно. Подробные конечные состояния перечислены в разделе «Охранник и выбор оружия».
 
@@ -42,7 +43,7 @@ CI #126 подтвердил все три guard routes; их NLB state-log ва
 
 Во всех случаях `barExit=true,forestExit=false,guardDone=false`. Page16/page17 направления, приводящие к page18/page24/page25, подтверждены CI #119. Междвижковые пиксельные различия — advisory.
 
-Следующий CI должен проверить четыре правых поворота на page18/24/25: обход путника → page22 и `forestExit=true`. До успешного CI page22 не входит в runtime-подтверждённое покрытие.
+CI #152 подтвердил четыре правых bypass-маршрута page18/page24/page25 → page22: paired runtime и comparisons успешны, `forestExit=true` в обоих движках. Page22 входит в runtime-подтверждённое покрытие.
 
 ### Известное отличие пагинации
 
@@ -56,19 +57,17 @@ CI #126 подтвердил все три guard routes; их NLB state-log ва
 
 Начальная страница: UUID `f12432d9-dd8f-40fc-97bd-f9a15cc21ff6`.
 
-Два выбора:
-- **Перепрыгнуть через забор** → страница 1.1, UUID `5b5d038f-ce4d-4cc8-8bee-81de8528b1a5`. Это путь, который сейчас используют оба расширенных маршрута.
-- **Попытаться прорваться сквозь полицию** → страница 2, UUID `b12a01be-cd61-4dba-b427-1ce3afc06fc6`; в её входном действии `hp -= 1`. Затем автоматический переход в больницу, страница 3, UUID `8c1fa8c6-8027-43c8-8d8b-0bf454d5e717`.
+- **Перепрыгнуть через забор** → page1.1, UUID `5b5d038f-ce4d-4cc8-8bee-81de8528b1a5`. Основная стартовая ветка для robber/forest/guard routes.
+- **Попытаться прорваться сквозь полицию** → page2, UUID `b12a01be-cd61-4dba-b427-1ce3afc06fc6`; входное действие уменьшает hp на 1. CI #141/#148 подтвердил `wolfiness=0,hp=2` в обоих движках.
 
-Маршрут wolfman-police-hospital-corpse.json теперь покрывает входную часть ветки полиции: экран выбора и первый вариант до page2. CI #145 подтвердил это в обоих движках (hp=2, wolfiness=0). Продолжение автоматического перехода в больницу (page3), выбор врача/трупа и дальнейшие исходы пока не покрыты runtime-маршрутом.
+### 2. Больница: page3 и два выбора
 
-### 2. Больница (непокрытая ранняя ветка)
+Page3 UUID `8c1fa8c6-8027-43c8-8d8b-0bf454d5e717`, NLB resource `3.png`, INSTEAD background `images/3.jpg`. При non-autowired входе вызывается достижение `THE_HOSPITAL` (ID `13728a8e-885d-40db-ad42-adf784325337`). Два непустых текстовых фрагмента разделены пустыми `pn()`; после последнего фрагмента `walk_to` переводит игру в отдельный `vn_choices` экран. Поэтому маршрут фиксирует page3, затем отдельный choices checkpoint.
 
-На странице 3:
-- **Съесть врача** → страница 4, UUID `d937c5c1-766c-4581-a03e-736560b0cc8f`: `wolfiness += 1`, `hp += 1`. При переходе через больницу эта ветка даёт `wolfiness=1`, `hp=3`.
-- **Съесть труп** → страница 14, UUID `a2b6a777-a95c-4518-8623-ec797a483c46`. В просмотренном входном блоке нет явного присваивания `wolfiness` или `hp`; подпись страницы говорит «+1 к чел нав.». Считать этот комментарий подтверждённым изменением переменной пока нельзя — требуется runtime-проверка и выяснение, что именно означает «чел нав.».
+- **Съесть врача** → page4, UUID `d937c5c1-766c-4581-a03e-736560b0cc8f`; подпись NLB говорит «Восстанавливает одну жизнь +1 к волч нав.». Ожидаемое состояние из `wolfiness=0,hp=2`: `wolfiness=1,hp=3`. Route: `wolfman-police-hospital-doctor.json`.
+- **Съесть труп** → page14, UUID `a2b6a777-a95c-4518-8623-ec797a483c46`. Подпись «+1 к чел нав.» не подтверждает изменение wolfiness/hp; ожидаемые `0/2` — гипотеза до paired runtime. Route: `wolfman-police-hospital-corpse.json`.
 
-Обе ветки далее сходятся на странице 5, UUID `c28ae684-785a-4442-8756-8f5a7e9fb0c1`, и входят в `GuyInBar`. Страница 3 также вызывает достижение `THE_HOSPITAL`.
+Оба пути сходятся на page5, UUID `c28ae684-785a-4442-8756-8f5a7e9fb0c1`. Hospital routes в PR #44 ещё не прошли paired CI. Локально подтверждены page2 (10 порций) и page3 (2 порции) в обоих движках; точные порции page4/page14/page5 pending. Persistent achievement read-back/parity пока не проверены.
 
 ### 3. Разбойник, зоопарк и бар
 
@@ -342,8 +341,7 @@ choices перед `select_choice` и portion index/count. Два robber route J
 forest/guard маршрутах. Issue #37 закрыта после обновления reference export
 в PR #43 и проверки CI #144.
 
-Police route всё ещё заканчивается на page2; hospital page3 и выбор врача/трупа
-остаются непокрытыми. Pixel diff между разными рендерерами остаётся advisory.
+Основной police route заканчивается на page2. Отдельные hospital routes находятся в PR #44: page2/page3 pagination подтверждена локально, paired CI для doctor/corpse и точная pagination page4/page14/page5 ещё ожидаются. Pixel diff между разными рендерерами остаётся advisory.
 
 
 ## CI #145 и обновление ветки
@@ -358,3 +356,11 @@ Police route всё ещё заканчивается на page2; hospital page3
 [CI #147](https://github.com/Antokolos/NLBNavigator/actions/runs/42537254808) завершился SUCCESS: 53/53 шагов. Артефакт содержит 26 runtime reports (13 маршрутов × 2 движка) и 13 comparison reports; все `ok=true`, `errors=[]`. Проверено 592 текстовых условия и сохранено 768 checkpoint captures. Длинные маршруты подтверждают прохождение forest/bypass, guard и police ветвей. Отдельный запуск двух robber route JSON как самостоятельных jobs пока остаётся вне CI.
 
 Pixel diff остаётся advisory. После CI #147 ветка интегрирована с актуальным `main` `620f2ee9ec98c08ecc8a240c47f5e079b071d3aa`; для этого нового Source tree требуется CI #148.
+
+
+## Актуализация 2026-11-11
+
+- CI #151 относится к PR #46 и завершился SUCCESS; CI #152 относится к `main` после merge PR #46 и завершился SUCCESS.
+- CI #152 подтвердил отдельные runtime jobs и comparisons для `wolfman-chase-robber` и `wolfman-eat-robber`.
+- Hospital page3 pagination локально подтверждена в обоих движках: portion_count=2, индексы 0–1. Основные маршруты PR #44 обновлены на 10 + 1 + 1 advances до экрана choices; их paired CI ещё ожидается.
+- Page4/page14/page5 portion counts и переменные после выбора остаются pending runtime-диагностики.

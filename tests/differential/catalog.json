@@ -186,11 +186,6 @@
       "path": "tests/differential/routes/wolfman-opening.json"
     },
     {
-      "id": "wolfman-police-hospital-corpse",
-      "book_id": "wolfman",
-      "path": "tests/differential/routes/wolfman-police-hospital-corpse.json"
-    },
-    {
       "id": "wolfman-eat-robber",
       "book_id": "wolfman",
       "path": "tests/differential/routes/wolfman-eat-robber.json"
@@ -254,6 +249,26 @@
       "id": "wolfman-guard-low-wolfiness-escape",
       "book_id": "wolfman",
       "path": "tests/differential/routes/wolfman-guard-low-wolfiness-escape.json"
+    },
+    {
+      "id": "wolfman-police-hospital-doctor",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-police-hospital-doctor.json"
+    },
+    {
+      "id": "wolfman-police-hospital-corpse",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-police-hospital-corpse.json"
+    },
+    {
+      "id": "wolfman-hospital-doctor-diagnostic",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-hospital-doctor-diagnostic.json"
+    },
+    {
+      "id": "wolfman-hospital-corpse-diagnostic",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-hospital-corpse-diagnostic.json"
     }
   ]
 }
