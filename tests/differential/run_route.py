@@ -749,6 +749,23 @@ def execute_instead_action(action, window_bounds):
     raise ValueError("Неизвестное действие INSTEAD: " + kind)
 
 
+# Переменные книги в Lua trace INSTEAD (instead_trace.lua) — те же, что nlb_sdl пишет по --state-vars
+TRACE_VARIABLES = ("wolfiness", "hp", "barExit", "forestExit", "wolvesTalk", "guardDone")
+
+
+def instead_step_summary(record):
+    """
+    Строка шага INSTEAD для лога job'а: страница, порция, экран и переменные из trace. Логи job'ов
+    читаются через API и без архива артефактов (его облачная сессия не скачивает), поэтому сверку
+    движков по шагам можно делать по логам: отчёт NLBNavigator печатается целиком
+    """
+    record = record or {}
+    variables = ",".join("{}={}".format(name, record.get(name, "")) for name in TRACE_VARIABLES)
+    return "page={}, portion={}/{}, screen={}, vars={}".format(
+        record.get("page_id", ""), record.get("portion_index", ""), record.get("portion_count", ""),
+        record.get("screen_kind", ""), variables)
+
+
 def read_instead_trace(path):
     if not path.exists():
         return []
@@ -756,9 +773,8 @@ def read_instead_trace(path):
         "seq", "kind", "command", "arguments", "rendered", "page_id",
         "location_id", "room_id", "screen_kind", "page_name", "background",
         "portion_index", "portion_count", "more", "room_text", "action_text",
-        "objects_text", "player_text", "wolfiness", "hp",
-        "barExit", "forestExit", "wolvesTalk", "guardDone",
-    ]
+        "objects_text", "player_text",
+    ] + list(TRACE_VARIABLES)
     records = []
     with path.open("r", encoding="utf-8", errors="replace") as source:
         for line in source:
@@ -1033,14 +1049,12 @@ def run_instead(args, route, output_dir):
                 shutil.copy2(trace_path, output_dir / "instead-state.partial.tsv")
             current = state_record or {}
             print(
-                "[INSTEAD] completed {}/{}: {} ({}s, page={}, portion={}/{})".format(
+                "[INSTEAD] completed {}/{}: {} ({}s, {})".format(
                     step_index,
                     len(route["steps"]),
                     step["id"],
                     round(time.monotonic() - step_started, 2),
-                    current.get("page_id", ""),
-                    current.get("portion_index", ""),
-                    current.get("portion_count", ""),
+                    instead_step_summary(current),
                 ),
                 flush=True,
             )

@@ -5,7 +5,12 @@ name: NLB SDL differential test
 # route — матрица: каждый маршрут своим job в обоих движках и сравнение,
 # report — общий артефакт nlb-sdl-test-logs и сводка по маршрутам.
 # На push и pull request — только изменённые маршруты (или все, если изменились раннер, workflow,
-# каталог или плеер); вручную и по расписанию — все (вручную можно выбрать маршруты).
+# каталог или плеер); вручную и по расписанию — все (вручную можно выбрать маршруты). Документы
+# (.md) маршрутов не выбирают; если в новом push в PR одни документы, маршруты не прогоняются.
+# gate — итог одной проверкой (её можно сделать обязательной при защите main): успех, если
+# маршруты прошли или законно не прогонялись. Фильтр путей ниже не пускает workflow для
+# изменений вне плеера и тестов; при обязательной gate его нужно убрать, иначе такой PR будет
+# ждать проверку, которая не запустится.
 
 "on":
   workflow_dispatch:
@@ -101,6 +106,7 @@ jobs:
     outputs:
       matrix: ${{ steps.select.outputs.matrix }}
       count: ${{ steps.select.outputs.count }}
+      reason: ${{ steps.select.outputs.reason }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -110,12 +116,16 @@ jobs:
           EVENT: ${{ github.event_name }}
           ONLY: ${{ github.event.inputs.routes }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          # прежняя голова PR (событие synchronize); при открытии PR пусто
+          PR_BEFORE: ${{ github.event.before }}
           PUSH_BEFORE: ${{ github.event.before }}
         run: |
           case "$EVENT" in
             workflow_dispatch) python3 tests/differential/ci/select_routes.py --all --only "$ONLY" ;;
             schedule) python3 tests/differential/ci/select_routes.py --all ;;
-            pull_request) python3 tests/differential/ci/select_routes.py --base "$PR_BASE" --head HEAD ;;
+            pull_request) python3 tests/differential/ci/select_routes.py --base "$PR_BASE" --head HEAD \
+                            --docs-only-since "$PR_BEFORE" --docs-head "$PR_HEAD" ;;
             *) python3 tests/differential/ci/select_routes.py --base "$PUSH_BEFORE" --head HEAD ;;
           esac
 
@@ -367,3 +377,34 @@ jobs:
           path: ci-artifacts/
           if-no-files-found: warn
           retention-days: 14
+
+  gate:
+    name: Differential gate
+    needs: [validate, plan, build, route, report]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Summary
+        env:
+          VALIDATE: ${{ needs.validate.result }}
+          PLAN: ${{ needs.plan.result }}
+          BUILD: ${{ needs.build.result }}
+          ROUTE: ${{ needs.route.result }}
+          REPORT: ${{ needs.report.result }}
+          COUNT: ${{ needs.plan.outputs.count }}
+          REASON: ${{ needs.plan.outputs.reason }}
+        run: |
+          {
+            echo "### Differential gate"
+            echo "validate: $VALIDATE, plan: $PLAN, build: $BUILD, route: $ROUTE, report: $REPORT"
+            echo "Маршруты: ${REASON:-не выбраны}"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          test "$VALIDATE" = success
+          test "$PLAN" = success
+          if [ "$COUNT" = "0" ]; then
+            echo "Маршруты не прогонялись: результат прежних прогонов этой ветки здесь не проверяется." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          test "$BUILD" = success
+          test "$ROUTE" = success
