@@ -33,7 +33,7 @@
    ```
    python3 cmpwalk_sdl.py --player build/nlb_sdl --book <каталог книги> --game <копия> \
        --cli ~/instead-cli-build/instead-cli/release --script <сценарий> \
-       --vars life,energy,courage [--mode standard] [--lang ru] [--out cmpwalk-out]
+       --vars life,energy,courage [--mode standard] [--lang ru] [--out cmpwalk-out] [--deterministic[=N]]
    ```
    `nlb_sdl` запускается с `SDL_VIDEODRIVER=offscreen` (Xvfb не нужен) и изолированным `HOME`
    (иначе язык и сохранения возьмутся из `~/.nlbnavigator`). Из модели экрана в state-log до
@@ -51,8 +51,9 @@
 - **Отладочный драйвер плеера `drive.cpp`** не восстановлен. `cmpwalk2.py` и `cmpwalk3.py` ждут от него
   строки `TRACE act|inv|use <id>`, `>>> команда`, `STATE <значения> page=<id>`; без него они не
   работают. Их заменяет `cmpwalk_sdl.py` на `nlb_sdl --script --state-log --state-vars`
-  (docs/state-log.md): `--deterministic` у `nlb_sdl` нет (он есть только у `nlb_main`), поэтому книги с
-  RND/SHUFFLE этой сверкой пока не проверить — нужен ключ в `nlb_sdl` (задача для Claude Code).
+  (docs/state-log.md). Книги с RND/SHUFFLE (Frontier) — с `--deterministic[=N]`: `nlb_sdl
+  --deterministic=N` (как у `nlb_main`: k-й rnd(n) — (k mod n) + 1, SHUFFLE разворачивает список) и
+  `/rndstart N` в INSTEAD; копия экспорта — `make_overlay.sh <экспорт> <копия> rnd`.
 - **Сценарии боя Frontier (`cmpfight.py`)** не восстановлены: они привязаны к конкретному пути до боя.
 
 ## Что проверено при восстановлении (10.11.2026, Claude Fable)

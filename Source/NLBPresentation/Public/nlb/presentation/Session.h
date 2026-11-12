@@ -43,6 +43,11 @@ public:
         /// Языки по предпочтению (язык лаунчера, системы…): включается первый, который есть в
         /// книге, иначе английский. Выбор игрока в меню (сохраняется в savesDir) — главнее
         std::vector<std::string> preferredLanguages;
+        /// Воспроизводимая случайность (как nlb_main --deterministic): k-й rnd(n) даёт (k mod n) + 1,
+        /// SHUFFLE разворачивает список; deterministicStart — начало счётчика. Для тестов и сверки
+        /// с INSTEAD (tools/instead-cli-compare/instead_rnd_append.lua)
+        bool deterministic = false;
+        int64_t deterministicStart = 0;
     };
 
     /// audio — бэкенд звука фронтенда (может быть nullptr: без звука)

@@ -39,8 +39,10 @@ def load_route(path):
         if not screenshot or Path(screenshot).name != screenshot:
             raise ValueError("screenshot должен быть именем файла без каталогов")
         action = step.get("action", {})
-        if action.get("type") not in ("capture", "key", "click", "advance", "select_choice"):
-            raise ValueError("Поддерживаются действия capture, key, click, advance и select_choice")
+        if action.get("type") not in ("capture", "key", "click", "advance", "select_choice", "menu"):
+            raise ValueError("Поддерживаются действия capture, key, click, advance, select_choice и menu")
+        if action.get("type") == "menu":
+            validate_menu_action(action)
         if action.get("type") == "key" and not action.get("key"):
             raise ValueError("Для действия key не задан key")
         if action.get("type") in ("click", "advance"):
@@ -69,6 +71,61 @@ def load_route(path):
     if validation_errors:
         raise ValueError("; ".join(validation_errors))
     return route
+
+
+# Клавиши маршрута (имена xdotool, как для INSTEAD) -> команды key: сценария nlb_sdl
+NLB_SDL_KEYS = {"escape": "esc", "esc": "esc", "f5": "f5", "f9": "f9", "space": "space"}
+
+
+def nlb_sdl_key(key):
+    """Команда key: nlb_sdl для клавиши маршрута: Escape/F5/F9/space или цифра 1–9"""
+    name = str(key).strip()
+    if name.lower() in NLB_SDL_KEYS:
+        return "key:" + NLB_SDL_KEYS[name.lower()]
+    if re.fullmatch(r"[0-9]", name):
+        return "key:" + name
+    raise ValueError("nlb_sdl не знает клавишу {} (есть Escape, F5, F9, space и цифры)".format(key))
+
+
+def validate_menu_action(action):
+    """
+    Действие menu — меню игры (сохранить, загрузить, выход…), у каждого движка своё:
+      "nlbnavigator": ["esc", 2] — клавиши (esc, f5, f9, space) и номера пунктов открытого меню
+                      (0 — первый: команда menu:N сценария nlb_sdl);
+      "instead": [{"key": "Escape"}, {"x_ratio": 0.5, "y_ratio": 0.4}] — нажатия (xdotool) и
+                 щелчки по координатам окна.
+    Меню может не менять сцену (сохранение), поэтому смены экрана после него не требуется.
+    """
+    nlb = action.get("nlbnavigator")
+    if not isinstance(nlb, list) or not nlb:
+        raise ValueError("Для menu нужен непустой список nlbnavigator: клавиши и номера пунктов")
+    for item in nlb:
+        if isinstance(item, bool):
+            raise ValueError("menu.nlbnavigator: {} — не клавиша и не номер пункта".format(item))
+        if isinstance(item, int):
+            if item < 0 or item > 20:
+                raise ValueError("menu.nlbnavigator: номер пункта меню от 0 до 20")
+        else:
+            nlb_sdl_key(item)
+    instead = action.get("instead")
+    if not isinstance(instead, list) or not instead:
+        raise ValueError("Для menu нужен непустой список instead: нажатия и щелчки")
+    for item in instead:
+        if not isinstance(item, dict):
+            raise ValueError("menu.instead: элемент — {\"key\": …} или {\"x_ratio\": …, \"y_ratio\": …}")
+        if "key" in item:
+            if not str(item["key"]).strip():
+                raise ValueError("menu.instead: пустая клавиша")
+        else:
+            for key in ("x_ratio", "y_ratio"):
+                if key not in item or not 0.0 <= float(item[key]) <= 1.0:
+                    raise ValueError("menu.instead: щелчок задаётся x_ratio/y_ratio от 0 до 1")
+
+
+def menu_commands_for_nlbnavigator(action):
+    """Команды сценария nlb_sdl для действия menu"""
+    return [("menu:" + str(item)) if isinstance(item, int) else nlb_sdl_key(item)
+            for item in action["nlbnavigator"]]
 
 
 def image_api():
@@ -406,7 +463,10 @@ def script_for_nlbnavigator(route, output_dir):
         action = step["action"]
         kind = action["type"]
         if kind == "key":
-            append_command("key:" + str(action["key"]))
+            append_command(nlb_sdl_key(action["key"]))
+        elif kind == "menu":
+            for command in menu_commands_for_nlbnavigator(action):
+                append_command(command)
         elif kind == "click":
             x = round(float(action["x_ratio"]) * width)
             y = round(float(action["y_ratio"]) * height)
@@ -629,6 +689,15 @@ def capture_root(path, window_bounds):
 def execute_instead_action(action, window_bounds):
     kind = action["type"]
     if kind == "capture":
+        return
+    if kind == "menu":
+        for item in action["instead"]:
+            if "key" in item:
+                execute_instead_action({"type": "key", "key": item["key"]}, window_bounds)
+            else:
+                execute_instead_action({"type": "click", "x_ratio": item["x_ratio"], "y_ratio": item["y_ratio"]},
+                                       window_bounds)
+            time.sleep(0.2)
         return
     if kind == "key":
         key = str(action["key"])
@@ -926,7 +995,8 @@ def run_instead(args, route, output_dir):
                 if event["kind"] == "scene" and event["seq"] >= input_seq
             ]
             state_record = scene_events[-1] if scene_events else None
-            if step["action"]["type"] == "capture" and state_record is None:
+            # capture и menu (сохранение, загрузка) могут не дать новой сцены — тогда последняя
+            if step["action"]["type"] in ("capture", "menu") and state_record is None:
                 all_scene = [event for event in after if event["kind"] == "scene"]
                 state_record = all_scene[-1] if all_scene else None
 

@@ -11,7 +11,7 @@
 Использование:
   cmpwalk_sdl.py --player build/nlb_sdl --book <каталог книги> --game <копия экспорта>
                  --cli <каталог release с instead-cli> --script <сценарий> --vars life,energy,courage
-                 [--mode standard|vn] [--lang ru] [--out <каталог>]
+                 [--mode standard|vn] [--lang ru] [--out <каталог>] [--deterministic[=N]]
 
 Ограничения:
   - только экспорты, где текст и ссылки выводятся в консоль: STANDARD (у VN-экспорта текст и выборы
@@ -43,6 +43,9 @@ def parse_args():
     p.add_argument('--lang', default='ru')
     p.add_argument('--out', default='cmpwalk-out')
     p.add_argument('--timeout', type=int, default=600)
+    p.add_argument('--deterministic', nargs='?', type=int, const=0, default=None, metavar='N',
+                   help='воспроизводимая случайность в обоих движках: nlb_sdl --deterministic=N и /rndstart N '
+                        '(копия экспорта — make_overlay.sh … rnd); нужна книгам с RND/SHUFFLE (Frontier)')
     return p.parse_args()
 
 
@@ -69,6 +72,8 @@ def run_player(args, commands, out):
     cmd = [str(Path(args.player).resolve()), str(Path(args.book).resolve()), args.mode, '--no-sound',
            '--lang', args.lang, '--window', '1920x1080', '--script', str(script.resolve()),
            '--state-log', str(state.resolve()), '--state-vars', args.vars]
+    if args.deterministic is not None:
+        cmd.append('--deterministic={}'.format(args.deterministic))
     r = subprocess.run(cmd, env=env, capture_output=True, text=True, encoding='utf-8', errors='replace',
                        timeout=args.timeout)
     (out / 'player.out').write_text(r.stdout + r.stderr, encoding='utf-8')
@@ -127,6 +132,9 @@ def main():
 
     # команды instead-cli для каждого шага; для c: номер ссылки ищется на экране перед шагом
     icmds, marks = [], []
+    if args.deterministic is not None:
+        # та же последовательность rnd, что у nlb_sdl --deterministic (instead_rnd_append.lua)
+        icmds.append('/rndstart {}'.format(args.deterministic))
     for i, cmd in enumerate(commands[:len(records) - 1]):
         if not records[i + 1].get('ok', True):
             print('шаг {}: плеер не выполнил «{}» — сценарий не подходит книге, сверка до этого шага'
