@@ -53,7 +53,10 @@
   работают. Их заменяет `cmpwalk_sdl.py` на `nlb_sdl --script --state-log --state-vars`
   (docs/state-log.md). Книги с RND/SHUFFLE (Frontier) — с `--deterministic[=N]`: `nlb_sdl
   --deterministic=N` (как у `nlb_main`: k-й rnd(n) — (k mod n) + 1, SHUFFLE разворачивает список) и
-  `/rndstart N` в INSTEAD; копия экспорта — `make_overlay.sh <экспорт> <копия> rnd`.
+  `/rndstart N` в INSTEAD; копия экспорта — `make_overlay.sh <экспорт> <копия> rnd`. Сам ключ
+  `nlb_sdl` подтверждён локально (PR #47): «Фронтир» до первого боя и шесть ходов боя, 103 снимка
+  state-log — два прогона с `--deterministic=0` совпали, с `=3` расходятся с шага 94, без ключа — с
+  первого хода боя. Пара с INSTEAD (`/rndstart`) на «Фронтире» ещё не прогонялась.
 - **Сценарии боя Frontier (`cmpfight.py`)** не восстановлены: они привязаны к конкретному пути до боя.
 
 ## Что проверено при восстановлении (10.11.2026, Claude Fable)
