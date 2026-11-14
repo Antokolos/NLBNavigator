@@ -11,14 +11,14 @@
 | Владелец | Решения и merge |
 
 
-Обновлено: 2026-11-12 (Asia/Bishkek).
+Обновлено: 2026-11-14 (Asia/Bishkek).
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
 - Последний интегрированный PR: #32 (merged).
 - Текущий PR: #44, Draft, ветка `test/wolfman-hospital-page41`, base `main`.
-- `main` интегрирован merge-коммитом `dc54e59031978d4d7b5c93fe066c2975a51a1803` (первый родитель `0d05fd69547cccd4dd8d589f53f8a14713aa73a1`).
-- Проверенный HEAD PR: `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`; CI #171 выполнен именно на этой голове.
+- `main` `46686bb45356217451ccc23d38c832888840a808` интегрирован в PR merge-коммитом `a08ddb8af6a40c06d551cf5b3325cf2844640f13`.
+- Последний HEAD, проверенный полным прогоном: `a08ddb8af6a40c06d551cf5b3325cf2844640f13` (CI #181).
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
 - Каталог содержит 16 постоянных маршрутов; два hospital routes прошли paired runtime и comparison в CI #171. Временные диагностические маршруты удалены.
 
@@ -180,10 +180,22 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 | #170 | `dc54e590` (workflow запущен на merge-коммите `5b5b234b`) | failure | Run ID `43200939562`, artifact `nlb-sdl-test-logs` ID `13936431588`. Упали те же четыре маршрута; оба движка остановились на второй порции page4 (index 1/4) и page14 (index 1/2), поэтому ожидания page5 были преждевременными. Differential gate также красный. |
 | #171 | `c94eeabc` | success | 16 постоянных маршрутов; диагностические маршруты удалены. 48 отчётов, все успешны. |
 | #172 | `f927c5d7` | success | Только документационные изменения; Select routes — 0 маршрутов, Differential gate — success (`COUNT 0`). |
-| #173 | `22f2ec56` | failure | Прогнаны все 16 маршрутов; `wolfman-eat-robber` завершился ошибкой в INSTEAD (кадр пустой или почти одноцветный), остальные route jobs успешны. |
-| #174 | `9f227aa1` | success | Все 16 маршрутов прошли в обоих движках и comparisons. |
+| #173 | `22f2ec56` | failure | Полный прогон: объект предыдущей головы недоступен после перезаписи головы ветки. Прогнаны все 16 маршрутов; `wolfman-eat-robber` завершился ошибкой в INSTEAD (кадр пустой или почти одноцветный), остальные route jobs успешны. |
+| #174 | `9f227aa1` | success | Полный прогон: объект предыдущей головы недоступен после перезаписи головы ветки. Все 16 маршрутов прошли в обоих движках и comparisons. |
 | #175 | `41e2d884` | success | Только документационные изменения; Select routes — 0 маршрутов, Differential gate — success (`COUNT 0`). |
 | #176 | `55e1e8cb` | success | Все 16 маршрутов прошли в обоих движках и comparisons; все 21 jobs успешны. |
+| #180 | `7c5093c7` | success | Только документы; Select routes — 0 маршрутов, Differential gate — SUCCESS (`COUNT 0`). |
+| #181 | `a08ddb8a` | success | После интеграции `main` (`46686bb`): все 16 маршрутов прошли в обоих движках и comparisons; все 21 jobs успешны. Артефакт `nlb-sdl-test-logs`, ID `14130325711`. |
+
+
+#### CI #180–#181 — документационный push и интеграция main
+
+- [CI #180](https://github.com/Antokolos/NLBNavigator/actions/runs/43633751938), HEAD `7c5093c7a7f956fc8cf03b62aa027fbe17057f90` — только документационные изменения; Select routes выбрал 0 маршрутов, Differential gate завершился SUCCESS (`COUNT 0`).
+- [CI #181](https://github.com/Antokolos/NLBNavigator/actions/runs/43633901044), HEAD `a08ddb8af6a40c06d551cf5b3325cf2844640f13` — после интеграции `main` `46686bb45356217451ccc23d38c832888840a808`; все 21 jobs успешны. Все 16 маршрутов прошли в INSTEAD, NLBNavigator и comparisons; 32 runtime reports и 16 comparison reports имеют `ok=true`, `errors=[]`. Артефакт `nlb-sdl-test-logs`, ID `14130325711`.
+- По артефакту CI #181 (Тестировщик); независимо по логам job'ов (Ревьюер): все 21 job успешны; все 16 route jobs — INSTEAD success, NLBNavigator success, compare success; 456 шагов INSTEAD; 456 шагов и 352 текстовые проверки NLBNavigator.
+- В каждом движке выполнено по 456 шагов; 352 текстовые проверки на движок, всего 704 — все прошли.
+- Оба hospital-маршрута прошли: doctor — 13 шагов, corpse — 11. Page4 — 4 порции, page14 — 2, page5 — 6; после выбора врача состояние `wolfiness=1,hp=3`, после выбора трупа — `wolfiness=0,hp=2`. Оба движка согласуются по этим значениям.
+- Артефакт CI #181: [nlb-sdl-test-logs, ID 14130325711](https://github.com/Antokolos/NLBNavigator/actions/runs/43633901044/artifacts/14130325711).
 
 #### CI #170 — причина падения
 
@@ -192,7 +204,7 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 #### CI #171 — полное подтверждение
 
 [CI #171](https://github.com/Antokolos/NLBNavigator/actions/runs/43201105370), run ID `43201105370`, HEAD PR `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9` — SUCCESS. Артефакт `nlb-sdl-test-logs`, ID `13936673929`.
-Независимо по логам job'ов (Ревьюер): все 21 jobs завершились успешно..
+Независимо по логам job'ов (Ревьюер): все 21 job успешны; все 16 route jobs — INSTEAD success, NLBNavigator success, compare success; 456 шагов INSTEAD; 456 шагов и 352 текстовые проверки NLBNavigator.
 
 По артефакту CI #171, перепроверено Разработчиком.
 - 48 отчётов: 16 INSTEAD route reports, 16 NLBNavigator route reports и 16 comparison reports; везде `ok=true`, `errors=[]`.
@@ -218,7 +230,7 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 ### Следующие действия
 
 1. [x] Обновить документацию PR #44 по CI #171, восстановить README из main и вернуть исторические рекомендации §4.2 с актуальным статусом.
-2. [ ] Выполнить один документационный коммит и проверить новый CI по логам: Select routes должен выбрать 0 маршрутов; Differential gate — success, COUNT 0.
+2. [x] Выполнить документационный push и проверить CI #180: Select routes — 0 маршрутов; Differential gate — SUCCESS, COUNT 0. После интеграции main полный CI #181 также прошёл.
 3. [x] Выполнить локальные парные прогоны двух hospital routes в обоих движках (выполнены Ревьюером); все шесть отчётов успешны.
 4. [ ] Подготовить комментарий в issue #28, проверить его со вторым ревьюером и опубликовать.
 5. [ ] После проверки комментария предложить владельцу перевести PR #44 в Ready for review. Merge выполняет владелец.
