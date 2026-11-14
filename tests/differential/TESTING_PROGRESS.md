@@ -15,10 +15,10 @@
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последний интегрированный PR: #32 (merged).
-- Текущий PR: #44, Draft, ветка `test/wolfman-hospital-page41`, base `main`.
-- `main` `46686bb45356217451ccc23d38c832888840a808` интегрирован в PR merge-коммитом `a08ddb8af6a40c06d551cf5b3325cf2844640f13`.
-- Последний HEAD, проверенный полным прогоном: `a08ddb8af6a40c06d551cf5b3325cf2844640f13` (CI #181).
+- Последний интегрированный PR: #44 (merged).
+- Открытых PR нет. Следующая работа планируется отдельным Draft PR от актуального `main`.
+- Текущий `main`: `6a4e8d7cea908592b494bf369603578ed5251693` (merge PR #44).
+- Последний полный runtime-прогон: CI #181 — 16 постоянных маршрутов, оба движка и 16 comparisons успешны; прогон выполнен до merge PR #44. CI #182 проверял только документационные изменения и не заменяет полный runtime-прогон.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
 - Каталог содержит 16 постоянных маршрутов; два hospital routes прошли paired runtime и comparison в CI #171. Временные диагностические маршруты удалены.
 
@@ -101,13 +101,14 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 
 ## Очередность
 
-1. [x] Статическая route validation, отрицательные unit tests и проверка всех 15 route definitions.
-2. [ ] Финальная подготовка PR #32: актуализировать документацию и PR summary, проверить diff/base/head/required checks. PR оставить Draft до отдельного подтверждения Ready for review. Merge выполняет владелец.
-3. [ ] Отдельный PR для ускорения CI: build once/artifact, vcpkg/SDL3 cache, route matrix fail-fast:false, changed-route push runs, manual/scheduled full run, concurrency.cancel-in-progress:false; цель 15–20 минут. В репозитории нет vcpkg.json, зависимости устанавливаются явно: sdl3, sdl3-image[png,jpeg], sdl3-ttf, sdl3-mixer.
-4. [ ] Устойчивые runner actions: advance_until choices/last_portion, синхронизация trace/state-log, выбор по тексту и миграция маршрутов с локальной проверкой.
-5. [ ] Coverage script по каталогу: страницы и концовки; сверить прежние ориентиры 42/54 и 9/16.
-6. [ ] Завершить wolfman: hospital/police, page41, 16 концовок, RU/EN, save/load и persisted achievements.
-7. [ ] Остальные книги по docs/differential-testing-plan.md §4.5; каждая книга — отдельный PR.
+1. [x] Статическая route validation, отрицательные unit tests и проверка зарегистрированных route definitions.
+2. [x] Интеграция базового differential suite — PR #32 merged.
+3. [x] Ускорение CI и изоляция тестовых окружений — PR #46 и последующие уточнения PR #50 merged; матрица маршрутов, общий build artifact, кэш зависимостей, changed-route selection, docs-only skip и обязательный Differential gate работают в main.
+4. [ ] **Ближайшая работа Тестировщика — продолжение hospital.** Два маршрута от уже проверенной page5 до следующих экранов вариантов: сначала временные probe-маршруты вне catalog.json в `review/*-probe`, локальная диагностика порций Ревьюером в обоих движках, затем постоянные маршруты с checkpoint и текстом каждой порции. Варианты выбирать только через `select_choice`.
+5. [ ] **Устойчивые runner actions — Разработчик.** Проверить/добавить `advance_until` для choices и last_portion, выбор `select_choice` по тексту, согласованность trace/state-log и миграцию маршрутов. Изменения `run_route.py` и runner-инфраструктуры не входят в зону Тестировщика; недостающие возможности оформить отдельной issue для Разработчика. Существующий сбор trace/state-log уже работает — требуется проверить именно синхронизацию и полноту семантики.
+6. [ ] **Coverage script — исполнитель не назначен.** Автоматический отчёт по страницам и концовкам; сверить исторические ориентиры 42/54 и 9/16. Владельцу определить, поручить ли его Тестировщику или Разработчику.
+7. [ ] **Завершить Wolfman — Тестировщик, с участием Разработчика при необходимости:** продолжить hospital/police до page41, пройти все 16 концовок, проверить EN, save/load через действие `menu` и persisted achievements/read-back/parity.
+8. [ ] **Остальные книги — Тестировщик:** цели по `docs/differential-testing-plan.md` §4.5; каждая книга отдельным PR.
 
 ## WSL2
 
