@@ -42,6 +42,13 @@ class SelectRoutesTest(unittest.TestCase):
     def test_other_source_does_not_run(self):
         self.assertEqual(self.ids(["Source/NLBPlayer/Private/Foo.cpp"]), [])
 
+    def test_files_outside_player_select_nothing(self):
+        # workflow запускается на каждом PR в main (обязательная проверка «Differential gate»):
+        # PR без плеера, раннера и маршрутов — ни одного маршрута, сборка пропускается
+        for changed in ("android/app/build.gradle", "integrations/godot/src/register_types.cpp",
+                        "tools/make_nlbz.py", ".gitignore", "Source/NLBPlatforms/Steam.cpp"):
+            self.assertEqual(self.ids([changed]), [], changed)
+
     def test_unknown_base_runs_all(self):
         self.assertEqual(self.ids(None), ["a", "b"])
         self.assertIsNone(select_routes.changed_files("0000000000000000000000000000000000000000", "HEAD"))
