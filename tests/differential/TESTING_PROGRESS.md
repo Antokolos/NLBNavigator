@@ -88,7 +88,7 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 Новый hospital PR добавляет два независимых clean-state маршрута:
 - police → page3 → «Съесть врача» → page4 → page5;
 - police → page3 → «Съесть труп» → page14 → page5.
-Для обоих добавлены page3 и choices checkpoints, но paired runtime/CI validation пока pending.
+Для обоих добавлены page3 и choices checkpoints; paired runtime и comparisons подтверждены CI #171.
 
 Остаётся:
 - low-HP page41 и все 16 концовок;
@@ -179,6 +179,11 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 | #162 | `22d3a8c4` | failure | Run ID `43076636172`, artifact `nlb-sdl-test-logs` ID `13883541996`. Упали четыре маршрута: два основных hospital и два диагностических (`wolfman-hospital-doctor-diagnostic`, `wolfman-hospital-corpse-diagnostic`); runtime-диагностика порций page4/page14/page5. |
 | #170 | `dc54e590` (workflow запущен на merge-коммите `5b5b234b`) | failure | Run ID `43200939562`, artifact `nlb-sdl-test-logs` ID `13936431588`. Упали те же четыре маршрута; оба движка остановились на второй порции page4 (index 1/4) и page14 (index 1/2), поэтому ожидания page5 были преждевременными. Differential gate также красный. |
 | #171 | `c94eeabc` | success | 16 постоянных маршрутов; диагностические маршруты удалены. 48 отчётов, все успешны. |
+| #172 | `f927c5d7` | success | Только документационные изменения; Select routes — 0 маршрутов, Differential gate — success (`COUNT 0`). |
+| #173 | `22f2ec56` | failure | Прогнаны все 16 маршрутов; `wolfman-eat-robber` завершился ошибкой в INSTEAD (кадр пустой или почти одноцветный), остальные route jobs успешны. |
+| #174 | `9f227aa1` | success | Все 16 маршрутов прошли в обоих движках и comparisons. |
+| #175 | `41e2d884` | success | Только документационные изменения; Select routes — 0 маршрутов, Differential gate — success (`COUNT 0`). |
+| #176 | `55e1e8cb` | success | Все 16 маршрутов прошли в обоих движках и comparisons; все 21 jobs успешны. |
 
 #### CI #170 — причина падения
 
@@ -187,7 +192,7 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 #### CI #171 — полное подтверждение
 
 [CI #171](https://github.com/Antokolos/NLBNavigator/actions/runs/43201105370), run ID `43201105370`, HEAD PR `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9` — SUCCESS. Артефакт `nlb-sdl-test-logs`, ID `13936673929`.
-Независимо по логам job'ов (Ревьюер): все 21 jobs завершились успешно.
+Независимо по логам job'ов (Ревьюер): все 21 jobs завершились успешно..
 
 По артефакту CI #171, перепроверено Разработчиком.
 - 48 отчётов: 16 INSTEAD route reports, 16 NLBNavigator route reports и 16 comparison reports; везде `ok=true`, `errors=[]`.
@@ -197,6 +202,16 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 - Труп — 11 шагов; page14 — 2 порции, page5 — 6; итог `wolfiness=0,hp=2`.
 - INSTEAD trace на обоих page14 checkpoints сообщает background `images/3.jpg`; визуальная сверка по снимку не выполнялась.
 - В CI #171 исполнялись 16 маршрутов, поскольку два временных диагностических маршрута были удалены.
+
+#### CI #172–#176 — последующие проверки
+
+- [CI #172](https://github.com/Antokolos/NLBNavigator/actions/runs/43276547450): последний push состоял только из `.md`; Select routes не запускал маршруты (0), Differential gate завершился SUCCESS с `COUNT 0`.
+- [CI #173](https://github.com/Antokolos/NLBNavigator/actions/runs/43276647266): выбраны все 16 маршрутов. У `wolfman-eat-robber` INSTEAD runtime сообщил `title: кадр пустой или почти одноцветный`; NLBNavigator для маршрута прошёл. Остальные маршруты успешны. Возможный единичный сбой запуска INSTEAD — гипотеза, не установленная причина.
+- [CI #174](https://github.com/Antokolos/NLBNavigator/actions/runs/43276755456): все 16 маршрутов прошли в обоих движках и comparisons.
+- [CI #175](https://github.com/Antokolos/NLBNavigator/actions/runs/43306310296): последний push состоял только из `.md`; Select routes — 0 маршрутов, Differential gate — SUCCESS (`COUNT 0`).
+- [CI #176](https://github.com/Antokolos/NLBNavigator/actions/runs/43306389523), run ID `43306389523`, HEAD `55e1e8cbb6b9a0830c125a3366f8b89fce9d58fd` — SUCCESS. Все 21 jobs успешны; все 16 маршрутов прошли в INSTEAD, NLBNavigator и comparisons. Артефакт `nlb-sdl-test-logs`, ID `13985081657`.
+- В Select routes CI #176 `PR_BEFORE` был задан (`41e2d8846f351a1b7d02f7771842d0323f34fc45`), но объект отсутствовал: `git diff` завершился `fatal: bad object`, поэтому сработал fallback и были прогнаны все маршруты. Это не был документационный прогон.
+- Коммиты `f927c5d7`, `22f2ec56` и `41e2d884` больше не находятся в истории текущей ветки PR; это не утверждение об их удалении из репозитория.
 
 Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33). Осознанное отличие, см. CLAUDE.md в main (PR #48); расхождением не считается.
 
@@ -208,7 +223,7 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 4. [ ] Подготовить комментарий в issue #28, проверить его со вторым ревьюером и опубликовать.
 5. [ ] После проверки комментария предложить владельцу перевести PR #44 в Ready for review. Merge выполняет владелец.
 
-## Актуализация 2026-11-12 — CI #161–#171 и hospital coverage
+## Актуализация 2026-11-12 — CI #161–#176 и hospital coverage
 
 - PR #44: ветка `test/wolfman-hospital-page41`; `main` интегрирован merge-коммитом `dc54e59031978d4d7b5c93fe066c2975a51a1803` от `0d05fd69547cccd4dd8d589f53f8a14713aa73a1`.
 - CI #161, HEAD PR `b475cad8`: FAILURE на `validate` из-за `visual_change_from`; маршруты не запускались.
@@ -220,4 +235,3 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 - Два диагностических маршрута удалены до CI #171, поэтому в нём исполнялись 16 постоянных маршрутов.
 - Локальные парные прогоны doctor/corpse в обоих движках выполнены Ревьюером (Ubuntu 24.04, INSTEAD из пакета, `nlb_sdl` собран из `c94eeabc`). Все шесть отчётов имеют `ok=true`, `errors=[]`; порции и переменные соответствуют CI #171.
 - Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33); осознанное отличие, см. CLAUDE.md в main (PR #48), не расхождение.
-

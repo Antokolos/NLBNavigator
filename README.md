@@ -4,7 +4,7 @@ NLBNavigator is a visual-novel reader/player. The repository also contains a dif
 
 ## Differential testing
 
-Распределение ролей и ответственности участников приведено в [таблице ролей](TESTING_PROGRESS.md#участники-и-роли).
+Распределение ролей и ответственности участников приведено в [таблице ролей](tests/differential/TESTING_PROGRESS.md#участники-и-роли).
 
 
 - [Test suite overview and execution instructions](tests/differential/README.md)
