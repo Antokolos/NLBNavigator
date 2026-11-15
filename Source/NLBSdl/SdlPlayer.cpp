@@ -621,10 +621,24 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         ok = m_screen->hitCenter(id, inv, x, y);
         if (ok) m_screen->click(x, y, false);
     } else if (starts("clickchoice:") || starts("hoverchoice:")) {
-        // переход с номером N (-1 — заголовок комнаты): щелчок или наведение мыши
+        // переход с номером N (-1 — заголовок комнаты): щелчок или наведение мыши. text=<фрагмент>
+        // вместо номера — доступный вариант, в тексте которого есть фрагмент (исходный текст книги,
+        // до типографики; ровно один такой) — действие choose раннера дифференциальных тестов
         renderFrame();
         float x = 0, y = 0;
-        ok = m_screen->choiceCenter(std::stoi(line.substr(line.find(':') + 1)), x, y);
+        const std::string arg = line.substr(line.find(':') + 1);
+        int index = -2;
+        if (arg.rfind("text=", 0) == 0) {
+            const std::string fragment = arg.substr(5);
+            int found = 0;
+            for (const auto& c : engine.screen().choices) {
+                if (c.enabled && !fragment.empty() && c.text.find(fragment) != std::string::npos) { index = c.index; ++found; }
+            }
+            if (found != 1) index = -2;  // нет такого варианта или их несколько — не выполнено
+        } else {
+            index = std::stoi(arg);
+        }
+        ok = index != -2 && m_screen->choiceCenter(index, x, y);
         if (ok && starts("click")) m_screen->click(x, y, false);
         if (ok && starts("hover")) m_screen->mouseMove(x, y);
     } else if (starts("hoverobj:") || starts("hoverinv:")) {

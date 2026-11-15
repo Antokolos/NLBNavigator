@@ -146,3 +146,13 @@ class StateLogCheckTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FailedStepsTest(unittest.TestCase):
+    def test_failed_command_is_named_by_step(self):
+        route = run_route.load_route(EXAMPLE)
+        script, _, _ = run_route.script_for_nlbnavigator(route, Path("/tmp/out"))
+        output = "key:space\n[НЕ ВЫПОЛНЕНО] advance-until:choices,60,960,540\nshot:/tmp/out/x.png\n"
+        self.assertEqual(run_route.failed_script_steps(output, route, script),
+                         ["doctor-kitchen-choices: advance_until: условие choices не выполнено за 60 щелчков"])
+        self.assertEqual(run_route.failed_script_steps("[НЕ ВЫПОЛНЕНО] wait:1\n", route, script), ["не выполнено: wait:1"])

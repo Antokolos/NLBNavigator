@@ -15,7 +15,7 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import unquote
 
-from route_validation import validate_route
+from route_validation import expand_prefix, validate_route
 
 
 SCREEN_RE = re.compile(
@@ -28,6 +28,10 @@ def load_route(path):
         route = json.load(source)
     if route.get("schema_version") != 1:
         raise ValueError("Поддерживается только schema_version=1")
+    # общий префикс (routes/fragments/<имя>.json) — шаги фрагментов первыми
+    route, prefix_errors = expand_prefix(route, Path(path).resolve().parent, str(path))
+    if prefix_errors:
+        raise ValueError("; ".join(prefix_errors))
     steps = route.get("steps")
     if not isinstance(steps, list) or not steps:
         raise ValueError("Маршрут должен содержать непустой массив steps")
@@ -39,8 +43,8 @@ def load_route(path):
         if not screenshot or Path(screenshot).name != screenshot:
             raise ValueError("screenshot должен быть именем файла без каталогов")
         action = step.get("action", {})
-        if action.get("type") not in ("capture", "key", "click", "advance", "advance_until", "select_choice", "menu"):
-            raise ValueError("Поддерживаются действия capture, key, click, advance, advance_until, select_choice и menu")
+        if action.get("type") not in ("capture", "key", "click", "advance", "advance_until", "choose", "select_choice", "menu"):
+            raise ValueError("Поддерживаются действия capture, key, click, advance, advance_until, choose, select_choice и menu")
         if action.get("type") == "menu":
             validate_menu_action(action)
         if action.get("type") == "key" and not action.get("key"):
@@ -622,6 +626,9 @@ def script_for_nlbnavigator(route, output_dir):
             x = round(float(action["x_ratio"]) * width)
             y = round(float(action["y_ratio"]) * height)
             append_command("advance-until:{},{},{},{}".format(action["until"], int(action["max_clicks"]), x, y))
+        elif kind == "choose":
+            # вариант — по фрагменту текста (nlb_sdl ищет среди доступных, ровно один)
+            append_command("clickchoice:text=" + action["text"])
         elif kind == "select_choice":
             # Some exported VN choices are inline text links, not the separate
             # choices overlay. For those routes, use the explicitly configured
@@ -644,6 +651,48 @@ def script_for_nlbnavigator(route, output_dir):
     return "\n".join(lines) + "\n", checkpoint_indices, command_count
 
 
+
+
+FAILED_PREFIX = "[НЕ ВЫПОЛНЕНО] "
+
+
+def failed_script_steps(output, route, script):
+    """
+    Невыполненные команды сценария nlb_sdl («[НЕ ВЫПОЛНЕНО] команда») — с шагом маршрута, к которому
+    относятся (по порядку: команды сценария идут по шагам до их shot:), и причиной для advance_until
+    и choose
+    """
+    owners = []  # (команда, id шага) по порядку сценария
+    step_ids = iter(step["id"] for step in route["steps"])
+    current = next(step_ids, None)
+    for line in script.splitlines():
+        if not line or line.startswith("#"):
+            continue
+        owners.append((line, current))
+        if line.startswith("shot:"):
+            current = next(step_ids, None)
+    actions = {step["id"]: step["action"] for step in route["steps"]}
+    messages = []
+    position = 0
+    for line in output.splitlines():
+        if not line.startswith(FAILED_PREFIX):
+            continue
+        command = line[len(FAILED_PREFIX):].strip()
+        found = next((i for i in range(position, len(owners)) if owners[i][0] == command), None)
+        if found is None:
+            messages.append("не выполнено: " + command)
+            continue
+        position = found + 1
+        step_id = owners[found][1]
+        action = actions.get(step_id, {})
+        if action.get("type") == "advance_until":
+            reason = "advance_until: условие {} не выполнено за {} щелчков".format(action["until"], action["max_clicks"])
+        elif action.get("type") == "choose":
+            reason = "choose: нет ровно одного доступного варианта с текстом {!r}".format(action["text"])
+        else:
+            reason = "не выполнено: " + command
+        messages.append("{}: {}".format(step_id, reason))
+    return messages
 
 
 def read_state_log(path):
@@ -706,6 +755,10 @@ def run_nlbnavigator(args, route, output_dir):
     )
     runner_log.write_text(completed.stdout, encoding="utf-8")
     print(completed.stdout, end="")
+    # невыполненная команда — с шагом маршрута и причиной (иначе — только код возврата 2)
+    failed = failed_script_steps(completed.stdout, route, script)
+    if failed:
+        raise RuntimeError("nlb_sdl: " + "; ".join(failed))
     if completed.returncode != 0:
         raise RuntimeError("nlb_sdl завершился с кодом {}".format(completed.returncode))
     if "[НЕ ВЫПОЛНЕНО]" in completed.stdout:
@@ -905,6 +958,60 @@ INSTEAD_ADVANCE_WAIT = 2.0      # ожидание первой записи т�
 INSTEAD_ADVANCE_ATTEMPTS = 3    # щелчок без новой сцены повторяется: во время смены страницы
                                 # (переход, затемнение) INSTEAD щелчки не принимает — они теряются
 INSTEAD_ADVANCE_QUIET = 0.35    # затишье после первой записи: переход автоссылкой даёт ещё записи
+
+
+CHOICE_LINK = re.compile(r"<a:act\s+0*(\d+)>(.*?)</a>", re.S)
+
+
+def instead_choice_index(rendered, text):
+    """Номер (с 0) варианта INSTEAD, в тексте которого есть фрагмент, — по ссылкам <a:act NN>; ровно один"""
+    wanted = comparable_text(text)
+    found = [int(number) - 1 for number, label in CHOICE_LINK.findall(rendered or "")
+             if wanted and wanted in comparable_text(re.sub(r"<[^>]*>", "", label))]
+    return found[0] if len(found) == 1 else None, len(found)
+
+
+def pointer_location():
+    """Положение указателя мыши (экран X11) или None"""
+    result = run_command(timeout_command(["xdotool", "getmouselocation", "--shell"], 3), 5)
+    values = dict(line.split("=", 1) for line in result.stdout.splitlines() if "=" in line)
+    try:
+        return int(values["X"]), int(values["Y"])
+    except (KeyError, ValueError):
+        return None
+
+
+def instead_choose(action, current, window):
+    """
+    choose в INSTEAD: номер варианта — по тексту ссылок экрана вариантов в трассе. Координаты
+    вариантов зависят от длины их текста, поэтому их узнаёт сам INSTEAD: «Вниз» переносит указатель
+    мыши на следующую ссылку (по кругу) — раннер нажимает его, пока не обойдёт все ссылки, и
+    запоминает точки; сверху вниз — порядок вариантов. Затем — обычный щелчок по точке нужного
+    (трасса подтверждает его: act NN). Возвращает (номер или None, ошибка или None)
+    """
+    if current is None or current.get("screen_kind") != "choices":
+        return None, "choose: INSTEAD не на экране вариантов"
+    index, count = instead_choice_index(current.get("rendered", ""), action["text"])
+    if index is None:
+        return None, "choose: вариантов с текстом {!r} в INSTEAD {} (нужен ровно один)".format(action["text"], count)
+    links = len(CHOICE_LINK.findall(current.get("rendered", "")))
+    points = []
+    for _ in range(2 * links + 2):
+        execute_instead_action({"type": "key", "key": "Down"}, None)
+        time.sleep(0.15)
+        point = pointer_location()
+        if point is not None and all(abs(point[0] - x) > 3 or abs(point[1] - y) > 3 for x, y in points):
+            points.append(point)
+        if len(points) == links:
+            break
+    if len(points) != links:
+        return None, "choose: «Вниз» обошёл {} ссылок INSTEAD из {}".format(len(points), links)
+    x, y = sorted(points, key=lambda point: (point[1], point[0]))[index]
+    for command in (["xdotool", "mousemove", str(x), str(y)], ["xdotool", "click", "--delay", "0", "1"]):
+        result = run_command(timeout_command(command, 3), 5)
+        if result.returncode != 0:
+            return None, "choose: INSTEAD: не удалось {}: {}".format(command[1], result.stdout.strip())
+    return index, None
 
 
 def instead_reached(until, record, start_page):
@@ -1199,7 +1306,13 @@ def run_instead(args, route, output_dir):
             before = read_instead_trace(trace_path)
             cursor = max((record["seq"] for record in before), default=cursor)
             advance_sequence = None
-            if step["action"]["type"] == "advance_until":
+            choose_index = None
+            if step["action"]["type"] == "choose":
+                current_scene = [record for record in before if record["kind"] == "scene"]
+                choose_index, choose_error = instead_choose(step["action"], current_scene[-1] if current_scene else None, window)
+                if choose_error:
+                    trace_errors.append("{}: {}".format(step["id"], choose_error))
+            elif step["action"]["type"] == "advance_until":
                 current_scene = [record for record in before if record["kind"] == "scene"]
                 advance_sequence, advance_error = instead_advance_until(
                     step["action"], window, trace_path, current_scene[-1] if current_scene else None, player)
@@ -1217,12 +1330,15 @@ def run_instead(args, route, output_dir):
 
             after = read_instead_trace(trace_path)
             new_events = [record for record in after if record["seq"] > cursor]
+            # choose — как select_choice с найденным номером (act NN)
+            check_action = (dict(step["action"], type="select_choice", index=choose_index)
+                            if step["action"]["type"] == "choose" and choose_index is not None else step["action"])
             action_events = [
                 record for record in new_events
-                if step["action"]["type"] in ("key", "click", "advance", "select_choice")
-                and trace_input_matches(step["action"], record)
+                if check_action["type"] in ("key", "click", "advance", "select_choice")
+                and trace_input_matches(check_action, record)
             ]
-            if step["action"]["type"] in ("key", "click", "advance", "select_choice") and not action_events:
+            if check_action["type"] in ("key", "click", "advance", "select_choice") and not action_events:
                 trace_errors.append("{}: INSTEAD trace не зафиксировал ожидаемый input event".format(
                     step["id"]
                 ))
