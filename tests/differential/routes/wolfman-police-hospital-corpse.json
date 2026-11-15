@@ -309,6 +309,616 @@
         "instead_portion_index": 0,
         "instead_portion_count": 6
       }
+    },
+    {
+      "id": "corpse-page5-portion-1",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page5-portion-1.png",
+      "visual_change_from": "page5-after-corpse",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Заметив заброшенное, полуразвалившееся строение",
+        "instead_text_contains": "Заметив заброшенное, полуразвалившееся строение",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 1,
+        "portion_count": 6,
+        "instead_portion_index": 1,
+        "instead_portion_count": 6
+      }
+    },
+    {
+      "id": "corpse-page5-portion-2",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page5-portion-2.png",
+      "visual_change_from": "corpse-page5-portion-1",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вы проснулись от холода",
+        "instead_text_contains": "Вы проснулись от холода",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 2,
+        "portion_count": 6,
+        "instead_portion_index": 2,
+        "instead_portion_count": 6
+      }
+    },
+    {
+      "id": "corpse-page5-portion-3",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page5-portion-3.png",
+      "visual_change_from": "corpse-page5-portion-2",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Быстро одевшись, вы направились к шоссе",
+        "instead_text_contains": "Быстро одевшись, вы направились к шоссе",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 3,
+        "portion_count": 6,
+        "instead_portion_index": 3,
+        "instead_portion_count": 6
+      }
+    },
+    {
+      "id": "corpse-page5-portion-4",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page5-portion-4.png",
+      "visual_change_from": "corpse-page5-portion-3",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Вы абсолютно точно помнили",
+        "instead_text_contains": "Вы абсолютно точно помнили",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 4,
+        "portion_count": 6,
+        "instead_portion_index": 4,
+        "instead_portion_count": 6
+      }
+    },
+    {
+      "id": "corpse-page5-portion-5",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page5-portion-5.png",
+      "visual_change_from": "corpse-page5-portion-4",
+      "expect": {
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "image_suffix": "5.png",
+        "instead_background_suffix": "images/5.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Как назло, на дороге не появлялось",
+        "instead_text_contains": "Как назло, на дороге не появлялось",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 5,
+        "portion_count": 6,
+        "instead_portion_index": 5,
+        "instead_portion_count": 6
+      }
+    },
+    {
+      "id": "corpse-page6-portion-0",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page6-portion-0.png",
+      "visual_change_from": "corpse-page5-portion-5",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Усевшись за столик",
+        "instead_text_contains": "Усевшись за столик",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 0,
+        "portion_count": 2,
+        "instead_portion_index": 0,
+        "instead_portion_count": 2
+      }
+    },
+    {
+      "id": "corpse-page6-portion-1",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page6-portion-1.png",
+      "visual_change_from": "corpse-page6-portion-0",
+      "expect": {
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "image_suffix": "6.png",
+        "instead_background_suffix": "images/6.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Этого должно было хватить на чашку чая",
+        "instead_text_contains": "Этого должно было хватить на чашку чая",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2
+      }
+    },
+    {
+      "id": "corpse-page7-portion-0",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page7-portion-0.png",
+      "visual_change_from": "corpse-page6-portion-1",
+      "expect": {
+        "page_id": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+        "image_suffix": "7.png",
+        "instead_background_suffix": "images/7.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Доброго вам утречка!",
+        "instead_text_contains": "Доброго вам утречка!",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1
+      }
+    },
+    {
+      "id": "corpse-page12-portion-0",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-0.png",
+      "visual_change_from": "corpse-page7-portion-0",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Здравствуйте",
+        "instead_text_contains": "Здравствуйте",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 0,
+        "portion_count": 9,
+        "instead_portion_index": 0,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-1",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-1.png",
+      "visual_change_from": "corpse-page12-portion-0",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "У вас свободно?",
+        "instead_text_contains": "У вас свободно?",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 1,
+        "portion_count": 9,
+        "instead_portion_index": 1,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-2",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-2.png",
+      "visual_change_from": "corpse-page12-portion-1",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Да, пожалуйста",
+        "instead_text_contains": "Да, пожалуйста",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 2,
+        "portion_count": 9,
+        "instead_portion_index": 2,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-3",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-3.png",
+      "visual_change_from": "corpse-page12-portion-2",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Свободных столиков было много",
+        "instead_text_contains": "Свободных столиков было много",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 3,
+        "portion_count": 9,
+        "instead_portion_index": 3,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-4",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-4.png",
+      "visual_change_from": "corpse-page12-portion-3",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Как раз в этот момент принесли чай",
+        "instead_text_contains": "Как раз в этот момент принесли чай",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 4,
+        "portion_count": 9,
+        "instead_portion_index": 4,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-5",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-5.png",
+      "visual_change_from": "corpse-page12-portion-4",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Выйдя на улицу, вы сняли с шеи телефон",
+        "instead_text_contains": "Выйдя на улицу, вы сняли с шеи телефон",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 5,
+        "portion_count": 9,
+        "instead_portion_index": 5,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-6",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-6.png",
+      "visual_change_from": "corpse-page12-portion-5",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Если накинуть на плечи волчью шкуру",
+        "instead_text_contains": "Если накинуть на плечи волчью шкуру",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 6,
+        "portion_count": 9,
+        "instead_portion_index": 6,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-7",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-7.png",
+      "visual_change_from": "corpse-page12-portion-6",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Лучшее средство победить его",
+        "instead_text_contains": "Лучшее средство победить его",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 7,
+        "portion_count": 9,
+        "instead_portion_index": 7,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page12-portion-8",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page12-portion-8.png",
+      "visual_change_from": "corpse-page12-portion-7",
+      "expect": {
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "image_suffix": "12.png",
+        "instead_background_suffix": "images/12.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Там вы действительно примеряли волчью шкуру",
+        "instead_text_contains": "Там вы действительно примеряли волчью шкуру",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 8,
+        "portion_count": 9,
+        "instead_portion_index": 8,
+        "instead_portion_count": 9
+      }
+    },
+    {
+      "id": "corpse-page13-portion-0",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "corpse-page13-portion-0.png",
+      "visual_change_from": "corpse-page12-portion-8",
+      "expect": {
+        "page_id": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Когда вы покинули царство Морфея",
+        "instead_text_contains": "Когда вы покинули царство Морфея",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "portion_index": 0,
+        "portion_count": 1,
+        "instead_portion_index": 0,
+        "instead_portion_count": 1
+      }
+    },
+    {
+      "id": "corpse-kitchen-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "corpse-kitchen-choices.png",
+      "visual_change_from": "corpse-page13-portion-0",
+      "expect": {
+        "page_id": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "instead_choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
     }
   ],
   "notes": [
@@ -317,6 +927,7 @@
     "The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.",
     "Selecting index 1 is observed by INSTEAD as act 02 and by NLBNavigator as clickchoice:1.",
     "Page14 state wolfiness=0,hp=2 is confirmed by runtime in both engines (CI #162).",
-    "The corpse branch automatically converges on page5."
+    "The corpse branch automatically converges on page5.",
+    "Continuation from page5 through the first kitchen choice screen. Runtime pagination and state were locally confirmed in both engines by the Reviewer; the route stops before selecting either kitchen option."
   ]
 }
