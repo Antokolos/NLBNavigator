@@ -1,5 +1,8 @@
 """Статическая проверка семантической структуры differential-маршрутов."""
 
+ADVANCE_UNTIL = ("choices", "page_end", "page_change")
+ADVANCE_MAX_CLICKS = 200
+
 PORTION_FIELDS = (
     ("portion_index", "portion_count", "NLBNavigator"),
     ("instead_portion_index", "instead_portion_count", "INSTEAD"),
@@ -49,6 +52,9 @@ def validate_route(route, route_name="<route>"):
         if not isinstance(action, dict):
             errors.append("{}: {}: action должен быть объектом".format(route_name, step_id))
             action = {}
+
+        if action.get("type") == "advance_until":
+            errors.extend(validate_advance_until(action, route_name, step_id))
 
         if action.get("type") == "select_choice":
             prior_expect = previous.get("expect") if isinstance(previous, dict) else {}
@@ -129,4 +135,42 @@ def validate_route(route, route_name="<route>"):
             state["index"] = portion_index
             portion_state[state_key] = state
 
+    return errors
+
+
+def validate_advance_until(action, route_name, step_id):
+    """
+    advance_until: щёлкать, пока не выполнится условие until (choices — экран вариантов, page_end —
+    последняя порция страницы, page_change — другая страница), не больше max_clicks; expect_pages —
+    необязательная закреплённая последовательность страниц [{page_id, portion_count}] по порядку
+    """
+    errors = []
+    where = "{}: {}: advance_until".format(route_name, step_id)
+    if action.get("until") not in ADVANCE_UNTIL:
+        errors.append("{}: until должен быть одним из {}".format(where, ", ".join(ADVANCE_UNTIL)))
+    clicks = action.get("max_clicks")
+    if isinstance(clicks, bool) or not isinstance(clicks, int) or not 1 <= clicks <= ADVANCE_MAX_CLICKS:
+        errors.append("{}: max_clicks должен быть целым от 1 до {}".format(where, ADVANCE_MAX_CLICKS))
+    for key in ("x_ratio", "y_ratio"):
+        value = action.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0.0 <= value <= 1.0:
+            errors.append("{}: {} должен быть числом от 0 до 1".format(where, key))
+    pages = action.get("expect_pages")
+    if pages is not None:
+        if not isinstance(pages, list) or not pages:
+            errors.append("{}: expect_pages должен быть непустым списком".format(where))
+        else:
+            for number, page in enumerate(pages, 1):
+                if not isinstance(page, dict) or not isinstance(page.get("page_id"), str) or not page.get("page_id"):
+                    errors.append("{}: expect_pages[{}]: нужен непустой page_id".format(where, number))
+                    continue
+                count = page.get("portion_count")
+                if count is not None and (isinstance(count, bool) or not isinstance(count, int) or count < 0):
+                    errors.append("{}: expect_pages[{}]: portion_count — неотрицательное целое".format(where, number))
+                extra = set(page) - {"page_id", "portion_count"}
+                if extra:
+                    errors.append("{}: expect_pages[{}]: неизвестные поля {}".format(where, number, sorted(extra)))
+                if number > 1 and isinstance(pages[number - 2], dict) and pages[number - 2].get("page_id") == page.get("page_id"):
+                    errors.append("{}: expect_pages[{}]: страница подряд дважды — подряд идущие порции одной "
+                                  "страницы — одна запись".format(where, number))
     return errors

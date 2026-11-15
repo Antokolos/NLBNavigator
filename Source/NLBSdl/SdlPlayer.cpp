@@ -665,10 +665,45 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         renderFrame();
     } else if (starts("shot:")) {
         ok = saveScreenshot(line.substr(5));
+    } else if (starts("advance-until:")) {
+        // advance-until:условие,щелчков,x,y — щёлкать в (x,y), пока не выполнится условие (не
+        // больше заданного числа щелчков; условие, выполненное сразу, — ни одного щелчка). Каждый
+        // щелчок — обычная команда click: со своим снимком state-log: раннер дифференциальных тестов
+        // сверяет по ним порции с INSTEAD. Условия: choices — открыт экран вариантов; page_end —
+        // показана последняя порция страницы (или страница сменилась, или экран не страница);
+        // page_change — другая страница (те же, что у действия advance_until раннера: их понимает
+        // и трасса INSTEAD). Не выполнено — [НЕ ВЫПОЛНЕНО]
+        std::string until;
+        int maxClicks = 0;
+        float x = 0, y = 0;
+        {
+            const std::string args = line.substr(14);
+            const auto comma = args.find(',');
+            until = args.substr(0, comma);
+            if (comma == std::string::npos || std::sscanf(args.c_str() + comma + 1, "%d,%f,%f", &maxClicks, &x, &y) != 3) until.clear();
+        }
+        const std::string startPage = engine.screen().pageId;
+        auto reached = [&]() {
+            const nlb::presentation::ScreenModel screen = engine.screen();
+            if (until == "choices") return m_screen->choicesScreenShown();
+            if (until == "page_change") return screen.pageId != startPage;
+            // page_end: последняя порция или уже не страница
+            return !m_screen->portionState().more || m_screen->choicesScreenShown() || m_screen->messageShown()
+                   || screen.pageId != startPage;
+        };
+        ok = until == "choices" || until == "page_end" || until == "page_change";
+        if (ok) {
+            char click[64];
+            std::snprintf(click, sizeof(click), "click:%g,%g", x, y);
+            for (int i = 0; i < maxClicks && !reached() && !m_screen->quitRequested(); ++i) scriptCommand(click);
+            ok = reached();
+        }
     } else if (!line.empty() && line[0] != '#') {
         ok = false;
     }
-    if (!starts("shot:") && !starts("settle:") && !starts("click") && !starts("hover") && !starts("key:") && !starts("wheel:") && !starts("menu:")) {
+    // advance-until: — как click: (refresh закрыл бы экран вариантов, ради которого листали)
+    if (!starts("shot:") && !starts("settle:") && !starts("click") && !starts("hover") && !starts("key:") && !starts("wheel:") && !starts("menu:")
+        && !starts("advance-until:")) {
         m_session->refresh();
         m_screen->afterCommand();
     }

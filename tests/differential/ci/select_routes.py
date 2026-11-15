@@ -49,8 +49,12 @@ def load_routes():
 def timeouts(path):
     route = json.loads((ROOT / path).read_text(encoding="utf-8"))
     steps = len(route.get("steps", []))
+    # advance_until — до max_clicks щелчков за шаг: INSTEAD ждёт после каждого запись trace (и
+    # затишье), nlb_sdl щёлкает без снимков экрана
+    clicks = sum(int(step.get("action", {}).get("max_clicks", 0)) for step in route.get("steps", [])
+                 if step.get("action", {}).get("type") == "advance_until")
     # INSTEAD: снимок экрана и trace на каждом шаге; nlb_sdl быстрее
-    return {"instead_timeout": 120 + 8 * steps, "nlb_timeout": 90 + 5 * steps}
+    return {"instead_timeout": 120 + 8 * steps + 3 * clicks, "nlb_timeout": 90 + 5 * steps + clicks}
 
 
 def changed_files(base, head):
