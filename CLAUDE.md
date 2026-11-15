@@ -26,7 +26,8 @@
   (`python3 Source/NLBPlayer/update_sources.py` после добавления .cpp в ядро). Без RTTI.
 - `NLBPlatforms` — Steamworks/EOS; `thirdparty/` — cparse, stb.
 - `integrations/godot` — GDExtension; `android/` — SDL-приложение (game/player, лаунчер на
-  Compose); `tools/make_nlbz.py` — `.nlbz`; `docs/` — описания решений (читать перед правкой).
+  Compose); `tools/make_nlbz.py` — `.nlbz`; `tools/nlb_pages.py` — страницы книги с модулями: концовки,
+  возвраты из модулей (по каталогу, для покрытия); `docs/` — описания решений (читать перед правкой).
 
 ## Сборка и проверка
 - `cmake -S . -B build -G Ninja && ninja -C build NLBReader nlb_main` (SDL3 — для `nlb_sdl`).
