@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-from route_validation import validate_route
+from route_validation import expand_prefix, validate_route
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -115,9 +115,26 @@ def main():
             return fail("{}: корень JSON маршрута должен быть объектом".format(route_id))
         if route.get("id") != route_id:
             return fail("{}: id в JSON ({}) не совпадает с catalog.json".format(route_id, route.get("id")))
-        route_errors = validate_route(route, relative_path)
+        # с шагами общего префикса: маршрут может начинаться с выбора на экране вариантов фрагмента
+        route, prefix_errors = expand_prefix(route, route_path.parent, relative_path)
+        route_errors = prefix_errors + validate_route(route, relative_path)
         if route_errors:
             return fail("; ".join(route_errors))
+
+    # фрагменты общих префиксов — не маршруты (в каталоге их нет): только корректность самих шагов
+    fragments_dir = ROOT / "tests/differential/routes/fragments"
+    for fragment_path in sorted(fragments_dir.glob("*.json")) if fragments_dir.is_dir() else []:
+        relative = str(fragment_path.relative_to(ROOT))
+        try:
+            fragment = json.loads(fragment_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            return fail("{}: не удалось прочитать фрагмент: {}".format(relative, error))
+        if not isinstance(fragment, dict) or fragment.get("id") != fragment_path.stem:
+            return fail("{}: id фрагмента должен совпадать с именем файла".format(relative))
+        fragment, prefix_errors = expand_prefix(fragment, fragments_dir.parent, relative)
+        fragment_errors = prefix_errors + validate_route(fragment, relative)
+        if fragment_errors:
+            return fail("; ".join(fragment_errors))
 
     print(
         "Catalog OK: {} books, {} paired INSTEAD exports, {} unpaired book, {} routes.".format(

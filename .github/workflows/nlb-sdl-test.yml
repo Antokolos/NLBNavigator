@@ -87,7 +87,15 @@ jobs:
           python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py \
             tests/differential/ci/select_routes.py
           python3 -m json.tool tests/differential/catalog.json > /dev/null
-          for route in tests/differential/routes/*.json; do python3 -m json.tool "$route" > /dev/null; done
+          for route in tests/differential/routes/*.json tests/differential/routes/fragments/*.json \
+              tests/differential/examples/*.json; do
+            [ -e "$route" ] || continue
+            python3 -m json.tool "$route" > /dev/null
+          done
+          for route in tests/differential/examples/*.json; do
+            [ -e "$route" ] || continue
+            python3 tests/differential/run_route.py --check --route "$route"
+          done
           python3 -m unittest discover -s tests/differential -p 'test_*.py'
           python3 tests/differential/validate_catalog.py
           python3 tests/differential/run_route.py --help > /dev/null
