@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Report declared page coverage from route expect.page_id fields (not runtime results)."""
+"""Report declared page coverage from route expectations and expanded prefixes (not runtime results)."""
 import argparse, json, subprocess, sys
 from collections import defaultdict
 from pathlib import Path

@@ -65,7 +65,16 @@ class CoverageReportTests(unittest.TestCase):
             fragments_dir.mkdir(parents=True)
             fragment = {
                 "id": "shared-start",
-                "steps": [{"id": "opening", "expect": {"page_id": "ending-a"}}],
+                "steps": [
+                    {"id": "opening", "expect": {"page_id": "ending-a"}},
+                    {
+                        "id": "advance",
+                        "action": {
+                            "type": "advance_until",
+                            "expect_pages": [{"page_id": "return-a"}],
+                        },
+                    },
+                ],
             }
             (fragments_dir / "shared-start.json").write_text(
                 json.dumps(fragment), encoding="utf-8"
@@ -81,9 +90,10 @@ class CoverageReportTests(unittest.TestCase):
 
             expanded_routes = routes_for({"routes": route_items}, "sample", root)
             report = make_report("sample", self.entry, "a" * 40, self.pages, expanded_routes)
-            row = next(p for p in report["pages"] if p["id"] == "ending-a")
-            self.assertTrue(row["covered"])
-            self.assertEqual(row["routes"], ["branch-one", "branch-two"])
+            for page_id in ("ending-a", "return-a"):
+                row = next(p for p in report["pages"] if p["id"] == page_id)
+                self.assertTrue(row["covered"])
+                self.assertEqual(row["routes"], ["branch-one", "branch-two"])
 
     def test_unknown_ids_include_routes_and_steps(self):
         self.assertEqual(self.report()["unknown_route_page_ids"], [
