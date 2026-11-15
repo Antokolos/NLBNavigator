@@ -4,9 +4,11 @@
 Каждая строка — корректный JSON с обязательными полями нужных типов; index идёт подряд с 0;
 значения screen — из допустимых. Код возврата 0 — файл в порядке, 1 — ошибки (печатаются).
 
-    python3 tools/check_state_log.py state.jsonl [--commands N]
+    python3 tools/check_state_log.py state.jsonl [--commands N | --min-commands N]
 
 --commands N: ожидается ровно N команд сценария (записей N + 1, вместе с начальной).
+--min-commands N: не меньше N команд — когда сценарий сам добавляет команды (advance-until:
+пишет снимок после каждого своего щелчка, их число заранее неизвестно).
 """
 import argparse
 import json
@@ -36,6 +38,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("path")
     parser.add_argument("--commands", type=int)
+    parser.add_argument("--min-commands", type=int)
     args = parser.parse_args()
     errors = []
     count = 0
@@ -72,6 +75,9 @@ def main():
         errors.append("файл пуст: нет даже начальной записи")
     if args.commands is not None and count != args.commands + 1:
         errors.append("записей {}, ожидалось {} (команд {} + начальная)".format(count, args.commands + 1, args.commands))
+    if args.min_commands is not None and count < args.min_commands + 1:
+        errors.append("записей {}, ожидалось не меньше {} (команд {} + начальная)".format(
+            count, args.min_commands + 1, args.min_commands))
     for error in errors:
         print(error)
     if not errors:

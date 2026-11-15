@@ -15,7 +15,7 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import unquote
 
-from route_validation import validate_route
+from route_validation import expand_prefix, validate_route
 
 
 SCREEN_RE = re.compile(
@@ -28,6 +28,10 @@ def load_route(path):
         route = json.load(source)
     if route.get("schema_version") != 1:
         raise ValueError("Поддерживается только schema_version=1")
+    # общий префикс (routes/fragments/<имя>.json) — шаги фрагментов первыми
+    route, prefix_errors = expand_prefix(route, Path(path).resolve().parent, str(path))
+    if prefix_errors:
+        raise ValueError("; ".join(prefix_errors))
     steps = route.get("steps")
     if not isinstance(steps, list) or not steps:
         raise ValueError("Маршрут должен содержать непустой массив steps")
@@ -39,16 +43,16 @@ def load_route(path):
         if not screenshot or Path(screenshot).name != screenshot:
             raise ValueError("screenshot должен быть именем файла без каталогов")
         action = step.get("action", {})
-        if action.get("type") not in ("capture", "key", "click", "advance", "select_choice", "menu"):
-            raise ValueError("Поддерживаются действия capture, key, click, advance, select_choice и menu")
+        if action.get("type") not in ("capture", "key", "click", "advance", "advance_until", "choose", "select_choice", "menu"):
+            raise ValueError("Поддерживаются действия capture, key, click, advance, advance_until, choose, select_choice и menu")
         if action.get("type") == "menu":
             validate_menu_action(action)
         if action.get("type") == "key" and not action.get("key"):
             raise ValueError("Для действия key не задан key")
-        if action.get("type") in ("click", "advance"):
+        if action.get("type") in ("click", "advance", "advance_until"):
             for key in ("x_ratio", "y_ratio"):
                 if key not in action or not 0.0 <= float(action[key]) <= 1.0:
-                    raise ValueError("Координаты click/advance задаются x_ratio/y_ratio от 0 до 1")
+                    raise ValueError("Координаты click/advance/advance_until задаются x_ratio/y_ratio от 0 до 1")
         if action.get("type") == "advance":
             clicks = action.get("clicks", {})
             counts = {}
@@ -233,6 +237,134 @@ def normalize_story_text(value):
     return unicodedata.normalize("NFC", str(value or "")).replace("\r\n", "\n").replace("\r", "\n")
 
 
+SEQUENCE_TEXT = 80  # начало текста порции в последовательности advance_until (отчёт и сверка)
+
+
+def nlbnavigator_sequence_item(record):
+    """Состояние NLBNavigator после щелчка advance_until: страница, порция, экран, начало текста"""
+    portion = record.get("portion", {})
+    variables = {name: variable_text(value) for name, value in (record.get("variables") or {}).items()}
+    return {
+        "page_id": record.get("pageId", ""),
+        "screen": record.get("screen", ""),
+        "portion_index": portion.get("index", 0),
+        "portion_count": portion.get("count", 0),
+        "text": comparable_text(nlbnavigator_visible_text(record))[:SEQUENCE_TEXT],
+        "variables": variables,
+    }
+
+
+def instead_sequence_item(record):
+    """Состояние INSTEAD после щелчка advance_until (из Lua trace)"""
+    return {
+        "page_id": record.get("page_id", ""),
+        "screen": record.get("screen_kind", ""),
+        "portion_index": record.get("portion_index", 0),
+        "portion_count": record.get("portion_count", 0),
+        "text": comparable_text(record.get("rendered", ""))[:SEQUENCE_TEXT],
+        "rendered": comparable_text(record.get("rendered", "")),
+        "variables": {name: record.get(name, "") for name in TRACE_VARIABLES},
+    }
+
+
+def variable_text(value):
+    """Значение переменной как в трассе INSTEAD: true/false, числа без «.0», строка как есть"""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return "" if value is None else str(value)
+
+
+def page_sequence(sequence):
+    """Страницы по порядку (подряд идущие одинаковые — одна) с числом порций — для expect_pages"""
+    pages = []
+    for item in sequence:
+        if pages and pages[-1]["page_id"] == item["page_id"]:
+            pages[-1]["portion_count"] = max(pages[-1]["portion_count"], item["portion_count"])
+            continue
+        pages.append({"page_id": item["page_id"], "portion_count": item["portion_count"]})
+    return pages
+
+
+SCREEN_KINDS = {"page": "page", "choices": "choices", "overlay": "page"}
+
+
+def compare_advance_sequences(left, right):
+    """
+    Первое расхождение INSTEAD (left) и NLBNavigator (right) по щелчкам advance_until или None:
+    страница, номер и число порций, экран, переменные, текст (начало порции NLBNavigator — в
+    тексте INSTEAD; если текста NLBNavigator нет — не сравнивается)
+    """
+    if left is None or right is None:
+        return "нет последовательности advance_until у {}".format("INSTEAD" if left is None else "NLBNavigator")
+    for number, (a, b) in enumerate(zip(left, right), 1):
+        where = "щелчок {}".format(number)
+        for key in ("page_id", "portion_index", "portion_count"):
+            if a.get(key) != b.get(key):
+                return "{}: {} INSTEAD {!r}, NLBNavigator {!r}".format(where, key, a.get(key), b.get(key))
+        if SCREEN_KINDS.get(a.get("screen"), a.get("screen")) != b.get("screen"):
+            return "{}: экран INSTEAD {!r}, NLBNavigator {!r}".format(where, a.get("screen"), b.get("screen"))
+        for name, value in (b.get("variables") or {}).items():
+            if name in (a.get("variables") or {}) and a["variables"][name] != value:
+                return "{}: переменная {} INSTEAD {!r}, NLBNavigator {!r}".format(where, name, a["variables"][name], value)
+        start = (b.get("text") or "")[:40]
+        if start and b.get("screen") == "page" and start not in (a.get("rendered") or a.get("text") or ""):
+            return "{}: текст NLBNavigator {!r} не найден в порции INSTEAD {!r}".format(where, start, (a.get("text") or ""))
+    if len(left) != len(right):
+        return "щелчков INSTEAD {}, NLBNavigator {}".format(len(left), len(right))
+    return None
+
+
+def check_expect_pages(step, sequence, runtime_name):
+    """expect_pages шага advance_until: та же последовательность страниц (и число порций, если задано)"""
+    expected = step["action"].get("expect_pages")
+    if not expected:
+        return []
+    actual = page_sequence(sequence)
+    errors = []
+    if [item["page_id"] for item in actual] != [item["page_id"] for item in expected]:
+        errors.append("{}: {}: страницы {}, ожидались expect_pages {}".format(
+            step["id"], runtime_name, [item["page_id"] for item in actual], [item["page_id"] for item in expected]))
+        return errors
+    for want, got in zip(expected, actual):
+        if "portion_count" in want and want["portion_count"] != got["portion_count"]:
+            errors.append("{}: {}: на странице {} порций {}, ожидалось {}".format(
+                step["id"], runtime_name, want["page_id"], got["portion_count"], want["portion_count"]))
+    return errors
+
+
+def typography(value):
+    """
+    Типографские замены отрисовки NLBNavigator (GameScreen.cpp: dashes, quotes) — их же делают
+    модули dash и quotes экспорта в INSTEAD (docs/state-log.md). В state-log текст до замен, в
+    трассе INSTEAD — после: перед сверкой движков между собой их применяют к обоим (к INSTEAD это
+    ничего не меняет). «--» между не-дефисами -> «—» («---» не трогается); _" -> «, "_ -> »,
+    "текст" -> «текст», ,, -> „, '' -> ”
+    """
+    s = str(value or "")
+    out = []
+    i = 0
+    while i < len(s):
+        pair = s[i] == "-" and i + 1 < len(s) and s[i + 1] == "-"
+        before = i == 0 or s[i - 1] != "-"
+        after = i + 2 >= len(s) or s[i + 2] != "-"
+        if pair and before and after:
+            out.append("\u2014")
+            i += 2
+            continue
+        out.append(s[i])
+        i += 1
+    s = "".join(out).replace('_"', "\u00ab").replace('"_', "\u00bb")
+    s = re.sub(r'"([^"]*)"', "\u00ab\\1\u00bb", s)
+    return s.replace(",,", "\u201e").replace("''", "\u201d")
+
+
+def comparable_text(value):
+    """Текст для сверки движков между собой: Unicode NFC, типографика, пробелы — одним пробелом"""
+    return re.sub(r"\s+", " ", typography(normalize_story_text(value))).strip()
+
+
 def nlbnavigator_visible_text(record):
     portion = record.get("portion", {})
     if portion.get("count", 0) and portion.get("visible"):
@@ -369,6 +501,14 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
 
 
 
+    # advance_until: закреплённая последовательность страниц (expect_pages) — в каждом движке
+    # отдельно: сверка движков между собой одинакового изменения в обоих не заметит
+    sequence_by_id = {record.get("step_id"): record.get("advance_sequence") for record in (state_records or [])}
+    for step in route["steps"]:
+        if step["action"]["type"] == "advance_until" and sequence_by_id.get(step["id"]) is not None:
+            errors.extend(check_expect_pages(step, sequence_by_id[step["id"]],
+                                             "INSTEAD" if runtime == "instead" else "NLBNavigator"))
+
     if runtime == "instead":
         state_by_id = {record["step_id"]: record for record in (state_records or [])}
         for step in route["steps"]:
@@ -480,6 +620,15 @@ def script_for_nlbnavigator(route, output_dir):
             # Zero is valid when this runtime already exposes choices on the current page.
             for _ in range(clicks):
                 append_command("click:{},{}".format(x, y))
+        elif kind == "advance_until":
+            # nlb_sdl сам щёлкает до условия: каждый щелчок — команда click: со своим снимком
+            # state-log (их число заранее неизвестно — контрольные точки ищутся по shot:)
+            x = round(float(action["x_ratio"]) * width)
+            y = round(float(action["y_ratio"]) * height)
+            append_command("advance-until:{},{},{},{}".format(action["until"], int(action["max_clicks"]), x, y))
+        elif kind == "choose":
+            # вариант — по фрагменту текста (nlb_sdl ищет среди доступных, ровно один)
+            append_command("clickchoice:text=" + action["text"])
         elif kind == "select_choice":
             # Some exported VN choices are inline text links, not the separate
             # choices overlay. For those routes, use the explicitly configured
@@ -502,6 +651,48 @@ def script_for_nlbnavigator(route, output_dir):
     return "\n".join(lines) + "\n", checkpoint_indices, command_count
 
 
+
+
+FAILED_PREFIX = "[НЕ ВЫПОЛНЕНО] "
+
+
+def failed_script_steps(output, route, script):
+    """
+    Невыполненные команды сценария nlb_sdl («[НЕ ВЫПОЛНЕНО] команда») — с шагом маршрута, к которому
+    относятся (по порядку: команды сценария идут по шагам до их shot:), и причиной для advance_until
+    и choose
+    """
+    owners = []  # (команда, id шага) по порядку сценария
+    step_ids = iter(step["id"] for step in route["steps"])
+    current = next(step_ids, None)
+    for line in script.splitlines():
+        if not line or line.startswith("#"):
+            continue
+        owners.append((line, current))
+        if line.startswith("shot:"):
+            current = next(step_ids, None)
+    actions = {step["id"]: step["action"] for step in route["steps"]}
+    messages = []
+    position = 0
+    for line in output.splitlines():
+        if not line.startswith(FAILED_PREFIX):
+            continue
+        command = line[len(FAILED_PREFIX):].strip()
+        found = next((i for i in range(position, len(owners)) if owners[i][0] == command), None)
+        if found is None:
+            messages.append("не выполнено: " + command)
+            continue
+        position = found + 1
+        step_id = owners[found][1]
+        action = actions.get(step_id, {})
+        if action.get("type") == "advance_until":
+            reason = "advance_until: условие {} не выполнено за {} щелчков".format(action["until"], action["max_clicks"])
+        elif action.get("type") == "choose":
+            reason = "choose: нет ровно одного доступного варианта с текстом {!r}".format(action["text"])
+        else:
+            reason = "не выполнено: " + command
+        messages.append("{}: {}".format(step_id, reason))
+    return messages
 
 
 def read_state_log(path):
@@ -564,6 +755,10 @@ def run_nlbnavigator(args, route, output_dir):
     )
     runner_log.write_text(completed.stdout, encoding="utf-8")
     print(completed.stdout, end="")
+    # невыполненная команда — с шагом маршрута и причиной (иначе — только код возврата 2)
+    failed = failed_script_steps(completed.stdout, route, script)
+    if failed:
+        raise RuntimeError("nlb_sdl: " + "; ".join(failed))
     if completed.returncode != 0:
         raise RuntimeError("nlb_sdl завершился с кодом {}".format(completed.returncode))
     if "[НЕ ВЫПОЛНЕНО]" in completed.stdout:
@@ -574,8 +769,11 @@ def run_nlbnavigator(args, route, output_dir):
     validator = Path(__file__).resolve().parents[2] / "tools" / "check_state_log.py"
     if not validator.is_file():
         raise RuntimeError("Не найден валидатор state-log: {}".format(validator))
+    # advance_until добавляет щелчки, число которых заранее неизвестно: тогда команд не меньше
+    has_advance_until = any(step["action"]["type"] == "advance_until" for step in route["steps"])
     checked = run_command(
-        [sys.executable, str(validator), str(state_log_path), "--commands", str(command_count)],
+        [sys.executable, str(validator), str(state_log_path),
+         "--min-commands" if has_advance_until else "--commands", str(command_count)],
         timeout_seconds=15,
     )
     (output_dir / "state-log-validation.txt").write_text(checked.stdout, encoding="utf-8")
@@ -583,23 +781,30 @@ def run_nlbnavigator(args, route, output_dir):
         raise RuntimeError("Проверка state-log не прошла: " + checked.stdout.strip())
 
     all_state_records = read_state_log(state_log_path)
-    records_by_index = {record.get("index"): record for record in all_state_records}
     state_records = []
+    position = 0
     for step in route["steps"]:
-        index = checkpoint_indices[step["id"]]
-        record = records_by_index.get(index)
+        # контрольная точка — запись своей команды shot: после предыдущей (по номеру записи её не
+        # найти: advance_until добавляет щелчки, число которых известно только после прогона)
         expected_command = "shot:" + str(screenshot_path(output_dir, step).resolve())
-        if record is None:
-            raise RuntimeError("{}: отсутствует state-log index {}".format(step["id"], index))
-        if record.get("command") != expected_command:
-            raise RuntimeError("{}: state-log index {} относится к {!r}, ожидался {!r}".format(
-                step["id"], index, record.get("command"), expected_command
+        found = next((i for i in range(position, len(all_state_records))
+                      if all_state_records[i].get("command") == expected_command), None)
+        if found is None:
+            raise RuntimeError("{}: в state-log нет записи {!r} (ожидалась около index {})".format(
+                step["id"], expected_command, checkpoint_indices[step["id"]]
             ))
+        record = all_state_records[found]
         if record.get("ok") is not True:
             raise RuntimeError("{}: state-log сообщает, что shot: не выполнен".format(step["id"]))
         mapped = dict(record)
         mapped["step_id"] = step["id"]
+        if step["action"]["type"] == "advance_until":
+            mapped["advance_sequence"] = [
+                nlbnavigator_sequence_item(item) for item in all_state_records[position:found]
+                if str(item.get("command", "")).startswith("click:")
+            ]
         state_records.append(mapped)
+        position = found + 1
 
     screen_records = []
     pending_screenshot = None
@@ -747,6 +952,122 @@ def execute_instead_action(action, window_bounds):
                 time.sleep(0.12)
         return
     raise ValueError("Неизвестное действие INSTEAD: " + kind)
+
+
+INSTEAD_ADVANCE_WAIT = 2.0      # ожидание первой записи трассы после щелчка, с
+INSTEAD_ADVANCE_ATTEMPTS = 3    # щелчок без новой сцены повторяется: во время смены страницы
+                                # (переход, затемнение) INSTEAD щелчки не принимает — они теряются
+INSTEAD_ADVANCE_QUIET = 0.35    # затишье после первой записи: переход автоссылкой даёт ещё записи
+
+
+CHOICE_LINK = re.compile(r"<a:act\s+0*(\d+)>(.*?)</a>", re.S)
+
+
+def instead_choice_index(rendered, text):
+    """Номер (с 0) варианта INSTEAD, в тексте которого есть фрагмент, — по ссылкам <a:act NN>; ровно один"""
+    wanted = comparable_text(text)
+    found = [int(number) - 1 for number, label in CHOICE_LINK.findall(rendered or "")
+             if wanted and wanted in comparable_text(re.sub(r"<[^>]*>", "", label))]
+    return found[0] if len(found) == 1 else None, len(found)
+
+
+def pointer_location():
+    """Положение указателя мыши (экран X11) или None"""
+    result = run_command(timeout_command(["xdotool", "getmouselocation", "--shell"], 3), 5)
+    values = dict(line.split("=", 1) for line in result.stdout.splitlines() if "=" in line)
+    try:
+        return int(values["X"]), int(values["Y"])
+    except (KeyError, ValueError):
+        return None
+
+
+def instead_choose(action, current, window):
+    """
+    choose в INSTEAD: номер варианта — по тексту ссылок экрана вариантов в трассе. Координаты
+    вариантов зависят от длины их текста, поэтому их узнаёт сам INSTEAD: «Вниз» переносит указатель
+    мыши на следующую ссылку (по кругу) — раннер нажимает его, пока не обойдёт все ссылки, и
+    запоминает точки; сверху вниз — порядок вариантов. Затем — обычный щелчок по точке нужного
+    (трасса подтверждает его: act NN). Возвращает (номер или None, ошибка или None)
+    """
+    if current is None or current.get("screen_kind") != "choices":
+        return None, "choose: INSTEAD не на экране вариантов"
+    index, count = instead_choice_index(current.get("rendered", ""), action["text"])
+    if index is None:
+        return None, "choose: вариантов с текстом {!r} в INSTEAD {} (нужен ровно один)".format(action["text"], count)
+    links = len(CHOICE_LINK.findall(current.get("rendered", "")))
+    points = []
+    for _ in range(2 * links + 2):
+        execute_instead_action({"type": "key", "key": "Down"}, None)
+        time.sleep(0.15)
+        point = pointer_location()
+        if point is not None and all(abs(point[0] - x) > 3 or abs(point[1] - y) > 3 for x, y in points):
+            points.append(point)
+        if len(points) == links:
+            break
+    if len(points) != links:
+        return None, "choose: «Вниз» обошёл {} ссылок INSTEAD из {}".format(len(points), links)
+    x, y = sorted(points, key=lambda point: (point[1], point[0]))[index]
+    for command in (["xdotool", "mousemove", str(x), str(y)], ["xdotool", "click", "--delay", "0", "1"]):
+        result = run_command(timeout_command(command, 3), 5)
+        if result.returncode != 0:
+            return None, "choose: INSTEAD: не удалось {}: {}".format(command[1], result.stdout.strip())
+    return index, None
+
+
+def instead_reached(until, record, start_page):
+    """Условие остановки advance_until по записи трассы INSTEAD (как advance-until: в nlb_sdl)"""
+    if record is None:
+        return False
+    if until == "choices":
+        return record.get("screen_kind") == "choices"
+    if until == "page_change":
+        return record.get("page_id") != start_page
+    # page_end: последняя порция, не страница или другая страница
+    return (not record.get("more") or record.get("screen_kind") != "page"
+            or record.get("page_id") != start_page)
+
+
+def instead_advance_until(action, window, trace_path, current, player):
+    """
+    Щелчки INSTEAD до условия advance_until: после каждого — ждать новую запись трассы (не
+    фиксированную паузу), затем затишье; условие, выполненное сразу, — ни одного щелчка.
+    Возвращает (последовательность состояний после каждого щелчка, ошибка или None)
+    """
+    until = action["until"]
+    start_page = (current or {}).get("page_id", "")
+    sequence = []
+    click = {"type": "click", "x_ratio": action["x_ratio"], "y_ratio": action["y_ratio"]}
+    for _ in range(int(action["max_clicks"])):
+        if instead_reached(until, current, start_page):
+            return sequence, None
+        if player.poll() is not None:
+            return sequence, "INSTEAD завершился во время advance_until"
+        cursor = max((record["seq"] for record in read_instead_trace(trace_path)), default=0)
+        latest, last_change, attempts = None, None, 0
+        while latest is None and attempts < INSTEAD_ADVANCE_ATTEMPTS:
+            attempts += 1
+            execute_instead_action(click, window)
+            deadline = time.monotonic() + INSTEAD_ADVANCE_WAIT
+            while time.monotonic() < deadline:
+                scenes = [record for record in read_instead_trace(trace_path)
+                          if record["seq"] > cursor and record["kind"] == "scene"]
+                if scenes and (latest is None or scenes[-1]["seq"] != latest["seq"]):
+                    latest, last_change = scenes[-1], time.monotonic()
+                    deadline = max(deadline, last_change + INSTEAD_ADVANCE_QUIET + 0.1)
+                if latest is not None and time.monotonic() - last_change >= INSTEAD_ADVANCE_QUIET:
+                    break
+                time.sleep(0.05)
+        if latest is None:
+            return sequence, "advance_until: после щелчка {} нет новой сцены в трассе INSTEAD ({} попытки)".format(
+                len(sequence) + 1, attempts)
+        current = latest
+        item = instead_sequence_item(current)
+        if attempts > 1:
+            item["attempts"] = attempts
+        sequence.append(item)
+    if instead_reached(until, current, start_page):
+        return sequence, None
+    return sequence, "advance_until: условие {} не выполнено за {} щелчков".format(until, action["max_clicks"])
 
 
 # Переменные книги в Lua trace INSTEAD (instead_trace.lua) — те же, что nlb_sdl пишет по --state-vars
@@ -984,7 +1305,21 @@ def run_instead(args, route, output_dir):
                 raise RuntimeError("INSTEAD завершился на шаге " + step["id"])
             before = read_instead_trace(trace_path)
             cursor = max((record["seq"] for record in before), default=cursor)
-            execute_instead_action(step["action"], window)
+            advance_sequence = None
+            choose_index = None
+            if step["action"]["type"] == "choose":
+                current_scene = [record for record in before if record["kind"] == "scene"]
+                choose_index, choose_error = instead_choose(step["action"], current_scene[-1] if current_scene else None, window)
+                if choose_error:
+                    trace_errors.append("{}: {}".format(step["id"], choose_error))
+            elif step["action"]["type"] == "advance_until":
+                current_scene = [record for record in before if record["kind"] == "scene"]
+                advance_sequence, advance_error = instead_advance_until(
+                    step["action"], window, trace_path, current_scene[-1] if current_scene else None, player)
+                if advance_error:
+                    trace_errors.append("{}: {}".format(step["id"], advance_error))
+            else:
+                execute_instead_action(step["action"], window)
             delay = int(step.get("settle_ms", 0))
             if delay > 0:
                 time.sleep(delay / 1000.0)
@@ -995,12 +1330,15 @@ def run_instead(args, route, output_dir):
 
             after = read_instead_trace(trace_path)
             new_events = [record for record in after if record["seq"] > cursor]
+            # choose — как select_choice с найденным номером (act NN)
+            check_action = (dict(step["action"], type="select_choice", index=choose_index)
+                            if step["action"]["type"] == "choose" and choose_index is not None else step["action"])
             action_events = [
                 record for record in new_events
-                if step["action"]["type"] in ("key", "click", "advance", "select_choice")
-                and trace_input_matches(step["action"], record)
+                if check_action["type"] in ("key", "click", "advance", "select_choice")
+                and trace_input_matches(check_action, record)
             ]
-            if step["action"]["type"] in ("key", "click", "advance", "select_choice") and not action_events:
+            if check_action["type"] in ("key", "click", "advance", "select_choice") and not action_events:
                 trace_errors.append("{}: INSTEAD trace не зафиксировал ожидаемый input event".format(
                     step["id"]
                 ))
@@ -1011,8 +1349,9 @@ def run_instead(args, route, output_dir):
                 if event["kind"] == "scene" and event["seq"] >= input_seq
             ]
             state_record = scene_events[-1] if scene_events else None
-            # capture и menu (сохранение, загрузка) могут не дать новой сцены — тогда последняя
-            if step["action"]["type"] in ("capture", "menu") and state_record is None:
+            # capture и menu (сохранение, загрузка) могут не дать новой сцены — тогда последняя;
+            # advance_until без щелчков (условие уже выполнено) — тоже
+            if step["action"]["type"] in ("capture", "menu", "advance_until") and state_record is None:
                 all_scene = [event for event in after if event["kind"] == "scene"]
                 state_record = all_scene[-1] if all_scene else None
 
@@ -1029,6 +1368,8 @@ def run_instead(args, route, output_dir):
                         ))
                 mapped = dict(state_record)
                 mapped["step_id"] = step["id"]
+                if advance_sequence is not None:
+                    mapped["advance_sequence"] = advance_sequence
                 mapped["trace_count"] = len(after)
                 mapped["input_events"] = action_events
                 state_records.append(mapped)
@@ -1171,9 +1512,32 @@ def compare_runtimes(route, output_dir):
                 ),
             })
 
+    # advance_until: движки — друг против друга по каждому щелчку (не рекомендательно: первое
+    # расхождение — ошибка). Текст — начало порции NLBNavigator в тексте INSTEAD после типографики
+    sequences = {}
+    for runtime_name in ("instead", "nlbnavigator"):
+        report_path = output_dir / runtime_name / "route-report.json"
+        if report_path.is_file():
+            with report_path.open("r", encoding="utf-8") as source:
+                sequences[runtime_name] = {
+                    record.get("step_id"): record.get("advance_sequence")
+                    for record in json.load(source).get("state_records", [])
+                }
+    advance_comparison = []
+    for step in route["steps"]:
+        if step["action"]["type"] != "advance_until":
+            continue
+        left = sequences.get("instead", {}).get(step["id"])
+        right = sequences.get("nlbnavigator", {}).get(step["id"])
+        mismatch = compare_advance_sequences(left, right)
+        advance_comparison.append({"step_id": step["id"], "instead": left, "nlbnavigator": right, "mismatch": mismatch})
+        if mismatch:
+            errors.append("{}: {}".format(step["id"], mismatch))
+
     report = {
         "route": route["id"],
         "comparison_is_advisory": True,
+        "advance_comparison": advance_comparison,
         "runtime_metadata": runtime_reports,
         "text_comparison": text_comparison,
         "ok": not errors,

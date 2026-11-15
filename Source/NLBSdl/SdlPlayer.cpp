@@ -621,10 +621,24 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         ok = m_screen->hitCenter(id, inv, x, y);
         if (ok) m_screen->click(x, y, false);
     } else if (starts("clickchoice:") || starts("hoverchoice:")) {
-        // переход с номером N (-1 — заголовок комнаты): щелчок или наведение мыши
+        // переход с номером N (-1 — заголовок комнаты): щелчок или наведение мыши. text=<фрагмент>
+        // вместо номера — доступный вариант, в тексте которого есть фрагмент (исходный текст книги,
+        // до типографики; ровно один такой) — действие choose раннера дифференциальных тестов
         renderFrame();
         float x = 0, y = 0;
-        ok = m_screen->choiceCenter(std::stoi(line.substr(line.find(':') + 1)), x, y);
+        const std::string arg = line.substr(line.find(':') + 1);
+        int index = -2;
+        if (arg.rfind("text=", 0) == 0) {
+            const std::string fragment = arg.substr(5);
+            int found = 0;
+            for (const auto& c : engine.screen().choices) {
+                if (c.enabled && !fragment.empty() && c.text.find(fragment) != std::string::npos) { index = c.index; ++found; }
+            }
+            if (found != 1) index = -2;  // нет такого варианта или их несколько — не выполнено
+        } else {
+            index = std::stoi(arg);
+        }
+        ok = index != -2 && m_screen->choiceCenter(index, x, y);
         if (ok && starts("click")) m_screen->click(x, y, false);
         if (ok && starts("hover")) m_screen->mouseMove(x, y);
     } else if (starts("hoverobj:") || starts("hoverinv:")) {
@@ -665,10 +679,45 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         renderFrame();
     } else if (starts("shot:")) {
         ok = saveScreenshot(line.substr(5));
+    } else if (starts("advance-until:")) {
+        // advance-until:условие,щелчков,x,y — щёлкать в (x,y), пока не выполнится условие (не
+        // больше заданного числа щелчков; условие, выполненное сразу, — ни одного щелчка). Каждый
+        // щелчок — обычная команда click: со своим снимком state-log: раннер дифференциальных тестов
+        // сверяет по ним порции с INSTEAD. Условия: choices — открыт экран вариантов; page_end —
+        // показана последняя порция страницы (или страница сменилась, или экран не страница);
+        // page_change — другая страница (те же, что у действия advance_until раннера: их понимает
+        // и трасса INSTEAD). Не выполнено — [НЕ ВЫПОЛНЕНО]
+        std::string until;
+        int maxClicks = 0;
+        float x = 0, y = 0;
+        {
+            const std::string args = line.substr(14);
+            const auto comma = args.find(',');
+            until = args.substr(0, comma);
+            if (comma == std::string::npos || std::sscanf(args.c_str() + comma + 1, "%d,%f,%f", &maxClicks, &x, &y) != 3) until.clear();
+        }
+        const std::string startPage = engine.screen().pageId;
+        auto reached = [&]() {
+            const nlb::presentation::ScreenModel screen = engine.screen();
+            if (until == "choices") return m_screen->choicesScreenShown();
+            if (until == "page_change") return screen.pageId != startPage;
+            // page_end: последняя порция или уже не страница
+            return !m_screen->portionState().more || m_screen->choicesScreenShown() || m_screen->messageShown()
+                   || screen.pageId != startPage;
+        };
+        ok = until == "choices" || until == "page_end" || until == "page_change";
+        if (ok) {
+            char click[64];
+            std::snprintf(click, sizeof(click), "click:%g,%g", x, y);
+            for (int i = 0; i < maxClicks && !reached() && !m_screen->quitRequested(); ++i) scriptCommand(click);
+            ok = reached();
+        }
     } else if (!line.empty() && line[0] != '#') {
         ok = false;
     }
-    if (!starts("shot:") && !starts("settle:") && !starts("click") && !starts("hover") && !starts("key:") && !starts("wheel:") && !starts("menu:")) {
+    // advance-until: — как click: (refresh закрыл бы экран вариантов, ради которого листали)
+    if (!starts("shot:") && !starts("settle:") && !starts("click") && !starts("hover") && !starts("key:") && !starts("wheel:") && !starts("menu:")
+        && !starts("advance-until:")) {
         m_session->refresh();
         m_screen->afterCommand();
     }
