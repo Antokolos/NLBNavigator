@@ -155,7 +155,7 @@ def markdown(report):
     for kind in KINDS:
         s = inv["by_kind"][kind]
         pct = 100 * s["covered"] / s["total"] if s["total"] else 0
-        out += [f"## {labels[kind]}", "", f"Всего: **{s['total']}**, заявленно покрыто: **{s['covered']}** ({pct:.1f}%).", "",
+        out += [f"## {labels[kind]}", "", f"Всего: **{s['total']}**, заявлено покрыто: **{s['covered']}** ({pct:.1f}%).", "",
                 "| UUID | Страница | Путь модулей | Статус | Маршруты |", "|---|---|---|---|---|"]
         for p in (x for x in report["pages"] if x["kind"] == kind):
             caption = (p["caption"] or "").replace("|", "\\|").replace("\n", " ")
