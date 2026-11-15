@@ -653,6 +653,48 @@ def script_for_nlbnavigator(route, output_dir):
 
 
 
+FAILED_PREFIX = "[НЕ ВЫПОЛНЕНО] "
+
+
+def failed_script_steps(output, route, script):
+    """
+    Невыполненные команды сценария nlb_sdl («[НЕ ВЫПОЛНЕНО] команда») — с шагом маршрута, к которому
+    относятся (по порядку: команды сценария идут по шагам до их shot:), и причиной для advance_until
+    и choose
+    """
+    owners = []  # (команда, id шага) по порядку сценария
+    step_ids = iter(step["id"] for step in route["steps"])
+    current = next(step_ids, None)
+    for line in script.splitlines():
+        if not line or line.startswith("#"):
+            continue
+        owners.append((line, current))
+        if line.startswith("shot:"):
+            current = next(step_ids, None)
+    actions = {step["id"]: step["action"] for step in route["steps"]}
+    messages = []
+    position = 0
+    for line in output.splitlines():
+        if not line.startswith(FAILED_PREFIX):
+            continue
+        command = line[len(FAILED_PREFIX):].strip()
+        found = next((i for i in range(position, len(owners)) if owners[i][0] == command), None)
+        if found is None:
+            messages.append("не выполнено: " + command)
+            continue
+        position = found + 1
+        step_id = owners[found][1]
+        action = actions.get(step_id, {})
+        if action.get("type") == "advance_until":
+            reason = "advance_until: условие {} не выполнено за {} щелчков".format(action["until"], action["max_clicks"])
+        elif action.get("type") == "choose":
+            reason = "choose: нет ровно одного доступного варианта с текстом {!r}".format(action["text"])
+        else:
+            reason = "не выполнено: " + command
+        messages.append("{}: {}".format(step_id, reason))
+    return messages
+
+
 def read_state_log(path):
     records = []
     with path.open("r", encoding="utf-8") as source:
@@ -713,6 +755,10 @@ def run_nlbnavigator(args, route, output_dir):
     )
     runner_log.write_text(completed.stdout, encoding="utf-8")
     print(completed.stdout, end="")
+    # невыполненная команда — с шагом маршрута и причиной (иначе — только код возврата 2)
+    failed = failed_script_steps(completed.stdout, route, script)
+    if failed:
+        raise RuntimeError("nlb_sdl: " + "; ".join(failed))
     if completed.returncode != 0:
         raise RuntimeError("nlb_sdl завершился с кодом {}".format(completed.returncode))
     if "[НЕ ВЫПОЛНЕНО]" in completed.stdout:
