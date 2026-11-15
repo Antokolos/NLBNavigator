@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-police-hospital-doctor-choose",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — полиция и больница: съесть врача (prefix, choose)",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "notes": [
+    "Тот же путь, что routes/wolfman-police-hospital-doctor.json: префикс wolfman-police-start (заставка — первый экран вариантов), выбор вариантов по тексту (choose), листание — advance_until."
+  ],
+  "prefix": "wolfman-police-start",
+  "steps": [
+    {
+      "id": "police",
+      "action": {
+        "type": "choose",
+        "text": "Попытаться прорваться"
+      },
+      "settle_ms": 3000,
+      "screenshot": "police.png",
+      "expect": {
+        "page_id": "b12a01be-cd61-4dba-b427-1ce3afc06fc6",
+        "image_suffix": "2.png",
+        "instead_background_suffix": "images/2.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Сделав ставку на внезапность",
+        "instead_text_contains": "Сделав ставку на внезапность",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "hospital-choices",
+      "action": {
+        "type": "advance_until",
+        "until": "choices",
+        "max_clicks": 40,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "b12a01be-cd61-4dba-b427-1ce3afc06fc6"
+          },
+          {
+            "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+            "portion_count": 2
+          }
+        ]
+      },
+      "settle_ms": 2500,
+      "screenshot": "hospital-choices.png",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "instead_choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "doctor",
+      "action": {
+        "type": "choose",
+        "text": "Съесть врача"
+      },
+      "settle_ms": 3000,
+      "screenshot": "doctor.png",
+      "expect": {
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "image_suffix": "4.png",
+        "instead_background_suffix": "images/4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Ощутив запах панического ужаса",
+        "instead_text_contains": "Ощутив запах панического ужаса",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        },
+        "portion_index": 0,
+        "portion_count": 4,
+        "instead_portion_index": 0,
+        "instead_portion_count": 4
+      }
+    },
+    {
+      "id": "doctor-kitchen-choices",
+      "action": {
+        "type": "advance_until",
+        "until": "choices",
+        "max_clicks": 60,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+            "portion_count": 4
+          },
+          {
+            "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+            "portion_count": 6
+          },
+          {
+            "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+            "portion_count": 2
+          },
+          {
+            "page_id": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+            "portion_count": 1
+          },
+          {
+            "page_id": "b2f0838e-3068-4850-ad2f-4944075de38b",
+            "portion_count": 17
+          },
+          {
+            "page_id": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2500,
+      "screenshot": "doctor-kitchen-choices.png",
+      "expect": {
+        "page_id": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+        "image_suffix": "13.png",
+        "instead_background_suffix": "images/13.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "instead_choices_contains": [
+          "Съесть философа",
+          "Украсть еду с кухни"
+        ],
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        }
+      }
+    }
+  ]
+}

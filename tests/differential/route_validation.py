@@ -1,5 +1,9 @@
 """Статическая проверка семантической структуры differential-маршрутов."""
 
+import json
+import re
+from pathlib import Path
+
 ADVANCE_UNTIL = ("choices", "page_end", "page_change")
 ADVANCE_MAX_CLICKS = 200
 
@@ -55,6 +59,9 @@ def validate_route(route, route_name="<route>"):
 
         if action.get("type") == "advance_until":
             errors.extend(validate_advance_until(action, route_name, step_id))
+
+        if action.get("type") == "choose":
+            errors.extend(validate_choose(action, previous, route_name, step_id))
 
         if action.get("type") == "select_choice":
             prior_expect = previous.get("expect") if isinstance(previous, dict) else {}
@@ -174,3 +181,91 @@ def validate_advance_until(action, route_name, step_id):
                     errors.append("{}: expect_pages[{}]: страница подряд дважды — подряд идущие порции одной "
                                   "страницы — одна запись".format(where, number))
     return errors
+
+
+# Типографика отрисовки (GameScreen dashes/quotes): в тексте choose её быть не должно — nlb_sdl
+# ищет вариант в исходном тексте книги, INSTEAD показывает уже заменённый
+TYPOGRAPHY = re.compile("--|[\"\u00ab\u00bb\u201e\u201d\u2014]|,,|''")
+
+
+def validate_choose(action, previous, route_name, step_id):
+    """
+    choose: выбрать доступный вариант по фрагменту его текста (без номера и типографики), в обоих
+    движках; перед ним — экран вариантов: advance_until до choices или контрольная точка с
+    expect.screen = choices
+    """
+    errors = []
+    where = "{}: {}: choose".format(route_name, step_id)
+    text = action.get("text")
+    if not isinstance(text, str) or not text.strip():
+        errors.append("{}: нужен непустой text — фрагмент текста варианта".format(where))
+    elif TYPOGRAPHY.search(text):
+        errors.append("{}: text без «--», кавычек и тире: варианты ищутся в исходном тексте книги".format(where))
+    elif re.match(r"\s*\d+\.\s", text):
+        errors.append("{}: text без номера варианта — номер добавляет только отрисовка".format(where))
+    prior = previous if isinstance(previous, dict) else {}
+    prior_action = prior.get("action") if isinstance(prior.get("action"), dict) else {}
+    prior_expect = prior.get("expect") if isinstance(prior.get("expect"), dict) else {}
+    if not (prior_action.get("type") == "advance_until" and prior_action.get("until") == "choices"
+            or prior_expect.get("screen") == "choices"):
+        errors.append("{}: перед ним нужен экран вариантов (advance_until до choices или expect.screen = "
+                      "choices)".format(where))
+    return errors
+
+
+FRAGMENT_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
+
+
+def fragment_path(routes_dir, name):
+    return Path(routes_dir) / "fragments" / (name + ".json")
+
+
+def expand_prefix(route, routes_dir, route_name="<route>"):
+    """
+    Общий префикс: поле prefix — имя фрагмента routes/fragments/<имя>.json (у фрагмента тоже может
+    быть prefix). Шаги фрагментов идут первыми; их id, screenshot и visual_change_from получают
+    приставку «<имя>.». Возвращает (маршрут с полными шагами и prefix_chain, ошибки)
+    """
+    chain = []
+    errors = []
+    current = route
+    pieces = [list(route.get("steps") or [])]
+    while isinstance(current, dict) and current.get("prefix") is not None:
+        name = current.get("prefix")
+        if not isinstance(name, str) or not FRAGMENT_NAME.match(name):
+            errors.append("{}: prefix — имя фрагмента из латиницы, цифр, «.», «_», «-»".format(route_name))
+            break
+        if name in chain:
+            errors.append("{}: цикл префиксов: {}".format(route_name, " -> ".join(chain + [name])))
+            break
+        path = fragment_path(routes_dir, name)
+        try:
+            fragment = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            errors.append("{}: фрагмент {}: {}".format(route_name, path, error))
+            break
+        if not isinstance(fragment, dict) or fragment.get("id") != name or not isinstance(fragment.get("steps"), list):
+            errors.append("{}: фрагмент {}: нужны id = {!r} и массив steps".format(route_name, path, name))
+            break
+        chain.append(name)
+        pieces.insert(0, [prefixed_step(step, name) for step in fragment["steps"]])
+        current = fragment
+    expanded = dict(route)
+    expanded["steps"] = [step for piece in pieces for step in piece]
+    expanded["prefix_chain"] = list(reversed(chain))
+    return expanded, errors
+
+
+def prefixed_step(step, name):
+    if not isinstance(step, dict):
+        return step
+    result = json.loads(json.dumps(step))
+    for key in ("id", "screenshot", "visual_change_from"):
+        if isinstance(result.get(key), str) and result.get(key):
+            result[key] = name + "." + result[key]
+    return result
+
+
+def fragment_names(route):
+    """Цепочка префиксов маршрута (после expand_prefix)"""
+    return list(route.get("prefix_chain") or [])

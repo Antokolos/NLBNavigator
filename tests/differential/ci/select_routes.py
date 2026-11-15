@@ -5,7 +5,8 @@
   select_routes.py --only id1,id2             только эти (ручной запуск с выбором маршрутов)
   select_routes.py --base <sha> --head <sha>  по изменённым файлам (push, pull request)
 
-По изменённым файлам: изменился сам маршрут (JSON) — только он; изменились раннер, workflow, каталог,
+По изменённым файлам: изменился сам маршрут (JSON) — только он; изменился фрагмент общего
+префикса (routes/fragments/*.json) — все маршруты с ним в цепочке prefix; изменились раннер, workflow, каталог,
 ядро и SDL-фронтенд плеера (Source/NLBCore, NLBReader, NLBPresentation,
 NLBSdl, NLBAudioSDL, thirdparty; CMakeLists.txt) или файлы CI — все маршруты; изменилась только документация — ни
 одного (статическая проверка всё равно идёт). Если base неизвестен (новая ветка, сдвиг истории) — все.
@@ -21,6 +22,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "tests/differential"))
+from route_validation import expand_prefix  # noqa: E402
 CATALOG = ROOT / "tests/differential/catalog.json"
 ROUTES_DIR = "tests/differential/routes/"
 # изменения, после которых нужно прогнать всё
@@ -46,8 +49,14 @@ def load_routes():
     return catalog["routes"]
 
 
-def timeouts(path):
+def expanded(path):
+    """Маршрут с шагами общего префикса (routes/fragments)"""
     route = json.loads((ROOT / path).read_text(encoding="utf-8"))
+    return expand_prefix(route, (ROOT / path).parent, path)[0]
+
+
+def timeouts(path):
+    route = expanded(path)
     steps = len(route.get("steps", []))
     # advance_until — до max_clicks щелчков за шаг: INSTEAD ждёт после каждого запись trace (и
     # затишье), nlb_sdl щёлкает без снимков экрана
@@ -85,7 +94,9 @@ def select(routes, files):
     if any(f.startswith(ALL_PREFIXES) or (f.startswith("Source/") and f.count("/") == 1) for f in files):
         return routes, "все маршруты: изменились раннер, workflow, каталог или плеер"
     changed = set(f for f in files if f.startswith(ROUTES_DIR) and f.endswith(".json"))
-    chosen = [r for r in routes if r["path"] in changed]
+    fragments = set(Path(f).stem for f in changed if f.startswith(ROUTES_DIR + "fragments/"))
+    chosen = [r for r in routes if r["path"] in changed
+              or (fragments and fragments & set(expanded(r["path"]).get("prefix_chain") or []))]
     return chosen, "изменённые маршруты: {}".format(", ".join(r["id"] for r in chosen) or "нет")
 
 
