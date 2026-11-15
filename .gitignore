@@ -85,6 +85,10 @@ Session.vim
 !/tests/differential/route_validation.py
 !/tests/differential/test_route_validation.py
 !/tests/differential/test_select_routes.py
+!/tests/differential/test_advance_until.py
+# Примеры маршрутов на новых действиях раннера (не маршруты CI: те — в routes/)
+!/tests/differential/examples/
+!/tests/differential/examples/*.json
 !/tests/differential/ci/
 !/tests/differential/ci/*.py
 !/tests/differential/ci/*.sh
