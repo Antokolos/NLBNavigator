@@ -94,6 +94,7 @@ python3 tests/differential/run_route.py \
 командой shot: (portion.visible или model.pageText/reactionText), а не
 ищется по общему playthrough log. JSONL проверяется через
 tools/check_state_log.py.
+Правила сопоставления текста state-log и INSTEAD trace, включая типографские замены: [docs/state-log.md](../../docs/state-log.md).
 
 INSTEAD test adapter перехватывает внешний iface.cmd после экспортных модулей
 и записывает фактически возвращённый строковый результат VN-порции, команду и

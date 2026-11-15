@@ -11,13 +11,13 @@
 | Владелец | Решения и merge |
 
 
-Обновлено: 2026-11-14 (Asia/Bishkek).
+Обновлено: 2026-11-15 (Asia/Bishkek).
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последний интегрированный PR: #44 (merged).
-- Открытых PR нет. Следующая работа планируется отдельным Draft PR от актуального `main`.
-- Текущий `main`: `6a4e8d7cea908592b494bf369603578ed5251693` (merge PR #44).
+- Последний интегрированный PR: #55 (merged).
+- Открыт PR #54 (Draft): продолжение hospital routes после page5.
+- Текущий `main`: `e54b262139b4c179ffbb84a40e41e89e32717c77` (merge PR #55).
 - Последний полный runtime-прогон на `main`: [CI #183](https://github.com/Antokolos/NLBNavigator/actions/runs/43639954319) на HEAD `6a4e8d7` — все 16 маршрутов выбраны (лог Select routes), все 21 job завершились успешно (по API GitHub и логу Select routes; Ревьюер). Артефакт CI #183 не проверен, поэтому успешность отдельных runtime/comparison reports пока не утверждается. CI #181 — последний полный прогон ветки PR #44 до слияния.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
 - Каталог содержит 16 постоянных маршрутов; два hospital routes прошли paired runtime и comparison в CI #171. Временные диагностические маршруты удалены.
@@ -85,10 +85,10 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 
 Покрыто runtime-маршрутами: opening; forest/bypass и guard ветви wolfiness 0/2; low-wolfiness путь до page42; police entry до page2.
 
-Новый hospital PR добавляет два независимых clean-state маршрута:
+PR #54 расширяет два независимых clean-state hospital routes после page5 до следующего экрана вариантов:
 - police → page3 → «Съесть врача» → page4 → page5;
 - police → page3 → «Съесть труп» → page14 → page5.
-Для обоих добавлены page3 и choices checkpoints; paired runtime и comparisons подтверждены CI #171.
+Для обоих сохранены checkpoints каждой порции и финальный choices screen. Расширение после page5 локально подтверждено Ревьюером; CI для PR #54 ожидается.
 
 Остаётся:
 - low-HP page41 и все 16 концовок;
@@ -104,7 +104,7 @@ CI #144 подтвердил на странице 8 (UUID b2f0838e-3068-4850-ad
 1. [x] Статическая route validation, отрицательные unit tests и проверка зарегистрированных route definitions.
 2. [x] Интеграция базового differential suite — PR #32 merged.
 3. [x] Ускорение CI и изоляция тестовых окружений — PR #46 и последующие уточнения PR #50 merged; матрица маршрутов, общий build artifact, кэш зависимостей, changed-route selection и docs-only skip работают в main. PR #52 сделал `Differential gate` обязательной проверкой для PR в `main`.
-4. [ ] **Ближайшая работа Тестировщика — продолжение hospital.** Два маршрута от уже проверенной page5 до следующих экранов вариантов: сначала временные probe-маршруты вне catalog.json в `review/*-probe`, локальная диагностика порций Ревьюером в обоих движках, затем постоянные маршруты с checkpoint и текстом каждой порции. Варианты выбирать только через `select_choice`.
+4. [x] **Продолжение hospital после page5 — PR #54 (Draft).** Временные probe-маршруты и постоянные маршруты готовы. Ревьюер локально выполнил парные прогоны обоих постоянных маршрутов в INSTEAD и NLBNavigator, затем сравнения: doctor — 40 шагов и 35 текстовых проверок на движок; corpse — 30 шагов и 25 текстовых проверок на движок. Все шесть отчётов `ok=true`, `errors=[]`; page UUID, порции, картинки/фон, переменные и финальные choices совпали. Финальные варианты «Съесть философа» / «Украсть еду с кухни» не выбирались. Ожидается CI PR #54; номер и проверенные результаты внести после анализа артефакта.
 5. [ ] **Устойчивые runner actions — Разработчик.** Проверить/добавить `advance_until` для choices и last_portion, выбор `select_choice` по тексту, согласованность trace/state-log и миграцию маршрутов. Изменения `run_route.py` и runner-инфраструктуры не входят в зону Тестировщика; недостающие возможности оформить отдельной issue для Разработчика. Существующий сбор trace/state-log уже работает — требуется проверить именно синхронизацию и полноту семантики.
 6. [ ] **Coverage script — Тестировщик.** Автоматический отчёт по страницам и концовкам; сверить исторические ориентиры 42/54 и 9/16.
 7. [ ] **Завершить Wolfman — Тестировщик, с участием Разработчика при необходимости:** продолжить hospital/police до page41, пройти все 16 концовок, проверить EN, save/load через действие `menu` и persisted achievements/read-back/parity.
