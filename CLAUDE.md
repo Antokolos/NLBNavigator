@@ -77,6 +77,11 @@ git clone --recurse-submodules https://github.com/nlbproject/<книга>.git
   без этого его не перечитать. В state-log это `screen` choices -> page -> choices при тех же
   `pageId` и переменных (CI #162, `wolfman-hospital-doctor-diagnostic`); маршруты не должны
   щёлкать мимо вариантов на экране вариантов, ожидая, что он останется.
+- Доступные варианты нумеруются при отрисовке («1. Съесть философа»; `GameScreen::renderChoices`
+  и экран вариантов VN), и цифра 1–9 выбирает вариант (`GameScreen` — `Key::Digit`). Веб-плеер
+  NLBW нумерует так же. В INSTEAD номеров нет — отличие осознанное: выбор цифрой с клавиатуры.
+  В модели и state-log номера нет (`model.choices[].text`), как и типографских замен
+  `--` -> «—» и кавычек — они тоже только при отрисовке (`docs/state-log.md`).
 
 ## Как сдавать работу
 Владелец применяет изменения как коммиты (`git format-patch` -> `git am`) или через PR;
