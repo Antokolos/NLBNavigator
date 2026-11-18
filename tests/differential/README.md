@@ -230,9 +230,13 @@ State-log NLBNavigator проверяется через `tools/check_state_log.
 {
   "id": "wolfman-police-hospital-doctor",
   "prefix": "wolfman-police-start",
-  "steps": []
+  "steps": [
+    {"id": "hospital-choice", "action": {"type": "choose", "text": "Больница"}}
+  ]
 }
 ~~~
+
+После подстановки prefix итоговый список шагов должен быть непустым: собственные шаги маршрута могут дополнять фрагмент, но не должны оставаться пустыми вместе с ним.
 
 Пример фрагмента для примеров маршрутов: [examples/fragments/wolfman-police-start.json](examples/fragments/wolfman-police-start.json); пример его использования: [wolfman-police-hospital-doctor-choose.json](examples/wolfman-police-hospital-doctor-choose.json). Для примеров фрагмент лежит в `examples/fragments/`, потому что путь разрешается относительно файла примера; это не каталог рабочих фрагментов зарегистрированных маршрутов.
 

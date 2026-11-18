@@ -98,16 +98,24 @@ def routes_for(catalog, book_id, repo_root):
 def make_report(book_id, entry, commit, pages, routes):
     ids, covered_by = {p["id"] for p in pages}, defaultdict(set)
     unknown = defaultdict(lambda: defaultdict(set))
+    advance_until_missing_expect_pages = []
     for route in routes:
         for step in route.get("steps", []):
             step_id = str(step.get("id", "<без id>"))
+            action = step.get("action")
+            if isinstance(action, dict) and action.get("type") == "advance_until":
+                expected_pages = action.get("expect_pages")
+                if not isinstance(expected_pages, list) or not expected_pages:
+                    advance_until_missing_expect_pages.append({
+                        "route_id": route["id"], "step_id": step_id,
+                    })
+
             expect = step.get("expect")
             page_ids = []
             expected_page = expect.get("page_id") if isinstance(expect, dict) else None
             if isinstance(expected_page, str) and expected_page.strip():
                 page_ids.append(expected_page.strip())
 
-            action = step.get("action")
             expected_pages = action.get("expect_pages") if isinstance(action, dict) else None
             if isinstance(expected_pages, list):
                 for expected in expected_pages:
@@ -153,6 +161,10 @@ def make_report(book_id, entry, commit, pages, routes):
         },
         "pages": sorted(page_rows, key=lambda p: (p["kind"], p["id"])),
         "unknown_route_page_ids": unknown_rows,
+        "advance_until_missing_expect_pages": sorted(
+            advance_until_missing_expect_pages,
+            key=lambda item: (item["route_id"], item["step_id"]),
+        ),
     }
 
 
@@ -188,6 +200,14 @@ def markdown(report):
         for item in report["unknown_route_page_ids"]:
             refs = "; ".join(f"{r['route_id']} ({', '.join(r['steps'])})" for r in item["routes"])
             out.append(f"| {item['id']} | {refs} |")
+    out += ["", "## advance_until без expect_pages", ""]
+    missing = report["advance_until_missing_expect_pages"]
+    if not missing:
+        out.append("Нет.")
+    else:
+        out += ["| Маршрут | Шаг |", "|---|---|"]
+        for item in missing:
+            out.append(f"| {item['route_id']} | {item['step_id']} |")
     return "\n".join(out) + "\n"
 
 

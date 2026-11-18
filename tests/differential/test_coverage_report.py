@@ -53,6 +53,30 @@ class CoverageReportTests(unittest.TestCase):
         self.assertTrue(row["covered"])
         self.assertEqual(row["routes"], ["advance-route"])
 
+    def test_advance_until_without_nonempty_expect_pages_is_reported(self):
+        routes = [{
+            "id": "route-advance",
+            "steps": [
+                {"id": "missing", "action": {"type": "advance_until", "until": "choices"}},
+                {"id": "empty", "action": {"type": "advance_until", "expect_pages": []}},
+                {"id": "present", "action": {
+                    "type": "advance_until", "expect_pages": [{"page_id": "page-a"}],
+                }},
+                {"id": "other-action", "action": {"type": "advance"}},
+            ],
+        }]
+        report = make_report("sample", self.entry, "a" * 40, self.pages, routes)
+        expected = [
+            {"route_id": "route-advance", "step_id": "empty"},
+            {"route_id": "route-advance", "step_id": "missing"},
+        ]
+        self.assertEqual(report["advance_until_missing_expect_pages"], expected)
+        rendered = markdown(report)
+        self.assertIn("## advance_until без expect_pages", rendered)
+        self.assertIn("| route-advance | missing |", rendered)
+        self.assertIn("| route-advance | empty |", rendered)
+        self.assertNotIn("| route-advance | present |", rendered)
+
     def test_every_covering_route_is_listed(self):
         row = next(p for p in self.report()["pages"] if p["id"] == "page-a")
         self.assertEqual(row["routes"], ["route-one", "route-two"])
