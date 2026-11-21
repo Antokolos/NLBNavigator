@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Report declared page coverage from route expect.page_id fields (not runtime results)."""
+"""Report declared page coverage from route expectations and expanded prefixes (not runtime results)."""
 import argparse, json, subprocess, sys
 from collections import defaultdict
 from pathlib import Path
+
+from route_validation import expand_prefix
 
 KINDS = ("page", "return", "ending", "ending?")
 ROOT = Path(__file__).resolve().parents[2]
@@ -84,7 +86,10 @@ def routes_for(catalog, book_id, repo_root):
         route = read_json(path)
         if route.get("id") != item.get("id"):
             raise CoverageError(f"ID маршрута в каталоге и файле не совпадают: {item.get('id')}")
-        routes.append(route)
+        expanded, errors = expand_prefix(route, path.parent, str(path))
+        if errors:
+            raise CoverageError("; ".join(errors))
+        routes.append(expanded)
     if not routes:
         raise CoverageError(f"Нет зарегистрированных маршрутов для книги {book_id!r}")
     return routes
@@ -93,17 +98,36 @@ def routes_for(catalog, book_id, repo_root):
 def make_report(book_id, entry, commit, pages, routes):
     ids, covered_by = {p["id"] for p in pages}, defaultdict(set)
     unknown = defaultdict(lambda: defaultdict(set))
+    advance_until_missing_expect_pages = []
     for route in routes:
         for step in route.get("steps", []):
+            step_id = str(step.get("id", "<без id>"))
+            action = step.get("action")
+            if isinstance(action, dict) and action.get("type") == "advance_until":
+                expected_pages = action.get("expect_pages")
+                if not isinstance(expected_pages, list) or not expected_pages:
+                    advance_until_missing_expect_pages.append({
+                        "route_id": route["id"], "step_id": step_id,
+                    })
+
             expect = step.get("expect")
-            pid = expect.get("page_id") if isinstance(expect, dict) else None
-            if not isinstance(pid, str) or not pid.strip():
-                continue
-            pid = pid.strip()
-            if pid in ids:
-                covered_by[pid].add(route["id"])
-            else:
-                unknown[pid][route["id"]].add(str(step.get("id", "<без id>")))
+            page_ids = []
+            expected_page = expect.get("page_id") if isinstance(expect, dict) else None
+            if isinstance(expected_page, str) and expected_page.strip():
+                page_ids.append(expected_page.strip())
+
+            expected_pages = action.get("expect_pages") if isinstance(action, dict) else None
+            if isinstance(expected_pages, list):
+                for expected in expected_pages:
+                    pid = expected.get("page_id") if isinstance(expected, dict) else None
+                    if isinstance(pid, str) and pid.strip():
+                        page_ids.append(pid.strip())
+
+            for pid in page_ids:
+                if pid in ids:
+                    covered_by[pid].add(route["id"])
+                else:
+                    unknown[pid][route["id"]].add(step_id)
 
     summaries, page_rows = {}, []
     for kind in KINDS:
@@ -126,7 +150,7 @@ def make_report(book_id, entry, commit, pages, routes):
     ]} for pid, by_route in sorted(unknown.items())]
     return {
         "schema_version": 1,
-        "coverage_semantics": "declared coverage from route expect.page_id; runtime execution is not evaluated",
+        "coverage_semantics": "declared coverage from route expect.page_id and action.expect_pages, including expanded prefix fragments; runtime execution is not evaluated",
         "book": {"id": book_id, "title": entry.get("title", book_id),
                  "reference_commit": entry["nlb"]["reference_commit"], "actual_commit": commit},
         "inventory": {
@@ -137,6 +161,10 @@ def make_report(book_id, entry, commit, pages, routes):
         },
         "pages": sorted(page_rows, key=lambda p: (p["kind"], p["id"])),
         "unknown_route_page_ids": unknown_rows,
+        "advance_until_missing_expect_pages": sorted(
+            advance_until_missing_expect_pages,
+            key=lambda item: (item["route_id"], item["step_id"]),
+        ),
     }
 
 
@@ -145,7 +173,7 @@ def markdown(report):
     labels = {"page": "Обычные страницы", "return": "Возвраты из модулей",
               "ending": "Концовки", "ending?": "Страницы-кандидаты (ending?)"}
     out = [f"# Заявленное покрытие страниц: {book['title']}", "",
-           "> Это заявленное покрытие: анализируются expect.page_id зарегистрированных маршрутов; "
+           "> Это заявленное покрытие: анализируются expect.page_id и action.expect_pages зарегистрированных маршрутов с раскрытыми prefix-фрагментами; "
            "выполнение маршрутов в runtime не проверяется.", "",
            f"- Book ID: {book['id']}",
            f"- Commit книги: {book['actual_commit']} (совпадает с reference_commit)",
@@ -172,6 +200,14 @@ def markdown(report):
         for item in report["unknown_route_page_ids"]:
             refs = "; ".join(f"{r['route_id']} ({', '.join(r['steps'])})" for r in item["routes"])
             out.append(f"| {item['id']} | {refs} |")
+    out += ["", "## advance_until без expect_pages", ""]
+    missing = report["advance_until_missing_expect_pages"]
+    if not missing:
+        out.append("Нет.")
+    else:
+        out += ["| Маршрут | Шаг |", "|---|---|"]
+        for item in missing:
+            out.append(f"| {item['route_id']} | {item['step_id']} |")
     return "\n".join(out) + "\n"
 
 

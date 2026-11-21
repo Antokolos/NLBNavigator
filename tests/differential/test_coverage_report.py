@@ -37,9 +37,87 @@ class CoverageReportTests(unittest.TestCase):
         self.assertEqual(self.report()["inventory"]["pages_in_coverage_denominator"], 4)
         self.assertEqual(self.report()["inventory"]["module_containers_excluded_from_coverage"], 1)
 
+    def test_expect_pages_count_for_coverage(self):
+        routes = self.routes + [{
+            "id": "advance-route",
+            "steps": [{
+                "id": "advance-to-ending",
+                "action": {
+                    "type": "advance_until",
+                    "expect_pages": [{"page_id": "ending-a", "portion_count": 3}],
+                },
+            }],
+        }]
+        report = make_report("sample", self.entry, "a" * 40, self.pages, routes)
+        row = next(p for p in report["pages"] if p["id"] == "ending-a")
+        self.assertTrue(row["covered"])
+        self.assertEqual(row["routes"], ["advance-route"])
+
+    def test_advance_until_without_nonempty_expect_pages_is_reported(self):
+        routes = [{
+            "id": "route-advance",
+            "steps": [
+                {"id": "missing", "action": {"type": "advance_until", "until": "choices"}},
+                {"id": "empty", "action": {"type": "advance_until", "expect_pages": []}},
+                {"id": "present", "action": {
+                    "type": "advance_until", "expect_pages": [{"page_id": "page-a"}],
+                }},
+                {"id": "other-action", "action": {"type": "advance"}},
+            ],
+        }]
+        report = make_report("sample", self.entry, "a" * 40, self.pages, routes)
+        expected = [
+            {"route_id": "route-advance", "step_id": "empty"},
+            {"route_id": "route-advance", "step_id": "missing"},
+        ]
+        self.assertEqual(report["advance_until_missing_expect_pages"], expected)
+        rendered = markdown(report)
+        self.assertIn("## advance_until без expect_pages", rendered)
+        self.assertIn("| route-advance | missing |", rendered)
+        self.assertIn("| route-advance | empty |", rendered)
+        self.assertNotIn("| route-advance | present |", rendered)
+
     def test_every_covering_route_is_listed(self):
         row = next(p for p in self.report()["pages"] if p["id"] == "page-a")
         self.assertEqual(row["routes"], ["route-one", "route-two"])
+
+    def test_prefix_fragment_pages_are_credited_to_each_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            routes_dir = root / "tests" / "differential" / "routes"
+            fragments_dir = routes_dir / "fragments"
+            fragments_dir.mkdir(parents=True)
+            fragment = {
+                "id": "shared-start",
+                "steps": [
+                    {"id": "opening", "expect": {"page_id": "ending-a"}},
+                    {
+                        "id": "advance",
+                        "action": {
+                            "type": "advance_until",
+                            "expect_pages": [{"page_id": "return-a"}],
+                        },
+                    },
+                ],
+            }
+            (fragments_dir / "shared-start.json").write_text(
+                json.dumps(fragment), encoding="utf-8"
+            )
+            route_items = []
+            for route_id in ("branch-one", "branch-two"):
+                route = {"id": route_id, "prefix": "shared-start", "steps": []}
+                relative = f"tests/differential/routes/{route_id}.json"
+                (routes_dir / f"{route_id}.json").write_text(
+                    json.dumps(route), encoding="utf-8"
+                )
+                route_items.append({"id": route_id, "book_id": "sample", "path": relative})
+
+            expanded_routes = routes_for({"routes": route_items}, "sample", root)
+            report = make_report("sample", self.entry, "a" * 40, self.pages, expanded_routes)
+            for page_id in ("ending-a", "return-a"):
+                row = next(p for p in report["pages"] if p["id"] == page_id)
+                self.assertTrue(row["covered"])
+                self.assertEqual(row["routes"], ["branch-one", "branch-two"])
 
     def test_unknown_ids_include_routes_and_steps(self):
         self.assertEqual(self.report()["unknown_route_page_ids"], [
