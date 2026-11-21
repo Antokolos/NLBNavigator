@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-guard-high-wolves-talk-ending38",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — pack talk → ending 38",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "notes": [
+    "Continuation of the runtime-confirmed page27 pack-information branch. Probe route: portion counts on the newly visited pages are intentionally left for paired runtime confirmation."
+  ],
+  "prefix": "wolfman-guard-high-talk-to-page27",
+  "steps": [
+    {
+      "id": "page27-to-return35a",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "2eb72ffe-865a-4e51-aa9c-60af1b055fc3"
+          },
+          {
+            "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e"
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page27-to-return35a.png",
+      "expect": {
+        "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "forestExit": true,
+          "wolvesTalk": true,
+          "guardDone": true
+        }
+      }
+    },
+    {
+      "id": "return35a-to-page36",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e"
+          },
+          {
+            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa"
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "return35a-to-page36.png",
+      "expect": {
+        "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "forestExit": true,
+          "wolvesTalk": true,
+          "guardDone": true
+        },
+        "image_suffix": "36b.png",
+        "instead_background_suffix": "images/36b.jpg"
+      }
+    },
+    {
+      "id": "page36-to-ending38",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa"
+          },
+          {
+            "page_id": "c195f996-3411-4120-a03d-1cbc25d871c7"
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page36-to-ending38.png",
+      "expect": {
+        "page_id": "c195f996-3411-4120-a03d-1cbc25d871c7",
+        "screen": "finished",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "forestExit": true,
+          "wolvesTalk": true,
+          "guardDone": true
+        }
+      }
+    }
+  ]
+}

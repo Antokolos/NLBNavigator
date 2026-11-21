@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-forest-wolfiness-one-kalina-ending34",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — kalina choice → ending 34",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "notes": [
+    "Selects the kalina option on page29 and verifies the wrong-weapon ending."
+  ],
+  "prefix": "wolfman-forest-wolfiness-one-to-page29",
+  "steps": [
+    {
+      "id": "choose-kalina",
+      "action": {
+        "type": "choose",
+        "text": "Выбрать калину"
+      },
+      "settle_ms": 2500,
+      "screenshot": "choose-kalina.png",
+      "expect": {
+        "page_id": "7e4ded08-354b-4c76-b876-2e8ac335fdad",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4
+        }
+      }
+    },
+    {
+      "id": "page32-to-ending34",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "7e4ded08-354b-4c76-b876-2e8ac335fdad"
+          },
+          {
+            "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c"
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page32-to-ending34.png",
+      "expect": {
+        "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+        "screen": "finished",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4
+        }
+      }
+    }
+  ]
+}

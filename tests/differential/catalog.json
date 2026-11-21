@@ -259,6 +259,36 @@
       "id": "wolfman-police-hospital-corpse",
       "book_id": "wolfman",
       "path": "tests/differential/routes/wolfman-police-hospital-corpse.json"
+    },
+    {
+      "id": "wolfman-guard-high-wolves-talk-ending38",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-guard-high-wolves-talk-ending38.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-three-ending37",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-three-ending37.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-rowan-ending34",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-one-rowan-ending34.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-kalina-ending34",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-one-kalina-ending34.json"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-hawthorn-ending39",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-forest-wolfiness-one-hawthorn-ending39.json"
+    },
+    {
+      "id": "wolfman-police-hospital-corpse-ending41",
+      "book_id": "wolfman",
+      "path": "tests/differential/routes/wolfman-police-hospital-corpse-ending41.json"
     }
   ]
 }
