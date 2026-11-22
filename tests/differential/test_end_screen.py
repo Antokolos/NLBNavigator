@@ -67,18 +67,25 @@ class EndingCompareTest(unittest.TestCase):
 
     def test_end_screen_matches_try_again_choices(self):
         # экран конца NLBNavigator = комната v_<id>_choices с _try_again экспорта
-        left = [instead("end", 0, 1, ENDING), instead("end", 0, 1, "Попробовать ещё раз", screen="choices")]
+        left = [instead("end", 0, 1, ENDING),
+                dict(instead("end", 0, 1, "Попробовать ещё раз", screen="choices"), end_screen=True)]
         right = [nlb("end", 0, 1, ENDING, finished=True), nlb("end", 0, 1, screen="finished", finished=True)]
         self.assertIsNone(run_route.compare_advance_sequences(left, right))
 
+    def test_end_screen_without_trace_flag_fails(self):
+        # нет признака end_screen у INSTEAD — не экран конца (по умолчанию False)
+        a = instead("end", 0, 1, screen="choices")
+        b = nlb("end", 0, 1, screen="finished", finished=True)
+        self.assertFalse(run_route.same_end_screen(a, b))
+
     def test_end_screen_on_other_page_fails(self):
-        a = instead("other", 0, 1, screen="choices")
+        a = dict(instead("other", 0, 1, screen="choices"), end_screen=True)
         b = nlb("end", 0, 1, screen="finished", finished=True)
         self.assertFalse(run_route.same_end_screen(a, b))
         self.assertIn("page_id", run_route.compare_advance_sequences([a], [b]))
 
     def test_end_screen_without_finished_fails(self):
-        left = [instead("end", 0, 1, screen="choices")]
+        left = [dict(instead("end", 0, 1, screen="choices"), end_screen=True)]
         right = [nlb("end", 0, 1, screen="finished", finished=False)]
         self.assertIn("экран INSTEAD 'choices', NLBNavigator 'finished'",
                       run_route.compare_advance_sequences(left, right))

@@ -304,8 +304,8 @@ def same_end_screen(instead, nlbnavigator):
     """
     return (nlbnavigator.get("screen") == "finished" and nlbnavigator.get("finished") is True
             and SCREEN_KINDS.get(instead.get("screen"), instead.get("screen")) == "choices"
-            # трасса со столбцом end_screen: "choices" — именно экран конца, не обычные варианты
-            and instead.get("end_screen", True) is True
+            # "choices" — именно экран конца (столбец end_screen трассы), не обычные варианты
+            and instead.get("end_screen", False) is True
             and instead.get("page_id") == nlbnavigator.get("page_id"))
 
 

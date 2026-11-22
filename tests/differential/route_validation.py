@@ -152,9 +152,10 @@ def validate_advance_until(action, route_name, step_id):
     """
     advance_until: щёлкать, пока не выполнится условие until (choices — экран вариантов, page_end —
     последняя порция страницы, page_change — другая страница, end_screen — экран конца игры), не
-    больше max_clicks; expect_pages — необязательная закреплённая последовательность страниц
-    [{page_id, portion_count}] по порядку (у end_screen экран конца — на странице концовки, число
-    порций — как у её текста)
+    больше max_clicks; expect_pages — обязательная закреплённая последовательность страниц
+    [{page_id, portion_count}] по порядку: без неё неясно, какие страницы шаг пролистал (на неё
+    опирается и отчёт о покрытии). У end_screen экран конца — на странице концовки, число порций —
+    как у её текста
     """
     errors = []
     where = "{}: {}: advance_until".format(route_name, step_id)
@@ -168,7 +169,9 @@ def validate_advance_until(action, route_name, step_id):
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0.0 <= value <= 1.0:
             errors.append("{}: {} должен быть числом от 0 до 1".format(where, key))
     pages = action.get("expect_pages")
-    if pages is not None:
+    if pages is None:
+        errors.append("{}: нужен expect_pages — страницы, которые пролистает шаг".format(where))
+    else:
         if not isinstance(pages, list) or not pages:
             errors.append("{}: expect_pages должен быть непустым списком".format(where))
         else:

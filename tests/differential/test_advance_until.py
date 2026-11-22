@@ -101,7 +101,8 @@ class ScriptAndValidationTest(unittest.TestCase):
     def test_validation_errors(self):
         def route(action):
             return {"steps": [{"id": "a", "action": action}]}
-        good = {"type": "advance_until", "until": "choices", "max_clicks": 10, "x_ratio": 0.5, "y_ratio": 0.5}
+        good = {"type": "advance_until", "until": "choices", "max_clicks": 10, "x_ratio": 0.5, "y_ratio": 0.5,
+                "expect_pages": [{"page_id": "p", "portion_count": 3}]}
         self.assertEqual(validate_route(route(good)), [])
         for bad, fragment in (
             (dict(good, until="end"), "until"),
@@ -109,6 +110,7 @@ class ScriptAndValidationTest(unittest.TestCase):
             (dict(good, max_clicks=True), "max_clicks"),
             (dict(good, x_ratio=1.5), "x_ratio"),
             (dict(good, expect_pages=[]), "expect_pages"),
+            ({k: v for k, v in good.items() if k != "expect_pages"}, "нужен expect_pages"),
             (dict(good, expect_pages=[{"portion_count": 1}]), "page_id"),
             (dict(good, expect_pages=[{"page_id": "p", "portion_count": -1}]), "portion_count"),
             (dict(good, expect_pages=[{"page_id": "p", "count": 1}]), "неизвестные поля"),
