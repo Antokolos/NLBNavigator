@@ -34,7 +34,7 @@ class ChooseTest(unittest.TestCase):
 
     def test_validation(self):
         choices = {"id": "c", "action": {"type": "advance_until", "until": "choices", "max_clicks": 5,
-                                         "x_ratio": 0.5, "y_ratio": 0.5}}
+                                         "x_ratio": 0.5, "y_ratio": 0.5, "expect_pages": [{"page_id": "p"}]}}
 
         def errors(text, previous=choices):
             return validate_route({"steps": [previous, {"id": "s", "action": {"type": "choose", "text": text}}]})

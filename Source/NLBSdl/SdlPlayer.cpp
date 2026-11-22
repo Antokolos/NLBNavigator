@@ -685,8 +685,9 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         // щелчок — обычная команда click: со своим снимком state-log: раннер дифференциальных тестов
         // сверяет по ним порции с INSTEAD. Условия: choices — открыт экран вариантов; page_end —
         // показана последняя порция страницы (или страница сменилась, или экран не страница);
-        // page_change — другая страница (те же, что у действия advance_until раннера: их понимает
-        // и трасса INSTEAD). Не выполнено — [НЕ ВЫПОЛНЕНО]
+        // page_change — другая страница; end_screen — показан экран конца VN (endScreenShown:
+        // текст концовки дочитан; в INSTEAD — комната _choices с одним _try_again). Те же, что у
+        // действия advance_until раннера: их понимает и трасса INSTEAD. Не выполнено — [НЕ ВЫПОЛНЕНО]
         std::string until;
         int maxClicks = 0;
         float x = 0, y = 0;
@@ -701,11 +702,16 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
             const nlb::presentation::ScreenModel screen = engine.screen();
             if (until == "choices") return m_screen->choicesScreenShown();
             if (until == "page_change") return screen.pageId != startPage;
+            if (until == "end_screen") return m_screen->endScreenShown();
             // page_end: последняя порция или уже не страница
             return !m_screen->portionState().more || m_screen->choicesScreenShown() || m_screen->messageShown()
                    || screen.pageId != startPage;
         };
-        ok = until == "choices" || until == "page_end" || until == "page_change";
+        ok = until == "choices" || until == "page_end" || until == "page_change" || until == "end_screen";
+        if (!ok) {
+            std::cerr << "advance-until: неизвестное условие или формат: " << line
+                      << " (условия: choices, page_end, page_change, end_screen)" << std::endl;
+        }
         if (ok) {
             char click[64];
             std::snprintf(click, sizeof(click), "click:%g,%g", x, y);
@@ -754,13 +760,17 @@ void SdlPlayer::writeState(size_t index, const std::string& command, bool ok) {
     PlayerEngine& engine = m_session->engine();
     const nlb::presentation::ScreenModel screen = engine.screen();
     const auto portion = m_screen->portionState();
+    // screen — что на экране, а не свойство страницы: текст концовки, пока его читают, — "page"
+    // (как в INSTEAD), "finished" — только показанный экран конца VN. «Ходов больше нет» — поле
+    // finished (= model.finished) — уже на первой порции концовки
     const char* kind = m_screen->messageShown() ? "message"
                      : m_screen->choicesScreenShown() ? "choices"
-                     : screen.finished ? "finished" : "page";
+                     : m_screen->endScreenShown() ? "finished" : "page";
     std::string r = "{\"schema\":1";
     r += ",\"index\":" + std::to_string(index) + ",\"command\":" + json::str(command);
     r += ",\"ok\":" + std::string(ok ? "true" : "false");
     r += ",\"pageId\":" + json::str(screen.pageId) + ",\"screen\":" + json::str(kind);
+    r += ",\"finished\":" + std::string(screen.finished ? "true" : "false");
     r += ",\"portion\":{\"index\":" + std::to_string(portion.index) + ",\"count\":" + std::to_string(portion.count) +
          ",\"more\":" + (portion.more ? "true" : "false") + ",\"visible\":" + json::paragraphs(portion.visible) + "}";
     r += ",\"variables\":{";
