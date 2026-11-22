@@ -19,6 +19,8 @@
 #include "nlb/api/DummyProgressData.h"
 #include "nlb/api/SpecialVariablesNameHelper.h"
 #include <iostream>
+#include <cstdio>
+#include <cstring>
 #include <algorithm>
 
 // Константы
@@ -29,6 +31,7 @@ const std::string NonLinearBookImpl::STARTPOINT_FILE_NAME = "startpoint";
 const std::string NonLinearBookImpl::LANGUAGE_FILE_NAME = "language";
 const std::string NonLinearBookImpl::LICENSE_FILE_NAME = "license";
 const std::string NonLinearBookImpl::THEME_FILE_NAME = "theme";
+const std::string NonLinearBookImpl::SCREEN_FILE_NAME = "screen";
 const std::string NonLinearBookImpl::TITLE_FILE_NAME = "title";
 const std::string NonLinearBookImpl::AUTHOR_FILE_NAME = "author";
 const std::string NonLinearBookImpl::VERSION_FILE_NAME = "version";
@@ -174,6 +177,14 @@ std::string NonLinearBookImpl::getLicense() const {
 
 Theme NonLinearBookImpl::getTheme() const {
     return m_theme;
+}
+
+int NonLinearBookImpl::getScreenWidth() const {
+    return (m_parentNLB && !m_parentNLB->isDummy()) ? m_parentNLB->getScreenWidth() : m_screenWidth;
+}
+
+int NonLinearBookImpl::getScreenHeight() const {
+    return (m_parentNLB && !m_parentNLB->isDummy()) ? m_parentNLB->getScreenHeight() : m_screenHeight;
 }
 
 bool NonLinearBookImpl::isFullAutowire() const {
@@ -1315,6 +1326,23 @@ void NonLinearBookImpl::readBookProperties(const std::string& rootDir) {
     // Читаем тему
     std::string themeStr = FileManipulator::getOptionalFileAsString(rootDir, THEME_FILE_NAME, ThemeUtils::toString(DEFAULT_THEME));
     m_theme = ThemeUtils::fromString(themeStr);
+
+    // Размер экрана (файл screen, «1280x720»): нет файла или не разобрать — 1920×1080, как у
+    // всех прежних книг (ScreenSize.parse в NLB)
+    m_screenWidth = 1920;
+    m_screenHeight = 1080;
+    std::string screen = FileManipulator::getOptionalFileAsString(rootDir, SCREEN_FILE_NAME, "");
+    for (const char* times : {"\xC3\x97", "X"}) {  // «×» и «X» — как «x»
+        for (size_t at = screen.find(times); at != std::string::npos; at = screen.find(times)) {
+            screen.replace(at, std::strlen(times), "x");
+        }
+    }
+    int w = 0, h = 0;
+    char tail = 0;
+    if (std::sscanf(screen.c_str(), " %d x %d %c", &w, &h, &tail) == 2 && w > 0 && h > 0) {
+        m_screenWidth = w;
+        m_screenHeight = h;
+    }
 }
 
 void NonLinearBookImpl::writeBookProperties(FileManipulator* fileManipulator, const std::string& rootDir) {

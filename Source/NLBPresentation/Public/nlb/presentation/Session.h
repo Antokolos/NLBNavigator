@@ -61,6 +61,9 @@ public:
     /// Медиафайлы книги (картинки для текстур фронтенда)
     const IMediaSource& media() const;
     PlayerEngine& engine() { return *m_engine; }
+    /// Размер экрана книги (файл screen; нет книги или файла — 1920×1080)
+    int bookScreenWidth() const;
+    int bookScreenHeight() const;
     std::string title() const;
     std::string language() const;
 
