@@ -387,3 +387,55 @@ forest/bypass и guard); два robber routes зарегистрированы �
 Artifact: [`nlb-sdl-test-logs`](https://github.com/Antokolos/NLBNavigator/actions/runs/42537254808/artifacts/13642610939), ID `13642610939`.
 
 After CI #147, `main` advanced to `620f2ee9ec98c08ecc8a240c47f5e079b071d3aa`. The differential branch has now integrated that main head. CI #148 is required to validate the newer Source tree; the CI #147 result remains valid for its recorded HEAD only.
+
+## Семантика концовок и отдельного экрана конца
+
+Поле `expect.screen` описывает **текущий отображаемый экран**, а не факт
+завершения сценария. Поле `expect.finished` независимо проверяет
+`model.finished` в NLBNavigator:
+
+- Пока читатель просматривает порции текста концовки: `screen: "page"`,
+  `finished: true`.
+- После перехода на отдельный экран конца: `screen: "finished"`,
+  `finished: true`; для парного INSTEAD trace ожидается
+  `instead_screen_kind: "choices"`.
+
+Чтобы проверить отдельный экран конца, используйте
+`action.type: "advance_until"` с `until: "end_screen"`. Это условие
+продвигает маршрут через оставшиеся порции текста до отдельного терминального
+экрана; не следует обозначать первую порцию текста концовки как
+`screen: "finished"`.
+
+У **каждого** шага `advance_until` обязателен непустой массив
+`action.expect_pages`. Он фиксирует ожидаемые page ID и количество порций,
+через которые проходит действие. Требование проверяется статически
+`route_validation.py` (в том числе при проверке маршрутов и примеров), а не
+только описано в документации.
+
+Пример шага перехода к экрану конца:
+
+~~~json
+{
+  "id": "ending-to-end-screen",
+  "action": {
+    "type": "advance_until",
+    "until": "end_screen",
+    "max_clicks": 10,
+    "x_ratio": 0.5,
+    "y_ratio": 0.5,
+    "expect_pages": [
+      {
+        "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+        "portion_count": 3
+      }
+    ]
+  },
+  "expect": {
+    "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+    "screen": "finished",
+    "finished": true,
+    "instead_screen_kind": "choices"
+  }
+}
+~~~
+
