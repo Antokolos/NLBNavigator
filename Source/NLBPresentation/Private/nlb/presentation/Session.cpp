@@ -14,6 +14,14 @@
 
 namespace nlb::presentation {
 
+int Session::bookScreenWidth() const {
+    return m_book ? m_book->getScreenWidth() : 1920;
+}
+
+int Session::bookScreenHeight() const {
+    return m_book ? m_book->getScreenHeight() : 1080;
+}
+
 Session::Session(IAudioBackend* audio) : m_audio(audio) {}
 
 Session::~Session() = default;

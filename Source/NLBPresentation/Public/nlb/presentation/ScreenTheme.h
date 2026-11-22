@@ -71,6 +71,11 @@ struct ScreenTheme {
     std::string nlbMenuButton, nlbMenuButtonRu;
     /// gfx/theendru.png, gfx/theenden.png — надпись «Конец» экрана конца VN (nlb.lua: _try_again)
     std::string theEndRu, theEndEn;
+    /// Пиксели книги (спрайты, arm, offset, iarm, фон страницы) — в пиксели темы: у темы NLB
+    /// 1920×1080 и книги с экраном другого размера (файл screen) — 1920 / ширина книги, как экспорт
+    /// подгоняет тему (ThemeScaler в NLB) и как bookScale веб-плеера; у своих тем книг и книг
+    /// 1920×1080 — 1. Ставит GameScreen
+    float bookScale = 1.0f;
     float scale = 1.0f;               ///< масштаб экрана темы (scr.w×scr.h) к 1920×1080: картинки темы
     std::string clickSound;           ///< snd.click — звук щелчка по ссылке (стандартная тема INSTEAD)
     RectF screenArea{0, 0, 1920, 1080};  ///< где экран темы на экране 1920×1080 (фон scr.gfx.bg — сюда)
