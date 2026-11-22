@@ -182,7 +182,63 @@ State-log NLBNavigator проверяется через `tools/check_state_log.
 
 ## Правила написания маршрутов
 
-- На экране вариантов выходить только через `select_choice`. Не использовать `advance` или `click` по пустой области в ожидании, что экран вариантов останется открытым: NLBNavigator возвращает к тексту, INSTEAD — нет. Это осознанное отличие, а не расхождение; см. `CLAUDE.md` в main (PR #48).
+- На экране вариантов выбирать пункт семантически через `choose` или `select_choice`. Не использовать `advance` или `click` по пустой области в ожидании, что экран вариантов останется открытым: NLBNavigator возвращает к тексту, INSTEAD — нет. Это осознанное отличие, а не расхождение; см. `CLAUDE.md` в main (PR #48).
+
+### `advance_until`: автоматическое листание до условия
+
+Используй `advance_until`, когда нужно пройти одну или несколько страниц до экрана вариантов, конца страницы или смены страницы, не задавая вручную число щелчков для каждой порции. Поддерживаются `until: "choices"`, `"page_end"` и `"page_change"`; `max_clicks` ограничивает длину прохода. Раннер фиксирует последовательность после каждого щелчка в обоих движках, а сравнение проверяет её по каждому шагу пагинатора. Ручные `expect` относятся только к итоговой точке действия.
+
+Пример полного действия с последовательностью страниц — [wolfman-police-hospital-doctor-advance.json](examples/wolfman-police-hospital-doctor-advance.json).
+
+### `expect_pages`: обязательная фиксация пути
+
+У **каждого** шага с действием `advance_until` обязательно задавай непустой `action.expect_pages`: список всех пройденных страниц в порядке посещения. Для каждой страницы можно указать `portion_count`. Не пропускай промежуточные страницы: без этого они выпадают из заявленного покрытия, а последовательность прохождения не закреплена ожиданиями. Повторяющиеся подряд порции одной страницы указываются одной записью.
+
+Пример:
+
+~~~json
+{
+  "action": {
+    "type": "advance_until",
+    "until": "choices",
+    "max_clicks": 60,
+    "x_ratio": 0.5,
+    "y_ratio": 0.5,
+    "expect_pages": [
+      {"page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f", "portion_count": 4},
+      {"page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1", "portion_count": 6}
+    ]
+  }
+}
+~~~
+
+### `choose`: выбор варианта по тексту
+
+Применяй `choose`, когда вариант можно однозначно определить по фрагменту его текста. Действие не зависит от номера варианта и координат; оно допустимо только после появления экрана вариантов. Фрагмент должен соответствовать ровно одному доступному варианту, иначе шаг завершится ошибкой.
+
+~~~json
+{"action": {"type": "choose", "text": "Съесть врача"}}
+~~~
+
+Рабочий пример: [wolfman-police-hospital-doctor-choose.json](examples/wolfman-police-hospital-doctor-choose.json).
+
+### `prefix`: общий начальный фрагмент маршрута
+
+Используй поле маршрута `prefix`, чтобы повторно применять общий стартовый участок в нескольких ветвях. Значение — имя JSON-фрагмента без расширения; шаги фрагмента подставляются перед собственными шагами маршрута. Для зарегистрированных маршрутов рабочие фрагменты хранятся в `tests/differential/routes/fragments/<имя>.json`. Путь разрешается относительно каталога самого маршрута; префиксы могут быть вложенными. ID шагов, имена screenshot и ссылки `visual_change_from` из фрагмента получают приставку имени фрагмента, чтобы не конфликтовать с шагами маршрута.
+
+~~~json
+{
+  "id": "example-police-hospital-prefix",
+  "prefix": "wolfman-police-start",
+  "steps": [
+    {"id": "police", "action": {"type": "choose", "text": "Попытаться прорваться"}}
+  ]
+}
+~~~
+
+После подстановки prefix итоговый список шагов должен быть непустым: собственные шаги маршрута могут дополнять фрагмент, но не должны оставаться пустыми вместе с ним.
+
+Пример фрагмента для примеров маршрутов: [examples/fragments/wolfman-police-start.json](examples/fragments/wolfman-police-start.json); пример его использования: [wolfman-police-hospital-doctor-choose.json](examples/wolfman-police-hospital-doctor-choose.json). Для примеров фрагмент лежит в `examples/fragments/`, потому что путь разрешается относительно файла примера; это не каталог рабочих фрагментов зарегистрированных маршрутов.
 
 ## Правила воспроизводимости
 
@@ -331,3 +387,54 @@ forest/bypass и guard); два robber routes зарегистрированы �
 Artifact: [`nlb-sdl-test-logs`](https://github.com/Antokolos/NLBNavigator/actions/runs/42537254808/artifacts/13642610939), ID `13642610939`.
 
 After CI #147, `main` advanced to `620f2ee9ec98c08ecc8a240c47f5e079b071d3aa`. The differential branch has now integrated that main head. CI #148 is required to validate the newer Source tree; the CI #147 result remains valid for its recorded HEAD only.
+
+## Семантика концовок и отдельного экрана конца
+
+Поле `expect.screen` описывает **текущий отображаемый экран**, а не факт
+завершения сценария. Поле `expect.finished` независимо проверяет
+`model.finished` в NLBNavigator:
+
+- Пока читатель просматривает порции текста концовки: `screen: "page"`,
+  `finished: true`.
+- После перехода на отдельный экран конца: `screen: "finished"`,
+  `finished: true`; для парного INSTEAD trace ожидается
+  `instead_screen_kind: "choices"`.
+
+Чтобы проверить отдельный экран конца, используйте
+`action.type: "advance_until"` с `until: "end_screen"`. Это условие
+продвигает маршрут через оставшиеся порции текста до отдельного терминального
+экрана; не следует обозначать первую порцию текста концовки как
+`screen: "finished"`.
+
+У **каждого** шага `advance_until` обязателен непустой массив
+`action.expect_pages`. Он фиксирует ожидаемые page ID и количество порций,
+через которые проходит действие. Требование проверяется статически
+`route_validation.py` (в том числе при проверке маршрутов и примеров), а не
+только описано в документации.
+
+Пример шага перехода к экрану конца:
+
+~~~json
+{
+  "id": "ending-to-end-screen",
+  "action": {
+    "type": "advance_until",
+    "until": "end_screen",
+    "max_clicks": 10,
+    "x_ratio": 0.5,
+    "y_ratio": 0.5,
+    "expect_pages": [
+      {
+        "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+        "portion_count": 3
+      }
+    ]
+  },
+  "expect": {
+    "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+    "screen": "finished",
+    "finished": true,
+    "instead_screen_kind": "choices"
+  }
+}
+~~~

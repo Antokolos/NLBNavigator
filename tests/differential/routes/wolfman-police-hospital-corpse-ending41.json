@@ -1,0 +1,638 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-police-hospital-corpse-ending41",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — hospital corpse, low HP → ending 41",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "notes": [
+    "Tests the documented corpse route with hp=2, refusal to eat the traveler, hawthorn reducing hp to 1, and the low-HP ending. The route explicitly verifies the runtime state after hospital and weapon selection."
+  ],
+  "prefix": "wolfman-police-hospital-corpse-to-page13-choices",
+  "steps": [
+    {
+      "id": "steal-food-from-kitchen",
+      "action": {
+        "type": "choose",
+        "text": "Украсть еду с кухни"
+      },
+      "settle_ms": 2500,
+      "screenshot": "steal-food-from-kitchen.png",
+      "expect": {
+        "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "kitchen-to-page10",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+            "portion_count": 2
+          },
+          {
+            "page_id": "e40f707a-3934-43b4-b302-9ea6b4461531",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "kitchen-to-page10.png",
+      "expect": {
+        "page_id": "e40f707a-3934-43b4-b302-9ea6b4461531",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "barExit": true,
+          "forestExit": false
+        }
+      }
+    },
+    {
+      "id": "page10-to-forest-entry",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "05837065-8160-469f-8b29-e07d87549656",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page10-to-forest-entry.png",
+      "expect": {
+        "page_id": "05837065-8160-469f-8b29-e07d87549656",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "barExit": true,
+          "forestExit": false
+        }
+      }
+    },
+    {
+      "id": "forest-entry-to-page17",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "forest-entry-to-page17.png",
+      "expect": {
+        "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "barExit": true,
+          "forestExit": false
+        }
+      }
+    },
+    {
+      "id": "page17-to-choices",
+      "action": {
+        "type": "advance_until",
+        "until": "choices",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page17-to-choices.png",
+      "expect": {
+        "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
+        "screen": "choices",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "choices_contains": [
+          "Налево",
+          "Направо"
+        ],
+        "instead_choices_contains": [
+          "Налево",
+          "Направо"
+        ],
+        "instead_screen_kind": "choices"
+      }
+    },
+    {
+      "id": "page17-choose-right",
+      "action": {
+        "type": "choose",
+        "text": "Направо"
+      },
+      "settle_ms": 2500,
+      "screenshot": "page17-choose-right.png",
+      "expect": {
+        "page_id": "e10b657b-d06c-4b34-be66-a7322266755c",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "page23-to-page25",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "a27840f3-04f2-4156-8854-1abf0061e0c9",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page23-to-page25.png",
+      "expect": {
+        "page_id": "a27840f3-04f2-4156-8854-1abf0061e0c9",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "page25-to-choices",
+      "action": {
+        "type": "advance_until",
+        "until": "choices",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "a27840f3-04f2-4156-8854-1abf0061e0c9",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page25-to-choices.png",
+      "expect": {
+        "page_id": "a27840f3-04f2-4156-8854-1abf0061e0c9",
+        "screen": "choices",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "choices_contains": [
+          "Налево",
+          "Направо"
+        ],
+        "instead_choices_contains": [
+          "Налево",
+          "Направо"
+        ],
+        "instead_screen_kind": "choices"
+      }
+    },
+    {
+      "id": "page25-choose-left",
+      "action": {
+        "type": "choose",
+        "text": "Налево"
+      },
+      "settle_ms": 2500,
+      "screenshot": "page25-choose-left.png",
+      "expect": {
+        "page_id": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "page19-to-choices",
+      "action": {
+        "type": "advance_until",
+        "until": "choices",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page19-to-choices.png",
+      "expect": {
+        "page_id": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+        "screen": "choices",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "choices_contains": [
+          "Съесть путника",
+          "Не есть путника"
+        ],
+        "instead_choices_contains": [
+          "Съесть путника",
+          "Не есть путника"
+        ],
+        "instead_screen_kind": "choices"
+      }
+    },
+    {
+      "id": "leave-traveler",
+      "action": {
+        "type": "choose",
+        "text": "Не есть путника"
+      },
+      "settle_ms": 2500,
+      "screenshot": "leave-traveler.png",
+      "expect": {
+        "page_id": "db1bdcfc-0184-46ea-8194-d7cdbbf3b8fb",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "page21-to-page22",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page21-to-page22.png",
+      "expect": {
+        "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page22-to-page17-guard",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page22-to-page17-guard.png",
+      "expect": {
+        "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page17-guard-to-page18",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+            "portion_count": 3
+          },
+          {
+            "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+            "portion_count": 5
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page17-guard-to-page18.png",
+      "expect": {
+        "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page18-to-page19",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+            "portion_count": 5
+          },
+          {
+            "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page18-to-page19.png",
+      "expect": {
+        "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page19-to-page30",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+            "portion_count": 3
+          },
+          {
+            "page_id": "e0d11a50-50d2-4521-be11-10267f8aab92",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page19-to-page30.png",
+      "expect": {
+        "page_id": "e0d11a50-50d2-4521-be11-10267f8aab92",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page30-to-choices",
+      "action": {
+        "type": "advance_until",
+        "until": "choices",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "e0d11a50-50d2-4521-be11-10267f8aab92",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page30-to-choices.png",
+      "expect": {
+        "page_id": "e0d11a50-50d2-4521-be11-10267f8aab92",
+        "screen": "choices",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        },
+        "choices_contains": [
+          "Выбрать боярышник"
+        ],
+        "instead_choices_contains": [
+          "Выбрать боярышник"
+        ],
+        "instead_screen_kind": "choices"
+      }
+    },
+    {
+      "id": "choose-hawthorn-page30",
+      "action": {
+        "type": "choose",
+        "text": "Выбрать боярышник"
+      },
+      "settle_ms": 2500,
+      "screenshot": "choose-hawthorn-page30.png",
+      "expect": {
+        "page_id": "bc738a80-9890-4416-bead-3bbc8f533412",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 1
+        }
+      }
+    },
+    {
+      "id": "page33-to-page35b",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "bc738a80-9890-4416-bead-3bbc8f533412",
+            "portion_count": 2
+          },
+          {
+            "page_id": "6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page33-to-page35b.png",
+      "expect": {
+        "page_id": "6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 1,
+          "guardDone": true
+        }
+      }
+    },
+    {
+      "id": "page35b-to-page36",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page35b-to-page36.png",
+      "expect": {
+        "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 1,
+          "guardDone": true
+        },
+        "image_suffix": "36.png",
+        "instead_background_suffix": "images/36.jpg"
+      }
+    },
+    {
+      "id": "page36-to-page40",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "b5aa3b43-a7be-44b3-82d1-95925a213cd7",
+            "portion_count": 8
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page36-to-page40.png",
+      "expect": {
+        "page_id": "b5aa3b43-a7be-44b3-82d1-95925a213cd7",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 1,
+          "guardDone": true
+        }
+      }
+    },
+    {
+      "id": "page40-to-ending41",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "b5aa3b43-a7be-44b3-82d1-95925a213cd7",
+            "portion_count": 8
+          },
+          {
+            "page_id": "eaa4f345-6237-416d-9764-f6f503028864",
+            "portion_count": 7
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page40-to-ending41.png",
+      "expect": {
+        "page_id": "eaa4f345-6237-416d-9764-f6f503028864",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 1,
+          "guardDone": true
+        },
+        "finished": true
+      }
+    },
+    {
+      "id": "page40-to-ending41-end-screen",
+      "action": {
+        "type": "advance_until",
+        "until": "end_screen",
+        "max_clicks": 20,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "eaa4f345-6237-416d-9764-f6f503028864",
+            "portion_count": 7
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page40-to-ending41-end-screen.png",
+      "expect": {
+        "page_id": "eaa4f345-6237-416d-9764-f6f503028864",
+        "screen": "finished",
+        "finished": true,
+        "instead_screen_kind": "choices",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 1,
+          "guardDone": true
+        }
+      }
+    }
+  ]
+}

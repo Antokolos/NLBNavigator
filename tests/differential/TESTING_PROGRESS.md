@@ -11,17 +11,16 @@
 | Владелец | Решения и merge |
 
 
-Обновлено: 2026-11-15 (Asia/Bishkek).
+Обновлено: 2026-11-16 (Asia/Bishkek).
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последний интегрированный PR: #55 (merged).
-- Открыт PR #54 (Draft): продолжение hospital routes после page5.
-- Текущий `main`: `e54b262139b4c179ffbb84a40e41e89e32717c77` (merge PR #55).
-- Последний полный runtime-прогон на `main`: [CI #183](https://github.com/Antokolos/NLBNavigator/actions/runs/43639954319) на HEAD `6a4e8d7` — все 16 маршрутов выбраны (лог Select routes), все 21 job завершились успешно (по API GitHub и логу Select routes; Ревьюер). Артефакт CI #183 не проверен, поэтому успешность отдельных runtime/comparison reports пока не утверждается. CI #181 — последний полный прогон ветки PR #44 до слияния.
+- Последние интегрированные PR: #54, #55 и #56 (merged); открытых PR на момент подготовки coverage branch не было.
+- Текущий `main`: `f3029f44256e93dca65b5551201f2cb362ce33ea` (после PR #56, содержит `tools/nlb_pages.py`).
+- Последние проверки differential suite: CI #188 — два изменённых hospital routes прошли INSTEAD, NLBNavigator и comparison; CI #189 и #190 — docs-only, Select routes выбрал 0 маршрутов, Differential gate SUCCESS (`COUNT 0`).
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
-- Каталог содержит 16 постоянных маршрутов; два hospital routes прошли paired runtime и comparison в CI #171. Временные диагностические маршруты удалены.
-- PR #54 (Draft), HEAD `dadfdb027d9aeb1ace7059d75c539c1921c149fa`: CI #188 — SUCCESS. Изменёнными выбраны только два hospital continuation routes; оба прошли INSTEAD, NLBNavigator и comparison. По артефакту все шесть отчётов `ok=true`, `errors=[]`: doctor — 40 шагов и 35 текстовых проверок на движок; corpse — 30 шагов и 25 текстовых проверок на движок. В paired state records нет расхождений по page UUID, screen, portions, `wolfiness` и `hp`; финальные choices совпали. Остальные 14 маршрутов в CI #188 не запускались, поскольку diff-based selection выбрал только два изменённых маршрута; для них остаются прежние подтверждения (полный suite CI #181 и CI #171). Артефакт `nlb-sdl-test-logs`, ID `14170393955`.
+- Каталог содержит 16 постоянных маршрутов; hospital doctor/corpse продолжения прошли paired runtime и comparison в CI #188. Остальные маршруты не запускались в CI #188; ранее полный набор из 16 маршрутов прошёл в CI #181.
+- PR #54 и #56 слиты; `tools/nlb_pages.py` в `main` рекурсивно инвентаризирует страницы и модули Wolfman.
 
 ## Правила
 
@@ -92,13 +91,35 @@ PR #54 расширяет два независимых clean-state hospital rou
 Для обоих сохранены checkpoints каждой порции и финальный choices screen. Расширение после page5 локально подтверждено Ревьюером и CI #188.
 
 Остаётся:
-- low-HP page41 и все 16 концовок;
+- low-HP page41; 6 концовок и 10 возвратов из модулей (классификация по [tools/nlb_pages.py](../../tools/nlb_pages.py));
 - полная инвентаризация достижений и persisted achievement read-back/parity;
 - английский язык;
 - save/load;
 - автоматический coverage report по страницам и terminal endings;
 - локальные WSL2 прогоны hospital routes;
 - остальные парные книги.
+
+## Заявленное покрытие Wolfman (pinned commit)
+
+Отчёт построен по `expect.page_id` зарегистрированных маршрутов; это **заявленное покрытие**, не подтверждение runtime-посещения. Источник инвентаризации — [`tools/nlb_pages.py`](../../tools/nlb_pages.py). Книга: commit `888b4b7a7a564693274f53341728ee9f3b4c2879`; всего 61 запись, из них 7 контейнеров `module` исключены из знаменателя. Знаменатель — 54 страницы: `page` 36/38, `return` 8/10, `ending` 1/6; `ending?` — 0 страниц для Wolfman. Вне книги route `page_id` не обнаружены.
+
+Непокрытые страницы (9):
+
+| Вид | Страница | UUID | Модуль |
+|---|---|---|---|
+| page | 31 — Вы взяли рябину | `b8eecad7-8e40-4397-87de-e794189f7bf5` | `b45ff8f3` — у дома злодея |
+| page | 32 — Вы взяли калину | `7e4ded08-354b-4c76-b876-2e8ac335fdad` | `b45ff8f3` — у дома злодея |
+| return | 29 | `e307ea1f-9d44-45f0-aa58-15607482293b` | `b45ff8f3 → 0848f12f` |
+| return | 35a | `d6b53c8e-e4ae-492c-8489-89a67cf8d41e` | `b45ff8f3` — у дома злодея |
+| ending | 34 — Драка, конец | `9a78cd0b-cc2b-4c46-bf73-e807ed71189c` | `b45ff8f3` — у дома злодея |
+| ending | 37 | `61f37b28-518b-4025-8913-5c278ba14bdb` | `d5044b52` — финал |
+| ending | 38 | `c195f996-3411-4120-a03d-1cbc25d871c7` | `d5044b52` — финал |
+| ending | 39 | `8a8ee4b3-7744-4fe5-a3e0-6a5a5eb91f82` | `d5044b52` — финал |
+| ending | 41 | `eaa4f345-6237-416d-9764-f6f503028864` | `d5044b52` — финал |
+
+Ревьюер проверил `coverage_report.py` на локальной книге с pinned commit: 10 тестов скрипта и все 31 тест `tests/differential` прошли; `validate_catalog` завершился с кодом 0, `git diff --check` чист. Контрольные числа совпали; ошибок неизвестных `page_id` нет.
+
+[CI #193](https://github.com/Antokolos/NLBNavigator/actions/runs/43758189771), HEAD `dd4fe0b35d98e5f5bc3f3e88a72ba69aa4b0ffcc` — SUCCESS. Лог `Select routes`: `изменённые маршруты: нет (0)`, поскольку PR меняет только coverage script, unit tests и документацию; runtime-маршруты не запускались. `Validate route definitions` и `Differential gate` прошли; сборка, matrix и report jobs пропущены.
 
 ## Очередность
 
@@ -107,8 +128,8 @@ PR #54 расширяет два независимых clean-state hospital rou
 3. [x] Ускорение CI и изоляция тестовых окружений — PR #46 и последующие уточнения PR #50 merged; матрица маршрутов, общий build artifact, кэш зависимостей, changed-route selection и docs-only skip работают в main. PR #52 сделал `Differential gate` обязательной проверкой для PR в `main`.
 4. [x] **Продолжение hospital после page5 — PR #54 (Draft).** Временные probe-маршруты и постоянные маршруты готовы. Ревьюер локально выполнил парные прогоны обоих постоянных маршрутов в INSTEAD и NLBNavigator, затем сравнения. CI #188 на HEAD `dadfdb027d9aeb1ace7059d75c539c1921c149fa` завершился SUCCESS: doctor — 40 шагов, 35 текстовых проверок на движок; corpse — 30 шагов, 25 текстовых проверок на движок. Все шесть CI-отчётов `ok=true`, `errors=[]`; page UUID, экран, порции, переменные и финальные choices совпали. Финальные варианты «Съесть философа» / «Украсть еду с кухни» не выбирались. CI #188 по diff-based selection запускал только эти два изменённых маршрута; остальные 14 не запускались.
 5. [ ] **Устойчивые runner actions — Разработчик.** Проверить/добавить `advance_until` для choices и last_portion, выбор `select_choice` по тексту, согласованность trace/state-log и миграцию маршрутов. Изменения `run_route.py` и runner-инфраструктуры не входят в зону Тестировщика; недостающие возможности оформить отдельной issue для Разработчика. Существующий сбор trace/state-log уже работает — требуется проверить именно синхронизацию и полноту семантики.
-6. [ ] **Coverage script — Тестировщик.** Автоматический отчёт по страницам и концовкам; сверить исторические ориентиры 42/54 и 9/16.
-7. [ ] **Завершить Wolfman — Тестировщик, с участием Разработчика при необходимости:** продолжить hospital/police до page41, пройти все 16 концовок, проверить EN, save/load через действие `menu` и persisted achievements/read-back/parity.
+6. [x] **Coverage script — Тестировщик, PR #57.** Реализован `tests/differential/coverage_report.py` и 10 unit-тестов; локальная проверка Ревьюером на pinned Wolfman подтвердила 36/38 page, 8/10 return, 1/6 ending, 0 ending? и отсутствие неизвестных `page_id`. CI #193 на HEAD `dd4fe0b35d98e5f5bc3f3e88a72ba69aa4b0ffcc` — SUCCESS; `Validate route definitions` прошёл, `Differential gate` SUCCESS (`COUNT 0`).
+7. [ ] **Завершить Wolfman — Тестировщик, с участием Разработчика при необходимости:** спланировать маршруты по девяти непокрытым страницам в модулях `b45ff8f3` (у дома злодея) и `d5044b52` (финал), начиная от ближайшего существующего `wolfman-guard-*`. Экраны «Съесть философа» / «Украсть еду с кухни» уже покрыты; продолжать hospital ради них не требуется. Условия `wolfiness`/`hp` и выборы сверить с `WOLFMAN_BRANCH_MAP.md` и книгой; количество порций на новых участках определить пробным маршрутом через Ревьюера. Затем проверить EN, save/load через действие `menu` и persisted achievements/read-back/parity.
 8. [ ] **Остальные книги — Тестировщик:** цели по `docs/differential-testing-plan.md` §4.5; каждая книга отдельным PR.
 
 ## WSL2
@@ -249,3 +270,59 @@ PR #54 расширяет два независимых clean-state hospital rou
 - Два диагностических маршрута удалены до CI #171, поэтому в нём исполнялись 16 постоянных маршрутов.
 - Локальные парные прогоны doctor/corpse в обоих движках выполнены Ревьюером (Ubuntu 24.04, INSTEAD из пакета, `nlb_sdl` собран из `c94eeabc`). Все шесть отчётов имеют `ok=true`, `errors=[]`; порции и переменные соответствуют CI #171.
 - Экран вариантов VN: щелчок мимо вариантов в NLBNavigator возвращает к тексту, в INSTEAD — нет. Подтверждено runtime (CI #162, снимки diagnostic-advance-31…33); осознанное отличие, см. CLAUDE.md в main (PR #48), не расхождение.
+
+---
+
+## Актуализация 2026-11-22 — разделение текста концовки и экрана конца
+
+- CI #208 выявил семантическое смешение в поле `screen`: текстовые порции
+  концовок INSTEAD оставались экраном `page`, тогда как NLBNavigator уже
+  записывал `finished`. Из-за этого сравнение падало на последнем checkpoint,
+  хотя оба движка корректно прошли текст концовки.
+- PR #62 исправил state-log NLBNavigator: `screen` теперь описывает
+  отображаемый экран, а отдельное поле `finished` отражает
+  `model.finished`. Поэтому во время чтения текста концовки ожидаются
+  `screen: "page"` и `finished: true`; на отдельном экране конца —
+  `screen: "finished"` и `finished: true`.
+- Текст концовок теперь сравнивается между движками, включая последнюю
+  порцию. Экран конца проверяется отдельным шагом `advance_until` с
+  `until: "end_screen"`; для INSTEAD ожидается `screen_kind: choices`.
+- В шести маршрутах концовок добавлены отдельные checkpoints чтения и
+  терминального экрана. Локальная runtime-проверка Ревьюером прошла для всех шести маршрутов в
+  обоих движках и comparison: пять маршрутов проверены на HEAD `5aa048da`,
+  `wolfman-forest-wolfiness-one-hawthorn-ending39` — повторно на HEAD
+  `3b0f29b5378ca6d4398c977e0968c061913029cd`. Для hawthorn подтверждены все
+  12 порций (последняя остаётся `screen: page`, `finished: true`) и отдельный
+  переход на экран конца; INSTEAD, NLBNavigator и compare завершились с кодом 0,
+  `ok=true`, `errors=[]`, текстовые проверки — 26/26 на каждый движок. Во всех
+  шести шагах `end_screen` установлен `max_clicks: 20`.
+- `expect_pages` обязателен и непуст у каждого `advance_until`; требование
+  проверяется валидатором маршрутов, включая примеры. Секция coverage report
+  о пропусках `expect_pages` остаётся дополнительной страховкой и должна
+  быть пустой.
+- Интеграция `main` в черновую ветку выполнена обычным merge без конфликтов:
+  `b80254ff13d5cbf98fdb54c164c22467751e394d`. После проверки Ревьюером
+  документального коммита `9a58d748` ветка `test/coverage-report` обновлена
+  fast-forward до `9a58d748f65a80f1029f8c759e41d7d6af9d9309`; PR #57 остаётся Draft.
+
+### CI #214 — SUCCESS после обновления PR #57
+
+[CI #214](https://github.com/Antokolos/NLBNavigator/actions/runs/45060932721),
+run ID `45060932721`, HEAD `9a58d748f65a80f1029f8c759e41d7d6af9d9309` — SUCCESS.
+
+- `Select routes` выбрал полный набор из 22 маршрутов: `изменились раннер,
+  workflow, каталог или плеер (22)`. Это ожидаемый полный прогон после
+  интеграции изменений раннера и workflow, а не docs-only запуск.
+- `Validate route definitions`, сборка `nlb_sdl`, smoke test, все 22 route jobs,
+  `Report` и `Differential gate` завершились SUCCESS.
+- Differential gate: `VALIDATE=success`, `PLAN=success`, `BUILD=success`,
+  `ROUTE=success`, `REPORT=success`, `COUNT=22`.
+- Все 22 маршрута прошли в INSTEAD, NLBNavigator и comparison.
+- Все шесть маршрутов концовок содержат успешный `end_screen` checkpoint в
+  comparison: два маршрута ending34 и по одному ending37, ending38, ending39
+  и ending41 (см. route reports). Для
+  NLBNavigator подтверждён терминальный `screen: finished`, `finished: true`;
+  INSTEAD сообщает `screen_kind: choices`. На последней текстовой порции
+  концовки сохраняется `screen: page` / `finished: true`.
+- Артефакт `nlb-sdl-test-logs`, ID `14769992316`, содержит объединённые
+  runtime и comparison отчёты. Отдельные route artifacts также загружены.

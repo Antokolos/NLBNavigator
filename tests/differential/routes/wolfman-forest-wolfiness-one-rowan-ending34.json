@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-forest-wolfiness-one-rowan-ending34",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — rowan choice → ending 34",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "notes": [
+    "Selects the rowan option on page29 and verifies the wrong-weapon ending."
+  ],
+  "prefix": "wolfman-forest-wolfiness-one-to-page29",
+  "steps": [
+    {
+      "id": "choose-rowan",
+      "action": {
+        "type": "choose",
+        "text": "Выбрать рябину"
+      },
+      "settle_ms": 2500,
+      "screenshot": "choose-rowan.png",
+      "expect": {
+        "page_id": "b8eecad7-8e40-4397-87de-e794189f7bf5",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4
+        }
+      }
+    },
+    {
+      "id": "page31-to-ending34",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page31-to-ending34.png",
+      "expect": {
+        "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4
+        },
+        "finished": true
+      }
+    },
+    {
+      "id": "page31-to-ending34-end-screen",
+      "action": {
+        "type": "advance_until",
+        "until": "end_screen",
+        "max_clicks": 20,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page31-to-ending34-end-screen.png",
+      "expect": {
+        "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+        "screen": "finished",
+        "finished": true,
+        "instead_screen_kind": "choices",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4
+        }
+      }
+    }
+  ]
+}

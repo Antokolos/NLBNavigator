@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-forest-wolfiness-three-ending37",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — wolfiness 3 → ending 37",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "notes": [
+    "Continuation from the existing page20 checkpoint with wolfiness=3. Page26's 8 portions were runtime-confirmed in the earlier guard tests; all new portions are probed here."
+  ],
+  "prefix": "wolfman-forest-wolfiness-three-to-page20",
+  "steps": [
+    {
+      "id": "page20-to-page22",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page20-to-page22.png",
+      "expect": {
+        "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page22-to-page17",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page22-to-page17.png",
+      "expect": {
+        "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page17-to-page26",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+            "portion_count": 3
+          },
+          {
+            "page_id": "0e3e04d8-03e7-459d-8136-e7c135100101",
+            "portion_count": 8
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page17-to-page26.png",
+      "expect": {
+        "page_id": "0e3e04d8-03e7-459d-8136-e7c135100101",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page26-to-page28",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "0e3e04d8-03e7-459d-8136-e7c135100101",
+            "portion_count": 8
+          },
+          {
+            "page_id": "d45d6de2-e019-4a32-87f8-5f97ab2fcbf9",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page26-to-page28.png",
+      "expect": {
+        "page_id": "d45d6de2-e019-4a32-87f8-5f97ab2fcbf9",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true,
+          "wolvesTalk": false
+        }
+      }
+    },
+    {
+      "id": "page28-to-return35a",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "d45d6de2-e019-4a32-87f8-5f97ab2fcbf9",
+            "portion_count": 3
+          },
+          {
+            "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page28-to-return35a.png",
+      "expect": {
+        "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true,
+          "wolvesTalk": false,
+          "guardDone": true
+        }
+      }
+    },
+    {
+      "id": "return35a-to-page36",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "return35a-to-page36.png",
+      "expect": {
+        "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true,
+          "wolvesTalk": false,
+          "guardDone": true
+        },
+        "image_suffix": "36b.png",
+        "instead_background_suffix": "images/36b.jpg"
+      }
+    },
+    {
+      "id": "page36-to-ending37",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "61f37b28-518b-4025-8913-5c278ba14bdb",
+            "portion_count": 5
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page36-to-ending37.png",
+      "expect": {
+        "page_id": "61f37b28-518b-4025-8913-5c278ba14bdb",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true,
+          "wolvesTalk": false,
+          "guardDone": true
+        },
+        "finished": true
+      }
+    },
+    {
+      "id": "page36-to-ending37-end-screen",
+      "action": {
+        "type": "advance_until",
+        "until": "end_screen",
+        "max_clicks": 20,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "61f37b28-518b-4025-8913-5c278ba14bdb",
+            "portion_count": 5
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page36-to-ending37-end-screen.png",
+      "expect": {
+        "page_id": "61f37b28-518b-4025-8913-5c278ba14bdb",
+        "screen": "finished",
+        "finished": true,
+        "instead_screen_kind": "choices",
+        "variables": {
+          "wolfiness": 3,
+          "hp": 4,
+          "forestExit": true,
+          "wolvesTalk": false,
+          "guardDone": true
+        }
+      }
+    }
+  ]
+}

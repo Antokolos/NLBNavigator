@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-forest-wolfiness-one-to-page29",
+  "title": "Wolfiness 1 continuation through page 29 choices",
+  "notes": [
+    "Shared runtime route prefix; steps are reused by registered continuation routes."
+  ],
+  "prefix": "wolfman-forest-wolfiness-one-to-page20",
+  "steps": [
+    {
+      "id": "page20-to-page22",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 40,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page20-to-page22.png",
+      "expect": {
+        "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page22-to-page17",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 40,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page22-to-page17.png",
+      "expect": {
+        "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page17-to-page18",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 40,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0"
+          },
+          {
+            "page_id": "433426b4-2e3f-4461-ab7a-e87119808471"
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page17-to-page18.png",
+      "expect": {
+        "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page18-to-page19",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 40,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+            "portion_count": 5
+          },
+          {
+            "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+            "portion_count": 3
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page18-to-page19.png",
+      "expect": {
+        "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    },
+    {
+      "id": "page19-to-page29-choices",
+      "action": {
+        "type": "advance_until",
+        "until": "choices",
+        "max_clicks": 40,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+            "portion_count": 3
+          },
+          {
+            "page_id": "e307ea1f-9d44-45f0-aa58-15607482293b",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2500,
+      "screenshot": "page29-choices.png",
+      "expect": {
+        "page_id": "e307ea1f-9d44-45f0-aa58-15607482293b",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Выбрать рябину",
+          "Выбрать боярышник",
+          "Выбрать калину"
+        ],
+        "instead_choices_contains": [
+          "Выбрать рябину",
+          "Выбрать боярышник",
+          "Выбрать калину"
+        ],
+        "variables": {
+          "wolfiness": 1,
+          "hp": 4,
+          "forestExit": true
+        }
+      }
+    }
+  ]
+}
