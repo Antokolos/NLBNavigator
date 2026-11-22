@@ -301,5 +301,27 @@ PR #54 расширяет два независимых clean-state hospital rou
   о пропусках `expect_pages` остаётся дополнительной страховкой и должна
   быть пустой.
 - Интеграция `main` в черновую ветку выполнена обычным merge без конфликтов:
-  `b80254ff13d5cbf98fdb54c164c22467751e394d`. PR #57 не обновлялся; его
-  Draft HEAD остаётся `440bee789556bdd236fe2600621035134a4b98bb`.
+  `b80254ff13d5cbf98fdb54c164c22467751e394d`. После проверки Ревьюером
+  документального коммита `9a58d748` ветка `test/coverage-report` обновлена
+  fast-forward до `9a58d748f65a80f1029f8c759e41d7d6af9d9309`; PR #57 остаётся Draft.
+
+### CI #214 — SUCCESS после обновления PR #57
+
+[CI #214](https://github.com/Antokolos/NLBNavigator/actions/runs/45060932721),
+run ID `45060932721`, HEAD `9a58d748f65a80f1029f8c759e41d7d6af9d9309` — SUCCESS.
+
+- `Select routes` выбрал полный набор из 22 маршрутов: `изменились раннер,
+  workflow, каталог или плеер (22)`. Это ожидаемый полный прогон после
+  интеграции изменений раннера и workflow, а не docs-only запуск.
+- `Validate route definitions`, сборка `nlb_sdl`, smoke test, все 22 route jobs,
+  `Report` и `Differential gate` завершились SUCCESS.
+- Differential gate: `VALIDATE=success`, `PLAN=success`, `BUILD=success`,
+  `ROUTE=success`, `REPORT=success`, `COUNT=22`.
+- Все 22 маршрута прошли в INSTEAD, NLBNavigator и comparison.
+- Все шесть маршрутов концовок содержат успешный `end_screen` checkpoint в
+  comparison: три маршрута ending34/37/38/39/41 (см. route reports). Для
+  NLBNavigator подтверждён терминальный `screen: finished`, `finished: true`;
+  INSTEAD сообщает `screen_kind: choices`. На последней текстовой порции
+  концовки сохраняется `screen: page` / `finished: true`.
+- Артефакт `nlb-sdl-test-logs`, ID `14769992316`, содержит объединённые
+  runtime и comparison отчёты. Отдельные route artifacts также загружены.
