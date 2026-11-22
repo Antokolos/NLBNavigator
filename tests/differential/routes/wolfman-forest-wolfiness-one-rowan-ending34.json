@@ -41,10 +41,8 @@
         "y_ratio": 0.5,
         "expect_pages": [
           {
-            "page_id": "b8eecad7-8e40-4397-87de-e794189f7bf5"
-          },
-          {
-            "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c"
+            "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+            "portion_count": 3
           }
         ]
       },

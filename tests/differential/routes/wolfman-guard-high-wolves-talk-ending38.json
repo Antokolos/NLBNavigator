@@ -24,10 +24,12 @@
         "y_ratio": 0.5,
         "expect_pages": [
           {
-            "page_id": "2eb72ffe-865a-4e51-aa9c-60af1b055fc3"
+            "page_id": "2eb72ffe-865a-4e51-aa9c-60af1b055fc3",
+            "portion_count": 7
           },
           {
-            "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e"
+            "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e",
+            "portion_count": 1
           }
         ]
       },
@@ -54,10 +56,8 @@
         "y_ratio": 0.5,
         "expect_pages": [
           {
-            "page_id": "d6b53c8e-e4ae-492c-8489-89a67cf8d41e"
-          },
-          {
-            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa"
+            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+            "portion_count": 1
           }
         ]
       },
@@ -86,10 +86,8 @@
         "y_ratio": 0.5,
         "expect_pages": [
           {
-            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa"
-          },
-          {
-            "page_id": "c195f996-3411-4120-a03d-1cbc25d871c7"
+            "page_id": "c195f996-3411-4120-a03d-1cbc25d871c7",
+            "portion_count": 6
           }
         ]
       },
