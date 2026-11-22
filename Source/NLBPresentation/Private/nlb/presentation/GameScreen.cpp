@@ -1569,9 +1569,19 @@ void GameScreen::renderStandard() {
 void GameScreen::renderVisualNovel() {
     const ScreenTheme& t = m_vnTheme;
     m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.border);
-    m_r->fillRect(t.screenArea, t.background);
     float w = 0, h = 0;
-    if (imageSize(m_screen.pageImage, w, h)) m_r->drawImage(framePath(m_screen.pageImage), {0, 0, SCREEN_W, SCREEN_H}, 1.0f);
+    // Фон страницы — как фон INSTEAD (vn.lua, scene: фон не во весь экран темы — по центру,
+    // вокруг цвет рамки scr.col.brd): в своём размере с масштабом темы, по центру экрана темы;
+    // больше экрана — лишнее за краем не видно. Раньше растягивался на весь экран с искажением
+    // (CoolAir-Images: фон 1086×1448 сплющивало до 1920×1080). Фон ровно в размер экрана темы
+    // выглядит как прежде
+    const bool background = imageSize(m_screen.pageImage, w, h);
+    m_r->fillRect(t.screenArea, background ? t.border : t.background);
+    if (background) {
+        const RectF a = t.screenArea;
+        const float bw = w * t.scale, bh = h * t.scale;
+        m_r->drawImage(framePath(m_screen.pageImage), {a.x + std::floor((a.w - bw) / 2), a.y + std::floor((a.h - bh) / 2), bw, bh}, 1.0f);
+    }
     if (m_endScreen) {
         // экран конца: objs():zap() и ignore_preserved_gobjs — объектов нет, фон страницы остаётся
         renderEndScreen(t);
