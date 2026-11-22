@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-forest-wolfiness-one-hawthorn-ending39",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — hawthorn choice, wolfiness 1 → ending 39",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "notes": [
+    "Selects the correct hawthorn option on page29; page33 reduces HP from 4 to 3, then the route reaches the human ending."
+  ],
+  "prefix": "wolfman-forest-wolfiness-one-to-page29",
+  "steps": [
+    {
+      "id": "choose-hawthorn",
+      "action": {
+        "type": "choose",
+        "text": "Выбрать боярышник"
+      },
+      "settle_ms": 2500,
+      "screenshot": "choose-hawthorn.png",
+      "expect": {
+        "page_id": "bc738a80-9890-4416-bead-3bbc8f533412",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        }
+      }
+    },
+    {
+      "id": "page33-to-page35b",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "bc738a80-9890-4416-bead-3bbc8f533412",
+            "portion_count": 2
+          },
+          {
+            "page_id": "6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page33-to-page35b.png",
+      "expect": {
+        "page_id": "6e8c1c0f-abd8-4e5c-83a5-7e3e003c7f46",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3,
+          "guardDone": true
+        }
+      }
+    },
+    {
+      "id": "page35b-to-page36",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+            "portion_count": 1
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page35b-to-page36.png",
+      "expect": {
+        "page_id": "0aa69b7f-274b-42ee-a758-4d3c2f98e3aa",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3,
+          "guardDone": true
+        },
+        "image_suffix": "36.png",
+        "instead_background_suffix": "images/36.jpg"
+      }
+    },
+    {
+      "id": "page36-to-ending39",
+      "action": {
+        "type": "advance_until",
+        "until": "page_change",
+        "max_clicks": 80,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "8a8ee4b3-7744-4fe5-a3e0-6a5a5eb91f82",
+            "portion_count": 12
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page36-to-ending39.png",
+      "expect": {
+        "page_id": "8a8ee4b3-7744-4fe5-a3e0-6a5a5eb91f82",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3,
+          "guardDone": true
+        },
+        "finished": true
+      }
+    },
+    {
+      "id": "page36-to-ending39-end-screen",
+      "action": {
+        "type": "advance_until",
+        "until": "end_screen",
+        "max_clicks": 20,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "8a8ee4b3-7744-4fe5-a3e0-6a5a5eb91f82",
+            "portion_count": 12
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page36-to-ending39-end-screen.png",
+      "expect": {
+        "page_id": "8a8ee4b3-7744-4fe5-a3e0-6a5a5eb91f82",
+        "screen": "finished",
+        "finished": true,
+        "instead_screen_kind": "choices",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3,
+          "guardDone": true
+        }
+      }
+    }
+  ]
+}
