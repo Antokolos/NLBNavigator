@@ -4,7 +4,7 @@ import json
 import re
 from pathlib import Path
 
-ADVANCE_UNTIL = ("choices", "page_end", "page_change")
+ADVANCE_UNTIL = ("choices", "page_end", "page_change", "end_screen")
 ADVANCE_MAX_CLICKS = 200
 
 PORTION_FIELDS = (
@@ -151,8 +151,10 @@ def validate_route(route, route_name="<route>"):
 def validate_advance_until(action, route_name, step_id):
     """
     advance_until: щёлкать, пока не выполнится условие until (choices — экран вариантов, page_end —
-    последняя порция страницы, page_change — другая страница), не больше max_clicks; expect_pages —
-    необязательная закреплённая последовательность страниц [{page_id, portion_count}] по порядку
+    последняя порция страницы, page_change — другая страница, end_screen — экран конца игры), не
+    больше max_clicks; expect_pages — необязательная закреплённая последовательность страниц
+    [{page_id, portion_count}] по порядку (у end_screen экран конца — на странице концовки, число
+    порций — как у её текста)
     """
     errors = []
     where = "{}: {}: advance_until".format(route_name, step_id)

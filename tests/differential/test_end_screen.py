@@ -98,6 +98,83 @@ class EndingCompareTest(unittest.TestCase):
             [instead("end", 0, 1, screen="choices")], [nlb("end", 0, 1, screen="message", finished=True)]))
 
 
+TRACE_HEADER = ["seq", "kind", "command", "arguments", "rendered", "page_id", "location_id", "room_id",
+                "screen_kind", "page_name", "background", "portion_index", "portion_count", "more", "room_text",
+                "action_text", "objects_text", "player_text", "wolfiness", "hp", "barExit", "forestExit",
+                "wolvesTalk", "guardDone"]
+
+
+def trace_line(seq, screen_kind, end_screen=None, room="v_end"):
+    values = {"seq": str(seq), "kind": "scene", "page_id": "end", "room_id": room, "screen_kind": screen_kind,
+              "portion_index": "7", "portion_count": "8", "more": "false"}
+    fields = [values.get(name, "") for name in TRACE_HEADER]
+    if end_screen is not None:
+        fields.append("true" if end_screen else "false")
+    return "\t".join(fields) + "\n"
+
+
+class EndScreenUntilTest(unittest.TestCase):
+    """advance_until until "end_screen": экран конца, а не обычный экран вариантов"""
+
+    def test_instead_stops_only_on_try_again(self):
+        ending = {"page_id": "end", "screen_kind": "page", "more": False, "end_screen": False}
+        choices = {"page_id": "end", "screen_kind": "choices", "more": False, "end_screen": False}
+        try_again = dict(choices, end_screen=True)
+        self.assertFalse(run_route.instead_reached("end_screen", ending, "end"))
+        self.assertFalse(run_route.instead_reached("end_screen", choices, "end"), "обычный экран вариантов")
+        self.assertTrue(run_route.instead_reached("end_screen", try_again, "end"))
+        self.assertTrue(run_route.instead_reached("choices", choices, "end"), "choices — как прежде")
+        self.assertFalse(run_route.instead_reached("end_screen", None, "end"))
+
+    def test_trace_end_screen_column(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "trace.tsv"
+            path.write_text("# header\n" + trace_line(1, "page", False) + trace_line(2, "choices", True, "v_end_choices")
+                            + trace_line(3, "choices", None, "v_end_choices"), encoding="utf-8")
+            records = run_route.read_instead_trace(path)
+        self.assertEqual([record["end_screen"] for record in records], [False, True, False],
+                         "старая трасса без столбца — не экран конца")
+        self.assertIs(run_route.instead_sequence_item(records[1])["end_screen"], True)
+
+    def test_nlbnavigator_script(self):
+        route = {"id": "r", "window": {"width": 1920, "height": 1080}, "steps": [{"id": "end", "screenshot": "end.png", "action": {
+            "type": "advance_until", "until": "end_screen", "max_clicks": 12, "x_ratio": 0.5, "y_ratio": 0.5}}]}
+        script, checkpoints, _ = run_route.script_for_nlbnavigator(route, Path("/tmp/out"))
+        self.assertIn("advance-until:end_screen,12,960,540\n", script)
+        self.assertEqual(len(checkpoints), 1)
+
+    def test_validation_accepts_end_screen(self):
+        step = {"id": "end", "action": {"type": "advance_until", "until": "end_screen", "max_clicks": 12,
+                                        "x_ratio": 0.5, "y_ratio": 0.5,
+                                        "expect_pages": [{"page_id": "end", "portion_count": 8}]}}
+        self.assertEqual([], validate_route({"id": "r", "steps": [step]}))
+
+    def test_whole_step_ending_then_end_screen(self):
+        # щелчки по концовке — page/page с текстом, последний — экран конца в обоих движках
+        texts = ["Вы бросились на врага.", "Негодяй барахтался.", "Жизнь вернулась в прежнее русло."]
+        left = [instead("end", i, 3, text) for i, text in enumerate(texts)]
+        right = [nlb("end", i, 3, text, finished=True) for i, text in enumerate(texts)]
+        left.append(dict(instead("end", 2, 3, screen="choices"), end_screen=True))
+        right.append(nlb("end", 2, 3, screen="finished", finished=True))
+        self.assertIsNone(run_route.compare_advance_sequences(left, right))
+        self.assertEqual(run_route.page_sequence(right), [{"page_id": "end", "portion_count": 3}],
+                         "expect_pages: страница концовки и число порций её текста")
+        # подмена текста концовки
+        wrong = list(right)
+        wrong[1] = nlb("end", 1, 3, "Негодяй убежал.", finished=True)
+        self.assertIn("текст NLBNavigator", run_route.compare_advance_sequences(left, wrong))
+        # экран конца раньше: INSTEAD ещё на тексте
+        early = list(right)
+        early[2] = nlb("end", 2, 3, screen="finished", finished=True)
+        self.assertIn("раньше", run_route.compare_advance_sequences(left, early))
+
+    def test_end_screen_against_ordinary_choices_fails(self):
+        a = dict(instead("end", 0, 1, screen="choices"), end_screen=False)
+        b = nlb("end", 0, 1, screen="finished", finished=True)
+        self.assertFalse(run_route.same_end_screen(a, b))
+        self.assertIn("экран INSTEAD 'choices', NLBNavigator 'finished'", run_route.compare_advance_sequences([a], [b]))
+
+
 class StateLogCheckTest(unittest.TestCase):
     def run_tool(self, records):
         with tempfile.TemporaryDirectory() as directory:

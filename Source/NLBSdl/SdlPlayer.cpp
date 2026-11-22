@@ -685,8 +685,9 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
         // щелчок — обычная команда click: со своим снимком state-log: раннер дифференциальных тестов
         // сверяет по ним порции с INSTEAD. Условия: choices — открыт экран вариантов; page_end —
         // показана последняя порция страницы (или страница сменилась, или экран не страница);
-        // page_change — другая страница (те же, что у действия advance_until раннера: их понимает
-        // и трасса INSTEAD). Не выполнено — [НЕ ВЫПОЛНЕНО]
+        // page_change — другая страница; end_screen — показан экран конца VN (endScreenShown:
+        // текст концовки дочитан; в INSTEAD — комната _choices с одним _try_again). Те же, что у
+        // действия advance_until раннера: их понимает и трасса INSTEAD. Не выполнено — [НЕ ВЫПОЛНЕНО]
         std::string until;
         int maxClicks = 0;
         float x = 0, y = 0;
@@ -701,11 +702,16 @@ bool SdlPlayer::scriptCommand(const std::string& line) {
             const nlb::presentation::ScreenModel screen = engine.screen();
             if (until == "choices") return m_screen->choicesScreenShown();
             if (until == "page_change") return screen.pageId != startPage;
+            if (until == "end_screen") return m_screen->endScreenShown();
             // page_end: последняя порция или уже не страница
             return !m_screen->portionState().more || m_screen->choicesScreenShown() || m_screen->messageShown()
                    || screen.pageId != startPage;
         };
-        ok = until == "choices" || until == "page_end" || until == "page_change";
+        ok = until == "choices" || until == "page_end" || until == "page_change" || until == "end_screen";
+        if (!ok) {
+            std::cerr << "advance-until: неизвестное условие или формат: " << line
+                      << " (условия: choices, page_end, page_change, end_screen)" << std::endl;
+        }
         if (ok) {
             char click[64];
             std::snprintf(click, sizeof(click), "click:%g,%g", x, y);

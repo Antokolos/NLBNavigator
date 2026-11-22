@@ -267,6 +267,7 @@ def instead_sequence_item(record):
         "portion_count": record.get("portion_count", 0),
         "text": comparable_text(record.get("rendered", ""))[:SEQUENCE_TEXT],
         "rendered": comparable_text(record.get("rendered", "")),
+        "end_screen": record.get("end_screen") is True,
         "variables": {name: record.get(name, "") for name in TRACE_VARIABLES},
     }
 
@@ -303,6 +304,8 @@ def same_end_screen(instead, nlbnavigator):
     """
     return (nlbnavigator.get("screen") == "finished" and nlbnavigator.get("finished") is True
             and SCREEN_KINDS.get(instead.get("screen"), instead.get("screen")) == "choices"
+            # трасса со столбцом end_screen: "choices" — именно экран конца, не обычные варианты
+            and instead.get("end_screen", True) is True
             and instead.get("page_id") == nlbnavigator.get("page_id"))
 
 
@@ -1046,6 +1049,10 @@ def instead_reached(until, record, start_page):
         return record.get("screen_kind") == "choices"
     if until == "page_change":
         return record.get("page_id") != start_page
+    if until == "end_screen":
+        # экран «начать заново» экспорта: комната _choices, все объекты — _try_again (столбец
+        # end_screen трассы, instead_trace.lua); обычный экран вариантов — тоже "choices", но не он
+        return record.get("end_screen") is True
     # page_end: последняя порция, не страница или другая страница
     return (not record.get("more") or record.get("screen_kind") != "page"
             or record.get("page_id") != start_page)
@@ -1119,13 +1126,15 @@ def read_instead_trace(path):
         "location_id", "room_id", "screen_kind", "page_name", "background",
         "portion_index", "portion_count", "more", "room_text", "action_text",
         "objects_text", "player_text",
-    ] + list(TRACE_VARIABLES)
+    ] + list(TRACE_VARIABLES) + ["end_screen"]
     records = []
     with path.open("r", encoding="utf-8", errors="replace") as source:
         for line in source:
             if not line.strip() or line.startswith("#"):
                 continue
             fields = [unquote(value) for value in line.rstrip("\n").split("\t")]
+            if len(fields) == len(columns) - 1:
+                fields.append("")  # трасса без столбца end_screen (до его появления)
             if len(fields) != len(columns):
                 continue
             record = dict(zip(columns, fields))
@@ -1136,6 +1145,7 @@ def read_instead_trace(path):
             except ValueError:
                 continue
             record["more"] = record["more"] == "true"
+            record["end_screen"] = record["end_screen"] == "true"
             records.append(record)
     return records
 
