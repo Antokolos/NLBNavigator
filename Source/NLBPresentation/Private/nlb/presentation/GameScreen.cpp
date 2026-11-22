@@ -128,6 +128,13 @@ std::string framePath(const ImageRef& image) {
 GameScreen::GameScreen(Session& session, Options options) : m_session(session), m_options(std::move(options)) {
     m_standardTheme = ScreenTheme::load(m_options.baseThemeDir, m_options.themeDir, false);
     m_vnTheme = ScreenTheme::load(m_options.baseThemeDir, m_options.themeDir, true);
+    // экран книги другого размера (файл screen): тема NLB 1920×1080 — под него
+    const int bookW = m_session.bookScreenWidth(), bookH = m_session.bookScreenHeight();
+    for (ScreenTheme* t : {&m_vnTheme, &m_standardTheme}) {
+        if ((bookW != 1920 || bookH != 1080) && bookW > 0 && t->screenW == 1920 && t->screenH == 1080) {
+            t->bookScale = 1920.0f / static_cast<float>(bookW);
+        }
+    }
     m_choicesScreen = m_options.choicesScreen;
     m_soundOn = m_options.soundAvailable;
     // размер текста: выбор игрока (меню, settings.ini), иначе — из параметров фронтенда
@@ -1194,12 +1201,17 @@ float GameScreen::renderChoices(float x, float y, float width, const FontRef& fo
 
 RectF GameScreen::objectRect(size_t index) {
     const SceneObject& o = m_screen.sceneObjects[index];
+    // спрайт, arm, offset, iarm — в пикселях экрана книги; в экран 1920×1080 — множителем bookScale
+    // темы (книга 1920×1080 — 1, как было)
+    const float bs = (m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme).bookScale;
     float w = 0, h = 0;
     // Объект без картинки, но с подписью: в vn.lua его спрайт пустой (0×0), а подпись — блок
     // строк справа от точки объекта, по вертикали — по углу привязки (get_pos_coef: top — вниз
     // от точки, middle — по центру, bottom — вверх; у вложенного — по центру)
     float labelW = 0, labelH = 0, labelCoef = 0;
     const bool textOnly = !imageSize(o.image, w, h) && isHumanLabel(o.label);
+    w *= bs;
+    h *= bs;
     if (textOnly) {
         const ScreenTheme& theme = m_screen.layout == Layout::VisualNovel ? m_vnTheme : m_standardTheme;
         const FontRef font = labelFontFor(theme);
@@ -1223,8 +1235,8 @@ RectF GameScreen::objectRect(size_t index) {
         // Вложенный: точка родителя + iarm, иначе столбиком под предыдущими детьми (vn.lua)
         float ax = 0, ay = 0;
         if (p.hasInnerArm) {
-            ax = static_cast<float>(p.innerArmX);
-            ay = static_cast<float>(p.innerArmY);
+            ax = static_cast<float>(p.innerArmX) * bs;
+            ay = static_cast<float>(p.innerArmY) * bs;
         } else {
             float stacked = 0;
             for (size_t i = 0; i < index; ++i) {
@@ -1240,9 +1252,9 @@ RectF GameScreen::objectRect(size_t index) {
     // Корневой: vn.lua postoxy
     const int a = static_cast<int>(p.anchor);
     const int col = a % 3, row = a / 3;   // 0 — left/top, 1 — middle, 2 — right/bottom
-    float x = col == 0 ? static_cast<float>(p.armX) : col == 2 ? SCREEN_W - w : std::floor((SCREEN_W - w) / 2);
-    float y = row == 0 ? static_cast<float>(p.armY) : row == 2 ? SCREEN_H - h : std::floor((SCREEN_H - h) / 2);
-    if (p.hasOffset) { x += static_cast<float>(p.offsetX); y += static_cast<float>(p.offsetY); }
+    float x = col == 0 ? static_cast<float>(p.armX) * bs : col == 2 ? SCREEN_W - w : std::floor((SCREEN_W - w) / 2);
+    float y = row == 0 ? static_cast<float>(p.armY) * bs : row == 2 ? SCREEN_H - h : std::floor((SCREEN_H - h) / 2);
+    if (p.hasOffset) { x += static_cast<float>(p.offsetX) * bs; y += static_cast<float>(p.offsetY) * bs; }
     return finish(x, y);
 }
 
@@ -1537,7 +1549,7 @@ void GameScreen::renderStandard() {
     m_r->fillRect(t.screenArea, pageBackground ? t.border : t.background);
     if (pageBackground) {
         const RectF a = t.screenArea;
-        const float bw = w * t.scale, bh = h * t.scale;
+        const float bw = w * t.scale * t.bookScale, bh = h * t.scale * t.bookScale;
         m_r->drawImage(framePath(m_screen.pageImage), {a.x + (a.w - bw) / 2, a.y + (a.h - bh) / 2, bw, bh}, 1.0f);
     } else {
         // Фон: у страницы STANDARD без своего фона экспорт ставит bgimg = nlb:std_bg() (gfx/bg.jpg
@@ -1569,9 +1581,19 @@ void GameScreen::renderStandard() {
 void GameScreen::renderVisualNovel() {
     const ScreenTheme& t = m_vnTheme;
     m_r->fillRect({0, 0, SCREEN_W, SCREEN_H}, t.border);
-    m_r->fillRect(t.screenArea, t.background);
     float w = 0, h = 0;
-    if (imageSize(m_screen.pageImage, w, h)) m_r->drawImage(framePath(m_screen.pageImage), {0, 0, SCREEN_W, SCREEN_H}, 1.0f);
+    // Фон страницы — как фон INSTEAD (vn.lua, scene: фон не во весь экран темы — по центру,
+    // вокруг цвет рамки scr.col.brd): в своём размере с масштабом темы, по центру экрана темы;
+    // больше экрана — лишнее за краем не видно. Раньше растягивался на весь экран с искажением
+    // (CoolAir-Images: фон 1086×1448 сплющивало до 1920×1080). Фон ровно в размер экрана темы
+    // выглядит как прежде
+    const bool background = imageSize(m_screen.pageImage, w, h);
+    m_r->fillRect(t.screenArea, background ? t.border : t.background);
+    if (background) {
+        const RectF a = t.screenArea;
+        const float bw = w * t.scale * t.bookScale, bh = h * t.scale * t.bookScale;
+        m_r->drawImage(framePath(m_screen.pageImage), {a.x + std::floor((a.w - bw) / 2), a.y + std::floor((a.h - bh) / 2), bw, bh}, 1.0f);
+    }
     if (m_endScreen) {
         // экран конца: objs():zap() и ignore_preserved_gobjs — объектов нет, фон страницы остаётся
         renderEndScreen(t);

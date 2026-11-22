@@ -65,6 +65,22 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
         screen_kind = "overlay"
     end
 
+    -- Экран конца («начать заново»): комната v_<id>_choices, все объекты которой — _try_again
+    -- (nlb.lua), как is_end в vn.lua экспорта. Обычный экран вариантов — тоже _choices, но с
+    -- вариантами-объектами, поэтому одного screen_kind "choices" мало
+    local end_screen = false
+    if room_is_choices or location_is_choices then
+        end_screen = safe_value(function()
+            if type(_G._try_again) ~= "table" then return false end
+            local any, only = false, true
+            for _, v in ipairs(objs()) do
+                any = true
+                if stead.nameof(v) ~= stead.nameof(_G._try_again) then only = false end
+            end
+            return any and only
+        end) == true
+    end
+
     local page_name = safe_value(function() return location and location.nam end) or ""
     local background = safe_value(function() return vn and vn._bg end) or ""
 
@@ -106,16 +122,16 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
         sequence, kind, command, arguments, rendered, page_id, location_name, room_name,
         screen_kind, page_name, background, portion_index, portion_count, more,
         room_text, action_text, objects_text, player_text, _wolfiness, _hp,
-        _barExit, _forestExit, _wolvesTalk, _guardDone
+        _barExit, _forestExit, _wolvesTalk, _guardDone, end_screen
     }
     local encoded = {}
     -- Numeric iteration preserves empty fields when a Lua value is nil.
-    for index = 1, 24 do encoded[index] = encode_field(fields[index]) end
+    for index = 1, 25 do encoded[index] = encode_field(fields[index]) end
     trace:write(table.concat(encoded, "\t") .. "\n")
     trace:flush()
 end
 
-trace:write("# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\tbarExit\tforestExit\twolvesTalk\tguardDone\n")
+trace:write("# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\tbarExit\tforestExit\twolvesTalk\tguardDone\tend_screen\n")
 trace:flush()
 
 -- Keep iface.fmt as a secondary diagnostic source for STANDARD exports.

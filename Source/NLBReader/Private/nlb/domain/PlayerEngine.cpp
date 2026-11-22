@@ -1445,7 +1445,9 @@ PlayerEngine::Placement PlayerEngine::objPlacement(const std::string& instanceId
     }
     // ExportManager.getRelativeCoords: координаты относительно страницы, пересчитанные на экран
     // 1920×1080, и getTransformedCoords — отсчёт от выбранного угла
-    const double screenW = 1920.0, screenH = 1080.0;
+    // на экране книги (файл screen главной книги; по умолчанию 1920×1080) — как
+    // ScreenPlacement.arm в NLB; GameScreen переводит в экран 1920×1080 множителем bookScale темы
+    const double screenW = m_rootBook->getScreenWidth(), screenH = m_rootBook->getScreenHeight();
     Coords& rel = obj->getRelativeCoords(true);
     const double w = rel.getWidth(), h = rel.getHeight();
     const double left = w != 0 ? std::floor(rel.getLeft() * screenW / w) : 0.0;

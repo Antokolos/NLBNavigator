@@ -22,7 +22,8 @@ nlb_sdl <книга> vn --script route.script --state-log state.jsonl --state-va
 (как при невыполненной команде) — тест не пройдёт молча без диагностики.
 
 Проверка файла: `python3 tools/check_state_log.py state.jsonl [--commands N]` — каждая строка —
-JSON с обязательными полями нужных типов, `index` подряд с 0, `screen` из допустимых,
+JSON с обязательными полями нужных типов, `index` подряд с 0, `screen` из допустимых
+(`finished` — только при `finished` = true; `finished` = `model.finished`),
 `portion.index` в пределах `count`, `model.pageId` = `pageId`; с `--commands N` — ровно N + 1
 записей. Раннеру тестов стоит вызывать её после каждого прогона: новое поле `ScreenModel`,
 забытое в сериализаторе, не сломает её, а пропавшее обязательное — сломает.
@@ -36,7 +37,8 @@ JSON с обязательными полями нужных типов, `index`
 | `command` | строка команды как в сценарии |
 | `ok` | команда выполнена (то же, что отсутствие `[НЕ ВЫПОЛНЕНО]` в выводе) |
 | `pageId` | UUID текущей страницы (`PlayerEngine::screen().pageId`) |
-| `screen` | `page`, `choices` (открыт экран вариантов), `message` (сообщение: конец игры, внешняя игра, ошибка), `finished` |
+| `screen` | что **на экране** (не свойство страницы): `page` — текст страницы (и текст концовки, пока его читают); `choices` — открыт экран вариантов; `message` — сообщение (конец игры без картинки «Конец» в теме, внешняя игра, ошибка); `finished` — показан экран конца VN («Конец» и «Попробовать ещё раз», `GameScreen::endScreenShown`) |
+| `finished` | ходов больше нет — конец игры (= `model.finished`, `PlayerEngine::isFinished`). На VN-концовке — уже с первой порции, когда `screen` ещё `page` |
 | `portion.index`, `portion.count` | номер показанной порции текста VN (с 0) и число порций. **Только в режиме экрана вариантов VN**: в STANDARD и при вариантах в тексте порций нет, `count` = 0, `index` = 0, `visible` пуст — это не ошибка, текст тогда — в `model` (`pageText`, `reactionText`) |
 | `portion.more` | после показанной есть ещё порции |
 | `portion.visible` | текст показанной порции: абзацы `{runs: [{kind, text, target}], joinPrevious}` |
@@ -54,6 +56,23 @@ INSTEAD текст уже заменён, поэтому при сравнени
 `model.choices[].text` его нет. Поэтому `text_contains` в маршрутах — по фрагментам без `--` и
 кавычек, а `choices_contains` — без номеров.
 
+### Концовка: `screen` и `finished`
+`screen` — состояние экрана, `finished` — свойство игры. На концовке VN (страница без ссылок)
+`finished` = true с первой порции, но игрок ещё читает текст: `screen` — `page`, как
+`screen_kind` "page" в трассе INSTEAD, и текст концовки сравнивается с INSTEAD по порциям.
+`screen` = `finished` — только после последней порции, когда открыт экран конца
+(`GameScreen::showGameOver` -> `m_endScreen`). В экспорте в INSTEAD это комната
+`v_<id>_choices` с `_try_again` — в трассе `choices` на той же странице; сравнитель
+(`run_route.py`, `same_end_screen`) считает их одним экраном только при той же странице и
+`finished` = true, `finished` против `page` INSTEAD — ошибка (экран конца раньше времени).
+Пример (wolfman, page42, 8 порций): `page`/true на порциях 0…7, затем `finished`/true на 7 —
+INSTEAD: `page` 0…7, затем `choices` 7.
+
+До этой правки `screen` был `finished` уже на первой порции концовки (по `ScreenModel::finished`) —
+маршруты, ожидавшие так `expect.screen` "finished" на тексте концовки, ждут теперь `page` и
+`expect.finished` true. В маршрутах `expect.finished` (true/false) проверяется по полю `finished`
+(только NLBNavigator).
+
 ## Команда `settle:<мс>`
 
 `wait:<мс>` после ожидания обновляет сессию (`Session::refresh`, `GameScreen::afterCommand`) — это
@@ -67,7 +86,8 @@ INSTEAD текст уже заменён, поэтому при сравнени
 - `choices` — открыт экран вариантов VN;
 - `page_end` — показана последняя порция страницы (или экран уже не страница, или страница
   сменилась);
-- `page_change` — другая страница.
+- `page_change` — другая страница;
+- `end_screen` — показан экран конца VN (`screen` = `finished`, текст концовки дочитан); в трассе INSTEAD — комната `_choices`, все объекты которой — `_try_again` (столбец `end_screen`, `instead_trace.lua`).
 
 Каждый щелчок — обычная команда `click:<x>,<y>` со своей записью state-log; затем — запись самой
 `advance-until:` (`ok` — условие выполнено; не выполнено — `[НЕ ВЫПОЛНЕНО]`). Поэтому записей

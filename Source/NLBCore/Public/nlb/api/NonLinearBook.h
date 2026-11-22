@@ -153,6 +153,10 @@ public:
     virtual std::string getLanguage() const = 0;
     virtual std::string getLicense() const = 0;
     virtual Theme getTheme() const = 0;
+    /// Размер экрана игры (файл screen главной книги, «1280x720»; нет — 1920×1080, 16:9). Один на
+    /// всю игру: у модулей — размер главной книги. Как NonLinearBook.getScreenSize в NLB (Java)
+    virtual int getScreenWidth() const { return 1920; }
+    virtual int getScreenHeight() const { return 1080; }
     virtual bool isFullAutowire() const = 0;
     virtual bool isSuppressMedia() const = 0;
     virtual bool isSuppressSound() const = 0;
