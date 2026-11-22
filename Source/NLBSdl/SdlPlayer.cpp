@@ -754,13 +754,17 @@ void SdlPlayer::writeState(size_t index, const std::string& command, bool ok) {
     PlayerEngine& engine = m_session->engine();
     const nlb::presentation::ScreenModel screen = engine.screen();
     const auto portion = m_screen->portionState();
+    // screen — что на экране, а не свойство страницы: текст концовки, пока его читают, — "page"
+    // (как в INSTEAD), "finished" — только показанный экран конца VN. «Ходов больше нет» — поле
+    // finished (= model.finished) — уже на первой порции концовки
     const char* kind = m_screen->messageShown() ? "message"
                      : m_screen->choicesScreenShown() ? "choices"
-                     : screen.finished ? "finished" : "page";
+                     : m_screen->endScreenShown() ? "finished" : "page";
     std::string r = "{\"schema\":1";
     r += ",\"index\":" + std::to_string(index) + ",\"command\":" + json::str(command);
     r += ",\"ok\":" + std::string(ok ? "true" : "false");
     r += ",\"pageId\":" + json::str(screen.pageId) + ",\"screen\":" + json::str(kind);
+    r += ",\"finished\":" + std::string(screen.finished ? "true" : "false");
     r += ",\"portion\":{\"index\":" + std::to_string(portion.index) + ",\"count\":" + std::to_string(portion.count) +
          ",\"more\":" + (portion.more ? "true" : "false") + ",\"visible\":" + json::paragraphs(portion.visible) + "}";
     r += ",\"variables\":{";

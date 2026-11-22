@@ -86,6 +86,9 @@ def validate_route(route, route_name="<route>"):
         if not isinstance(expected, dict):
             errors.append("{}: {}: expect должен быть объектом".format(route_name, step_id))
             expected = {}
+        if "finished" in expected and not isinstance(expected["finished"], bool):
+            # finished — признак «ходов больше нет» в state-log NLBNavigator (docs/state-log.md)
+            errors.append("{}: {}: expect.finished должен быть true или false".format(route_name, step_id))
 
         page_id = expected.get("page_id")
         for index_key, count_key, runtime_name in PORTION_FIELDS:

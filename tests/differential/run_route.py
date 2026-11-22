@@ -241,12 +241,16 @@ SEQUENCE_TEXT = 80  # начало текста порции в последов
 
 
 def nlbnavigator_sequence_item(record):
-    """Состояние NLBNavigator после щелчка advance_until: страница, порция, экран, начало текста"""
+    """
+    Состояние NLBNavigator после щелчка advance_until: страница, порция, экран, признак конца игры
+    (finished — ходов больше нет; screen "finished" — показан экран конца), начало текста
+    """
     portion = record.get("portion", {})
     variables = {name: variable_text(value) for name, value in (record.get("variables") or {}).items()}
     return {
         "page_id": record.get("pageId", ""),
         "screen": record.get("screen", ""),
+        "finished": bool(record.get("finished", record.get("model", {}).get("finished", False))),
         "portion_index": portion.get("index", 0),
         "portion_count": portion.get("count", 0),
         "text": comparable_text(nlbnavigator_visible_text(record))[:SEQUENCE_TEXT],
@@ -290,6 +294,18 @@ def page_sequence(sequence):
 SCREEN_KINDS = {"page": "page", "choices": "choices", "overlay": "page"}
 
 
+def same_end_screen(instead, nlbnavigator):
+    """
+    Экран конца NLBNavigator ("finished", GameScreen::showGameOver) и экран «начать заново» экспорта
+    в INSTEAD — комната v_<id>_choices с _try_again, в трассе "choices" — один и тот же экран, если
+    страница та же и у NLBNavigator ходов действительно нет (finished). Других поблажек нет:
+    "finished" против INSTEAD "page" — экран конца раньше, чем в INSTEAD (текст концовки не дочитан)
+    """
+    return (nlbnavigator.get("screen") == "finished" and nlbnavigator.get("finished") is True
+            and SCREEN_KINDS.get(instead.get("screen"), instead.get("screen")) == "choices"
+            and instead.get("page_id") == nlbnavigator.get("page_id"))
+
+
 def compare_advance_sequences(left, right):
     """
     Первое расхождение INSTEAD (left) и NLBNavigator (right) по щелчкам advance_until или None:
@@ -303,8 +319,11 @@ def compare_advance_sequences(left, right):
         for key in ("page_id", "portion_index", "portion_count"):
             if a.get(key) != b.get(key):
                 return "{}: {} INSTEAD {!r}, NLBNavigator {!r}".format(where, key, a.get(key), b.get(key))
-        if SCREEN_KINDS.get(a.get("screen"), a.get("screen")) != b.get("screen"):
-            return "{}: экран INSTEAD {!r}, NLBNavigator {!r}".format(where, a.get("screen"), b.get("screen"))
+        if SCREEN_KINDS.get(a.get("screen"), a.get("screen")) != b.get("screen") and not same_end_screen(a, b):
+            return "{}: экран INSTEAD {!r}, NLBNavigator {!r}{}".format(
+                where, a.get("screen"), b.get("screen"),
+                " (экран конца раньше, чем в INSTEAD)" if b.get("screen") == "finished" and
+                SCREEN_KINDS.get(a.get("screen"), a.get("screen")) == "page" else "")
         for name, value in (b.get("variables") or {}).items():
             if name in (a.get("variables") or {}) and a["variables"][name] != value:
                 return "{}: переменная {} INSTEAD {!r}, NLBNavigator {!r}".format(where, name, a["variables"][name], value)
@@ -441,6 +460,11 @@ def validate_run(route, output_dir, runtime, screen_records, log_path=None, stat
                 errors.append("{}: ожидался экран {}, получен {}".format(
                     step["id"], expected["screen"], record.get("screen")
                 ))
+            if "finished" in expected:
+                # ходов больше нет (конец игры): уже на первой порции концовки, экран при этом — page
+                finished = record.get("finished", model.get("finished"))
+                if finished != expected["finished"]:
+                    errors.append("{}: finished={}, ожидалось {}".format(step["id"], finished, expected["finished"]))
             portion = record.get("portion", {})
             for expected_key, actual_key in (("portion_index", "index"), ("portion_count", "count")):
                 if expected_key in expected and portion.get(actual_key) != expected[expected_key]:

@@ -154,6 +154,10 @@ public:
     PortionState portionState() const;
     /// Показано сообщение (конец игры, внешняя игра, ошибка) — для тестов
     bool messageShown() const { return m_menu == Menu::Message; }
+    /// Показан экран конца VN («Конец» и «Попробовать ещё раз», showGameOver) — после того, как
+    /// текст концовки дочитан. Признак «ходов больше нет» — ScreenModel::finished: он есть уже на
+    /// первой порции концовки (state-log: screen "finished" — только этот экран, docs/state-log.md)
+    bool endScreenShown() const { return m_endScreen; }
     /// Игрок выбрал «Выйти» в меню
     bool quitRequested() const { return m_quit; }
     void clearQuitRequest() { m_quit = false; }

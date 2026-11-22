@@ -130,7 +130,7 @@ class ScriptAndValidationTest(unittest.TestCase):
 class StateLogCheckTest(unittest.TestCase):
     def test_min_commands(self):
         record = {"schema": 1, "index": 0, "command": "", "ok": True, "pageId": "p", "screen": "page",
-                  "portion": {"index": 0, "count": 0, "more": False, "visible": []}, "variables": {},
+                  "finished": False, "portion": {"index": 0, "count": 0, "more": False, "visible": []}, "variables": {},
                   "model": {"layout": "vn", "pageId": "p", "pageImage": {}, "pageText": [], "reactionText": [],
                             "choices": [], "inventory": [], "sceneObjects": [], "finished": False}}
         with tempfile.TemporaryDirectory() as directory:
