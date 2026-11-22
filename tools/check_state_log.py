@@ -2,7 +2,8 @@
 """Проверка файла nlb_sdl --state-log (docs/state-log.md, schema 1).
 
 Каждая строка — корректный JSON с обязательными полями нужных типов; index идёт подряд с 0;
-значения screen — из допустимых. Код возврата 0 — файл в порядке, 1 — ошибки (печатаются).
+значения screen — из допустимых; screen "finished" (экран конца) — только при finished = true, и
+finished совпадает с model.finished. Код возврата 0 — файл в порядке, 1 — ошибки (печатаются).
 
     python3 tools/check_state_log.py state.jsonl [--commands N | --min-commands N]
 
@@ -16,7 +17,7 @@ import sys
 
 SCREENS = {"page", "choices", "message", "finished"}
 TOP = {
-    "schema": int, "index": int, "command": str, "ok": bool, "pageId": str, "screen": str,
+    "schema": int, "index": int, "command": str, "ok": bool, "pageId": str, "screen": str, "finished": bool,
     "portion": dict, "variables": dict, "model": dict,
 }
 PORTION = {"index": int, "count": int, "more": bool, "visible": list}
@@ -60,6 +61,8 @@ def main():
                 errors.append("{}: index {}, ожидался {}".format(where, record.get("index"), count))
             if record.get("screen") not in SCREENS:
                 errors.append("{}: screen {!r}".format(where, record.get("screen")))
+            if record.get("screen") == "finished" and record.get("finished") is not True:
+                errors.append("{}: screen finished (экран конца) при finished {!r}".format(where, record.get("finished")))
             if isinstance(record.get("portion"), dict):
                 check_fields(record["portion"], PORTION, where + ", portion", errors)
                 portion = record["portion"]
@@ -70,6 +73,8 @@ def main():
                 check_fields(record["model"], MODEL, where + ", model", errors)
                 if record["model"].get("pageId") != record.get("pageId"):
                     errors.append("{}: pageId записи и model.pageId различаются".format(where))
+                if "finished" in record and record["model"].get("finished") != record["finished"]:
+                    errors.append("{}: finished записи и model.finished различаются".format(where))
             count += 1
     if count == 0:
         errors.append("файл пуст: нет даже начальной записи")
