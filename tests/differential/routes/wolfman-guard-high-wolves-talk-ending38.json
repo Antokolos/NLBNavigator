@@ -95,7 +95,39 @@
       "screenshot": "page36-to-ending38.png",
       "expect": {
         "page_id": "c195f996-3411-4120-a03d-1cbc25d871c7",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 2,
+          "hp": 3,
+          "forestExit": true,
+          "wolvesTalk": true,
+          "guardDone": true
+        },
+        "finished": true
+      }
+    },
+    {
+      "id": "page36-to-ending38-end-screen",
+      "action": {
+        "type": "advance_until",
+        "until": "end_screen",
+        "max_clicks": 10,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "c195f996-3411-4120-a03d-1cbc25d871c7",
+            "portion_count": 6
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page36-to-ending38-end-screen.png",
+      "expect": {
+        "page_id": "c195f996-3411-4120-a03d-1cbc25d871c7",
         "screen": "finished",
+        "finished": true,
+        "instead_screen_kind": "choices",
         "variables": {
           "wolfiness": 2,
           "hp": 3,
