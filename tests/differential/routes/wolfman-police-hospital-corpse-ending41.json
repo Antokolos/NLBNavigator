@@ -596,7 +596,37 @@
       "screenshot": "page40-to-ending41.png",
       "expect": {
         "page_id": "eaa4f345-6237-416d-9764-f6f503028864",
+        "screen": "page",
+        "variables": {
+          "wolfiness": 0,
+          "hp": 1,
+          "guardDone": true
+        },
+        "finished": true
+      }
+    },
+    {
+      "id": "page40-to-ending41-end-screen",
+      "action": {
+        "type": "advance_until",
+        "until": "end_screen",
+        "max_clicks": 10,
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "expect_pages": [
+          {
+            "page_id": "eaa4f345-6237-416d-9764-f6f503028864",
+            "portion_count": 7
+          }
+        ]
+      },
+      "settle_ms": 2000,
+      "screenshot": "page40-to-ending41-end-screen.png",
+      "expect": {
+        "page_id": "eaa4f345-6237-416d-9764-f6f503028864",
         "screen": "finished",
+        "finished": true,
+        "instead_screen_kind": "choices",
         "variables": {
           "wolfiness": 0,
           "hp": 1,
