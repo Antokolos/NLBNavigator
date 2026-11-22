@@ -49,6 +49,7 @@ public:
     static const std::string LANGUAGE_FILE_NAME;
     static const std::string LICENSE_FILE_NAME;  
     static const std::string THEME_FILE_NAME;
+    static const std::string SCREEN_FILE_NAME;
     static const std::string TITLE_FILE_NAME;
     static const std::string AUTHOR_FILE_NAME;
     static const std::string VERSION_FILE_NAME;
@@ -106,6 +107,8 @@ public:
     std::string getLanguage() const override;
     std::string getLicense() const override;
     Theme getTheme() const override;
+    int getScreenWidth() const override;
+    int getScreenHeight() const override;
     bool isFullAutowire() const override;
     bool isSuppressMedia() const override;
     bool isSuppressSound() const override;
@@ -307,6 +310,9 @@ private:
     Page* m_parentPage;
     std::string m_startPoint;
     Theme m_theme;
+    /// Размер экрана из файла screen — только у главной книги (у модуля берётся у неё)
+    int m_screenWidth = 1920;
+    int m_screenHeight = 1080;
     std::string m_language;
     std::string m_license;
     std::string m_title;
