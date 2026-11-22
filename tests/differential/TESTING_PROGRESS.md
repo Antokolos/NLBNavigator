@@ -319,7 +319,8 @@ run ID `45060932721`, HEAD `9a58d748f65a80f1029f8c759e41d7d6af9d9309` — SUCCES
   `ROUTE=success`, `REPORT=success`, `COUNT=22`.
 - Все 22 маршрута прошли в INSTEAD, NLBNavigator и comparison.
 - Все шесть маршрутов концовок содержат успешный `end_screen` checkpoint в
-  comparison: три маршрута ending34/37/38/39/41 (см. route reports). Для
+  comparison: два маршрута ending34 и по одному ending37, ending38, ending39
+  и ending41 (см. route reports). Для
   NLBNavigator подтверждён терминальный `screen: finished`, `finished: true`;
   INSTEAD сообщает `screen_kind: choices`. На последней текстовой порции
   концовки сохраняется `screen: page` / `finished: true`.
