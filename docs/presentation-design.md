@@ -13,7 +13,7 @@ NLBReader          правила игры, сохранения             б�
 NLBPresentation    снимок экрана, AudioDirector,        без зависимостей
                    интерфейсы IAudioBackend, IMediaSource
 -----------------------------------------------------------------------------
-nlb_console        консоль (+ SDL3 audio, если собран с SDL3)
+nlb_main           консоль (explore) и pack (+ SDL3 audio, если собран с SDL3)
 nlb_sdl            SDL3 + SDL3_image + SDL3_ttf + SDL3_mixer
 godot/             GDExtension: узел NLBPlayer, адаптеры к AudioStreamPlayer, res://
 Source/NLBPlayer   модуль Unreal: UNLBPlayerSubsystem, звук и картинки из книги

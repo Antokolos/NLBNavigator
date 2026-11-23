@@ -4,6 +4,8 @@
 
 Актуализация на 11 ноября 2026: PR #32 merged; ускорение CI и изоляция HOME выполнены в PR #46. CI #151 (PR #46) и CI #152 (`main` после merge PR #46) завершились SUCCESS. В CI #152 все 15 route jobs и 45 JSON-отчётов успешны; оба robber routes получили отдельные paired runtime jobs и comparisons. PR #44 продолжает hospital coverage; текущий handoff и актуальные статусы находятся в `tests/differential/TESTING_PROGRESS.md`.
 
+Актуализация на 24 ноября 2026: каталог — 7 книг, 22 маршрута и 5 общих фрагментов (концовочные маршруты добавлены 22.11.2026, commit `8f4be7f`); полный набор прошёл в CI #214. Цифры в разделах 1–3 ниже — срез на 11 ноября 2026, актуальные числа даёт `tests/differential/catalog.json`.
+
 ## 1. Где мы сейчас
 
 | | |

@@ -14,12 +14,13 @@
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последние интегрированные PR: #54, #55 и #56 (merged); открытых PR на момент подготовки coverage branch не было.
-- Текущий `main`: `f3029f44256e93dca65b5551201f2cb362ce33ea` (после PR #56, содержит `tools/nlb_pages.py`).
-- Последние проверки differential suite: CI #188 — два изменённых hospital routes прошли INSTEAD, NLBNavigator и comparison; CI #189 и #190 — docs-only, Select routes выбрал 0 маршрутов, Differential gate SUCCESS (`COUNT 0`).
+- Последние интегрированные PR: #54–#57 и #63 (merged); открытых PR нет.
+- Текущий `main`: `9c480782eeb456e7bc9ee0869f69b1131060fe26` (merge PR #63 — роли issue #28); перед ним `6c8723ae` (merge PR #57 — покрытие Wolfman).
+- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219 (PR #63) и CI #220 (`main` после merge) — docs-only, `COUNT 0`, SUCCESS.
+- CI #218 (плановый прогон 23.11 на `main`) упал до маршрутов, на шаге `Build nlb_sdl`: `apt-get` не нашёл пакеты (`libasound2-dev`, `libfreetype-dev` и др.) — сбой окружения, не кода; последний полный зелёный прогон — CI #214.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
-- Каталог содержит 16 постоянных маршрутов; hospital doctor/corpse продолжения прошли paired runtime и comparison в CI #188. Остальные маршруты не запускались в CI #188; ранее полный набор из 16 маршрутов прошёл в CI #181.
-- PR #54 и #56 слиты; `tools/nlb_pages.py` в `main` рекурсивно инвентаризирует страницы и модули Wolfman.
+- Каталог (`catalog.json`) содержит 7 книг, 22 маршрута и 5 общих фрагментов: 16 маршрутов основных ветвей и 6 концовочных (ending34 ×2, ending37, ending38, ending39, ending41 — добавлены 22.11.2026, commit `8f4be7f`). Полный набор из 22 прошёл в CI #214; до этого 16 маршрутов проходили в CI #176 и #181.
+- `tools/nlb_pages.py` в `main` рекурсивно инвентаризирует страницы и модули Wolfman.
 
 ## Правила
 

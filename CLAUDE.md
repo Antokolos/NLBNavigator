@@ -24,6 +24,10 @@
 ## Устройство (`Source/`)
 - `NLBCore` — модель книги (порт NLBL), `util/BookPack` (формат `.nlbpack`), `FileUtils`
   (читает и из пакета), `PropertyManager` (настройки экспорта `nlb.json`), `Json`.
+- Ядро — **read-only**: книгу оно только читает (каталог или `.nlbpack`) и не сохраняет —
+  вызовов `save()` в `Source/` нет, а перенесённый из редактора писатель неполный
+  (`PageImpl::writePage` не сохраняет `pages/<id>/module/`). Единственная запись — `nlb_main pack`.
+  Расширять ядро до редактирования сейчас не нужно.
 - `NLBReader` — движок: `PlayerEngine` (навигация, модули, автопереходы, события),
   `PlayerContext` (состояние), `ModificationInterpreter` (все модификации), `NLBExplorer`
   (консоль), `NLBExplorerScreenReader` (режим для незрячих).

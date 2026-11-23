@@ -22,7 +22,7 @@
 
 ## Текущий проверенный охват
 
-Последний проверенный прогон PR #44 — CI #171 на HEAD `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`: 16 постоянных маршрутов, 48 успешных отчётов (32 runtime и 16 comparisons). Полные run/artifact IDs, шаги и проверки — в `TESTING_PROGRESS.md`.
+Текущий полный прогон — CI #214 на HEAD `9a58d748f65a80f1029f8c759e41d7d6af9d9309`: 22 маршрута (16 основных и 6 концовочных), SUCCESS в INSTEAD, NLBNavigator и comparison; у всех шести концовочных маршрутов есть checkpoint `end_screen`. Предыдущий полный прогон 16 маршрутов — CI #171 на HEAD `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9` (48 отчётов). Полные run/artifact IDs, шаги и проверки — в `TESTING_PROGRESS.md`.
 
 | Маршрут | INSTEAD | NLBNavigator | Результат |
 |---|---|---|---|
