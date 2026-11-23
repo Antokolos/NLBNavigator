@@ -8,7 +8,7 @@
 
 ## Текущая модель покрытия
 
-wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. Последний полный прогон PR #44 — CI #171, HEAD `c94eeabc0f569c15f3e3c5ac6653c46a40140ce9`: SUCCESS. По артефакту CI #171, перепроверено Разработчиком. 48 отчётов (`16` INSTEAD, `16` NLBNavigator, `16` comparisons), все `ok=true`, `errors=[]`; каждый движок выполнил 456 шагов, текстовые проверки — 352 + 352 = 704. Каталог содержит 16 постоянных маршрутов; диагностические маршруты удалены. Подробные run/artifact IDs и детали — в `TESTING_PROGRESS.md`.
+wolfman и instead-am_i_a_monster_vn — две упаковки одной истории Am I a Monster?. В каталоге (`catalog.json`, срез на 24.11.2026) 7 книг, 22 маршрута и 5 общих фрагментов: 16 маршрутов основных ветвей и 6 концовочных (добавлены 22.11.2026, commit `8f4be7f`). Полный набор из 22 маршрутов прошёл в CI #214 (HEAD `9a58d748`): INSTEAD, NLBNavigator и comparison — SUCCESS, все шесть концовочных маршрутов содержат checkpoint `end_screen`. Историческая справка: hospital-ветка PR #44 подтверждена CI #171, когда маршрутов было 16 (48 отчётов, 456 шагов; перепроверено Разработчиком). Подробные run/artifact IDs и детали — в `TESTING_PROGRESS.md`.
 
 Hospital-ветка PR #44 подтверждена CI #171: врач — 13 шагов, труп — 11; page4 — 4 порции, page14 — 2, page5 — 6; итоговые состояния `wolfiness=1,hp=3` и `wolfiness=0,hp=2`. INSTEAD trace для page14 сообщает `images/3.jpg`; снимок визуально не сверялся. Локальные парные прогоны обоих маршрутов в обоих движках также выполнены Ревьюером; все шесть отчётов успешны. Подробные доказательства и ограничения — в `TESTING_PROGRESS.md`; граф ветвей — в `WOLFMAN_BRANCH_MAP.md`.
 Перед продолжением длительной работы прочитайте `TESTING_PROGRESS.md` (текущая
@@ -116,6 +116,11 @@ STANDARD/компонентов, но не подменяет текст VN-по
   от page18/page24/page25 к page22 с `forestExit=true`; подтверждены CI #121.
 - Три `wolfman-guard-*.json` маршрута: выход из леса к охраннику и условные ветви
   page27/page28/page1.8; подтверждены CI #126 в обоих движках и тремя успешными comparisons.
+- Шесть концовочных маршрутов: `wolfman-forest-wolfiness-one-rowan-ending34`,
+  `wolfman-forest-wolfiness-one-kalina-ending34`, `wolfman-forest-wolfiness-three-ending37`,
+  `wolfman-guard-high-wolves-talk-ending38`, `wolfman-forest-wolfiness-one-hawthorn-ending39`
+  и `wolfman-police-hospital-corpse-ending41`: дочитывание текста концовки по порциям и
+  отдельный экран конца (`_try_again`, в state-log `screen: finished`); подтверждены CI #214.
 
 CI #41695602249 (run 120) завершил все четыре расширенных forest routes в обоих
 движках и четыре comparisons: route reports и comparison reports имеют
@@ -177,7 +182,7 @@ State-log NLBNavigator проверяется через `tools/check_state_log.
   `comparison-report.json`, как раньше) и таблица ok/ошибка по маршрутам в сводке прогона.
 - `Differential gate` — итоговый gate job: проверяет завершение выбранных route jobs и их результат; если `plan` выбрал 0 маршрутов (например, PR-коммиты меняют только документацию), gate завершается успешно с `COUNT 0`.
 - Если объект предыдущей головы PR недоступен (например, история ветки перезаписана), `git diff` не выполняется и прогоняются все маршруты.
-- Новый маршрут достаточно добавить в `catalog.json`: шаги в workflow не нужны.
+- Новый маршрут: JSON в `tests/differential/routes/` плюс запись в `catalog.json`; шаги в workflow не нужны. Файл нужно добавить в git явно (`git add -f`): `.gitignore` — whitelist, и новый файл в `routes/` по умолчанию игнорируется (уже отслеживаемые маршруты это не затрагивает; альтернатива — правило `!/tests/differential/routes/*.json` в `.gitignore`).
 - Прогон не отменяется следующим коммитом (`cancel-in-progress: false`).
 
 ## Правила написания маршрутов

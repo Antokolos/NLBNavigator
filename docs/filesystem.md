@@ -19,6 +19,8 @@
 Смонтированный пакет книги (`BookPack::mount`) — слой над файловой системой: пути внутри него
 читаются из пакета.
 
-Мимо `IFileSystem` пишут только инструменты, а не плеер: упаковка `nlb_main pack`
-(`BookPack::write`), сохранение книги и экспорт ресурсов в коде, перенесённом из редактора
-(`FileManipulator`, `ResourceManager`, `VariableImpl`).
+Мимо `IFileSystem` пишет только упаковщик `nlb_main pack` (`BookPack::write`), и то по явной
+команде: сам плеер книгу не меняет. Ядро read-only — вызовов сохранения книги в `Source/` нет,
+а перенесённые из редактора классы (`NonLinearBookFacade`, `FileManipulator`, `ResourceManager`,
+`VariableImpl`) хотя и компилируются, писатель каталога неполный: `PageImpl::writePage` не
+сохраняет `pages/<id>/module/`, так что книгу с внутренними модулями им не записать.
