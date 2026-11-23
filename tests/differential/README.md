@@ -257,6 +257,37 @@ State-log NLBNavigator проверяется через `tools/check_state_log.
 - Новые расхождения сначала сохранять как артефакты и отчёт; не добавлять
   безусловный pixel-perfect gate до согласования допустимых различий рендереров.
 
+## Сохранение достижения Wolfman между запусками SDL
+
+Отдельная проверка для Linux использует собранный `nlb_sdl` и закреплённые в CI
+книгу, тему экспорта и базовую тему. Из корня репозитория запустите следующий сценарий.
+Путь `--output` должен указывать на новый каталог.
+
+```bash
+xvfb-run -a -s '-screen 0 1920x1080x24' \
+  python3 tests/differential/check_wolfman_achievement.py \
+  --player ./build/nlb_sdl --book ./test-data/wolfman \
+  --theme ./test-data/instead-am_i_a_monster_vn/themes/default \
+  --base-theme ./test-data/instead/themes/default \
+  --output /tmp/wolfman-achievement
+```
+
+1. `award` проходит штатный маршрут `wolfman-guard-low-wolfiness-escape`
+   до страницы 42. Проверяются один вызов `VILLAIN_PUNISHED` через
+   `--platform log:<file>` и две строки в `wolfman.achievements`:
+   `id` с UUID модификации и `granted`.
+2. `readback` запускает новый процесс в отдельном HOME/XDG с этими двумя
+   строками из первого запуска. Маршрут заканчивается на странице 35b,
+   где `RIGHT_CHOICE` вызывает новую запись хранилища. В обновлённом файле
+   должны сохраниться обе строки `VILLAIN_PUNISHED`. State log подтверждает,
+   что процесс ни разу не посетил страницу 42.
+3. `clean` проходит тот же префикс с пустым HOME/XDG. Плеер также записывает
+   `RIGHT_CHOICE`, а строки `VILLAIN_PUNISHED` отсутствуют.
+
+В `--output` остаются отчёты штатного раннера, state logs, журналы площадки
+и отдельные профили всех трёх запусков. Проверка выполняется вручную.
+Она покрывает локальное хранилище SDL-плеера.
+
 
 ## Проверка состояния после каждой команды
 
