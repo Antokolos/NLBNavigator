@@ -1054,10 +1054,14 @@ def instead_choose(action, current, window):
         return None, "choose: вариантов с текстом {!r} в INSTEAD {} (нужен ровно один)".format(action["text"], count)
     links = len(CHOICE_LINK.findall(current.get("rendered", "")))
     points = []
+    hwnd = window[1] if IS_WINDOWS else None
     for _ in range(2 * links + 2):
-        execute_instead_action({"type": "key", "key": "Down"}, None)
+        if IS_WINDOWS:
+            win_gui.key(hwnd, "down")
+        else:
+            execute_instead_action({"type": "key", "key": "Down"}, None)
         time.sleep(0.15)
-        point = pointer_location()
+        point = win_gui.cursor_client(hwnd) if IS_WINDOWS else pointer_location()
         if point is not None and all(abs(point[0] - x) > 3 or abs(point[1] - y) > 3 for x, y in points):
             points.append(point)
         if len(points) == links:
@@ -1065,6 +1069,9 @@ def instead_choose(action, current, window):
     if len(points) != links:
         return None, "choose: «Вниз» обошёл {} ссылок INSTEAD из {}".format(len(points), links)
     x, y = sorted(points, key=lambda point: (point[1], point[0]))[index]
+    if IS_WINDOWS:
+        win_gui.click(hwnd, x, y)
+        return index, None
     for command in (["xdotool", "mousemove", str(x), str(y)], ["xdotool", "click", "--delay", "0", "1"]):
         result = run_command(timeout_command(command, 3), 5)
         if result.returncode != 0:

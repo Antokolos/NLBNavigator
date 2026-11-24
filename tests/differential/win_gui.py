@@ -153,6 +153,16 @@ def click(hwnd, x, y):
     user32.PostMessageW(hwnd, 0x0202, 0, lparam)        # WM_LBUTTONUP
 
 
+def cursor_client(hwnd):
+    """Позиция курсора в координатах клиентской области окна"""
+    point = wintypes.POINT()
+    if not user32.GetCursorPos(ctypes.byref(point)):
+        return None
+    if not user32.ScreenToClient(hwnd, ctypes.byref(point)):
+        return None
+    return point.x, point.y
+
+
 def close_window(hwnd):
     """Штатное закрытие окна (WM_CLOSE): даёт игре сохранить слоты и сбросить trace."""
     user32.PostMessageW(hwnd, 0x0010, 0, 0)
