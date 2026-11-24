@@ -34,17 +34,17 @@ def require(condition, message):
         raise RuntimeError(message)
 
 
-def menu(name, nlb, expect, settle=1500):
+def menu(name, nlb, expect, instead, settle=1500):
     return {"id": name, "screenshot": f"{name}.png", "settle_ms": settle,
-            "action": {"type": "menu", "nlbnavigator": nlb, "instead": []}, "expect": expect}
+            "action": {"type": "menu", "nlbnavigator": nlb, "instead": instead}, "expect": expect}
 
 
 def save(name="save-a", expect=None):
-    return menu(name, ["f5", 1], expect or {}, settle=1200)
+    return menu(name, ["f5", 1], expect or {}, [{"key": "F8"}], settle=1200)
 
 
 def load(name="load-a", expect=None):
-    return menu(name, ["f9", 1], expect or {}, settle=2500)
+    return menu(name, ["f9", 1], expect or {}, [{"key": "F9"}], settle=2500)
 
 
 def renamed(step, name, expect=None):
