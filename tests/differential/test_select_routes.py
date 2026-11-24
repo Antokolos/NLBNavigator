@@ -202,6 +202,13 @@ class PullRequestDocsOnlyRegressionTest(unittest.TestCase):
             self.run_main(["--base", "base", "--docs-only-since", "before"],
                           [self.FUNCTIONAL])
 
+    def test_workflow_does_not_reintroduce_docs_only_shortcut(self):
+        workflow = (Path(select_routes.ROOT) / ".github/workflows/nlb-sdl-test.yml").read_text(
+            encoding="utf-8")
+        self.assertNotIn("docs-only-since", workflow)
+        # pull request решается только по базе и текущей голове
+        self.assertIn('--base "$PR_BASE" --head HEAD', workflow)
+
 
 if __name__ == "__main__":
     unittest.main()

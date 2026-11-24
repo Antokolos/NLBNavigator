@@ -16,7 +16,7 @@
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
 - Последние интегрированные PR: #54–#57 и #63–#65 (merged); открыт Draft [PR #66](https://github.com/Antokolos/NLBNavigator/pull/66) — проверка достижений в CI.
 - Текущий `main`: `7ef55e23c8cd282872580a757537712b9fed928b` (merge PR #65 — проверка достижений); PR #63 — роли issue #28, PR #64 — числа маршрутов и read-only ядро; PR #66 — интеграция проверки в CI (Draft).
-- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219/#220 (PR #63 и `main`), CI #223/#224 (PR #65) и CI #225 (`main` после merge) — без графических прогонов: `COUNT 0`, SUCCESS; CI #226 (PR #66, первый полный: gate упал — у job не было checkout), CI #227 (PR #66, `65a64df`) и CI #228 (PR #66, `8a10994`) — 22 маршрута, job `achievement`, report и gate SUCCESS; CI #229 (`1eeadee`) — docs-only: `COUNT 0`, сборка и `achievement` пропущены, gate SUCCESS.
+- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219/#220 (PR #63 и `main`), CI #223/#224 (PR #65) и CI #225 (`main` после merge) — без графических прогонов: `COUNT 0`, SUCCESS; CI #226 (PR #66, первый полный: gate упал — у job не было checkout), CI #227 (PR #66, `65a64df`) и CI #228 (PR #66, `8a10994`) — 22 маршрута, job `achievement`, report и gate SUCCESS; CI #229 (`1eeadee`) — docs-only: `COUNT 0`, сборка и `achievement` пропущены, gate SUCCESS; CI #231 (PR #66, `0db11d2` — после закрытия обхода docs-only) — 22 маршрута и `achievement`, SUCCESS.
 - CI #218 (плановый прогон 23.11 на `main`) упал до маршрутов, на шаге `Build nlb_sdl`: `apt-get` не нашёл пакеты (`libasound2-dev`, `libfreetype-dev` и др.) — сбой окружения, не кода; последний полный зелёный прогон — CI #214.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
 - Каталог (`catalog.json`) содержит 7 книг, 22 маршрута и 5 общих фрагментов: 16 маршрутов основных ветвей и 6 концовочных (ending34 ×2, ending37, ending38, ending39, ending41 — добавлены 22.11.2026, commit `8f4be7f`). Полный набор из 22 прошёл в CI #214; до этого 16 маршрутов проходили в CI #176 и #181.
@@ -96,8 +96,12 @@ pinned-коммите `888b4b7a7a564693274f53341728ee9f3b4c2879`: при сме�
 документационный PR по-прежнему не запускает ничего (безопасная оптимизация), а документационный
 коммит в функциональном PR проверки не отменяет — runtime выполняется заново. Регрессия закреплена
 в `test_select_routes` (docs-only PR; функциональный PR + docs-коммит; предыдущий CI success,
-failure, cancelled, missing; achievement-тест при `COUNT=0`) и в `test_gate` (пропуск route при
-выбранных маршрутах — провал).
+failure, cancelled, missing; achievement-тест при `COUNT=0`; повторное включение флага в workflow
+запрещено тестом) и в `test_gate` (пропуск route при выбранных маршрутах — провал).
+
+В CI после исправления: CI #231 (`0db11d2`) — полный набор из 22 маршрутов и `achievement`;
+следующий документационный коммит в этом же PR снова запускает полный набор, а не `COUNT=0`, —
+именно это и было целью исправления.
 
 ## Шаг 1 — статическая route validation завершён
 
