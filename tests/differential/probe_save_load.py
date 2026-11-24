@@ -53,11 +53,11 @@ def advance(name="advance-portion"):
 
 def expect_state(portion):
     text = TEXT_1 if portion == 1 else TEXT_0
+    # portion_index в ожиданиях шага не задаём: валидатор требует строгого роста между шагами,
+    # а сохранение/загрузка порцию не меняют; номер порции проверяется по state-log в summary
     return {
-        "page_id": A_PAGE, "portion_index": portion, "portion_count": 2,
-        "text_contains": text,
-        "instead_page_id": A_PAGE, "instead_portion_index": portion, "instead_portion_count": 2,
-        "instead_text_contains": text,
+        "page_id": A_PAGE, "text_contains": text,
+        "instead_page_id": A_PAGE, "instead_text_contains": text,
     }
 
 
@@ -197,7 +197,8 @@ def main():
     scenarios = {
         "same-page": prefix + [advance(), save_a, load_a],
         "cross-page": prefix + [advance(), save_a] + after_portion + [load_a],
-        "cross-page-continue": prefix + [advance(), save_a] + after_portion + [load_a] + after_portion,
+        "cross-page-continue": prefix + [advance(), save_a] + after_portion + [load_a]
+                               + replay(after_portion, "replay"),
         "first-portion": prefix + [save_0, load_0],
         "restart-save": prefix + [advance(), save_a],
     }
