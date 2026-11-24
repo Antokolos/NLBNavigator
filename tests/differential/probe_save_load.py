@@ -33,14 +33,17 @@ def step_ids(route):
 
 
 def route_with(source, name, steps):
-    return dict(source, id=f"probe-{name}", steps=steps)
+    # visual_change_from валиден только в исходном порядке шагов; в переставленных
+    # сценариях он не нужен (снимки — диагностика), поэтому убираем его совсем
+    clean = [{key: value for key, value in step.items() if key != "visual_change_from"}
+             for step in steps]
+    return dict(source, id=f"probe-{name}", steps=clean)
 
 
 def save_route(output, name, route):
     path = output / f"{name}.json"
     path.write_text(json.dumps(route, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return path
-
 
 def advance(name="advance-portion"):
     return {
