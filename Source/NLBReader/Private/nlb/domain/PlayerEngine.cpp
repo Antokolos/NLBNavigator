@@ -151,6 +151,7 @@ void PlayerEngine::createState() {
 void PlayerEngine::restart() {
     // Новая игра — в тишине: игравшая музыка останавливается, музыка стартовой страницы
     // (если есть) придёт следом. Иначе AudioDirector доиграл бы прежнюю дорожку
+    m_uiState.clear();  // состояние экрана прежней игры не переносится в новую
     const bool musicPlaying = !m_currentMusic.empty();
     createState();
     if (musicPlaying) {
@@ -814,6 +815,11 @@ void PlayerEngine::writeSave(std::ostream& out) const {
     std::vector<std::string> preserved{"preserved", ""};
     preserved.insert(preserved.end(), m_preservedRoots.begin(), m_preservedRoots.end());
     PlayerContext::writeSaveRecord(out, preserved);
+    // Состояние экрана (порция VN и т.п.): отдельные записи `ui`, чтобы старые версии плеера их
+    // пропускали, а старые сохранения читались с пустым состоянием экрана.
+    for (const auto& [key, value] : m_uiState) {
+        PlayerContext::writeSaveRecord(out, {"ui", key, value});
+    }
     m_context->saveState(out);
 }
 
@@ -907,10 +913,12 @@ void PlayerEngine::applySave(const std::vector<std::vector<std::string>>& record
     std::optional<ExternalGame> external;
     std::vector<std::string> preservedRoots;
     int64_t actionPrev = 0;
+    m_uiState.clear();
     for (const auto& r : records) {
         if (r.size() >= 2 && r[0] == "page") pageId = r[1];
         if (r.size() >= 2 && r[0] == "lasttext") lastText = r[1];
         if (r.size() >= 2 && r[0] == "music") music = r[1];
+        if (r.size() >= 3 && r[0] == "ui") m_uiState[r[1]] = r[2];
         if (r.size() >= 3 && r[0] == "external") external = ExternalGame{r[1], r[2]};
         if (!r.empty() && r[0] == "preserved") preservedRoots.assign(r.size() > 2 ? r.begin() + 2 : r.end(), r.end());
         if (r.size() >= 2 && r[0] == "actionprev") {

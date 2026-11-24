@@ -341,11 +341,38 @@ void GameScreen::update(int milliseconds) {
     if (m_transitionActive) m_transitionMs += std::max(0, milliseconds);
     // Сессию изменили снаружи (подсистема движка, вернувшая книгу после внешней игры) — как после команды
     if (m_session.revision() != m_seenRevision) afterCommand();
+    // Загрузка восстановила порцию: применить после pull(), который мог сбросить её на 0
+    Session::ViewState restored;
+    if (m_session.takeRestoredViewState(restored)) applyRestoredViewState(restored);
     updatePause();
+    // Порция — часть сохранения: держим Session в курсе (в т.ч. при сохранении из меню)
+    publishViewState();
     if (m_menu != Menu::None) return;  // время книги идёт, только пока игрок не в меню (пауза)
     const uint64_t revision = m_session.revision();
     m_session.advance(milliseconds);
     if (m_session.revision() != revision) pull();
+}
+
+void GameScreen::publishViewState() {
+    if (!choicesMode()) return;
+    m_session.setViewState("vn.portion", std::to_string(portionState().index));
+}
+
+void GameScreen::applyRestoredViewState(const Session::ViewState& state) {
+    size_t index = 0;
+    const auto it = state.find("vn.portion");
+    if (it != state.end() && !it->second.empty()) {
+        try {
+            const long long value = std::stoll(it->second);
+            if (value > 0) index = static_cast<size_t>(value);
+        } catch (...) {
+            // повреждённое значение — первая порция, как в старых сохранениях
+        }
+    }
+    const auto parts = portions();
+    m_portion = parts.empty() ? 0 : std::min(index, parts.size() - 1);
+    m_voicedPortion = SIZE_MAX;  // озвучка восстановленной порции — заново
+    m_scroll = 0;
 }
 
 void GameScreen::processEvents(const std::vector<PlayerEngine::Event>& events) {
@@ -394,6 +421,7 @@ void GameScreen::afterCommand() {
             showGameOver();
         }
     }
+    publishViewState();
 }
 
 void GameScreen::updateEffects(const ScreenModel& before) {

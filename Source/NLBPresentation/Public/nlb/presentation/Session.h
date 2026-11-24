@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <fstream>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -104,6 +105,15 @@ public:
     bool save(int slot, std::string& error);
     bool load(int slot, std::string& error);
     PlayerEngine::SaveInfo saveInfo(int slot) const;
+
+    /// Состояние экрана, сохраняемое вместе с игрой (порция VN и т.п.). Экран пишет значения
+    /// перед сохранением; после загрузки Session возвращает прочитанное через
+    /// takeRestoredViewState — один раз, чтобы фронтенд применил его к своему экрану.
+    using ViewState = std::map<std::string, std::string>;
+    void setViewState(const std::string& key, const std::string& value);
+    std::string viewState(const std::string& key) const;
+    /// Забрать состояние экрана, восстановленное load()/tryAgain(); true — ровно один раз
+    bool takeRestoredViewState(ViewState& state);
     /// Режим экспорта, в котором открыта книга (VN или Standard)
     PlayerEngine::ExportMode exportMode() const { return m_options.exportMode; }
     /// Сохранения доступны (задан каталог сохранений)
@@ -151,6 +161,9 @@ private:
     void applyLanguage(const std::string& language);
     std::string m_logPage;                 ///< страница, описанная в журнале последней
     uint64_t m_logRevision = 0;            ///< ревизия снимка, записанного последним
+    ViewState m_viewState;                 ///< состояние экрана для следующего сохранения
+    ViewState m_restoredViewState;         ///< прочитано из последней загрузки
+    bool m_viewStateRestored = false;      ///< ожидает takeRestoredViewState
 };
 
 }  // namespace nlb::presentation

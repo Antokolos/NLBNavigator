@@ -303,6 +303,9 @@ void Session::restart() {
     m_logPage.clear();
     m_logRevision = static_cast<uint64_t>(-1);
     m_selected.clear();
+    m_viewState.clear();
+    m_restoredViewState.clear();
+    m_viewStateRestored = false;
     m_engine->restart();
     afterCommand();
 }
@@ -319,6 +322,9 @@ void Session::tryAgain() {
     m_selected.clear();
     m_engine->tryAgain();
     afterCommand();
+    m_restoredViewState = m_engine->uiState();
+    m_viewStateRestored = true;
+    ++m_localRevision;  // экран должен перерисоваться с восстановленной порцией
 }
 
 std::string Session::slotPath(int slot) const {
@@ -327,6 +333,8 @@ std::string Session::slotPath(int slot) const {
 
 bool Session::save(int slot, std::string& error) {
     if (m_options.savesDir.empty()) { error = "сохранения недоступны"; return false; }
+    // состояние экрана (порция VN и т.п.) — часть сохранения; экран обновляет его в update()
+    m_engine->setUiState(m_viewState);
     const bool ok = m_engine->saveGame(slotPath(slot), error);
     if (ok) logAction("Сохранить в слот " + std::to_string(slot));
     return ok;
@@ -340,7 +348,29 @@ bool Session::load(int slot, std::string& error) {
     const bool ok = m_engine->loadGame(slotPath(slot), error);
     m_selected.clear();
     afterCommand();
+    if (ok) {
+        m_restoredViewState = m_engine->uiState();
+        m_viewStateRestored = true;
+        ++m_localRevision;  // экран должен перерисоваться с восстановленной порцией
+    }
     return ok;
+}
+
+void Session::setViewState(const std::string& key, const std::string& value) {
+    m_viewState[key] = value;
+}
+
+std::string Session::viewState(const std::string& key) const {
+    const auto it = m_viewState.find(key);
+    return it == m_viewState.end() ? std::string() : it->second;
+}
+
+bool Session::takeRestoredViewState(ViewState& state) {
+    if (!m_viewStateRestored) return false;
+    state = m_restoredViewState;
+    m_restoredViewState.clear();
+    m_viewStateRestored = false;
+    return true;
 }
 
 PlayerEngine::SaveInfo Session::saveInfo(int slot) const {
