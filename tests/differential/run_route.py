@@ -1104,6 +1104,57 @@ def instead_advance_until(action, window, trace_path, current, player):
 # Переменные книги в Lua trace INSTEAD (instead_trace.lua) — те же, что nlb_sdl пишет по --state-vars
 TRACE_VARIABLES = ("wolfiness", "hp", "barExit", "forestExit", "wolvesTalk", "guardDone")
 
+# Клавиши меню INSTEAD: F5/F8 — сохранить, F6/F9 — загрузить. Это протокол INSTEAD, а не
+# привязка к конкретному маршруту: по ним раннер понимает, что сохранение сцену не меняет,
+# а загрузка обязана дать свежую сцену.
+INSTEAD_SAVE_KEYS = {"f5", "f8"}
+INSTEAD_LOAD_KEYS = {"f6", "f9"}
+
+
+def instead_menu_kind(action):
+    """('save'|'load'|None) по клавишам INSTEAD в menu-действии"""
+    if action.get("type") != "menu":
+        return None
+    keys = {str(item.get("key", "")).lower() for item in action.get("instead", [])
+            if isinstance(item, dict) and "key" in item}
+    if keys & INSTEAD_LOAD_KEYS:
+        return "load"
+    if keys & INSTEAD_SAVE_KEYS:
+        return "save"
+    return None
+
+
+def pick_instead_state_record(action_type, menu_kind, after, new_events, previous_state,
+                              trace_reset=False):
+    """(запись состояния, ошибки) для capture/menu/advance_until INSTEAD.
+
+    Сохранение сцену не меняет: допустимо прежнее подтверждённое состояние — последняя сцена
+    с непустым текстом, и только если трасса не переинициализирована и видимое состояние не
+    изменилось. Загрузка обязана дать свежую сцену с текстом: старый trace не доказательство.
+    """
+    if trace_reset:
+        return None, ["трасса INSTEAD переинициализирована: seq начинается заново"]
+    meaningful = [record for record in after
+                  if record["kind"] == "scene" and normalize_story_text(record.get("rendered", ""))]
+    if menu_kind == "load":
+        fresh = [record for record in new_events
+                 if record["kind"] == "scene" and normalize_story_text(record.get("rendered", ""))]
+        if not fresh:
+            return None, ["после загрузки нет свежей сцены с текстом; старый trace не подходит"]
+        return fresh[-1], []
+    if menu_kind == "save":
+        record = meaningful[-1] if meaningful else None
+        if record is None:
+            return None, ["нет подтверждённой сцены для сохранения"]
+        if previous_state is not None and trace_state_signature(record) != previous_state:
+            return record, ["сохранение изменило видимое состояние"]
+        return record, []
+    if action_type in ("capture", "menu", "advance_until"):
+        all_scene = [record for record in after if record["kind"] == "scene"]
+        return (all_scene[-1] if all_scene else None), []
+    return None, []
+
+
 
 def instead_step_summary(record):
     """
@@ -1148,6 +1199,20 @@ def read_instead_trace(path):
             record["end_screen"] = record["end_screen"] == "true"
             records.append(record)
     return records
+
+
+def wait_instead_fresh_scene(trace_path, cursor, timeout=3.0):
+    """Ждёт в трассе новую сцену с текстом после загрузки: INSTEAD перерисовывает сцену не сразу"""
+    deadline = time.monotonic() + timeout
+    records = read_instead_trace(trace_path)
+    while True:
+        fresh = [record for record in records
+                 if record["seq"] > cursor and record["kind"] == "scene"
+                 and normalize_story_text(record.get("rendered", ""))]
+        if fresh or time.monotonic() >= deadline:
+            return records
+        time.sleep(0.15)
+        records = read_instead_trace(trace_path)
 
 
 def trace_input_matches(action, record):
@@ -1363,6 +1428,19 @@ def run_instead(args, route, output_dir):
             records.append({"id": step["id"], "screenshot": str(path)})
 
             after = read_instead_trace(trace_path)
+            trace_max = max((record["seq"] for record in after), default=0)
+            trace_reset = trace_max < cursor
+            if trace_reset:
+                # Загрузка не должна терять прежние записи: seq начинается заново только при
+                # переинициализации трассы — это ошибка инструмента, а не повод взять старую сцену
+                trace_errors.append(
+                    "{}: трасса INSTEAD переинициализирована (seq {} < {})".format(
+                        step["id"], trace_max, cursor))
+                cursor = trace_max
+            menu_kind = instead_menu_kind(step["action"])
+            if menu_kind == "load" and not trace_reset:
+                after = wait_instead_fresh_scene(trace_path, cursor)
+                trace_max = max((record["seq"] for record in after), default=trace_max)
             new_events = [record for record in after if record["seq"] > cursor]
             # choose — как select_choice с найденным номером (act NN)
             check_action = (dict(step["action"], type="select_choice", index=choose_index)
@@ -1378,18 +1456,25 @@ def run_instead(args, route, output_dir):
                 ))
 
             input_seq = max((event["seq"] for event in action_events), default=cursor)
-            scene_events = [
-                event for event in new_events
-                if event["kind"] == "scene" and event["seq"] >= input_seq
-            ]
-            state_record = scene_events[-1] if scene_events else None
-            # capture и menu (сохранение, загрузка) могут не дать новой сцены — тогда последняя;
-            # advance_until без щелчков (условие уже выполнено) — тоже
-            if step["action"]["type"] in ("capture", "menu", "advance_until") and state_record is None:
-                all_scene = [event for event in after if event["kind"] == "scene"]
-                state_record = all_scene[-1] if all_scene else None
+            pick_errors = []
+            if menu_kind is not None:
+                # Сохранение сцену не меняет, загрузка обязана дать свежую сцену с текстом
+                state_record, pick_errors = pick_instead_state_record(
+                    step["action"]["type"], menu_kind, after, new_events, previous_state, trace_reset)
+                trace_errors.extend("{}: {}".format(step["id"], error) for error in pick_errors)
+            else:
+                scene_events = [
+                    event for event in new_events
+                    if event["kind"] == "scene" and event["seq"] >= input_seq
+                ]
+                state_record = scene_events[-1] if scene_events else None
+                # capture и advance_until без щелчков (условие уже выполнено) могут не дать
+                # новой сцены — тогда последняя
+                if step["action"]["type"] in ("capture", "advance_until") and state_record is None:
+                    all_scene = [event for event in after if event["kind"] == "scene"]
+                    state_record = all_scene[-1] if all_scene else None
 
-            if state_record is None:
+            if state_record is None and not pick_errors:
                 trace_errors.append("{}: после действия нет новой сцены; inv/way и старый текст не подходят".format(
                     step["id"]
                 ))

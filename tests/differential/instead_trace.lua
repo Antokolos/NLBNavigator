@@ -5,7 +5,32 @@ if not trace_path or not iface or type(iface.cmd) ~= "function" or not nlb then
     return
 end
 
-local trace, open_error = io.open(trace_path, "w")
+-- Адаптер уже установлен в этом Lua-состоянии (перезапуск main.lua при загрузке): не оборачивать
+-- повторно, иначе каждая команда писалась бы дважды, а трасса снова открывалась. Признак — в
+-- глобальной таблице: в Lua 5.1 у функции нет полей, индексировать iface.cmd нельзя.
+if type(_G.__nlb_trace_adapter) == "table" and _G.__nlb_trace_adapter.installed then
+    return
+end
+
+-- Загрузка сохранения (F9) перезапускает main.lua в том же процессе INSTEAD: адаптер
+-- выполняется снова. Нельзя открывать трассу на запись — прежние записи терялись бы, а seq
+-- начинался заново, и раннер не мог сопоставить состояние до и после загрузки. Поэтому файл
+-- дополняется, seq продолжается с последнего записанного, заголовок пишется только один раз.
+local last_seq, need_header = 0, true
+local existing = io.open(trace_path, "r")
+if existing then
+    for line in existing:lines() do
+        if line:match("^#") then
+            need_header = false
+        else
+            local seq = tonumber(line:match("^(%d+)"))
+            if seq and seq > last_seq then last_seq = seq end
+        end
+    end
+    existing:close()
+end
+
+local trace, open_error = io.open(trace_path, last_seq > 0 and "a" or "w")
 if not trace then
     print("NLB_TEST_TRACE: cannot open trace file: " .. tostring(open_error))
     return
@@ -13,7 +38,7 @@ end
 
 local original_cmd = iface.cmd
 local original_fmt = iface.fmt
-local sequence = 0
+local sequence = last_seq
 local unpack_values = table.unpack or unpack
 
 local function pack(...)
@@ -131,8 +156,10 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
     trace:flush()
 end
 
-trace:write("# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\tbarExit\tforestExit\twolvesTalk\tguardDone\tend_screen\n")
-trace:flush()
+if need_header then
+    trace:write("# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\tbarExit\tforestExit\twolvesTalk\tguardDone\tend_screen\n")
+    trace:flush()
+end
 
 -- Keep iface.fmt as a secondary diagnostic source for STANDARD exports.
 if type(original_fmt) == "function" then
@@ -164,3 +191,4 @@ iface.cmd = function(self, command, ...)
     end
     return unpack_values(returns, 1, returns.n)
 end
+_G.__nlb_trace_adapter = { installed = true }
