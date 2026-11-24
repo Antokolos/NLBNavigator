@@ -17,6 +17,10 @@ from urllib.parse import unquote
 
 from route_validation import expand_prefix, validate_route
 
+IS_WINDOWS = sys.platform == "win32"
+if IS_WINDOWS:
+    import win_gui
+
 
 SCREEN_RE = re.compile(
     r"\[screen\]\s+page='([^']*)'\s+image='([^']*)'\s+imageIsBackground=(true|false)"
@@ -884,6 +888,12 @@ def timeout_command(command, seconds):
 
 
 def find_instead_window(pid):
+    if IS_WINDOWS:
+        found = win_gui.find_window(pid)
+        if not found:
+            return None
+        hwnd, bounds = found
+        return (bounds[2] * bounds[3], hwnd, bounds[0], bounds[1], bounds[2], bounds[3])
     result = run_command(["xdotool", "search", "--onlyvisible", "--pid", str(pid)], 3)
     candidates = []
     for window_id in result.stdout.split():
@@ -903,6 +913,9 @@ def find_instead_window(pid):
 
 def capture_root(path, window_bounds):
     Image, _, _ = image_api()
+    if IS_WINDOWS:
+        win_gui.capture(window_bounds[2:], path)
+        return
     root_path = path.with_suffix(path.suffix + ".root.png")
     result = run_command(timeout_command(["import", "-window", "root", str(root_path)], 5), 7)
     if result.returncode != 0 or not root_path.is_file() or root_path.stat().st_size == 0:
@@ -933,6 +946,9 @@ def execute_instead_action(action, window_bounds):
         return
     if kind == "key":
         key = str(action["key"])
+        if IS_WINDOWS:
+            win_gui.key(window_bounds[1], key)
+            return
         down = run_command(
             timeout_command(["xdotool", "keydown", "--delay", "0", key], 3), 5
         )
@@ -956,6 +972,11 @@ def execute_instead_action(action, window_bounds):
         if clicks < 0 or clicks > 100:
             raise ValueError("advance.clicks.instead должен быть от 0 до 100")
         for _ in range(clicks):
+            if IS_WINDOWS:
+                win_gui.focus(window_bounds[1])
+                win_gui.click(window_bounds[1], x, y)
+                time.sleep(0.12)
+                continue
             # Use absolute X11 screen coordinates; --window can hang with SDL/OpenGL windows.
             move = run_command(
                 timeout_command(["xdotool", "mousemove", str(x), str(y)], 3), 5
@@ -1182,7 +1203,22 @@ def create_instead_overlay(source_dir, overlay_dir):
     for entry in source_dir.iterdir():
         if entry.name in (".git", "main.lua"):
             continue
-        (overlay_dir / entry.name).symlink_to(entry, target_is_directory=entry.is_dir())
+        target = overlay_dir / entry.name
+        if not entry.is_dir():
+            shutil.copy2(entry, target)
+            continue
+        try:
+            target.symlink_to(entry, target_is_directory=True)
+            continue
+        except OSError:
+            pass
+        if IS_WINDOWS:
+            # symlink на Windows часто запрещён без Developer Mode; junction не требует прав
+            result = subprocess.run(["cmd", "/c", "mklink", "/J", str(target), str(entry)],
+                                    capture_output=True, text=True)
+            if result.returncode == 0:
+                continue
+        shutil.copytree(entry, target)
 
     # Keep the original export untouched even if the CI job is interrupted.
     shutil.copy2(source_dir / "module_ru.lua", overlay_dir / "main.lua")
@@ -1199,6 +1235,19 @@ def stop_process_group(process, name, log_path, grace_seconds=1, kill_wait_secon
     """Stop a GUI process and its descendants without unbounded cleanup waits."""
     if process is None:
         print("[INSTEAD] cleanup {}: not started".format(name), flush=True)
+        return
+    if IS_WINDOWS:
+        status = process.poll()
+        if status is not None:
+            print("[INSTEAD] cleanup {}: already exited with status {}".format(name, status), flush=True)
+            return
+        print("[INSTEAD] cleanup {}: terminate (Windows)".format(name), flush=True)
+        process.terminate()
+        try:
+            process.wait(timeout=grace_seconds + kill_wait_seconds)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=kill_wait_seconds)
         return
     status = process.poll()
     if status is not None:
@@ -1277,7 +1326,8 @@ def run_instead(args, route, output_dir):
     env["NLB_TEST_TRACE"] = str(trace_path)
     env["NLB_TEST_TRACE_ADAPTER"] = str(adapter)
 
-    binary = args.instead_binary or shutil.which("sdl-instead") or "/usr/games/sdl-instead"
+    binary = args.instead_binary or os.environ.get("NLB_INSTEAD") \
+        or shutil.which("sdl-instead") or shutil.which("sdl-instead.exe") or "/usr/games/sdl-instead"
     if not Path(binary).exists() and shutil.which(binary) is None:
         raise RuntimeError("Не найден исполняемый файл sdl-instead: " + binary)
 
@@ -1291,11 +1341,12 @@ def run_instead(args, route, output_dir):
     previous_state = None
     cursor = 0
     try:
-        wm = subprocess.Popen(
-            ["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env,
-            start_new_session=True
-        )
-        time.sleep(1)
+        if not IS_WINDOWS:
+            wm = subprocess.Popen(
+                ["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env,
+                start_new_session=True
+            )
+            time.sleep(1)
         player = subprocess.Popen(
             [
                 binary, "-nosound", "-noautosave",
@@ -1306,11 +1357,11 @@ def run_instead(args, route, output_dir):
             ],
             cwd=overlay, env=env,
             stdout=session_log, stderr=subprocess.STDOUT,
-            start_new_session=True
+            start_new_session=not IS_WINDOWS
         )
 
         window = None
-        for _ in range(30):
+        for _ in range(40 if IS_WINDOWS else 30):
             window = find_instead_window(player.pid)
             if window:
                 break
@@ -1321,11 +1372,15 @@ def run_instead(args, route, output_dir):
             raise RuntimeError("Не удалось найти окно INSTEAD")
         _, window_id, _, _, _, _ = window
 
-        focus = run_command(
-            timeout_command(["xdotool", "windowfocus", "--sync", window_id], 3), 5
-        )
-        if focus.returncode != 0:
-            raise RuntimeError("Не удалось передать фокус окну INSTEAD")
+        if IS_WINDOWS:
+            if not win_gui.focus(window_id):
+                print("[INSTEAD] предупреждение: не удалось захватить фокус окна", flush=True)
+        else:
+            focus = run_command(
+                timeout_command(["xdotool", "windowfocus", "--sync", window_id], 3), 5
+            )
+            if focus.returncode != 0:
+                raise RuntimeError("Не удалось передать фокус окну INSTEAD")
 
         for step_index, step in enumerate(route["steps"], 1):
             step_started = time.monotonic()
