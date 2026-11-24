@@ -118,7 +118,8 @@ def main():
     prefix = steps[:a + 1]
     p1 = renamed(steps[a + 1], "portion-1")                     # page3: 0 -> 1 (последняя из 2)
     # клик по последней порции открывает экран вариантов: checkpoint для select_choice
-    choices = renamed(steps[a + 2], "choices", expect={"screen": "choices"})
+    # (полный expect исходного шага: screen=choices, choices_contains, instead_choices_contains)
+    choices = renamed(steps[a + 2], "choices")
     eat = renamed(steps[b], "eat-doctor")
     replay_choices = renamed(choices, "replay-choices")
     replay_eat = renamed(eat, "replay-eat-doctor")
