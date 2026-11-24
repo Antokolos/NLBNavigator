@@ -51,8 +51,9 @@ def renamed(step, name, expect=None):
     copy = dict(step, id=name, screenshot=f"{name}.png")
     if expect is not None:
         copy["expect"] = expect
-    else:
-        copy.pop("expect", None)
+    # expect исходного шага сохраняется: валидатор требует checkpoint экрана choices перед
+    # select_choice, а expect меню-шагов (save/load) задаётся отдельно и без portion_index —
+    # порция между шагами не растёт
     copy.pop("visual_change_from", None)
     return copy
 
@@ -116,8 +117,11 @@ def main():
     b = ids.index("eat-doctor")
     prefix = steps[:a + 1]
     p1 = renamed(steps[a + 1], "portion-1")                     # page3: 0 -> 1 (последняя из 2)
-    choices = renamed(steps[a + 2], "choices")
+    # клик по последней порции открывает экран вариантов: checkpoint для select_choice
+    choices = renamed(steps[a + 2], "choices", expect={"screen": "choices"})
     eat = renamed(steps[b], "eat-doctor")
+    replay_choices = renamed(choices, "replay-choices")
+    replay_eat = renamed(eat, "replay-eat-doctor")
     page4 = [renamed(step, f"page4-{index}") for index, step in enumerate(steps[b + 1:b + 4], 1)]
     page5 = renamed(steps[b + 4], "page5-first")
 
@@ -145,8 +149,8 @@ def main():
 
     # A2: первая порция — сохранение и загрузка не ухудшают поведение
     first = write_route(args.output, "first-portion", route,
-                        prefix + [save(expect={"page_id": A_PAGE, "portion_index": 0}),
-                                  load(expect={"page_id": A_PAGE, "portion_index": 0})])
+                        prefix + [save(expect={"page_id": A_PAGE}),
+                                  load(expect={"page_id": A_PAGE})])
     code, got, errors = run_case(args, launcher, first)
     require(code == 0, f"first-portion: код {code}, {errors}")
     same(got["load-a"], ref["hospital-page3"], "first-portion/load")
@@ -154,14 +158,14 @@ def main():
     # A3/A5: сохранение на 1/2, уход на B, загрузка и продолжение
     roundtrip = write_route(
         args.output, "second-portion", route,
-        prefix + [p1, save(expect={"page_id": A_PAGE, "portion_index": 1}), choices, eat,
-                  load(expect={"page_id": A_PAGE, "portion_index": 1}), choices, eat])
+        prefix + [p1, save(expect={"page_id": A_PAGE}), choices, eat,
+                  load(expect={"page_id": A_PAGE}), replay_choices, replay_eat])
     code, got, errors = run_case(args, launcher, roundtrip)
     require(code == 0, f"second-portion: код {code}, {errors}")
     same(got["save-a"], ref["portion-1"], "second-portion/save")
     same(got["load-a"], ref["portion-1"], "second-portion/load")
-    same(got["choices"], ref["choices"], "second-portion/choices")
-    same(got["eat-doctor"], ref["eat-doctor"], "second-portion/eat-doctor")
+    same(got["replay-choices"], ref["choices"], "second-portion/replay-choices")
+    same(got["replay-eat-doctor"], ref["eat-doctor"], "second-portion/replay-eat-doctor")
 
     # A4: перезапуск процесса — слот переносится, загрузка с титула
     save_only = write_route(args.output, "second-portion-save",
@@ -173,7 +177,7 @@ def main():
     seed = args.output / "seed-second.sav"
     shutil.copy2(slot, seed)
     restart = write_route(args.output, "second-portion-restart", route,
-                          [steps[0], load(expect={"page_id": A_PAGE, "portion_index": 1}),
+                          [steps[0], load(expect={"page_id": A_PAGE}),
                            choices, eat])
     code, got, errors = run_case(args, launcher, restart, seed)
     require(code == 0, f"second-portion-restart: код {code}, {errors}")
@@ -183,14 +187,14 @@ def main():
     # A6: промежуточная порция длинной страницы (page4, 3 из 4)
     middle = write_route(args.output, "middle-portion", route,
                          prefix + [p1, choices, eat] + page4[:2]
-                         + [save(expect={"page_id": B_PAGE, "portion_index": 2})])
+                         + [save(expect={"page_id": B_PAGE})])
     code, got, errors = run_case(args, launcher, middle)
     require(code == 0, f"middle-portion: код {code}, {errors}")
     seed = args.output / "seed-middle.sav"
     shutil.copy2(args.output / "middle-portion" / SLOT, seed)
     middle_restart = write_route(
         args.output, "middle-portion-restart", route,
-        [steps[0], load(expect={"page_id": B_PAGE, "portion_index": 2}), page4[2], page5])
+        [steps[0], load(expect={"page_id": B_PAGE}), page4[2], page5])
     code, got, errors = run_case(args, launcher, middle_restart, seed)
     require(code == 0, f"middle-portion-restart: код {code}, {errors}")
     require(got["load-a"]["pageId"] == B_PAGE, "middle: не страница B после загрузки")
@@ -201,14 +205,14 @@ def main():
     # A7: последняя порция page4 (4 из 4) и переход на page5
     last = write_route(args.output, "last-portion", route,
                        prefix + [p1, choices, eat] + page4
-                       + [save(expect={"page_id": B_PAGE, "portion_index": 3})])
+                       + [save(expect={"page_id": B_PAGE})])
     code, got, errors = run_case(args, launcher, last)
     require(code == 0, f"last-portion: код {code}, {errors}")
     seed = args.output / "seed-last.sav"
     shutil.copy2(args.output / "last-portion" / SLOT, seed)
     last_restart = write_route(
         args.output, "last-portion-restart", route,
-        [steps[0], load(expect={"page_id": B_PAGE, "portion_index": 3}), page5])
+        [steps[0], load(expect={"page_id": B_PAGE}), page5])
     code, got, errors = run_case(args, launcher, last_restart, seed)
     require(code == 0, f"last-portion-restart: код {code}, {errors}")
     require(portion(got["load-a"]) == 3, "last: не последняя порция после загрузки")
@@ -221,7 +225,7 @@ def main():
     require("ui\t" not in old.read_text(encoding="utf-8"), "A8: записи ui не удалены")
     old_restart = write_route(
         args.output, "old-save-restart", route,
-        [steps[0], load(expect={"page_id": B_PAGE, "portion_index": 0})])
+        [steps[0], load(expect={"page_id": B_PAGE})])
     code, got, errors = run_case(args, launcher, old_restart, old)
     require(code == 0, f"old-save: код {code}, {errors}")
     require(portion(got["load-a"]) == 0, "old-save: старая порция не сброшена на первую")
