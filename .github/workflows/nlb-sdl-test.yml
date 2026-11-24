@@ -463,6 +463,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
+      # правила gate — tests/differential/ci/gate.py: файл должен быть в рабочей копии
+      - uses: actions/checkout@v4
       # Правила — tests/differential/ci/gate.py (и его unit-тесты): пропуск обязательного
       # achievement job не даёт зелёный gate, пустой count — ошибка плана, а не «ноль»
       - name: Summary

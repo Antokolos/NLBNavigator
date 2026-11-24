@@ -13,7 +13,7 @@ from pathlib import Path
 
 from PIL import Image
 
-TEXT_SUFFIXES = {".json", ".jsonl", ".tsv", ".txt", ".log", ".script"}
+TEXT_SUFFIXES = {".json", ".jsonl", ".tsv", ".txt", ".log", ".script", ".ini"}
 
 
 def compact(source, target):
@@ -27,7 +27,8 @@ def compact(source, target):
             continue
         destination = target / path.relative_to(source)
         destination.parent.mkdir(parents=True, exist_ok=True)
-        if path.suffix.lower() in TEXT_SUFFIXES:
+        if path.suffix.lower() in TEXT_SUFFIXES or not path.suffix:
+            # файлы без расширения — тоже текст: TSV достижений `wolfman.achievements`
             shutil.copy2(path, destination)
         elif path.suffix.lower() == ".png":
             try:
