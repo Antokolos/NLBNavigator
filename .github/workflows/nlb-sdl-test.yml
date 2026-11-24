@@ -8,10 +8,13 @@ name: NLB SDL differential test
 # report — общий артефакт nlb-sdl-test-logs и сводка по маршрутам и достижениям.
 # На push и pull request — только изменённые маршруты (или все, если изменились раннер, workflow,
 # каталог или плеер); вручную и по расписанию — все (вручную можно выбрать маршруты). Документы
-# (.md) не выбирают ни маршрутов, ни проверки достижений; если в новом push в PR одни документы,
-# не прогоняется ничего. Проверка достижений включается изменениями самого теста, его маршрута,
-# плеера, раннера, CI и платформенного слоя, а также полным ручным и плановым прогоном — в том
-# числе когда обычных маршрутов не выбрано (COUNT=0) и сборка иначе была бы пропущена.
+# (.md) не выбирают ни маршрутов, ни проверки достижений: полностью документационный PR не
+# прогоняет ничего. Документационный коммит в PR с функциональными изменениями проверки НЕ
+# отменяет — выбор всегда по суммарному diff base..head, иначе упавший или несостоявшийся runtime
+# можно было бы прикрыть коммитом из одних .md и получить зелёный gate. Проверка достижений
+# включается изменениями самого теста, его маршрута, плеера, раннера, CI и платформенного слоя, а
+# также полным ручным и плановым прогоном — в том числе когда обычных маршрутов не выбрано
+# (COUNT=0) и сборка иначе была бы пропущена.
 # gate — итог одной проверкой, обязательная проверка защиты main (ruleset «Main»): успех, если
 # всё запланированное прошло, а незапланированное законно не запускалось; пропуск обязательного
 # achievement job проваливает gate (tests/differential/ci/gate.py). Поэтому у pull_request нет
@@ -129,16 +132,12 @@ jobs:
           EVENT: ${{ github.event_name }}
           ONLY: ${{ github.event.inputs.routes }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
-          PR_HEAD: ${{ github.event.pull_request.head.sha }}
-          # прежняя голова PR (событие synchronize); при открытии PR пусто
-          PR_BEFORE: ${{ github.event.before }}
           PUSH_BEFORE: ${{ github.event.before }}
         run: |
           case "$EVENT" in
             workflow_dispatch) python3 tests/differential/ci/select_routes.py --all --only "$ONLY" ;;
             schedule) python3 tests/differential/ci/select_routes.py --all ;;
-            pull_request) python3 tests/differential/ci/select_routes.py --base "$PR_BASE" --head HEAD \
-                            --docs-only-since "$PR_BEFORE" --docs-head "$PR_HEAD" ;;
+            pull_request) python3 tests/differential/ci/select_routes.py --base "$PR_BASE" --head HEAD ;;
             *) python3 tests/differential/ci/select_routes.py --base "$PUSH_BEFORE" --head HEAD ;;
           esac
 

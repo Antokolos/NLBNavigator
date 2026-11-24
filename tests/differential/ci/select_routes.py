@@ -11,6 +11,12 @@
 NLBSdl, NLBAudioSDL, thirdparty; CMakeLists.txt) или файлы CI — все маршруты; изменилась только документация — ни
 одного (статическая проверка всё равно идёт). Если base неизвестен (новая ветка, сдвиг истории) — все.
 
+Для pull request решает суммарный diff `base..head`, а не последний push: коммит из одних .md в PR
+с функциональными изменениями НЕ отменяет проверки — иначе упавший или несостоявшийся runtime
+можно было бы «прикрыть» документационным коммитом, получить COUNT=0 и зелёный Differential gate.
+Полностью документационный PR (все изменения — .md) не запускает ничего: это и есть безопасный
+случай оптимизации.
+
 Проверка сохранения достижений (`check_wolfman_achievement.py`) нужна: при полном ручном и
 плановом прогоне; при изменениях самого теста, его маршрута, плеера и раннера (то же, что «все
 маршруты»), платформенного слоя (`Source/NLBPlatforms/`, выдача достижений), валидатора state-log
@@ -136,7 +142,11 @@ def select(routes, files):
     """(выбранные маршруты, объяснение, нужна ли проверка достижений)"""
     if files is None:
         return routes, "все маршруты: база сравнения неизвестна", True
+    originals = files
     files = relevant(files)
+    if not files:
+        reason = "только документы (.md)" if docs_only(originals) else "изменений вне документов нет"
+        return [], reason + ": проверки не нужны", False
     achievements = needs_achievements(files)
     if any(touches_player_or_runner(f) for f in files):
         return routes, "все маршруты: изменились раннер, workflow, каталог или плеер", achievements
@@ -166,10 +176,6 @@ def main():
     parser.add_argument("--only", default="")
     parser.add_argument("--base", default="")
     parser.add_argument("--head", default="HEAD")
-    # PR: если в последнем push (от этого коммита до --docs-head) одни документы, маршруты не
-    # прогоняются — иначе каждый коммит с документами в PR заново гоняет все его маршруты
-    parser.add_argument("--docs-only-since", default="")
-    parser.add_argument("--docs-head", default="")
     args = parser.parse_args()
 
     routes = load_routes()
@@ -181,8 +187,6 @@ def main():
         chosen, why, achievements = [r for r in routes if r["id"] in wanted], "выбраны вручную", True
     elif args.all:
         chosen, why, achievements = routes, "все маршруты", True
-    elif args.docs_only_since and docs_only(changed_files(args.docs_only_since, args.docs_head or args.head)):
-        chosen, why, achievements = [], "последний push — только документы (.md): маршруты не прогонялись", False
     else:
         chosen, why, achievements = select(routes, changed_files(args.base, args.head))
 

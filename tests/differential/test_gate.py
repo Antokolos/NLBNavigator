@@ -73,6 +73,13 @@ class GateTest(unittest.TestCase):
         problems = verdict(**dict(ROUTES, route="failure"))
         self.assertTrue(any("route" in problem for problem in problems))
 
+    def test_docs_commit_cannot_hide_functional_change(self):
+        # в функциональном PR выбраны маршруты; пропуск route (как было при старом docs-only
+        # skip) обязан провалить gate, а не дать зелёный
+        problems = verdict(**dict(ROUTES, route="skipped"))
+        self.assertTrue(problems)
+        self.assertTrue(any("route" in problem for problem in problems))
+
     def test_report_skipped_when_something_ran_fails(self):
         for data in (dict(ROUTES, report="skipped"), dict(ACHIEVEMENT, report="skipped")):
             problems = verdict(**data)

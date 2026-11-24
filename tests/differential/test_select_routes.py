@@ -1,7 +1,12 @@
 """Выбор маршрутов для CI (tests/differential/ci/select_routes.py)."""
+import contextlib
+import io
+import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "ci"))
 import select_routes  # noqa: E402
@@ -124,6 +129,78 @@ class SelectAchievementsTest(unittest.TestCase):
         self.assertEqual(values["count"], str(len(catalog)))
         self.assertEqual(values["achievements"], "false")
         self.assertEqual(values["build"], "true")
+
+
+class PullRequestDocsOnlyRegressionTest(unittest.TestCase):
+    """Оптимизация docs-only не может скрыть функциональное изменение.
+
+    Для pull request решение принимается по суммарному diff base..head. Коммит из одних .md не
+    меняет выбор, поэтому упавший, отменённый или несостоявшийся runtime нельзя «прикрыть»
+    документацией и получить зелёный Differential gate.
+    """
+
+    FUNCTIONAL = "Source/NLBPresentation/Private/nlb/platform/PlatformBridge.cpp"
+
+    def run_main(self, argv, files):
+        """main() с подменённым git diff: возвращает значения $GITHUB_OUTPUT"""
+        # mkstemp, а не TemporaryDirectory: очистка каталога в Windows-песочнице падает на chmod
+        handle, path = tempfile.mkstemp(prefix="github-output-", suffix=".txt")
+        os.close(handle)
+        try:
+            with mock.patch.object(select_routes, "changed_files", return_value=files), \
+                    mock.patch.dict(os.environ, {"GITHUB_OUTPUT": path}), \
+                    mock.patch.object(sys, "argv", ["select_routes.py"] + argv), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                select_routes.main()
+            text = Path(path).read_text(encoding="utf-8")
+        finally:
+            Path(path).unlink(missing_ok=True)
+        return dict(line.split("=", 1) for line in text.splitlines() if "=" in line)
+
+    def test_docs_only_pull_request_runs_nothing(self):
+        values = self.run_main(["--base", "base", "--head", "head"],
+                               ["tests/differential/README.md", "docs/state-log.md"])
+        self.assertEqual(values["count"], "0")
+        self.assertEqual(values["achievements"], "false")
+        self.assertEqual(values["build"], "false")
+        self.assertIn("документ", values["reason"])
+
+    def test_functional_change_plus_docs_commit_still_runs(self):
+        # последний push — документация, но в PR есть функциональное изменение
+        values = self.run_main(["--base", "base", "--head", "head"],
+                               [self.FUNCTIONAL, "docs/state-log.md"])
+        self.assertNotEqual(values["count"], "0")
+        self.assertEqual(values["achievements"], "true")
+        self.assertEqual(values["build"], "true")
+
+    def test_previous_ci_result_cannot_be_covered_by_docs_commit(self):
+        # previous_ci — не вход выбора: после успеха, падения, отмены или отсутствия прогона
+        # коммит из одних .md не меняет решения — runtime выполняется заново
+        for previous in ("success", "failure", "cancelled", "missing"):
+            values = self.run_main(["--base", "base", "--head", "head"],
+                                   [self.FUNCTIONAL, "docs/state-log.md"])
+            self.assertEqual(values["build"], "true", previous)
+            self.assertEqual(values["achievements"], "true", previous)
+
+    def test_unknown_base_after_docs_commit_runs_everything(self):
+        # истории нет / база недоступна — выбираются все маршруты и проверка достижений
+        values = self.run_main(["--base", "unknown", "--head", "head"], None)
+        self.assertEqual(values["count"], str(len(select_routes.load_routes())))
+        self.assertEqual(values["achievements"], "true")
+        self.assertEqual(values["build"], "true")
+
+    def test_achievement_test_only_change_is_count_zero_with_achievements(self):
+        values = self.run_main(["--base", "base", "--head", "head"],
+                               [select_routes.ACHIEVEMENT_TEST])
+        self.assertEqual(values["count"], "0")
+        self.assertEqual(values["achievements"], "true")
+        self.assertEqual(values["build"], "true")
+
+    def test_docs_only_shortcut_flag_is_rejected(self):
+        # старый флаг удалён: иначе им снова можно было бы обойти gate
+        with self.assertRaises(SystemExit):
+            self.run_main(["--base", "base", "--docs-only-since", "before"],
+                          [self.FUNCTIONAL])
 
 
 if __name__ == "__main__":
