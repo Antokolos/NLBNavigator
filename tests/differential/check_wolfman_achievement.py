@@ -12,7 +12,9 @@ run_route.py):
   reaward   — полный маршрут с готовыми строками: повторной выдачи и вызова площадки нет.
 
 Рядом с отчётами остаётся achievement-summary.json — машинный итог по сценариям для разбора
-артефактов CI (пишется после каждого сценария, поэтому падение тоже видно в файле).
+артефактов CI (пишется после каждого сценария, поэтому падение тоже видно в файле), и
+achievements.tsv — копия хранилища достижений (сам файл `wolfman.achievements` без расширения
+в компактные артефакты CI не попадает).
 """
 
 import argparse
@@ -84,6 +86,9 @@ def run_case(args, launcher, name, route, seed=None, timeout=0):
     require(report["ok"] and not report["errors"], f"{name}: ошибки в route-report.json")
     storage = output / "nlbnavigator-home/.nlbnavigator" / filename
     rows = storage.read_text(encoding="utf-8").splitlines()
+    # Копия для артефактов CI: у .achievements расширение не текстовое, и компактный шаг его
+    # пропускает; .tsv попадает всегда.
+    (output / "achievements.tsv").write_text("\n".join(rows) + "\n", encoding="utf-8")
     return output, rows, report
 
 
