@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Проверяет запись и восстановление VILLAIN_PUNISHED в Linux-версии nlb_sdl."""
+"""Проверяет сохранение VILLAIN_PUNISHED и подавление повторной выдачи в nlb_sdl."""
 
 import argparse
 import json
@@ -124,6 +124,14 @@ exec "$NLB_ACHIEVEMENT_PLAYER" "$@" --platform "log:$NLB_ACHIEVEMENT_PLATFORM_LO
         require(count_grants(output, AWARD) == 0, f"{name}: преждевременная выдача {AWARD}")
         require(rows_for(rewritten, AWARD) == expected, f"{name}: неверное состояние {AWARD} после записи")
         print(f"{name}: RIGHT_CHOICE записано, строк {AWARD}: {len(expected)}", flush=True)
+
+    output, rewritten, report = run_case(args, launcher, "reaward", ROUTE, seed)
+    check_final_step(report, AWARD_STEP, AWARD_PAGE)
+    require(count_grants(output, "RIGHT_CHOICE") == 1 and "granted\tRIGHT_CHOICE" in rewritten,
+            "reaward: ожидались вызов и новая запись RIGHT_CHOICE")
+    require(count_grants(output, AWARD) == 0, f"reaward: повторный вызов площадки для {AWARD}")
+    require(rows_for(rewritten, AWARD) == target_rows, f"reaward: неверное состояние {AWARD} после страницы 42")
+    print(f"reaward: обе строки {AWARD} сохранены, повторных вызовов площадки нет", flush=True)
 
 
 if __name__ == "__main__":

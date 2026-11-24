@@ -14,8 +14,8 @@
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последние интегрированные PR: #54–#57 и #63 (merged); открытых PR нет.
-- Текущий `main`: `9c480782eeb456e7bc9ee0869f69b1131060fe26` (merge PR #63 — роли issue #28); перед ним `6c8723ae` (merge PR #57 — покрытие Wolfman).
+- Последние интегрированные PR: #54–#57, #63 и #64. Открыт [Draft PR #65](https://github.com/Antokolos/NLBNavigator/pull/65) о сохранении достижения Wolfman.
+- Исходный `main` для PR #65: `faa3f68484c3b18ca925d63a8f8e689a5c7b6ac9` (merge PR #64).
 - Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219 (PR #63) и CI #220 (`main` после merge) — docs-only, `COUNT 0`, SUCCESS.
 - CI #218 (плановый прогон 23.11 на `main`) упал до маршрутов, на шаге `Build nlb_sdl`: `apt-get` не нашёл пакеты (`libasound2-dev`, `libfreetype-dev` и др.) — сбой окружения, не кода; последний полный зелёный прогон — CI #214.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
@@ -38,6 +38,31 @@
 - INSTEAD export: 0db8d2c611faa596987baaf041763ef6c9282484
 - INSTEAD base theme: 1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e
 - wolfman и instead-am_i_a_monster_vn — две упаковки одной истории, подтверждено владельцем.
+
+## Сохранение `VILLAIN_PUNISHED` — Draft PR #65
+
+**Codex Cloud.** Четыре сценария выполнены последовательно под одним Xvfb
+с готовым `nlb_sdl`. Каждый процесс получил отдельный HOME/XDG. Для
+`readback` и `reaward` в новый профиль перенесены только две строки
+`VILLAIN_PUNISHED` из `award`. Во всех четырёх отчётах `ok=true`,
+`errors=[]`, код завершения сценария — 0.
+
+| Сценарий | Шагов | Итоговая контрольная точка | Строки `id` и `granted` для `VILLAIN_PUNISHED` | Вызовы площадки `VILLAIN_PUNISHED` |
+|---|---:|---|---|---:|
+| `award` | 46 | `page40-to-page42-villain-punished` | Обе строки записаны при выдаче | 1 |
+| `readback` | 42 | `page33-to-page35b` | Обе строки сохранены при записи `RIGHT_CHOICE` до страницы 42 | 0 |
+| `clean` | 42 | `page33-to-page35b` | Строк нет после записи `RIGHT_CHOICE` | 0 |
+| `reaward` | 46 | `page40-to-page42-villain-punished` | Обе строки сохранены после повторного посещения страницы 42 | 0 |
+
+`RIGHT_CHOICE` зарегистрировано площадкой ровно один раз в каждом прогоне.
+На странице 42 подтверждены `wolfiness=0`, `hp=2` и `finished=true`.
+Проверка относится к локальному хранилищу SDL-плеера. Команда для повторения
+приведена в [README](README.md#сохранение-достижения-wolfman-между-запусками-sdl).
+
+**GitHub Actions.** [CI #223](https://github.com/Antokolos/NLBNavigator/actions/runs/45271135826)
+прошёл на `f98a23bde9401b324f145b087b043117ff160d2f`: 79 unit-тестов,
+валидация каталога из 22 маршрутов и Differential gate прошли. При
+`COUNT=0` графические прогоны в CI #223 пропущены.
 
 ## Шаг 1 — статическая route validation завершён
 
@@ -92,7 +117,7 @@ PR #54 расширяет два независимых clean-state hospital rou
 
 Остаётся:
 - low-HP page41; 6 концовок и 10 возвратов из модулей (классификация по [tools/nlb_pages.py](../../tools/nlb_pages.py));
-- полная инвентаризация достижений и persisted achievement read-back/parity;
+- инвентаризация и проверка сохранения остальных достижений, а также сравнение сохранённого состояния с INSTEAD;
 - английский язык;
 - save/load;
 - автоматический coverage report по страницам и terminal endings;
