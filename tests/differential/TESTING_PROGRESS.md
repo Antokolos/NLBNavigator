@@ -14,9 +14,9 @@
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последние интегрированные PR: #54–#57, #63 и #64. Открыт [Draft PR #65](https://github.com/Antokolos/NLBNavigator/pull/65) о сохранении достижения Wolfman.
-- Исходный `main` для PR #65: `faa3f68484c3b18ca925d63a8f8e689a5c7b6ac9` (merge PR #64).
-- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219 (PR #63) и CI #220 (`main` после merge) — docs-only, `COUNT 0`, SUCCESS.
+- Последние интегрированные PR: #54–#57 и #63–#65 (merged); открытых PR нет.
+- Текущий `main`: `7ef55e23c8cd282872580a757537712b9fed928b` (merge PR #65 — проверка достижений); PR #63 — роли issue #28, PR #64 — числа маршрутов и read-only ядро.
+- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219/#220 (PR #63 и `main`), CI #223/#224 (PR #65) и CI #225 (`main` после merge) — без графических прогонов: `COUNT 0`, SUCCESS.
 - CI #218 (плановый прогон 23.11 на `main`) упал до маршрутов, на шаге `Build nlb_sdl`: `apt-get` не нашёл пакеты (`libasound2-dev`, `libfreetype-dev` и др.) — сбой окружения, не кода; последний полный зелёный прогон — CI #214.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
 - Каталог (`catalog.json`) содержит 7 книг, 22 маршрута и 5 общих фрагментов: 16 маршрутов основных ветвей и 6 концовочных (ending34 ×2, ending37, ending38, ending39, ending41 — добавлены 22.11.2026, commit `8f4be7f`). Полный набор из 22 прошёл в CI #214; до этого 16 маршрутов проходили в CI #176 и #181.
@@ -39,7 +39,7 @@
 - INSTEAD base theme: 1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e
 - wolfman и instead-am_i_a_monster_vn — две упаковки одной истории, подтверждено владельцем.
 
-## Сохранение `VILLAIN_PUNISHED` — Draft PR #65
+## Сохранение `VILLAIN_PUNISHED` — PR #65 и CI
 
 **Codex Cloud.** Четыре сценария выполнены последовательно под одним Xvfb
 с готовым `nlb_sdl`. Каждый процесс получил отдельный HOME/XDG. Для
@@ -59,10 +59,19 @@
 Проверка относится к локальному хранилищу SDL-плеера. Команда для повторения
 приведена в [README](README.md#сохранение-достижения-wolfman-между-запусками-sdl).
 
-**GitHub Actions.** [CI #223](https://github.com/Antokolos/NLBNavigator/actions/runs/45271135826)
-прошёл на `f98a23bde9401b324f145b087b043117ff160d2f`: 79 unit-тестов,
-валидация каталога из 22 маршрутов и Differential gate прошли. При
-`COUNT=0` графические прогоны в CI #223 пропущены.
+**GitHub Actions до интеграции.** [CI #223](https://github.com/Antokolos/NLBNavigator/actions/runs/45271135826)
+(`f98a23bd`) и [CI #224](https://github.com/Antokolos/NLBNavigator/actions/runs/45342406329)
+(`81b2b5fa`, последний HEAD PR #65) прошли только статическую проверку и unit-тесты: `COUNT 0`,
+`Build nlb_sdl` пропущен, графические сценарии не запускались. [CI #225](https://github.com/Antokolos/NLBNavigator/actions/runs/45376482120)
+(`main` после merge, `7ef55e23`) — то же. Поэтому проверка вынесена в обязательный job
+`achievement` (Draft PR «CI: проверка достижений»): при изменениях теста, его маршрута, плеера,
+раннера, CI и платформенного слоя она выполняется и входит в Differential gate; при `COUNT=0`
+сборка запускается только ради неё. Условия запуска и артефакты — в
+[README](README.md#в-ci).
+
+UUID модификации `ec437b19-13ab-4f4a-b851-185849a51249` в ожидаемых строках взят из книги на
+pinned-коммите `888b4b7a7a564693274f53341728ee9f3b4c2879`: при смене `GAME_REF` его нужно
+сверить и обновить вместе с пином.
 
 ## Шаг 1 — статическая route validation завершён
 
@@ -127,6 +136,8 @@ PR #54 расширяет два независимых clean-state hospital rou
 ## Заявленное покрытие Wolfman (pinned commit)
 
 Отчёт построен по `expect.page_id` зарегистрированных маршрутов; это **заявленное покрытие**, не подтверждение runtime-посещения. Источник инвентаризации — [`tools/nlb_pages.py`](../../tools/nlb_pages.py). Книга: commit `888b4b7a7a564693274f53341728ee9f3b4c2879`; всего 61 запись, из них 7 контейнеров `module` исключены из знаменателя. Знаменатель — 54 страницы: `page` 36/38, `return` 8/10, `ending` 1/6; `ending?` — 0 страниц для Wolfman. Вне книги route `page_id` не обнаружены.
+
+Это покрытие **декларативное**: оно считает страницы, до которых доходят зарегистрированные маршруты по `expect.page_id`, и не доказывает, что покрыты все ветви, состояния и концовки. Runtime-подтверждение есть только у фактически прогнанных маршрутов (CI и локальные прогоны); для остальных это план, а не проверенный результат.
 
 Непокрытые страницы (9):
 

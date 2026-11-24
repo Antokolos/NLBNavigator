@@ -16,6 +16,9 @@ class SelectRoutesTest(unittest.TestCase):
     def ids(self, files):
         return [r["id"] for r in select_routes.select(ROUTES, files)[0]]
 
+    def achievements(self, files):
+        return select_routes.select(ROUTES, files)[2]
+
     def test_changed_route_only(self):
         self.assertEqual(self.ids(["tests/differential/routes/b.json"]), ["b"])
 
@@ -58,6 +61,69 @@ class SelectRoutesTest(unittest.TestCase):
             t = select_routes.timeouts(route["path"])
             self.assertGreater(t["instead_timeout"], 120)
             self.assertGreater(t["nlb_timeout"], 90)
+
+
+class SelectAchievementsTest(unittest.TestCase):
+    """Проверка достижений — отдельное задание CI: её нужно включать и при COUNT=0."""
+
+    def test_docs_only_needs_neither(self):
+        self.assertFalse(select_routes.select(ROUTES, ["tests/differential/README.md", "docs/A.md"])[2])
+        self.assertEqual(select_routes.select(ROUTES, ["tests/differential/README.md", "docs/A.md"])[0], [])
+
+    def test_player_runner_ci_change_needs_achievements(self):
+        for changed in ("Source/NLBSdl/SdlPlayer.cpp",
+                        "Source/NLBPresentation/Private/nlb/platform/PlatformBridge.cpp",
+                        "Source/NLBCore/Private/nlb/domain/PageImpl.cpp",
+                        "tests/differential/run_route.py",
+                        ".github/workflows/nlb-sdl-test.yml",
+                        "tests/differential/catalog.json",
+                        "tests/differential/ci/gate.py",
+                        "tests/differential/ci/select_routes.py"):
+            self.assertTrue(select_routes.select(ROUTES, [changed])[2], changed)
+
+    def test_achievement_test_change_needs_only_achievements(self):
+        files = ["tests/differential/check_wolfman_achievement.py"]
+        self.assertEqual(select_routes.select(ROUTES, files)[0], [])
+        self.assertTrue(select_routes.select(ROUTES, files)[2])
+
+    def test_achievement_route_change_selects_it_and_achievements(self):
+        catalog = select_routes.load_routes()
+        changed = [select_routes.ACHIEVEMENT_ROUTE]
+        chosen, _, achievements = select_routes.select(catalog, changed)
+        self.assertTrue(achievements)
+        self.assertEqual([r["id"] for r in chosen], ["wolfman-guard-low-wolfiness-escape"])
+
+    def test_platform_layer_and_validator_need_only_achievements(self):
+        for changed in ("Source/NLBPlatforms/Steam.cpp", "tools/check_state_log.py"):
+            self.assertEqual(select_routes.select(ROUTES, [changed])[0], [], changed)
+            self.assertTrue(select_routes.select(ROUTES, [changed])[2], changed)
+
+    def test_unrelated_changes_need_nothing(self):
+        for changed in ("android/app/build.gradle", "integrations/godot/src/register_types.cpp",
+                        "tools/make_nlbz.py", ".gitignore", "Source/NLBPlayer/Private/Foo.cpp"):
+            self.assertEqual(select_routes.select(ROUTES, [changed])[0], [], changed)
+            self.assertFalse(select_routes.select(ROUTES, [changed])[2], changed)
+
+    def test_unknown_base_needs_routes_and_achievements(self):
+        chosen, _, achievements = select_routes.select(ROUTES, None)
+        self.assertTrue(achievements)
+        self.assertEqual([r["id"] for r in chosen], ["a", "b"])
+
+    def test_outputs_build_flag_for_achievements_only(self):
+        # COUNT=0, но проверка достижений нужна — сборка обязательна, иначе job нечего запускать
+        catalog = select_routes.load_routes()
+        values = select_routes.outputs(catalog, [], "тест", True)
+        self.assertEqual(values["count"], "0")
+        self.assertEqual(values["achievements"], "true")
+        self.assertEqual(values["build"], "true")
+        self.assertIn("достижения: да", values["reason"])
+        values = select_routes.outputs(catalog, [], "документы", False)
+        self.assertEqual(values["build"], "false")
+        self.assertNotIn("достижения", values["reason"])
+        values = select_routes.outputs(catalog, catalog, "маршруты", False)
+        self.assertEqual(values["count"], str(len(catalog)))
+        self.assertEqual(values["achievements"], "false")
+        self.assertEqual(values["build"], "true")
 
 
 if __name__ == "__main__":

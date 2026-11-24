@@ -1,16 +1,22 @@
 name: NLB SDL differential test
 
 # Дифференциальные маршруты NLBNavigator ↔ INSTEAD (tests/differential, issue #28).
-# build — nlb_sdl один раз (vcpkg с бинарным кэшем), plan — какие маршруты прогонять,
+# plan — какие маршруты прогонять и нужна ли проверка достижений,
+# build — nlb_sdl один раз (vcpkg с бинарным кэшем),
 # route — матрица: каждый маршрут своим job в обоих движках и сравнение,
-# report — общий артефакт nlb-sdl-test-logs и сводка по маршрутам.
+# achievement — сохранение достижений VILLAIN_PUNISHED (check_wolfman_achievement.py) под Xvfb,
+# report — общий артефакт nlb-sdl-test-logs и сводка по маршрутам и достижениям.
 # На push и pull request — только изменённые маршруты (или все, если изменились раннер, workflow,
 # каталог или плеер); вручную и по расписанию — все (вручную можно выбрать маршруты). Документы
-# (.md) маршрутов не выбирают; если в новом push в PR одни документы, маршруты не прогоняются.
+# (.md) не выбирают ни маршрутов, ни проверки достижений; если в новом push в PR одни документы,
+# не прогоняется ничего. Проверка достижений включается изменениями самого теста, его маршрута,
+# плеера, раннера, CI и платформенного слоя, а также полным ручным и плановым прогоном — в том
+# числе когда обычных маршрутов не выбрано (COUNT=0) и сборка иначе была бы пропущена.
 # gate — итог одной проверкой, обязательная проверка защиты main (ruleset «Main»): успех, если
-# маршруты прошли или законно не прогонялись. Поэтому у pull_request нет фильтра путей — иначе PR
-# с изменениями вне плеера и тестов ждал бы проверку, которая не запустится; у push фильтр
-# остаётся (обязательных проверок там нет).
+# всё запланированное прошло, а незапланированное законно не запускалось; пропуск обязательного
+# achievement job проваливает gate (tests/differential/ci/gate.py). Поэтому у pull_request нет
+# фильтра путей — иначе PR с изменениями вне плеера и тестов ждал бы проверку, которая не
+# запустится; у push фильтр остаётся (обязательных проверок там нет).
 
 "on":
   workflow_dispatch:
@@ -40,8 +46,9 @@ name: NLB SDL differential test
     - cron: "17 3 * * 1"
   # PR в main — всегда, без фильтра по путям: «Differential gate» — обязательная проверка защиты
   # main, и PR, где workflow не запускался (документы, android/, Godot, модуль Unreal), висел бы в
-  # ожидании этой проверки. Что прогонять, решает select_routes.py: без изменений плеера, раннера и
-  # маршрутов — ни одного маршрута, сборка пропускается, gate проходит после статической проверки
+  # ожидании этой проверки. Что прогонять, решает select_routes.py: без изменений плеера, раннера,
+  # маршрутов и теста достижений — ничего, сборка пропускается, gate проходит после статической
+  # проверки
   pull_request:
     branches:
       - main
@@ -57,8 +64,10 @@ name: NLB SDL differential test
       - Source/NLBPresentation/**
       - Source/NLBSdl/**
       - Source/NLBAudioSDL/**
+      - Source/NLBPlatforms/**
       - Source/thirdparty/**
       - tests/differential/**
+      - tools/check_state_log.py
 
 permissions:
   contents: read
@@ -85,7 +94,8 @@ jobs:
       - name: Static checks of catalog, routes and runner
         run: |
           python3 -m py_compile tests/differential/run_route.py tests/differential/validate_catalog.py \
-            tests/differential/ci/select_routes.py
+            tests/differential/ci/select_routes.py tests/differential/ci/gate.py \
+            tests/differential/ci/compact_results.py tests/differential/check_wolfman_achievement.py
           python3 -m json.tool tests/differential/catalog.json > /dev/null
           for route in tests/differential/routes/*.json tests/differential/routes/fragments/*.json \
               tests/differential/examples/*.json; do
@@ -108,6 +118,8 @@ jobs:
       matrix: ${{ steps.select.outputs.matrix }}
       count: ${{ steps.select.outputs.count }}
       reason: ${{ steps.select.outputs.reason }}
+      achievements: ${{ steps.select.outputs.achievements }}
+      build: ${{ steps.select.outputs.build }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -133,7 +145,8 @@ jobs:
   build:
     name: Build nlb_sdl
     needs: plan
-    if: needs.plan.outputs.count != '0'
+    # сборка нужна и без обычных маршрутов, если запланирована проверка достижений
+    if: needs.plan.outputs.build == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
@@ -289,35 +302,7 @@ jobs:
 
       - name: Prepare compact diagnostic artifacts
         if: always()
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import shutil
-          from PIL import Image
-
-          source = Path("test-results")
-          target = Path("ci-artifacts")
-          target.mkdir(exist_ok=True)
-          text_suffixes = {".json", ".jsonl", ".tsv", ".txt", ".log", ".script"}
-          if source.exists():
-              for path in source.rglob("*"):
-                  if not path.is_file():
-                      continue
-                  relative = path.relative_to(source)
-                  destination = target / relative
-                  destination.parent.mkdir(parents=True, exist_ok=True)
-                  if path.suffix.lower() in text_suffixes:
-                      shutil.copy2(path, destination)
-                  elif path.suffix.lower() == ".png":
-                      try:
-                          with Image.open(path) as image:
-                              image = image.convert("RGB")
-                              image.thumbnail((960, 540))
-                              destination = destination.with_suffix(".jpg")
-                              image.save(destination, "JPEG", quality=78, optimize=True)
-                      except Exception as error:
-                          print(f"Skipping image {path}: {error}")
-          PY
+        run: python3 tests/differential/ci/compact_results.py test-results ci-artifacts
 
       - name: Upload route results
         if: always()
@@ -336,40 +321,132 @@ jobs:
           test "${{ steps.nlbnavigator.outcome }}" = success
           test "${{ steps.compare.outcome }}" = success
 
+  achievement:
+    name: Achievement persistence
+    needs: [plan, build, validate]
+    if: needs.plan.outputs.achievements == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pil xvfb xauth xdotool imagemagick x11-utils \
+            libx11-6 libxext6 libxrandr2 libxcursor1 libxi6 libxinerama1 libxss1 libxkbcommon0 \
+            libwayland-client0 libwayland-cursor0 libwayland-egl1 libdecor-0-0 \
+            libegl1 libgl1 libdbus-1-3 libudev1 libasound2t64 libpulse0 libfreetype6
+
+      - name: Download nlb_sdl
+        uses: actions/download-artifact@v4
+        with:
+          name: nlb-sdl-binary
+
+      - name: Restore test data
+        uses: actions/cache@v4
+        with:
+          path: test-data
+          key: test-data-${{ env.GAME_REF }}-${{ env.REFERENCE_REF }}-${{ env.BASE_THEME_REF }}
+
+      - name: Fetch pinned test data
+        run: |
+          chmod +x build/nlb_sdl
+          bash tests/differential/ci/fetch_test_data.sh
+
+      # Четыре сценария последовательно, каждый — новый процесс и свой HOME/XDG; каталог
+      # test-results/achievement создаёт сам скрипт (он требует несуществующий --output).
+      - name: Run achievement persistence scenarios
+        id: scenarios
+        run: |
+          timeout --signal=TERM --kill-after=5s 2100s \
+            xvfb-run -a -s "-screen 0 1920x1080x24" \
+            env SDL_AUDIODRIVER=dummy \
+            python3 tests/differential/check_wolfman_achievement.py \
+              --player ./build/nlb_sdl \
+              --book test-data/wolfman \
+              --theme test-data/instead-am_i_a_monster_vn/themes/default \
+              --base-theme test-data/instead/themes/default \
+              --output test-results/achievement \
+              --case-timeout 420
+
+      - name: Prepare compact diagnostic artifacts
+        if: always()
+        run: python3 tests/differential/ci/compact_results.py test-results ci-artifacts
+
+      # TSV достижений, журналы площадки и плеера, state-log, route-report и кадры — и при падении
+      - name: Upload achievement results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: achievement-results
+          path: ci-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verdict
+        if: always()
+        run: test "${{ steps.scenarios.outcome }}" = success
+
   report:
     name: Report
-    needs: [plan, route]
-    if: always() && needs.plan.outputs.count != '0'
+    needs: [plan, route, achievement]
+    if: always() && (needs.plan.outputs.count != '0' || needs.plan.outputs.achievements == 'true')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Download route results
+        if: needs.plan.outputs.count != '0'
         uses: actions/download-artifact@v4
         with:
           pattern: route-*
           path: route-results
+      - name: Download achievement results
+        if: needs.plan.outputs.achievements == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: achievement-results
+          path: achievement-results
       - name: Merge into nlb-sdl-test-logs
         run: |
           mkdir -p ci-artifacts
           for dir in route-results/route-*; do
             [ -d "$dir" ] && cp -r "$dir"/. ci-artifacts/
           done
+          if [ -d achievement-results ]; then
+            cp -r achievement-results/. ci-artifacts/
+          fi
           python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
           import json
           from pathlib import Path
           root = Path("ci-artifacts")
-          print("| маршрут | INSTEAD | NLBNavigator | сравнение |")
-          print("|---|---|---|---|")
           def state(path):
               if not path.is_file():
                   return "нет отчёта"
               report = json.loads(path.read_text(encoding="utf-8"))
               return "ok" if report.get("ok") else "**ошибка**"
-          for route in sorted(p for p in root.iterdir() if p.is_dir()):
-              print("| {} | {} | {} | {} |".format(route.name,
-                    state(route / "instead/route-report.json"),
-                    state(route / "nlbnavigator/route-report.json"),
-                    state(route / "comparison-report.json")))
+          routes = sorted(p for p in root.iterdir() if p.is_dir() and p.name != "achievement")
+          if routes:
+              print("| маршрут | INSTEAD | NLBNavigator | сравнение |")
+              print("|---|---|---|---|")
+              for route in routes:
+                  print("| {} | {} | {} | {} |".format(route.name,
+                        state(route / "instead/route-report.json"),
+                        state(route / "nlbnavigator/route-report.json"),
+                        state(route / "comparison-report.json")))
+          summary = root / "achievement/achievement-summary.json"
+          if summary.is_file():
+              data = json.loads(summary.read_text(encoding="utf-8"))
+              print()
+              print("### Сохранение достижений: `{}`".format(data.get("award", "VILLAIN_PUNISHED")))
+              print("| сценарий | результат |")
+              print("|---|---|")
+              for case in data.get("cases", []):
+                  print("| {} | {} |".format(case.get("name"), "ok" if case.get("ok") else "**ошибка**"))
+              print()
+              print("Файлы: `achievement/` — TSV достижений, журналы площадки и плеера, state-log, "
+                    "route-report и кадры.")
           PY
       - name: Upload nlb-sdl-test-logs
         uses: actions/upload-artifact@v4
@@ -381,11 +458,13 @@ jobs:
 
   gate:
     name: Differential gate
-    needs: [validate, plan, build, route, report]
+    needs: [validate, plan, build, route, report, achievement]
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
+      # Правила — tests/differential/ci/gate.py (и его unit-тесты): пропуск обязательного
+      # achievement job не даёт зелёный gate, пустой count — ошибка плана, а не «ноль»
       - name: Summary
         env:
           VALIDATE: ${{ needs.validate.result }}
@@ -393,19 +472,10 @@ jobs:
           BUILD: ${{ needs.build.result }}
           ROUTE: ${{ needs.route.result }}
           REPORT: ${{ needs.report.result }}
+          ACHIEVEMENT: ${{ needs.achievement.result }}
           COUNT: ${{ needs.plan.outputs.count }}
+          ACHIEVEMENTS: ${{ needs.plan.outputs.achievements }}
           REASON: ${{ needs.plan.outputs.reason }}
         run: |
-          {
-            echo "### Differential gate"
-            echo "validate: $VALIDATE, plan: $PLAN, build: $BUILD, route: $ROUTE, report: $REPORT"
-            echo "Маршруты: ${REASON:-не выбраны}"
-          } | tee -a "$GITHUB_STEP_SUMMARY"
-          test "$VALIDATE" = success
-          test "$PLAN" = success
-          if [ "$COUNT" = "0" ]; then
-            echo "Маршруты не прогонялись: результат прежних прогонов этой ветки здесь не проверяется." | tee -a "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          test "$BUILD" = success
-          test "$ROUTE" = success
+          set -o pipefail
+          python3 tests/differential/ci/gate.py | tee -a "$GITHUB_STEP_SUMMARY"
