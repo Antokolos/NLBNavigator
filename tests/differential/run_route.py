@@ -1104,11 +1104,11 @@ def instead_advance_until(action, window, trace_path, current, player):
 # Переменные книги в Lua trace INSTEAD (instead_trace.lua) — те же, что nlb_sdl пишет по --state-vars
 TRACE_VARIABLES = ("wolfiness", "hp", "barExit", "forestExit", "wolvesTalk", "guardDone")
 
-# Клавиши меню INSTEAD: F5/F8 — сохранить, F6/F9 — загрузить. Это протокол INSTEAD, а не
-# привязка к конкретному маршруту: по ним раннер понимает, что сохранение сцену не меняет,
-# а загрузка обязана дать свежую сцену.
-INSTEAD_SAVE_KEYS = {"f5", "f8"}
-INSTEAD_LOAD_KEYS = {"f6", "f9"}
+# Клавиши INSTEAD 3.5.2 (src/game.c, kbd_instead): F2/F3 — меню сохранения/загрузки слотов,
+# F5 — look (обновление сцены), F8 — быстрое сохранение в слот 9, F9 — загрузка слота 9.
+# Раннер различает только быстрые F8/F9: F5 сцену меняет и не является сохранением.
+INSTEAD_SAVE_KEYS = {"f8"}
+INSTEAD_LOAD_KEYS = {"f9"}
 
 
 def instead_menu_kind(action):
@@ -1124,31 +1124,84 @@ def instead_menu_kind(action):
     return None
 
 
-def pick_instead_state_record(action_type, menu_kind, after, new_events, previous_state,
-                              trace_reset=False):
+def trace_reinitialized(previous_identity, identity):
+    """Трасса переинициализирована: короче прежней или изменился уже виденный префикс.
+
+    Сравнения max_seq < cursor недостаточно: перезаписанная трасса может догнать старый seq.
+    """
+    if not previous_identity:
+        return False
+    return len(identity) < len(previous_identity) or identity[:len(previous_identity)] != previous_identity
+
+
+def semantic_state(record):
+    """Значимые поля состояния без rendered: страница, экран, порция, переменные"""
+    if not record:
+        return None
+    return (record.get("page_id", ""), record.get("screen_kind", ""),
+            record.get("portion_index", 0),
+            tuple(str(record.get(name, "")) for name in TRACE_VARIABLES))
+
+
+def _load_expected_errors(record, expected):
+    errors = []
+    if not expected:
+        return errors
+    if expected.get("page_id") and record.get("page_id") != expected["page_id"]:
+        errors.append("загрузка дала страницу {}, ожидалась {}".format(
+            record.get("page_id"), expected["page_id"]))
+    if "portion_index" in expected and record.get("portion_index") != expected["portion_index"]:
+        errors.append("загрузка дала порцию {}, ожидалась {}".format(
+            record.get("portion_index"), expected["portion_index"]))
+    if "portion_count" in expected and record.get("portion_count") != expected["portion_count"]:
+        errors.append("загрузка дала число порций {}, ожидалось {}".format(
+            record.get("portion_count"), expected["portion_count"]))
+    for name, value in (expected.get("variables") or {}).items():
+        if str(record.get(name, "")) != str(value):
+            errors.append("загрузка дала {}={}, ожидалось {}".format(name, record.get(name, ""), value))
+    return errors
+
+
+def pick_instead_state_record(action_type, menu_kind, after, new_events, previous_semantic,
+                              trace_reset=False, expected=None):
     """(запись состояния, ошибки) для capture/menu/advance_until INSTEAD.
 
-    Сохранение сцену не меняет: допустимо прежнее подтверждённое состояние — последняя сцена
-    с непустым текстом, и только если трасса не переинициализирована и видимое состояние не
-    изменилось. Загрузка обязана дать свежую сцену с текстом: старый trace не доказательство.
+    Сохранение не меняет состояние: требуется свежая запись самой команды save и отсутствие
+    свежих scene с другим semantic_state (UUID/экран/порция/переменные) — даже если rendered пуст.
+    Для отображения берётся последняя сцена с текстом и тем же semantic_state.
+    Загрузка: требуется свежая запись load и свежая scene с текстом после неё; при передаче
+    expected проверяются страница/порция/переменные. Старый trace доказательством не считается.
     """
     if trace_reset:
-        return None, ["трасса INSTEAD переинициализирована: seq начинается заново"]
-    meaningful = [record for record in after
-                  if record["kind"] == "scene" and normalize_story_text(record.get("rendered", ""))]
+        return None, ["трасса INSTEAD переинициализирована: префикс записей не совпал"]
+    evidence = [record for record in new_events
+                if str(record.get("command", "")).split(" ", 1)[0] in ("save", "load")]
+    if menu_kind in ("save", "load") and not evidence:
+        return None, ["нет свежей записи команды {} — выполнение не подтверждено".format(menu_kind)]
+    scene_new = [record for record in new_events if record["kind"] == "scene"]
+    if menu_kind == "save":
+        if previous_semantic is None:
+            return None, ["нет подтверждённого состояния перед сохранением"]
+        changed = [record for record in scene_new if semantic_state(record) != previous_semantic]
+        if changed:
+            return None, ["сохранение изменило состояние: {} -> {}".format(
+                previous_semantic, semantic_state(changed[-1]))]
+        candidates = [record for record in after
+                      if record["kind"] == "scene"
+                      and normalize_story_text(record.get("rendered", ""))
+                      and semantic_state(record) == previous_semantic]
+        if not candidates:
+            return None, ["нет сцены с текстом для подтверждённого состояния сохранения"]
+        return candidates[-1], []
     if menu_kind == "load":
-        fresh = [record for record in new_events
-                 if record["kind"] == "scene" and normalize_story_text(record.get("rendered", ""))]
+        load_seq = max(record["seq"] for record in evidence)
+        fresh = [record for record in after
+                 if record["kind"] == "scene" and record["seq"] > load_seq
+                 and normalize_story_text(record.get("rendered", ""))]
         if not fresh:
             return None, ["после загрузки нет свежей сцены с текстом; старый trace не подходит"]
-        return fresh[-1], []
-    if menu_kind == "save":
-        record = meaningful[-1] if meaningful else None
-        if record is None:
-            return None, ["нет подтверждённой сцены для сохранения"]
-        if previous_state is not None and trace_state_signature(record) != previous_state:
-            return record, ["сохранение изменило видимое состояние"]
-        return record, []
+        record = fresh[-1]
+        return record, _load_expected_errors(record, expected)
     if action_type in ("capture", "menu", "advance_until"):
         all_scene = [record for record in after if record["kind"] == "scene"]
         return (all_scene[-1] if all_scene else None), []
@@ -1354,6 +1407,8 @@ def run_instead(args, route, output_dir):
     state_records = []
     trace_errors = []
     previous_state = None
+    previous_semantic = None
+    trace_seen = []
     cursor = 0
     try:
         wm = subprocess.Popen(
@@ -1429,18 +1484,24 @@ def run_instead(args, route, output_dir):
 
             after = read_instead_trace(trace_path)
             trace_max = max((record["seq"] for record in after), default=0)
-            trace_reset = trace_max < cursor
+            identity = [(record["seq"], record["kind"], record.get("command", ""),
+                         record.get("page_id", ""), record.get("rendered", ""),
+                         record.get("portion_index", 0)) for record in after]
+            # Переинициализация трассы: она либо стала короче, либо изменился уже виденный префикс.
+            # Одного trace_max < cursor мало: перезаписанная трасса может успеть догнать старый seq.
+            trace_reset = trace_reinitialized(trace_seen, identity)
             if trace_reset:
-                # Загрузка не должна терять прежние записи: seq начинается заново только при
-                # переинициализации трассы — это ошибка инструмента, а не повод взять старую сцену
                 trace_errors.append(
-                    "{}: трасса INSTEAD переинициализирована (seq {} < {})".format(
-                        step["id"], trace_max, cursor))
+                    "{}: трасса INSTEAD переинициализирована (префикс записей изменился)".format(step["id"]))
                 cursor = trace_max
             menu_kind = instead_menu_kind(step["action"])
             if menu_kind == "load" and not trace_reset:
                 after = wait_instead_fresh_scene(trace_path, cursor)
                 trace_max = max((record["seq"] for record in after), default=trace_max)
+                identity = [(record["seq"], record["kind"], record.get("command", ""),
+                             record.get("page_id", ""), record.get("rendered", ""),
+                             record.get("portion_index", 0)) for record in after]
+            trace_seen = identity
             new_events = [record for record in after if record["seq"] > cursor]
             # choose — как select_choice с найденным номером (act NN)
             check_action = (dict(step["action"], type="select_choice", index=choose_index)
@@ -1458,9 +1519,9 @@ def run_instead(args, route, output_dir):
             input_seq = max((event["seq"] for event in action_events), default=cursor)
             pick_errors = []
             if menu_kind is not None:
-                # Сохранение сцену не меняет, загрузка обязана дать свежую сцену с текстом
                 state_record, pick_errors = pick_instead_state_record(
-                    step["action"]["type"], menu_kind, after, new_events, previous_state, trace_reset)
+                    step["action"]["type"], menu_kind, after, new_events, previous_semantic,
+                    trace_reset, step.get("expect"))
                 trace_errors.extend("{}: {}".format(step["id"], error) for error in pick_errors)
             else:
                 scene_events = [
@@ -1493,6 +1554,7 @@ def run_instead(args, route, output_dir):
                 mapped["input_events"] = action_events
                 state_records.append(mapped)
                 previous_state = signature
+                previous_semantic = semantic_state(state_record)
             cursor = max((record["seq"] for record in after), default=cursor)
 
             # Persist progress after every checkpoint so CI artifacts remain useful

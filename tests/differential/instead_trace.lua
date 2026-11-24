@@ -5,10 +5,15 @@ if not trace_path or not iface or type(iface.cmd) ~= "function" or not nlb then
     return
 end
 
--- Адаптер уже установлен в этом Lua-состоянии (перезапуск main.lua при загрузке): не оборачивать
--- повторно, иначе каждая команда писалась бы дважды, а трасса снова открывалась. Признак — в
--- глобальной таблице: в Lua 5.1 у функции нет полей, индексировать iface.cmd нельзя.
-if type(_G.__nlb_trace_adapter) == "table" and _G.__nlb_trace_adapter.installed then
+-- Адаптер уже оборачивал ЭТУ функцию? При загрузке main.lua может как переиспользовать прежнюю
+-- iface.cmd, так и создать новую. Слабая таблица ключей-функций (в Lua 5.1 у функции нет полей)
+-- позволяет обернуть новую функцию и не обернуть повторно старую.
+local wrapped = rawget(_G, "__nlb_trace_wrapped")
+if type(wrapped) ~= "table" then
+    wrapped = setmetatable({}, { __mode = "k" })
+    _G.__nlb_trace_wrapped = wrapped
+end
+if wrapped[iface.cmd] then
     return
 end
 
@@ -162,7 +167,7 @@ if need_header then
 end
 
 -- Keep iface.fmt as a secondary diagnostic source for STANDARD exports.
-if type(original_fmt) == "function" then
+if type(original_fmt) == "function" and not wrapped[iface.fmt] then
     iface.fmt = function(self, command, state_changed, moved, room_text, action_text, objects_text, player_text, ...)
         local returns = pack(original_fmt(
             self, command, state_changed, moved,
@@ -173,6 +178,7 @@ if type(original_fmt) == "function" then
         end
         return unpack_values(returns, 1, returns.n)
     end
+    wrapped[iface.fmt] = true
 end
 
 iface.cmd = function(self, command, ...)
@@ -191,4 +197,4 @@ iface.cmd = function(self, command, ...)
     end
     return unpack_values(returns, 1, returns.n)
 end
-_G.__nlb_trace_adapter = { installed = true }
+wrapped[iface.cmd] = true
