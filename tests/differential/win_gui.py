@@ -117,28 +117,45 @@ def focus(hwnd):
             user32.AttachThreadInput(current, target, False)
 
 
-def key(hwnd, name):
+def key_code(name):
+    """VK-код клавиши по имени маршрута; ValueError для неизвестной"""
     name = str(name).lower()
     if name not in KEYS:
         raise ValueError("Неизвестная клавиша для Windows-драйвера: " + name)
-    vk = KEYS[name]
+    return KEYS[name]
+
+
+def click_lparam(x, y):
+    return (int(y) << 16) | (int(x) & 0xFFFF)
+
+
+def key_lparams(vk, scan):
+    return 1 | (scan << 16), 0xC0000001 | (scan << 16)
+
+
+def key(hwnd, name):
+    vk = key_code(name)
     scan = user32.MapVirtualKeyW(vk, 0)
     focus(hwnd)
-    # Сообщения окну: SDL2 обрабатывает WM_KEYDOWN/WM_KEYUP в своём оконном процедуре;
+    # Сообщения окну: SDL2 обрабатывает WM_KEYDOWN/WM_KEYUP в своём оконной процедуре;
     # SendInput зависит от фокуса, который Windows не всегда отдаёт фоновому процессу.
-    down = 1 | (scan << 16)
-    up = 0xC0000001 | (scan << 16)
+    down, up = key_lparams(vk, scan)
     user32.PostMessageW(hwnd, 0x0100, vk, down)  # WM_KEYDOWN
     time.sleep(0.05)
     user32.PostMessageW(hwnd, 0x0101, vk, up)    # WM_KEYUP
 
 
 def click(hwnd, x, y):
-    lparam = (int(y) << 16) | (int(x) & 0xFFFF)
+    lparam = click_lparam(x, y)
     user32.PostMessageW(hwnd, 0x0200, 0, lparam)        # WM_MOUSEMOVE
     user32.PostMessageW(hwnd, 0x0201, 0x0001, lparam)   # WM_LBUTTONDOWN
     time.sleep(0.05)
     user32.PostMessageW(hwnd, 0x0202, 0, lparam)        # WM_LBUTTONUP
+
+
+def close_window(hwnd):
+    """Штатное закрытие окна (WM_CLOSE): даёт игре сохранить слоты и сбросить trace."""
+    user32.PostMessageW(hwnd, 0x0010, 0, 0)
 
 
 def capture(bounds, path):

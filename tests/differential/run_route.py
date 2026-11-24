@@ -778,6 +778,16 @@ def run_nlbnavigator(args, route, output_dir):
     environment["XDG_CONFIG_HOME"] = str((isolated_home / ".config").resolve())
     environment["XDG_DATA_HOME"] = str((isolated_home / ".local/share").resolve())
     environment["XDG_CACHE_HOME"] = str((isolated_home / ".cache").resolve())
+    if IS_WINDOWS:
+        # nlb_sdl берёт домашний каталог из USERPROFILE (PlatformPaths::homeDir), а не HOME,
+        # поэтому без этих переменных сохранения/достижения ушли бы в реальный профиль.
+        appdata = isolated_home / "AppData" / "Roaming"
+        localappdata = isolated_home / "AppData" / "Local"
+        appdata.mkdir(parents=True, exist_ok=True)
+        localappdata.mkdir(parents=True, exist_ok=True)
+        environment["USERPROFILE"] = str(isolated_home.resolve())
+        environment["APPDATA"] = str(appdata.resolve())
+        environment["LOCALAPPDATA"] = str(localappdata.resolve())
     environment["SDL_AUDIODRIVER"] = "dummy"
     completed = subprocess.run(
         command, cwd=Path.cwd(), env=environment, stdout=subprocess.PIPE,
@@ -1196,9 +1206,21 @@ def trace_state_signature(record):
     )
 
 
+def remove_tree(path):
+    """Удаление каталога, не заходя в junction-каталоги overlay (иначе можно стереть исходные данные)"""
+    path = Path(path)
+    if not path.exists():
+        return
+    if IS_WINDOWS:
+        for entry in list(path.iterdir()):
+            if entry.is_dir() and getattr(os.path, "isjunction", lambda _: False)(entry):
+                os.rmdir(entry)
+    shutil.rmtree(path)
+
+
 def create_instead_overlay(source_dir, overlay_dir):
     if overlay_dir.exists():
-        shutil.rmtree(overlay_dir)
+        remove_tree(overlay_dir)
     overlay_dir.mkdir(parents=True, exist_ok=True)
     for entry in source_dir.iterdir():
         if entry.name in (".git", "main.lua"):
@@ -1241,10 +1263,16 @@ def stop_process_group(process, name, log_path, grace_seconds=1, kill_wait_secon
         if status is not None:
             print("[INSTEAD] cleanup {}: already exited with status {}".format(name, status), flush=True)
             return
-        print("[INSTEAD] cleanup {}: terminate (Windows)".format(name), flush=True)
+        hwnd = getattr(process, "_nlb_hwnd", None)
+        if hwnd:
+            try:
+                win_gui.close_window(hwnd)
+                print("[INSTEAD] cleanup {}: WM_CLOSE отправлен".format(name), flush=True)
+            except Exception as error:
+                print("[INSTEAD] cleanup {}: WM_CLOSE не отправлен: {}".format(name, error), flush=True)
         process.terminate()
         try:
-            process.wait(timeout=grace_seconds + kill_wait_seconds)
+            process.wait(timeout=max(grace_seconds, 5) + kill_wait_seconds)
         except subprocess.TimeoutExpired:
             process.kill()
             process.wait(timeout=kill_wait_seconds)
@@ -1325,6 +1353,12 @@ def run_instead(args, route, output_dir):
     env["SDL_AUDIODRIVER"] = "dummy"
     env["NLB_TEST_TRACE"] = str(trace_path)
     env["NLB_TEST_TRACE_ADAPTER"] = str(adapter)
+    if IS_WINDOWS:
+        env["USERPROFILE"] = str(isolated_home)
+        env["APPDATA"] = str(isolated_home / "AppData" / "Roaming")
+        env["LOCALAPPDATA"] = str(isolated_home / "AppData" / "Local")
+        (isolated_home / "AppData" / "Roaming").mkdir(parents=True, exist_ok=True)
+        (isolated_home / "AppData" / "Local").mkdir(parents=True, exist_ok=True)
 
     binary = args.instead_binary or os.environ.get("NLB_INSTEAD") \
         or shutil.which("sdl-instead") or shutil.which("sdl-instead.exe") or "/usr/games/sdl-instead"
@@ -1371,6 +1405,7 @@ def run_instead(args, route, output_dir):
         if not window:
             raise RuntimeError("Не удалось найти окно INSTEAD")
         _, window_id, _, _, _, _ = window
+        player._nlb_hwnd = window_id
 
         if IS_WINDOWS:
             if not win_gui.focus(window_id):
