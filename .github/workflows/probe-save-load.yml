@@ -1,7 +1,7 @@
 name: Probe save/load
 
-# Временный workflow для воспроизведения #68/#69 на ветке probe/issue-68-69.
-# Не входит в main; собирает nlb_sdl и первичные журналы probe-скрипта.
+# Ð’Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ð¹ workflow Ð´Ð»Ñ Ð²Ð¾ÑÐ¿Ñ€Ð¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ð¸Ñ #68/#69 Ð½Ð° Ð²ÐµÑ‚ÐºÐµ probe/issue-68-69.
+# ÐÐµ Ð²Ñ…Ð¾Ð´Ð¸Ñ‚ Ð² main; ÑÐ¾Ð±Ð¸Ñ€Ð°ÐµÑ‚ nlb_sdl Ð¸ Ð¿ÐµÑ€Ð²Ð¸Ñ‡Ð½Ñ‹Ðµ Ð¶ÑƒÑ€Ð½Ð°Ð»Ñ‹ probe-ÑÐºÑ€Ð¸Ð¿Ñ‚Ð°.
 
 "on":
   workflow_dispatch:
@@ -88,6 +88,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nlb-sdl-binary
+          path: build
       - name: Restore test data
         uses: actions/cache@v4
         with:
@@ -119,3 +120,4 @@ jobs:
           path: test-results/
           if-no-files-found: warn
           retention-days: 14
+
