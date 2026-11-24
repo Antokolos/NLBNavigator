@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
-"""Временный probe: воспроизведение #68 (порция VN) и #69 (trace INSTEAD).
+﻿#!/usr/bin/env python3
+"""Ð’Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ð¹ probe: Ð²Ð¾ÑÐ¿Ñ€Ð¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ð¸Ðµ #68 (Ð¿Ð¾Ñ€Ñ†Ð¸Ñ VN) Ð¸ #69 (trace INSTEAD).
 
-Не входит в main: запускается workflow probe-save-load.yml на временной ветке.
-Собирает первичные данные (state-log, route-report, INSTEAD trace) и пишет
-probe-summary.json с вердиктами. Exit code — 0, если сбор данных удался;
-вердикты о дефектах — в summary (pre-fix ожидаются провалы).
+ÐÐµ Ð²Ñ…Ð¾Ð´Ð¸Ñ‚ Ð² main: Ð·Ð°Ð¿ÑƒÑÐºÐ°ÐµÑ‚ÑÑ workflow probe-save-load.yml Ð½Ð° Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ð¾Ð¹ Ð²ÐµÑ‚ÐºÐµ.
+Ð¡Ð¾Ð±Ð¸Ñ€Ð°ÐµÑ‚ Ð¿ÐµÑ€Ð²Ð¸Ñ‡Ð½Ñ‹Ðµ Ð´Ð°Ð½Ð½Ñ‹Ðµ (state-log, route-report, INSTEAD trace) Ð¸ Ð¿Ð¸ÑˆÐµÑ‚
+probe-summary.json Ñ Ð²ÐµÑ€Ð´Ð¸ÐºÑ‚Ð°Ð¼Ð¸. Exit code â€” 0, ÐµÑÐ»Ð¸ ÑÐ±Ð¾Ñ€ Ð´Ð°Ð½Ð½Ñ‹Ñ… ÑƒÐ´Ð°Ð»ÑÑ;
+Ð²ÐµÑ€Ð´Ð¸ÐºÑ‚Ñ‹ Ð¾ Ð´ÐµÑ„ÐµÐºÑ‚Ð°Ñ… â€” Ð² summary (pre-fix Ð¾Ð¶Ð¸Ð´Ð°ÑŽÑ‚ÑÑ Ð¿Ñ€Ð¾Ð²Ð°Ð»Ñ‹).
 """
 
 import json
@@ -33,8 +33,8 @@ def step_ids(route):
 
 
 def route_with(source, name, steps):
-    # visual_change_from валиден только в исходном порядке шагов; в переставленных
-    # сценариях он не нужен (снимки — диагностика), поэтому убираем его совсем
+    # visual_change_from Ð²Ð°Ð»Ð¸Ð´ÐµÐ½ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð² Ð¸ÑÑ…Ð¾Ð´Ð½Ð¾Ð¼ Ð¿Ð¾Ñ€ÑÐ´ÐºÐµ ÑˆÐ°Ð³Ð¾Ð²; Ð² Ð¿ÐµÑ€ÐµÑÑ‚Ð°Ð²Ð»ÐµÐ½Ð½Ñ‹Ñ…
+    # ÑÑ†ÐµÐ½Ð°Ñ€Ð¸ÑÑ… Ð¾Ð½ Ð½Ðµ Ð½ÑƒÐ¶ÐµÐ½ (ÑÐ½Ð¸Ð¼ÐºÐ¸ â€” Ð´Ð¸Ð°Ð³Ð½Ð¾ÑÑ‚Ð¸ÐºÐ°), Ð¿Ð¾ÑÑ‚Ð¾Ð¼Ñƒ ÑƒÐ±Ð¸Ñ€Ð°ÐµÐ¼ ÐµÐ³Ð¾ ÑÐ¾Ð²ÑÐµÐ¼
     clean = [{key: value for key, value in step.items() if key != "visual_change_from"}
              for step in steps]
     return dict(source, id=f"probe-{name}", steps=clean)
@@ -173,7 +173,7 @@ def main():
     a_index = ids.index(A)
     b_index = ids.index(B)
     prefix = source["steps"][:a_index + 1]
-    continuation = source["steps"][a_index + 1:b_index + 1]
+    continuation = source["steps"][a_index + 2:b_index + 1]  # после advance на порцию 1
     title = source["steps"][0]
 
     scenarios = {
@@ -224,7 +224,7 @@ def main():
         })
     summary["scenarios"]["nlbnavigator/restart"] = restart
 
-    # INSTEAD: тот же cross-page и first-portion; смотрим код раннера и trace
+    # INSTEAD: Ñ‚Ð¾Ñ‚ Ð¶Ðµ cross-page Ð¸ first-portion; ÑÐ¼Ð¾Ñ‚Ñ€Ð¸Ð¼ ÐºÐ¾Ð´ Ñ€Ð°Ð½Ð½ÐµÑ€Ð° Ð¸ trace
     for name in ("cross-page", "first-portion"):
         output = args.output / "instead" / name
         code, _ = run_runner(name, "instead", routes[name], output, args)
@@ -246,3 +246,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
