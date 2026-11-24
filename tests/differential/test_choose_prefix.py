@@ -86,9 +86,9 @@ class PrefixTest(unittest.TestCase):
 
     def test_changed_fragment_selects_routes_with_it(self):
         routes = [{"id": "x", "path": str(EXAMPLE.relative_to(select_routes.ROOT))}]
-        chosen, _ = select_routes.select(routes, ["tests/differential/routes/fragments/wolfman-police-start.json"])
+        chosen, _, _ = select_routes.select(routes, ["tests/differential/routes/fragments/wolfman-police-start.json"])
         self.assertEqual([r["id"] for r in chosen], ["x"])
-        chosen, _ = select_routes.select(routes, ["tests/differential/routes/fragments/other.json"])
+        chosen, _, _ = select_routes.select(routes, ["tests/differential/routes/fragments/other.json"])
         self.assertEqual(chosen, [])
 
     def test_timeouts_count_prefix_steps(self):
