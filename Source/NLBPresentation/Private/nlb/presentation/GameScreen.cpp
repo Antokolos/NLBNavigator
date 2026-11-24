@@ -362,11 +362,22 @@ void GameScreen::applyRestoredViewState(const Session::ViewState& state) {
     size_t index = 0;
     const auto it = state.find("vn.portion");
     if (it != state.end() && !it->second.empty()) {
-        try {
-            const long long value = std::stoll(it->second);
-            if (value > 0) index = static_cast<size_t>(value);
-        } catch (...) {
-            // повреждённое значение — первая порция, как в старых сохранениях
+        // Только полностью числовое значение: "12abc", "-1", "+1" и мусор дают первую порцию,
+        // как повреждённое/отсутствующее состояние старого сохранения. stoll принимал бы "12abc".
+        bool digits = true;
+        for (const char character : it->second) {
+            if (character < '0' || character > '9') {
+                digits = false;
+                break;
+            }
+        }
+        if (digits) {
+            try {
+                const unsigned long long value = std::stoull(it->second);
+                if (value > 0) index = static_cast<size_t>(value);
+            } catch (...) {
+                // переполнение/повреждённое значение — первая порция
+            }
         }
     }
     const auto parts = portions();

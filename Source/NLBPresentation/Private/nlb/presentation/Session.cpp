@@ -323,6 +323,8 @@ void Session::tryAgain() {
     m_engine->tryAgain();
     afterCommand();
     m_restoredViewState = m_engine->uiState();
+    m_viewState = m_restoredViewState;
+    m_engine->setUiState(m_viewState);
     m_viewStateRestored = true;
     ++m_localRevision;  // экран должен перерисоваться с восстановленной порцией
 }
@@ -345,11 +347,17 @@ bool Session::load(int slot, std::string& error) {
     logAction("Загрузить слот " + std::to_string(slot));
     m_logPage.clear();
     m_logRevision = static_cast<uint64_t>(-1);
+    m_viewStateRestored = false;
+    m_restoredViewState.clear();
     const bool ok = m_engine->loadGame(slotPath(slot), error);
     m_selected.clear();
     afterCommand();
     if (ok) {
         m_restoredViewState = m_engine->uiState();
+        // Сразу синхронизируем «текущее» состояние экрана: save() без промежуточного update()
+        // не должен записать старую порцию. Старое сохранение без ui даёт пустое состояние.
+        m_viewState = m_restoredViewState;
+        m_engine->setUiState(m_viewState);
         m_viewStateRestored = true;
         ++m_localRevision;  // экран должен перерисоваться с восстановленной порцией
     }
@@ -358,6 +366,9 @@ bool Session::load(int slot, std::string& error) {
 
 void Session::setViewState(const std::string& key, const std::string& value) {
     m_viewState[key] = value;
+    // Держим состояние экрана в движке актуальным: иначе SNAPSHOT (writeSave внутри движка)
+    // и повторное сохранение сразу после загрузки записали бы устаревшую порцию.
+    if (m_engine) m_engine->setUiState(m_viewState);
 }
 
 std::string Session::viewState(const std::string& key) const {
