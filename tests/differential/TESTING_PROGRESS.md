@@ -10,14 +10,13 @@
 | Владелец | Приоритеты, разрешение расширения области изменений, Ready for review и merge |
 
 
-Обновлено: 2026-11-24 (Asia/Bishkek); исторические записи ниже сохраняют прежние роли и статусы на дату события.
+Обновлено: 2026-11-24 (Asia/Omsk). Исторические записи ниже сохраняют результаты на дату события.
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последние интегрированные PR: #54–#57 и #63–#65 (merged); открыт Draft [PR #66](https://github.com/Antokolos/NLBNavigator/pull/66) — проверка достижений в CI.
-- Текущий `main`: `7ef55e23c8cd282872580a757537712b9fed928b` (merge PR #65 — проверка достижений); PR #63 — роли issue #28, PR #64 — числа маршрутов и read-only ядро; PR #66 — интеграция проверки в CI (Draft).
-- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219/#220 (PR #63 и `main`), CI #223/#224 (PR #65) и CI #225 (`main` после merge) — без графических прогонов: `COUNT 0`, SUCCESS; CI #226 (PR #66, первый полный: gate упал — у job не было checkout), CI #227 (PR #66, `65a64df`) и CI #228 (PR #66, `8a10994`) — 22 маршрута, job `achievement`, report и gate SUCCESS; CI #229 (`1eeadee`) — docs-only: `COUNT 0`, сборка и `achievement` пропущены, gate SUCCESS; CI #231 (PR #66, `0db11d2` — после закрытия обхода docs-only) — 22 маршрута и `achievement`, SUCCESS.
-- CI #218 (плановый прогон 23.11 на `main`) упал до маршрутов, на шаге `Build nlb_sdl`: `apt-get` не нашёл пакеты (`libasound2-dev`, `libfreetype-dev` и др.) — сбой окружения, не кода; последний полный зелёный прогон — CI #214.
+- Текущий `main`: `bb12c3dc6e01f2d5f4d54e2764a1137feb9862f6`. PR #65 добавил тест сохранения достижений, PR #66 включил его в Differential gate.
+- [CI #234](https://github.com/Antokolos/NLBNavigator/actions/runs/45404482450) на этом `main` — SUCCESS, 28/28 заданий. Прошли 110 unit-тестов, 22 маршрута и четыре сценария сохранения достижений.
+- [Draft PR #67](https://github.com/Antokolos/NLBNavigator/pull/67) добавляет ручной тест save/load. [CI #232](https://github.com/Antokolos/NLBNavigator/actions/runs/45398008465) прошёл на предыдущем HEAD `f22285b`. Запуск save/load выполняется отдельно под Xvfb в Codex Cloud.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
 - Каталог (`catalog.json`) содержит 7 книг, 22 маршрута и 5 общих фрагментов: 16 маршрутов основных ветвей и 6 концовочных (ending34 ×2, ending37, ending38, ending39, ending41 — добавлены 22.11.2026, commit `8f4be7f`). Полный набор из 22 прошёл в CI #214; до этого 16 маршрутов проходили в CI #176 и #181.
 - `tools/nlb_pages.py` в `main` рекурсивно инвентаризирует страницы и модули Wolfman.
@@ -65,7 +64,7 @@
 `Build nlb_sdl` пропущен, графические сценарии не запускались. [CI #225](https://github.com/Antokolos/NLBNavigator/actions/runs/45376482120)
 (`main` после merge, `7ef55e23`) — то же.
 
-**Интеграция в CI (Draft PR #66).** Проверка — job `achievement`; условия запуска и артефакты — в
+**Интеграция в CI после слияния PR #66.** Проверка — job `achievement`; условия запуска и артефакты — в
 [README](README.md#в-ci). Полные прогоны PR #66: [CI #226](https://github.com/Antokolos/NLBNavigator/actions/runs/45381541754)
 (`45381541754`) выполнил все jobs, включая `achievement`, но gate упал из-за отсутствия checkout в
 самом gate job — исправлено; [CI #227](https://github.com/Antokolos/NLBNavigator/actions/runs/45385073173)
@@ -102,6 +101,47 @@ failure, cancelled, missing; achievement-тест при `COUNT=0`; повтор
 В CI после исправления: CI #231 (`0db11d2`) — полный набор из 22 маршрутов и `achievement`;
 следующий документационный коммит в этом же PR снова запускает полный набор, а не `COUNT=0`, —
 именно это и было целью исправления.
+
+## Сохранение и загрузка состояния Wolfman
+
+Первая проверка в Codex Cloud выполнена от `7ef55e23c8cd282872580a757537712b9fed928b`
+(merge PR #65). После синхронизации Draft PR #67 с `bb12c3d` полный тест SDL
+повторён под Xvfb с кодом 0: baseline, roundtrip, save-only и restart прошли,
+неудачная попытка загрузки из пустого слота подтвердила отрицательный контроль.
+Локально также прошли 110 unit-тестов и валидация каталога из 22 маршрутов.
+Этот save/load-тест пока запускается вручную. Workflow проверяет сохранение
+достижений отдельным заданием `achievement`.
+
+Использован префикс `wolfman-police-hospital-doctor`. Обе контрольные точки
+находятся в корневой книге.
+
+| Точка | UUID страницы | Порция (индекс / число) | Wolfiness / HP | Фон SDL / INSTEAD |
+|---|---|---|---|---|
+| A, страница 3 | `8c1fa8c6-8027-43c8-8d8b-0bf454d5e717` | `0/2` | `0/2` | `3.png` / `images/3.jpg` |
+| B, страница 4 | `d937c5c1-766c-4581-a03e-736560b0cc8f` | `0/4` | `1/3` | `4.png` / `images/4.jpg` |
+
+- SDL: baseline, запись A и загрузка из B в том же процессе, отдельная
+  запись A с завершением процесса и запуск с копией только `slot1.sav`
+  прошли. В обоих вариантах загрузки совпали состояние A и дальнейшие
+  контрольные точки до B, включая текст, обе hospital choices и полную
+  `ScreenModel`. В пустом профиле остался титул с `hp=0`; `menu:1`
+  отклонена (плеер 2, раннер 1, общий тест с ожидаемым отказом 0).
+- INSTEAD (первый этап проверки): baseline, загрузка быстрого слота 9 с нового процесса и пустой
+  профиль прошли с кодом 0. В пробе внутри одного процесса `F8` сохранила A,
+  `F9` восстановила A из B, после чего переход до B повторился.
+  Семантическая сверка контрольных точек A, B и продолжения прошла.
+  Штатный раннер этой пробы вернул 1 на `save-a`: команда `save` дала
+  запись `scene` с пустым `rendered` при неизменных UUID, порции и
+  переменных. Обработка таких записей и проверка свежей сцены после `load`
+  описаны в [issue #69](https://github.com/Antokolos/NLBNavigator/issues/69).
+- Отдельная проверка сохранения на второй порции страницы 3 выявила
+  расхождение. INSTEAD восстановил `1/2` (код 0). SDL восстановил ту же
+  страницу и переменные, но показал `0/2` (код проверки 1). Проверка
+  остановилась на кадре сразу после загрузки. Восстановление позиции внутри
+  страницы отслеживается в [issue #68](https://github.com/Antokolos/NLBNavigator/issues/68).
+
+Команда основного регрессионного теста для SDL приведена в
+[README](README.md#сохранение-и-загрузка-в-больничной-ветке-wolfman).
 
 ## Шаг 1 — статическая route validation завершён
 
@@ -191,7 +231,7 @@ PR #54 расширяет два независимых clean-state hospital rou
 
 1. [x] Статическая route validation, отрицательные unit tests и проверка зарегистрированных route definitions.
 2. [x] Интеграция базового differential suite — PR #32 merged.
-3. [x] Ускорение CI и изоляция тестовых окружений — PR #46 и последующие уточнения PR #50 merged; матрица маршрутов, общий build artifact, кэш зависимостей, changed-route selection и docs-only skip работают в main. PR #52 сделал `Differential gate` обязательной проверкой для PR в `main`.
+3. [x] Ускорение CI и изоляция тестовых окружений — PR #46 и #50; матрица маршрутов, общий build artifact и кэш зависимостей. PR #52 сделал `Differential gate` обязательной проверкой. После PR #66 задания выбираются по суммарному diff PR.
 4. [x] **Продолжение hospital после page5 — PR #54 (Draft).** Временные probe-маршруты и постоянные маршруты готовы. Ревьюер локально выполнил парные прогоны обоих постоянных маршрутов в INSTEAD и NLBNavigator, затем сравнения. CI #188 на HEAD `dadfdb027d9aeb1ace7059d75c539c1921c149fa` завершился SUCCESS: doctor — 40 шагов, 35 текстовых проверок на движок; corpse — 30 шагов, 25 текстовых проверок на движок. Все шесть CI-отчётов `ok=true`, `errors=[]`; page UUID, экран, порции, переменные и финальные choices совпали. Финальные варианты «Съесть философа» / «Украсть еду с кухни» не выбирались. CI #188 по diff-based selection запускал только эти два изменённых маршрута; остальные 14 не запускались.
 5. [ ] **Устойчивые runner actions — Разработчик.** Проверить/добавить `advance_until` для choices и last_portion, выбор `select_choice` по тексту, согласованность trace/state-log и миграцию маршрутов. Изменения `run_route.py` и runner-инфраструктуры не входят в зону Тестировщика; недостающие возможности оформить отдельной issue для Разработчика. Существующий сбор trace/state-log уже работает — требуется проверить именно синхронизацию и полноту семантики.
 6. [x] **Coverage script — Тестировщик, PR #57.** Реализован `tests/differential/coverage_report.py` и 10 unit-тестов; локальная проверка Ревьюером на pinned Wolfman подтвердила 36/38 page, 8/10 return, 1/6 ending, 0 ending? и отсутствие неизвестных `page_id`. CI #193 на HEAD `dd4fe0b35d98e5f5bc3f3e88a72ba69aa4b0ffcc` — SUCCESS; `Validate route definitions` прошёл, `Differential gate` SUCCESS (`COUNT 0`).
