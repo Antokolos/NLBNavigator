@@ -14,9 +14,9 @@
 
 - Репозиторий: https://github.com/Antokolos/NLBNavigator
 - Общая issue: https://github.com/Antokolos/NLBNavigator/issues/28
-- Последние интегрированные PR: #54–#57 и #63–#65 (merged); открытых PR нет.
-- Текущий `main`: `7ef55e23c8cd282872580a757537712b9fed928b` (merge PR #65 — проверка достижений); PR #63 — роли issue #28, PR #64 — числа маршрутов и read-only ядро.
-- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219/#220 (PR #63 и `main`), CI #223/#224 (PR #65) и CI #225 (`main` после merge) — без графических прогонов: `COUNT 0`, SUCCESS.
+- Последние интегрированные PR: #54–#57 и #63–#65 (merged); открыт Draft [PR #66](https://github.com/Antokolos/NLBNavigator/pull/66) — проверка достижений в CI.
+- Текущий `main`: `7ef55e23c8cd282872580a757537712b9fed928b` (merge PR #65 — проверка достижений); PR #63 — роли issue #28, PR #64 — числа маршрутов и read-only ядро; PR #66 — интеграция проверки в CI (Draft).
+- Последние проверки differential suite: CI #214 (run `45060932721`) — полный набор из 22 маршрутов, SUCCESS в INSTEAD, NLBNavigator и comparison; CI #219/#220 (PR #63 и `main`), CI #223/#224 (PR #65) и CI #225 (`main` после merge) — без графических прогонов: `COUNT 0`, SUCCESS; CI #226 (PR #66, первый полный: gate упал — у job не было checkout), CI #227 (PR #66, `65a64df`) и CI #228 (PR #66, `8a10994`) — 22 маршрута, job `achievement`, report и gate SUCCESS.
 - CI #218 (плановый прогон 23.11 на `main`) упал до маршрутов, на шаге `Build nlb_sdl`: `apt-get` не нашёл пакеты (`libasound2-dev`, `libfreetype-dev` и др.) — сбой окружения, не кода; последний полный зелёный прогон — CI #214.
 - Issue #26 закрыта как completed после подтверждения same-session input и dissolve fix в PR #34.
 - Каталог (`catalog.json`) содержит 7 книг, 22 маршрута и 5 общих фрагментов: 16 маршрутов основных ветвей и 6 концовочных (ending34 ×2, ending37, ending38, ending39, ending41 — добавлены 22.11.2026, commit `8f4be7f`). Полный набор из 22 прошёл в CI #214; до этого 16 маршрутов проходили в CI #176 и #181.
@@ -63,11 +63,23 @@
 (`f98a23bd`) и [CI #224](https://github.com/Antokolos/NLBNavigator/actions/runs/45342406329)
 (`81b2b5fa`, последний HEAD PR #65) прошли только статическую проверку и unit-тесты: `COUNT 0`,
 `Build nlb_sdl` пропущен, графические сценарии не запускались. [CI #225](https://github.com/Antokolos/NLBNavigator/actions/runs/45376482120)
-(`main` после merge, `7ef55e23`) — то же. Поэтому проверка вынесена в обязательный job
-`achievement` (Draft PR «CI: проверка достижений»): при изменениях теста, его маршрута, плеера,
-раннера, CI и платформенного слоя она выполняется и входит в Differential gate; при `COUNT=0`
-сборка запускается только ради неё. Условия запуска и артефакты — в
-[README](README.md#в-ci).
+(`main` после merge, `7ef55e23`) — то же.
+
+**Интеграция в CI (Draft PR #66).** Проверка — job `achievement`; условия запуска и артефакты — в
+[README](README.md#в-ci). Полные прогоны PR #66: [CI #226](https://github.com/Antokolos/NLBNavigator/actions/runs/45381541754)
+(`45381541754`) выполнил все jobs, включая `achievement`, но gate упал из-за отсутствия checkout в
+самом gate job — исправлено; [CI #227](https://github.com/Antokolos/NLBNavigator/actions/runs/45385073173)
+(`45385073173`, `65a64df`) — 28 jobs SUCCESS; [CI #228](https://github.com/Antokolos/NLBNavigator/actions/runs/45388344550)
+(`45388344550`, `8a10994`) — 28 jobs SUCCESS, артефакты `achievement-results` (`14919166160`) и
+`nlb-sdl-test-logs` (`14918234195`). В `achievement/<сценарий>/` — `achievements.tsv` (копия
+`wolfman.achievements`), `platform.log`, `state-log.jsonl`, `route-report.json`, кадры; в
+`achievement-summary.json` — четыре сценария `ok`.
+
+**COUNT=0 и проверка достижений.** `plan` ставит `achievements=true`, даже когда маршрутов нет: это
+проверено unit-тестами `test_select_routes`/`test_gate` и локальным прогоном `select_routes` на
+diff PR #65 (только тест: `count=0, achievements=true, build=true`). Внутри PR #66 живой прогон
+такого вида невозможен: суммарный diff PR включает `ci/`, а он выбирает все маршруты; после merge
+изменение одного теста достижений даст именно job `achievement` без маршрутов.
 
 UUID модификации `ec437b19-13ab-4f4a-b851-185849a51249` в ожидаемых строках взят из книги на
 pinned-коммите `888b4b7a7a564693274f53341728ee9f3b4c2879`: при смене `GAME_REF` его нужно

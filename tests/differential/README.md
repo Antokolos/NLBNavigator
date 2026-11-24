@@ -186,8 +186,8 @@ State-log NLBNavigator проверяется через `tools/check_state_log.
   раннер), сборка переиспользуется из `build`. Включается, когда `plan` поставил
   `achievements=true`: изменения самого теста, его маршрута, плеера, раннера, CI и
   платформенного слоя, а также полный ручной и плановый прогон. Артефакт —
-  `achievement-results` (TSV достижений `wolfman.achievements`, журналы площадки и плеера,
-  state-log, route-report, `achievement-summary.json` и кадры).
+  `achievement-results` (TSV достижений: `achievements.tsv` — копия `wolfman.achievements`, журналы
+  площадки и плеера, state-log, route-report, `achievement-summary.json` и кадры).
 - `report` — общий artifact `nlb-sdl-test-logs` (каталог `<маршрут>/{instead,nlbnavigator}`,
   `comparison-report.json` и `achievement/`) и таблицы ok/ошибка по маршрутам и сценариям
   достижений в сводке прогона.
