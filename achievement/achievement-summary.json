@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "award": "VILLAIN_PUNISHED",
+  "cases": [
+    {
+      "name": "award",
+      "ok": true
+    },
+    {
+      "name": "readback",
+      "ok": true
+    },
+    {
+      "name": "clean",
+      "ok": true
+    },
+    {
+      "name": "reaward",
+      "ok": true
+    }
+  ]
+}
