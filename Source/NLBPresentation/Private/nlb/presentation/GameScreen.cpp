@@ -339,18 +339,22 @@ void GameScreen::startTransition() {
 
 void GameScreen::update(int milliseconds) {
     if (m_transitionActive) m_transitionMs += std::max(0, milliseconds);
-    // Сессию изменили снаружи (подсистема движка, вернувшая книгу после внешней игры) — как после команды
-    if (m_session.revision() != m_seenRevision) afterCommand();
-    // Загрузка восстановила порцию: применить после pull(), который мог сбросить её на 0
+    // Загрузка восстановила порцию: применить после pull(), который мог сбросить её на 0.
+    // takeRestoredViewState забираем ДО afterCommand, чтобы afterCommand не опубликовал
+    // промежуточный 0 и не уничтожил ещё не применённое состояние.
     Session::ViewState restored;
-    if (m_session.takeRestoredViewState(restored)) applyRestoredViewState(restored);
+    const bool restoredPending = m_session.takeRestoredViewState(restored);
+    if (m_session.revision() != m_seenRevision) afterCommand(!restoredPending);
+    if (restoredPending) applyRestoredViewState(restored);
     updatePause();
-    // Порция — часть сохранения: держим Session в курсе (в т.ч. при сохранении из меню)
     publishViewState();
     if (m_menu != Menu::None) return;  // время книги идёт, только пока игрок не в меню (пауза)
     const uint64_t revision = m_session.revision();
     m_session.advance(milliseconds);
     if (m_session.revision() != revision) pull();
+    // Автоматический переход мог сменить страницу/сбросить порцию — публикуем окончательное
+    // состояние, а не то, что было до advance().
+    publishViewState();
 }
 
 void GameScreen::publishViewState() {
@@ -401,7 +405,7 @@ void GameScreen::processEvents(const std::vector<PlayerEngine::Event>& events) {
     }
 }
 
-void GameScreen::afterCommand() {
+void GameScreen::afterCommand(bool publish) {
     pull();
     m_showChoices = false;
     // Страница без текста: показывать нечего — сразу экран вариантов (если вариант один тривиальный —
@@ -432,7 +436,7 @@ void GameScreen::afterCommand() {
             showGameOver();
         }
     }
-    publishViewState();
+    if (publish) publishViewState();
 }
 
 void GameScreen::updateEffects(const ScreenModel& before) {
@@ -879,6 +883,7 @@ bool GameScreen::advanceText() {
     if (m_morePortions) {                   // следующая порция
         ++m_portion;
         m_scroll = 0;
+        publishViewState();  // сохранение сразу после листания должно видеть фактическую порцию
         return true;
     }
     // текст дочитан: конец игры — сообщение «начать заново»
