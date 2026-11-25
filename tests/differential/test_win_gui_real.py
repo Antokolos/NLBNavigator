@@ -54,5 +54,16 @@ class RealWindowStateTest(unittest.TestCase):
         top.destroy()
 
 
+    def test_small_overlap_between_control_points(self):
+        top = self.tk.Toplevel(self.root)
+        # 24x24 в точке, не совпадающей с пятью контрольными (центр/углы 10%/90%)
+        top.geometry("24x24+250+250")
+        top.attributes("-topmost", True)
+        top.update()
+        state = win_gui.window_state(self.hwnd, self.pid)
+        self.assertTrue(state["covered"], state)
+        top.destroy()
+
+
 if __name__ == "__main__":
     unittest.main()

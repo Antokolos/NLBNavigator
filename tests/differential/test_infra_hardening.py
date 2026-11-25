@@ -31,11 +31,12 @@ class OutputDirectoryTest(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 local_route.prepare_output(target)
 
-    def test_reuse_flag_allows_existing(self):
+    def test_reuse_is_not_allowed(self):
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
             (target / "old.png").write_text("x", encoding="utf-8")
-            self.assertEqual(local_route.prepare_output(target, reuse=True), target)
+            with self.assertRaises(SystemExit):
+                local_route.prepare_output(target)
 
 
 class SeedHomeTest(unittest.TestCase):
@@ -162,11 +163,12 @@ class StopProcessTest(unittest.TestCase):
         calls = self.run_stop(process)
         self.assertEqual(calls, [("wait", 5), ("terminate",), ("wait", 2)])
 
-    def test_terminate_timeout_kills(self):
+    def test_kill_timeout_raises_cleanup_error(self):
         process = self.FakeProcess([subprocess.TimeoutExpired("x", 5),
-                                    subprocess.TimeoutExpired("x", 2), 0])
-        calls = self.run_stop(process)
-        self.assertEqual(calls, [("wait", 5), ("terminate",), ("wait", 2), ("kill",), ("wait", 2)])
+                                    subprocess.TimeoutExpired("x", 2),
+                                    subprocess.TimeoutExpired("x", 2)])
+        with self.assertRaises(RuntimeError):
+            self.run_stop(process)
 
     def test_missing_window_terminates(self):
         process = self.FakeProcess([0])

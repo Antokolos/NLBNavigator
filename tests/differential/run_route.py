@@ -1333,6 +1333,7 @@ def stop_process_group(process, name, log_path, grace_seconds=1, kill_wait_secon
                 print("[INSTEAD] cleanup {}: завершён kill status={}".format(name, status), flush=True)
             except subprocess.TimeoutExpired:
                 print("[INSTEAD] cleanup {}: процесс не завершился после kill".format(name), flush=True)
+                raise RuntimeError("INSTEAD {} не завершился после kill; очистка не удалась".format(name))
         return
     status = process.poll()
     if status is not None:

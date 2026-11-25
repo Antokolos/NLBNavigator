@@ -12,11 +12,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 
 
-def prepare_output(path, reuse=False):
-    """Новый каталог результатов; существующий непустой — только с --reuse."""
+def prepare_output(path):
+    """Новый каталог результатов; существующий непустой отклоняется."""
     path = Path(path)
-    if path.exists() and (not path.is_dir() or any(path.iterdir())) and not reuse:
-        raise SystemExit("каталог результатов уже существует: {}; укажите новый или --reuse".format(path))
+    if path.exists() and (not path.is_dir() or any(path.iterdir())):
+        raise SystemExit("каталог результатов уже существует: {}; укажите новый".format(path))
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -38,12 +38,10 @@ def main():
     parser.add_argument("--player", required=True, type=Path)
     parser.add_argument("--instead-binary", type=Path)
     parser.add_argument("--timeout", type=int, default=420)
-    parser.add_argument("--reuse", action="store_true",
-                        help="Разрешить существующий непустой каталог результатов")
     args = parser.parse_args()
 
     route = str(args.route.resolve())
-    output = prepare_output(args.output, args.reuse).resolve()
+    output = prepare_output(args.output).resolve()
     instead_dir = output / "instead"
     nlb_dir = output / "nlbnavigator"
     instead_dir.mkdir(parents=True, exist_ok=True)
