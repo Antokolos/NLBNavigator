@@ -77,6 +77,8 @@ def run_case(args, launcher, route, seed=None, env_extra=None):
         "--route", str(route), "--output", str(output), "--player", str(launcher),
         "--book", str(args.book), "--theme", str(args.theme), "--base-theme", str(args.base_theme),
     ]
+    if sys.platform == "win32" and seed:
+        command += ["--seed-home", ".nlbnavigator/wolfman.saves/slot1.sav=" + str(seed)]
     log = args.output / f"{route.stem}.log"
     with log.open("w", encoding="utf-8") as stream:
         result = subprocess.run(command, cwd=REPO, env=env, stdout=stream, stderr=subprocess.STDOUT)
@@ -126,18 +128,21 @@ def main():
     page4 = [renamed(step, f"page4-{index}") for index, step in enumerate(steps[b + 1:b + 4], 1)]
     page5 = renamed(steps[b + 4], "page5-first")
 
-    launcher = args.output / "nlb-sdl-with-save"
-    launcher.write_text(
-        "#!/bin/sh\nset -eu\n"
-        'slot="$HOME/.nlbnavigator/wolfman.saves/slot1.sav"\n'
-        'test ! -e "$slot"\n'
-        'if [ -n "$NLB_SAVE_LOAD_SEED" ]; then\n'
-        '    mkdir -p "$(dirname "$slot")"\n'
-        '    cp "$NLB_SAVE_LOAD_SEED" "$slot"\n'
-        "fi\n"
-        'exec "$NLB_SAVE_LOAD_PLAYER" "$@"\n',
-        encoding="utf-8")
-    launcher.chmod(0o700)
+    if sys.platform == "win32":
+        launcher = args.player
+    else:
+        launcher = args.output / "nlb-sdl-with-save"
+        launcher.write_text(
+            "#!/bin/sh\nset -eu\n"
+            'slot="$HOME/.nlbnavigator/wolfman.saves/slot1.sav"\n'
+            'test ! -e "$slot"\n'
+            'if [ -n "$NLB_SAVE_LOAD_SEED" ]; then\n'
+            '    mkdir -p "$(dirname "$slot")"\n'
+            '    cp "$NLB_SAVE_LOAD_SEED" "$slot"\n'
+            "fi\n"
+            'exec "$NLB_SAVE_LOAD_PLAYER" "$@"\n',
+            encoding="utf-8")
+        launcher.chmod(0o700)
 
     # baseline: первая и вторая порции, экран вариантов, страница B
     baseline = write_route(args.output, "baseline",
