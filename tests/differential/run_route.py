@@ -740,6 +740,26 @@ def read_state_log(path):
     return records
 
 
+def safe_seed_path(home, relative):
+    """Путь назначения --seed-home строго внутри изолированного HOME.
+
+    Отклоняются абсолютные, drive-relative (C:foo), UNC и содержащие .. пути,
+    а также пути, после resolve() выходящие за HOME (symlink/junction).
+    """
+    relative = str(relative)
+    candidate = Path(relative)
+    drive_relative = len(relative) >= 2 and relative[1] == ":" and relative[0].isalpha()
+    if candidate.is_absolute() or candidate.drive or drive_relative or relative.startswith(("\\\\", "//")):
+        raise ValueError("--seed-home: абсолютный/UNC/drive-relative путь запрещён: " + relative)
+    if not candidate.parts or any(part in ("..", "") for part in candidate.parts):
+        raise ValueError("--seed-home: недопустимый относительный путь: " + relative)
+    home_resolved = Path(home).resolve()
+    destination = (home_resolved / candidate).resolve()
+    if destination != home_resolved and home_resolved not in destination.parents:
+        raise ValueError("--seed-home: путь выходит за изолированный HOME: " + relative)
+    return destination
+
+
 def run_nlbnavigator(args, route, output_dir):
     output_dir.mkdir(parents=True, exist_ok=True)
     script_path = output_dir / "route.script"
@@ -793,7 +813,7 @@ def run_nlbnavigator(args, route, output_dir):
         relative, _, source = spec.partition("=")
         if not relative or not source:
             raise ValueError("--seed-home ожидает REL=SRC: " + spec)
-        destination = isolated_home / relative
+        destination = safe_seed_path(isolated_home, relative)
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
     completed = subprocess.run(
@@ -928,10 +948,12 @@ def find_instead_window(pid):
     return max(candidates) if candidates else None
 
 
-def capture_root(path, window_bounds):
+def capture_root(path, window_bounds, pid=None):
     Image, _, _ = image_api()
     if IS_WINDOWS:
-        win_gui.capture(window_bounds[2:], path)
+        if pid is None:
+            raise RuntimeError("Windows-захват требует PID процесса")
+        win_gui.capture_client(window_bounds[1], pid, window_bounds[2:], path)
         return
     root_path = path.with_suffix(path.suffix + ".root.png")
     result = run_command(timeout_command(["import", "-window", "root", str(root_path)], 5), 7)
@@ -1425,18 +1447,40 @@ def stop_process_group(process, name, log_path, grace_seconds=1, kill_wait_secon
             print("[INSTEAD] cleanup {}: already exited with status {}".format(name, status), flush=True)
             return
         hwnd = getattr(process, "_nlb_hwnd", None)
-        if hwnd:
-            try:
-                win_gui.close_window(hwnd)
-                print("[INSTEAD] cleanup {}: WM_CLOSE отправлен".format(name), flush=True)
-            except Exception as error:
-                print("[INSTEAD] cleanup {}: WM_CLOSE не отправлен: {}".format(name, error), flush=True)
+        started = time.monotonic()
+        if hwnd and win_gui.is_window_alive(hwnd, process.pid):
+            if win_gui.close_window(hwnd):
+                print("[INSTEAD] cleanup {}: WM_CLOSE отправлен, ждём штатного завершения".format(name),
+                      flush=True)
+                try:
+                    status = process.wait(timeout=max(grace_seconds, 5))
+                    print("[INSTEAD] cleanup {}: завершился штатно status={} elapsed={:.2f}s".format(
+                        name, status, time.monotonic() - started), flush=True)
+                    return
+                except subprocess.TimeoutExpired:
+                    print("[INSTEAD] cleanup {}: штатное завершение не уложилось в {}с".format(
+                        name, max(grace_seconds, 5)), flush=True)
+            else:
+                print("[INSTEAD] cleanup {}: WM_CLOSE не удалось отправить".format(name), flush=True)
+        else:
+            print("[INSTEAD] cleanup {}: окно отсутствует или принадлежит другому PID".format(name),
+                  flush=True)
+        print("[INSTEAD] cleanup {}: terminate".format(name), flush=True)
         process.terminate()
         try:
-            process.wait(timeout=max(grace_seconds, 5) + kill_wait_seconds)
+            status = process.wait(timeout=kill_wait_seconds)
+            print("[INSTEAD] cleanup {}: завершён terminate status={} elapsed={:.2f}s".format(
+                name, status, time.monotonic() - started), flush=True)
+            return
         except subprocess.TimeoutExpired:
+            print("[INSTEAD] cleanup {}: terminate не сработал, kill".format(name), flush=True)
             process.kill()
-            process.wait(timeout=kill_wait_seconds)
+            try:
+                status = process.wait(timeout=kill_wait_seconds)
+                print("[INSTEAD] cleanup {}: завершён kill status={}".format(name, status), flush=True)
+            except subprocess.TimeoutExpired:
+                print("[INSTEAD] cleanup {}: процесс не завершился после kill".format(name), flush=True)
+                raise RuntimeError("INSTEAD {} не завершился после kill; очистка не удалась".format(name))
         return
     status = process.poll()
     if status is not None:
@@ -1614,7 +1658,7 @@ def run_instead(args, route, output_dir):
                 time.sleep(delay / 1000.0)
 
             path = screenshot_path(output_dir, step)
-            capture_root(path, window)
+            capture_root(path, window, player.pid)
             records.append({"id": step["id"], "screenshot": str(path)})
 
             after = read_instead_trace(trace_path)

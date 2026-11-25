@@ -12,6 +12,15 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 
 
+def prepare_output(path):
+    """Новый каталог результатов; существующий непустой отклоняется."""
+    path = Path(path)
+    if path.exists() and (not path.is_dir() or any(path.iterdir())):
+        raise SystemExit("каталог результатов уже существует: {}; укажите новый".format(path))
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 def run(command):
     print("+", " ".join(str(part) for part in command), flush=True)
     return subprocess.run(command, cwd=HERE.parents[1]).returncode
@@ -32,7 +41,7 @@ def main():
     args = parser.parse_args()
 
     route = str(args.route.resolve())
-    output = args.output.resolve()
+    output = prepare_output(args.output).resolve()
     instead_dir = output / "instead"
     nlb_dir = output / "nlbnavigator"
     instead_dir.mkdir(parents=True, exist_ok=True)
