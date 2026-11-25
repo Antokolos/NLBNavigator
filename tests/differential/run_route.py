@@ -764,7 +764,7 @@ def run_nlbnavigator(args, route, output_dir):
         "--script", str(script_path.resolve()),
         "--state-log", str(state_log_path.resolve()),
         "--state-vars", "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone",
-    ]
+    ] + list(args.player_arg or [])
     # Свой HOME на каждый прогон, как у INSTEAD: nlb_sdl хранит в ~/.nlbnavigator сохранения,
     # settings.ini и достижения, а язык из settings.ini важнее --lang. Без изоляции прогоны (и
     # маршруты одного CI job) влияли бы друг на друга, а EN-маршрут мог пойти на русском.
@@ -789,6 +789,13 @@ def run_nlbnavigator(args, route, output_dir):
         environment["APPDATA"] = str(appdata.resolve())
         environment["LOCALAPPDATA"] = str(localappdata.resolve())
     environment["SDL_AUDIODRIVER"] = "dummy"
+    for spec in args.seed_home or []:
+        relative, _, source = spec.partition("=")
+        if not relative or not source:
+            raise ValueError("--seed-home ожидает REL=SRC: " + spec)
+        destination = isolated_home / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
     completed = subprocess.run(
         command, cwd=Path.cwd(), env=environment, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace",
@@ -1689,6 +1696,11 @@ def parse_args():
     parser.add_argument("--output")
     parser.add_argument("--check", action="store_true", help="Проверить маршрут без запуска движка")
     parser.add_argument("--player", help="Путь к nlb_sdl")
+    parser.add_argument("--player-arg", action="append", default=[],
+                        help="Дополнительный аргумент плеера (можно повторять)")
+    parser.add_argument("--seed-home", action="append", default=[],
+                        metavar="REL=SRC",
+                        help="Скопировать SRC в изолированный HOME по пути REL перед прогоном")
     parser.add_argument("--book", help="Каталог NLB-книги")
     parser.add_argument("--theme", help="Тема книги для NLBNavigator")
     parser.add_argument("--base-theme", help="Каталог базовой темы INSTEAD (theme.ini), общий для обоих runtime")

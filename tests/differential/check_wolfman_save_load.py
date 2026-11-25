@@ -60,6 +60,8 @@ def run_case(args, launcher, route, seed=None, empty=False):
         "--route", str(route), "--output", str(output), "--player", str(launcher),
         "--book", str(args.book), "--theme", str(args.theme), "--base-theme", str(args.base_theme),
     ]
+    if sys.platform == "win32" and seed:
+        command += ["--seed-home", ".nlbnavigator/wolfman.saves/slot1.sav=" + str(seed)]
     log = args.output / f"{route.stem}.log"
     with log.open("w", encoding="utf-8") as stream:
         result = subprocess.run(command, cwd=REPO, env=env, stdout=stream, stderr=subprocess.STDOUT)
@@ -120,9 +122,12 @@ def main():
     restart = write_route(args.output, "restart", route, [start, load] + replay)
     empty = write_route(args.output, "empty", route, [menu_step(start, "empty-slot", ["f9", 1], "F9")])
 
-    launcher = args.output / "nlb-sdl-with-save"
-    launcher.write_text(
-        """#!/bin/sh
+    if sys.platform == "win32":
+        launcher = args.player
+    else:
+        launcher = args.output / "nlb-sdl-with-save"
+        launcher.write_text(
+            """#!/bin/sh
 set -eu
 slot="$HOME/.nlbnavigator/wolfman.saves/slot1.sav"
 test ! -e "$slot"
@@ -132,8 +137,8 @@ if [ -n "$NLB_SAVE_LOAD_SEED" ]; then
 fi
 exec "$NLB_SAVE_LOAD_PLAYER" "$@"
 """, encoding="utf-8",
-    )
-    launcher.chmod(0o700)
+        )
+        launcher.chmod(0o700)
 
     output, reference = run_case(args, launcher, baseline)
     require(not (output / SLOT).exists(), "Baseline записал сохранение")

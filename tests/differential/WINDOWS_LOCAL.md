@@ -98,6 +98,20 @@ python tests/differential/local_route.py `
 Примечание: под Windows `python` должен иметь Pillow (нужен для скриншотов/сравнения). Подходит
 bundled Python DSH; системный Python 3.14 может не иметь Pillow.
 
+Проверка достижений и сохранения/загрузки на Windows использует не POSIX-лаунчер, а опции раннера
+`--player-arg` (например, `--player-arg=--platform --player-arg=log:...`) и `--seed-home`
+(копирование файла в изолированный HOME перед прогоном):
+
+```powershell
+python tests/differential/check_wolfman_achievement.py --player build-msys\nlb_sdl.exe `
+  --book D:\work\wolfman --theme test-data\instead-am_i_a_monster_vn\themes\default `
+  --base-theme test-data\instead\themes\default --output .tmp\achievement
+
+python tests/differential/check_wolfman_save_load.py --player build-msys\nlb_sdl.exe `
+  --book D:\work\wolfman --theme test-data\instead-am_i_a_monster_vn\themes\default `
+  --base-theme test-data\instead\themes\default --output .tmp\save-load
+```
+
 ## 5. Изоляция данных
 
 - `nlb_sdl` на Windows берёт домашний каталог из `USERPROFILE`, поэтому раннер выставляет
