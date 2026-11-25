@@ -147,7 +147,7 @@ class CoverageReportTests(unittest.TestCase):
             result = subprocess.CompletedProcess([], 0, json.dumps(payload), "")
             with patch("coverage_report.subprocess.run", return_value=result) as run:
                 self.assertEqual(inventory(Path("/book"), tool), payload["pages"])
-            self.assertEqual(run.call_args.args[0][-2:], ["/book", "--json"])
+            self.assertEqual(run.call_args.args[0][-2:], [str(Path("/book")), "--json"])
 
     def test_missing_external_modules_fail_closed(self):
         with tempfile.TemporaryDirectory() as directory:

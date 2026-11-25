@@ -17,6 +17,10 @@ from urllib.parse import unquote
 
 from route_validation import expand_prefix, validate_route
 
+IS_WINDOWS = sys.platform == "win32"
+if IS_WINDOWS:
+    import win_gui
+
 
 SCREEN_RE = re.compile(
     r"\[screen\]\s+page='([^']*)'\s+image='([^']*)'\s+imageIsBackground=(true|false)"
@@ -760,7 +764,7 @@ def run_nlbnavigator(args, route, output_dir):
         "--script", str(script_path.resolve()),
         "--state-log", str(state_log_path.resolve()),
         "--state-vars", "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone",
-    ]
+    ] + list(args.player_arg or [])
     # Свой HOME на каждый прогон, как у INSTEAD: nlb_sdl хранит в ~/.nlbnavigator сохранения,
     # settings.ini и достижения, а язык из settings.ini важнее --lang. Без изоляции прогоны (и
     # маршруты одного CI job) влияли бы друг на друга, а EN-маршрут мог пойти на русском.
@@ -774,7 +778,24 @@ def run_nlbnavigator(args, route, output_dir):
     environment["XDG_CONFIG_HOME"] = str((isolated_home / ".config").resolve())
     environment["XDG_DATA_HOME"] = str((isolated_home / ".local/share").resolve())
     environment["XDG_CACHE_HOME"] = str((isolated_home / ".cache").resolve())
+    if IS_WINDOWS:
+        # nlb_sdl берёт домашний каталог из USERPROFILE (PlatformPaths::homeDir), а не HOME,
+        # поэтому без этих переменных сохранения/достижения ушли бы в реальный профиль.
+        appdata = isolated_home / "AppData" / "Roaming"
+        localappdata = isolated_home / "AppData" / "Local"
+        appdata.mkdir(parents=True, exist_ok=True)
+        localappdata.mkdir(parents=True, exist_ok=True)
+        environment["USERPROFILE"] = str(isolated_home.resolve())
+        environment["APPDATA"] = str(appdata.resolve())
+        environment["LOCALAPPDATA"] = str(localappdata.resolve())
     environment["SDL_AUDIODRIVER"] = "dummy"
+    for spec in args.seed_home or []:
+        relative, _, source = spec.partition("=")
+        if not relative or not source:
+            raise ValueError("--seed-home ожидает REL=SRC: " + spec)
+        destination = isolated_home / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
     completed = subprocess.run(
         command, cwd=Path.cwd(), env=environment, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace",
@@ -884,6 +905,12 @@ def timeout_command(command, seconds):
 
 
 def find_instead_window(pid):
+    if IS_WINDOWS:
+        found = win_gui.find_window(pid)
+        if not found:
+            return None
+        hwnd, bounds = found
+        return (bounds[2] * bounds[3], hwnd, bounds[0], bounds[1], bounds[2], bounds[3])
     result = run_command(["xdotool", "search", "--onlyvisible", "--pid", str(pid)], 3)
     candidates = []
     for window_id in result.stdout.split():
@@ -903,6 +930,9 @@ def find_instead_window(pid):
 
 def capture_root(path, window_bounds):
     Image, _, _ = image_api()
+    if IS_WINDOWS:
+        win_gui.capture(window_bounds[2:], path)
+        return
     root_path = path.with_suffix(path.suffix + ".root.png")
     result = run_command(timeout_command(["import", "-window", "root", str(root_path)], 5), 7)
     if result.returncode != 0 or not root_path.is_file() or root_path.stat().st_size == 0:
@@ -933,6 +963,9 @@ def execute_instead_action(action, window_bounds):
         return
     if kind == "key":
         key = str(action["key"])
+        if IS_WINDOWS:
+            win_gui.key(window_bounds[1], key)
+            return
         down = run_command(
             timeout_command(["xdotool", "keydown", "--delay", "0", key], 3), 5
         )
@@ -956,6 +989,11 @@ def execute_instead_action(action, window_bounds):
         if clicks < 0 or clicks > 100:
             raise ValueError("advance.clicks.instead должен быть от 0 до 100")
         for _ in range(clicks):
+            if IS_WINDOWS:
+                win_gui.focus(window_bounds[1])
+                win_gui.click(window_bounds[1], x, y)
+                time.sleep(0.12)
+                continue
             # Use absolute X11 screen coordinates; --window can hang with SDL/OpenGL windows.
             move = run_command(
                 timeout_command(["xdotool", "mousemove", str(x), str(y)], 3), 5
@@ -1023,10 +1061,14 @@ def instead_choose(action, current, window):
         return None, "choose: вариантов с текстом {!r} в INSTEAD {} (нужен ровно один)".format(action["text"], count)
     links = len(CHOICE_LINK.findall(current.get("rendered", "")))
     points = []
+    hwnd = window[1] if IS_WINDOWS else None
     for _ in range(2 * links + 2):
-        execute_instead_action({"type": "key", "key": "Down"}, None)
+        if IS_WINDOWS:
+            win_gui.key(hwnd, "down")
+        else:
+            execute_instead_action({"type": "key", "key": "Down"}, None)
         time.sleep(0.15)
-        point = pointer_location()
+        point = win_gui.cursor_client(hwnd) if IS_WINDOWS else pointer_location()
         if point is not None and all(abs(point[0] - x) > 3 or abs(point[1] - y) > 3 for x, y in points):
             points.append(point)
         if len(points) == links:
@@ -1034,6 +1076,9 @@ def instead_choose(action, current, window):
     if len(points) != links:
         return None, "choose: «Вниз» обошёл {} ссылок INSTEAD из {}".format(len(points), links)
     x, y = sorted(points, key=lambda point: (point[1], point[0]))[index]
+    if IS_WINDOWS:
+        win_gui.click(hwnd, x, y)
+        return index, None
     for command in (["xdotool", "mousemove", str(x), str(y)], ["xdotool", "click", "--delay", "0", "1"]):
         result = run_command(timeout_command(command, 3), 5)
         if result.returncode != 0:
@@ -1293,14 +1338,41 @@ def trace_state_signature(record):
     )
 
 
+def remove_tree(path):
+    """Удаление каталога, не заходя в junction-каталоги overlay (иначе можно стереть исходные данные)"""
+    path = Path(path)
+    if not path.exists():
+        return
+    if IS_WINDOWS:
+        for entry in list(path.iterdir()):
+            if entry.is_dir() and getattr(os.path, "isjunction", lambda _: False)(entry):
+                os.rmdir(entry)
+    shutil.rmtree(path)
+
+
 def create_instead_overlay(source_dir, overlay_dir):
     if overlay_dir.exists():
-        shutil.rmtree(overlay_dir)
+        remove_tree(overlay_dir)
     overlay_dir.mkdir(parents=True, exist_ok=True)
     for entry in source_dir.iterdir():
         if entry.name in (".git", "main.lua"):
             continue
-        (overlay_dir / entry.name).symlink_to(entry, target_is_directory=entry.is_dir())
+        target = overlay_dir / entry.name
+        if not entry.is_dir():
+            shutil.copy2(entry, target)
+            continue
+        try:
+            target.symlink_to(entry, target_is_directory=True)
+            continue
+        except OSError:
+            pass
+        if IS_WINDOWS:
+            # symlink на Windows часто запрещён без Developer Mode; junction не требует прав
+            result = subprocess.run(["cmd", "/c", "mklink", "/J", str(target), str(entry)],
+                                    capture_output=True, text=True)
+            if result.returncode == 0:
+                continue
+        shutil.copytree(entry, target)
 
     # Keep the original export untouched even if the CI job is interrupted.
     shutil.copy2(source_dir / "module_ru.lua", overlay_dir / "main.lua")
@@ -1317,6 +1389,25 @@ def stop_process_group(process, name, log_path, grace_seconds=1, kill_wait_secon
     """Stop a GUI process and its descendants without unbounded cleanup waits."""
     if process is None:
         print("[INSTEAD] cleanup {}: not started".format(name), flush=True)
+        return
+    if IS_WINDOWS:
+        status = process.poll()
+        if status is not None:
+            print("[INSTEAD] cleanup {}: already exited with status {}".format(name, status), flush=True)
+            return
+        hwnd = getattr(process, "_nlb_hwnd", None)
+        if hwnd:
+            try:
+                win_gui.close_window(hwnd)
+                print("[INSTEAD] cleanup {}: WM_CLOSE отправлен".format(name), flush=True)
+            except Exception as error:
+                print("[INSTEAD] cleanup {}: WM_CLOSE не отправлен: {}".format(name, error), flush=True)
+        process.terminate()
+        try:
+            process.wait(timeout=max(grace_seconds, 5) + kill_wait_seconds)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=kill_wait_seconds)
         return
     status = process.poll()
     if status is not None:
@@ -1394,8 +1485,15 @@ def run_instead(args, route, output_dir):
     env["SDL_AUDIODRIVER"] = "dummy"
     env["NLB_TEST_TRACE"] = str(trace_path)
     env["NLB_TEST_TRACE_ADAPTER"] = str(adapter)
+    if IS_WINDOWS:
+        env["USERPROFILE"] = str(isolated_home)
+        env["APPDATA"] = str(isolated_home / "AppData" / "Roaming")
+        env["LOCALAPPDATA"] = str(isolated_home / "AppData" / "Local")
+        (isolated_home / "AppData" / "Roaming").mkdir(parents=True, exist_ok=True)
+        (isolated_home / "AppData" / "Local").mkdir(parents=True, exist_ok=True)
 
-    binary = args.instead_binary or shutil.which("sdl-instead") or "/usr/games/sdl-instead"
+    binary = args.instead_binary or os.environ.get("NLB_INSTEAD") \
+        or shutil.which("sdl-instead") or shutil.which("sdl-instead.exe") or "/usr/games/sdl-instead"
     if not Path(binary).exists() and shutil.which(binary) is None:
         raise RuntimeError("Не найден исполняемый файл sdl-instead: " + binary)
 
@@ -1411,11 +1509,12 @@ def run_instead(args, route, output_dir):
     trace_seen = []
     cursor = 0
     try:
-        wm = subprocess.Popen(
-            ["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env,
-            start_new_session=True
-        )
-        time.sleep(1)
+        if not IS_WINDOWS:
+            wm = subprocess.Popen(
+                ["openbox", "--sm-disable"], stdout=openbox_log, stderr=subprocess.STDOUT, env=env,
+                start_new_session=True
+            )
+            time.sleep(1)
         player = subprocess.Popen(
             [
                 binary, "-nosound", "-noautosave",
@@ -1426,11 +1525,11 @@ def run_instead(args, route, output_dir):
             ],
             cwd=overlay, env=env,
             stdout=session_log, stderr=subprocess.STDOUT,
-            start_new_session=True
+            start_new_session=not IS_WINDOWS
         )
 
         window = None
-        for _ in range(30):
+        for _ in range(40 if IS_WINDOWS else 30):
             window = find_instead_window(player.pid)
             if window:
                 break
@@ -1440,12 +1539,17 @@ def run_instead(args, route, output_dir):
         if not window:
             raise RuntimeError("Не удалось найти окно INSTEAD")
         _, window_id, _, _, _, _ = window
+        player._nlb_hwnd = window_id
 
-        focus = run_command(
-            timeout_command(["xdotool", "windowfocus", "--sync", window_id], 3), 5
-        )
-        if focus.returncode != 0:
-            raise RuntimeError("Не удалось передать фокус окну INSTEAD")
+        if IS_WINDOWS:
+            if not win_gui.focus(window_id):
+                print("[INSTEAD] предупреждение: не удалось захватить фокус окна", flush=True)
+        else:
+            focus = run_command(
+                timeout_command(["xdotool", "windowfocus", "--sync", window_id], 3), 5
+            )
+            if focus.returncode != 0:
+                raise RuntimeError("Не удалось передать фокус окну INSTEAD")
 
         for step_index, step in enumerate(route["steps"], 1):
             step_started = time.monotonic()
@@ -1739,6 +1843,11 @@ def parse_args():
     parser.add_argument("--output")
     parser.add_argument("--check", action="store_true", help="Проверить маршрут без запуска движка")
     parser.add_argument("--player", help="Путь к nlb_sdl")
+    parser.add_argument("--player-arg", action="append", default=[],
+                        help="Дополнительный аргумент плеера (можно повторять)")
+    parser.add_argument("--seed-home", action="append", default=[],
+                        metavar="REL=SRC",
+                        help="Скопировать SRC в изолированный HOME по пути REL перед прогоном")
     parser.add_argument("--book", help="Каталог NLB-книги")
     parser.add_argument("--theme", help="Тема книги для NLBNavigator")
     parser.add_argument("--base-theme", help="Каталог базовой темы INSTEAD (theme.ini), общий для обоих runtime")
