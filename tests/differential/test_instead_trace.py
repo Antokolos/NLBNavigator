@@ -1,9 +1,4 @@
-"""Граничные случаи trace INSTEAD при save/load (issue #69).
-
-Проверяются именно отрицательные сценарии: изменение состояния при сохранении (в том числе
-с пустым rendered), отсутствие подтверждения команды, загрузка без свежей сцены, неверное
-состояние после загрузки и переинициализация трассы.
-"""
+"""Граничные случаи trace INSTEAD при save/load (issue #69)."""
 import sys
 import unittest
 from pathlib import Path
@@ -33,9 +28,13 @@ def load_evidence(seq, rendered="Загруженный текст", page="page-
     return record(seq, command="load D:/saves/save9", rendered=rendered, page=page, portion=portion)
 
 
+def load_command(seq):
+    """Запись команды load без сцены; в реальной трассе обычно совмещена со scene."""
+    return record(seq, command="load D:/saves/save9", kind="fmt", rendered="")
+
+
 class InsteadMenuKindTest(unittest.TestCase):
     def test_only_f8_is_save(self):
-        # F5 в INSTEAD 3.5.2 — look, а не сохранение (src/game.c, kbd_instead)
         self.assertEqual(run_route.instead_menu_kind(
             {"type": "menu", "instead": [{"key": "F8"}]}), "save")
         self.assertIsNone(run_route.instead_menu_kind(
@@ -53,16 +52,13 @@ class InsteadMenuKindTest(unittest.TestCase):
 
 
 class PickSaveTest(unittest.TestCase):
-    """Сохранение: нужна свежая запись save и неизменное semantic_state."""
-
     def previous(self):
         return run_route.semantic_state(record(1, rendered="старый текст"))
 
     def test_save_uses_confirmed_scene_when_only_empty_scene_appeared(self):
         after = [record(1, rendered="старый текст"), save_evidence(2), empty_scene(3)]
-        new_events = [save_evidence(2), empty_scene(3)]
         item, errors = run_route.pick_instead_state_record(
-            "menu", "save", after, new_events, self.previous())
+            "menu", "save", after, [save_evidence(2), empty_scene(3)], self.previous())
         self.assertEqual(item["seq"], 1)
         self.assertEqual(errors, [])
 
@@ -106,27 +102,34 @@ class PickSaveTest(unittest.TestCase):
 
 
 class PickLoadTest(unittest.TestCase):
-    """Загрузка: нужна свежая сцена с текстом после записи load."""
-
     def test_load_without_fresh_scene_rejected(self):
-        after = [load_evidence(2), record(1, rendered="старый текст")]
+        after = [load_command(2)]
         item, errors = run_route.pick_instead_state_record(
-            "menu", "load", after, [load_evidence(2)], None)
+            "menu", "load", after, [load_command(2)], None)
         self.assertIsNone(item)
         self.assertTrue(any("свежей сцены" in error for error in errors))
 
     def test_load_with_fresh_empty_rendered_rejected(self):
-        after = [load_evidence(2), empty_scene(3)]
+        after = [load_command(2), empty_scene(3)]
         item, errors = run_route.pick_instead_state_record(
-            "menu", "load", after, [load_evidence(2), empty_scene(3)], None)
+            "menu", "load", after, [load_command(2), empty_scene(3)], None)
         self.assertIsNone(item)
         self.assertTrue(any("свежей сцены" in error for error in errors))
 
     def test_load_with_fresh_scene_succeeds(self):
-        after = [load_evidence(2), record(3, rendered="загруженный текст", portion=1)]
+        after = [load_command(2), record(3, rendered="загруженный текст", portion=1)]
         item, errors = run_route.pick_instead_state_record(
-            "menu", "load", after, [load_evidence(2), record(3, rendered="загруженный текст", portion=1)], None)
+            "menu", "load", after,
+            [load_command(2), record(3, rendered="загруженный текст", portion=1)], None)
         self.assertEqual(item["seq"], 3)
+        self.assertEqual(errors, [])
+
+    def test_load_record_that_is_scene_with_text_accepted(self):
+        # Реальная трасса INSTEAD: команда load и сцена — одна запись scene.
+        after = [load_evidence(2)]
+        item, errors = run_route.pick_instead_state_record(
+            "menu", "load", after, [load_evidence(2)], None)
+        self.assertEqual(item["seq"], 2)
         self.assertEqual(errors, [])
 
     def test_load_without_evidence_rejected(self):
@@ -137,17 +140,19 @@ class PickLoadTest(unittest.TestCase):
         self.assertTrue(any("не подтверждено" in error for error in errors))
 
     def test_load_with_wrong_expected_state_rejected(self):
-        after = [load_evidence(2), record(3, rendered="загруженный текст", page="page-B")]
+        after = [load_command(2), record(3, rendered="загруженный текст", page="page-B")]
         item, errors = run_route.pick_instead_state_record(
-            "menu", "load", after, [load_evidence(2), record(3, rendered="загруженный текст", page="page-B")],
+            "menu", "load", after,
+            [load_command(2), record(3, rendered="загруженный текст", page="page-B")],
             None, expected={"page_id": "page-A"})
         self.assertEqual(item["seq"], 3)
         self.assertTrue(any("ожидалась" in error for error in errors))
 
     def test_load_with_correct_expected_state(self):
-        after = [load_evidence(2), record(3, rendered="загруженный текст", page="page-A", portion=1)]
+        after = [load_command(2), record(3, rendered="загруженный текст", page="page-A", portion=1)]
         item, errors = run_route.pick_instead_state_record(
-            "menu", "load", after, [load_evidence(2), record(3, rendered="загруженный текст", page="page-A", portion=1)],
+            "menu", "load", after,
+            [load_command(2), record(3, rendered="загруженный текст", page="page-A", portion=1)],
             None, expected={"page_id": "page-A", "portion_index": 1})
         self.assertEqual(item["seq"], 3)
         self.assertEqual(errors, [])
