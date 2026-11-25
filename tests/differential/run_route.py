@@ -748,7 +748,8 @@ def safe_seed_path(home, relative):
     """
     relative = str(relative)
     candidate = Path(relative)
-    if candidate.is_absolute() or candidate.drive or relative.startswith(("\\\\", "//")):
+    drive_relative = len(relative) >= 2 and relative[1] == ":" and relative[0].isalpha()
+    if candidate.is_absolute() or candidate.drive or drive_relative or relative.startswith(("\\\\", "//")):
         raise ValueError("--seed-home: абсолютный/UNC/drive-relative путь запрещён: " + relative)
     if not candidate.parts or any(part in ("..", "") for part in candidate.parts):
         raise ValueError("--seed-home: недопустимый относительный путь: " + relative)
