@@ -1,0 +1,21 @@
+{
+  "pr": 72,
+  "issue": 68,
+  "tested_head": "66d500c16602f33842f1d25c192b6018b11ffb4c",
+  "base_main": "a46dfc119c50bf807ea436253f07ea8d6cc63110",
+  "environment": {
+    "os": "Windows 10.0.26300 x64",
+    "msvc": "19.44",
+    "cmake": "3.31.6",
+    "sdl3": "3.4.20/3.4.8/3.2.2/3.2.4",
+    "python": "3.12.14 bundled",
+    "game": "wolfman 888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead_export": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "results": {
+    "build": "nlb_sdl MSVC/SDL3 OK",
+    "portion_scenarios": "baseline/first/second/middle/last/continuation/old-save exit 0",
+    "python_suite": "117 OK"
+  }
+}
