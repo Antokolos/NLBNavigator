@@ -1,0 +1,5 @@
+﻿[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: WM_CLOSE отправлен, ждём штатного завершения
+[INSTEAD] cleanup player: завершился штатно status=0 elapsed=0.14s
+[INSTEAD] cleanup openbox: not started
+[INSTEAD] cleanup: process logs closed

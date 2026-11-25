@@ -1,0 +1,23 @@
+{
+  "pr": 75,
+  "tested_head": "9fe691ab64ce4e79a8c71322d8848b2867d8b50b",
+  "base_main": "a46dfc119c50bf807ea436253f07ea8d6cc63110",
+  "ci_run": "45641737263",
+  "environment": {
+    "os": "Windows 10.0.26300 x64",
+    "python": "3.12.14 bundled (Pillow 12.3.0)",
+    "instead": "3.5.2, real SDL2 2.32.10 (MinGW)",
+    "game": "wolfman 888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead_export": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "results": {
+    "python_suite": "137 OK",
+    "pairs": "opening/hospital exit 0",
+    "achievement": "exit 0",
+    "save_load": "exit 0; empty exit 1",
+    "graceful_shutdown": "status=0, 0.11s",
+    "capture_negative": "4 tests OK",
+    "ci": "success"
+  }
+}

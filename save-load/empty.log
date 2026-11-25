@@ -1,0 +1,6 @@
+[ERROR] nlb_sdl: empty-slot: не выполнено: menu:1
+Оформление: тема игры: D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn\themes\default; базовая тема: D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead\themes\default; фон страниц STANDARD (gfx/bg.jpg): D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn\themes\default\gfx\bg.jpg; scr.gfx.bg: нет; шрифт текста: D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn\themes\default\fonts\sans.ttf; щелчок (snd.click): D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead\themes\default\click.wav
+key:f9
+[НЕ ВЫПОЛНЕНО] menu:1
+settle:1000
+shot:D:\deepseek-harness\default-workspace\.tmp\hard-saveload\empty\empty-slot.png
