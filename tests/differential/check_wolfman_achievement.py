@@ -78,6 +78,13 @@ def run_case(args, launcher, name, route, seed=None, timeout=0):
         "--book", str(args.book), "--theme", str(args.theme), "--base-theme", str(args.base_theme),
         "--timeout", str(timeout or default_case_timeout(len(route["steps"]))),
     ]
+    if sys.platform == "win32":
+        # POSIX-лаунчер на Windows не исполняется: платформенный лог и засев хранилища передаются
+        # раннеру напрямую (--player-arg/--seed-home), он сам изолирует USERPROFILE.
+        command += ["--player-arg=--platform",
+                    "--player-arg=log:" + str(output / "platform.log")]
+        if seed:
+            command += ["--seed-home", ".nlbnavigator/{0}={1}".format(filename, seed)]
     with log.open("w", encoding="utf-8") as stream:
         result = subprocess.run(command, cwd=REPO, env=environment, stdout=stream, stderr=subprocess.STDOUT)
     print(f"{name}: runner exit={result.returncode}, журнал {log}", flush=True)
@@ -136,9 +143,12 @@ def main():
 
     # Раннер создаёт новый HOME/XDG для каждого процесса. Подкладываем только целевые строки
     # из реального файла прогресса после создания HOME, до запуска настоящего nlb_sdl.
-    launcher = args.output / "nlb-sdl-with-platform-log"
-    launcher.write_text(
-        """#!/bin/sh
+    if sys.platform == "win32":
+        launcher = args.player
+    else:
+        launcher = args.output / "nlb-sdl-with-platform-log"
+        launcher.write_text(
+            """#!/bin/sh
 set -eu
 store="$HOME/.nlbnavigator/$NLB_ACHIEVEMENT_FILENAME"
 test ! -e "$store"
@@ -148,8 +158,8 @@ if [ -n "$NLB_ACHIEVEMENT_SEED" ]; then
 fi
 exec "$NLB_ACHIEVEMENT_PLAYER" "$@" --platform "log:$NLB_ACHIEVEMENT_PLATFORM_LOG"
 """, encoding="utf-8",
-    )
-    launcher.chmod(0o700)
+        )
+        launcher.chmod(0o700)
     award_timeout = args.case_timeout or default_case_timeout(full_steps)
     probe_timeout = args.case_timeout or default_case_timeout(probe_steps)
 
