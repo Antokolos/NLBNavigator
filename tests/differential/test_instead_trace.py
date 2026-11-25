@@ -1,6 +1,7 @@
 """Граничные случаи trace INSTEAD при save/load (issue #69)."""
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -156,6 +157,51 @@ class PickLoadTest(unittest.TestCase):
             None, expected={"page_id": "page-A", "portion_index": 1})
         self.assertEqual(item["seq"], 3)
         self.assertEqual(errors, [])
+
+
+class ExpectedCommandTest(unittest.TestCase):
+    def test_save_confirmed_only_by_load_rejected(self):
+        item, errors = run_route.pick_instead_state_record(
+            "menu", "save", [load_evidence(2)], [load_evidence(2)],
+            run_route.semantic_state(record(1, rendered="старый текст")))
+        self.assertIsNone(item)
+        self.assertTrue(any("save" in error for error in errors))
+
+    def test_load_confirmed_only_by_save_rejected(self):
+        item, errors = run_route.pick_instead_state_record(
+            "menu", "load", [save_evidence(2), record(3)], [save_evidence(2), record(3)], None)
+        self.assertIsNone(item)
+        self.assertTrue(any("load" in error for error in errors))
+
+
+class FullIdentityTest(unittest.TestCase):
+    def test_changed_variable_in_old_record_is_detected(self):
+        before = run_route.trace_identity([record(1, wolfiness=0)])
+        after = run_route.trace_identity([record(1, wolfiness=2)])
+        self.assertTrue(run_route.trace_reinitialized(before, after))
+
+    def test_changed_screen_kind_is_detected(self):
+        before = run_route.trace_identity([record(1)])
+        after = run_route.trace_identity([record(1)])
+        after[0] = tuple(sorted((k, "choices" if k == "screen_kind" else v) for k, v in after[0]))
+        self.assertTrue(run_route.trace_reinitialized(before, after))
+
+    def test_duplicate_and_non_monotonic_seq_rejected(self):
+        self.assertFalse(run_route.trace_sequence_valid([record(1), record(1)]))
+        self.assertFalse(run_route.trace_sequence_valid([record(2), record(1)]))
+        self.assertTrue(run_route.trace_sequence_valid([record(1), record(2)]))
+
+    def test_rewrite_during_wait_detected(self):
+        before = run_route.trace_identity([record(1, rendered="старый")])
+        self.assertTrue(run_route.wait_identity_invalid(before, [load_evidence(1), record(2)]))
+
+    def test_wait_for_load_not_satisfied_by_earlier_scene(self):
+        earlier = [record(1, rendered="промежуточная сцена")]
+        loaded = [record(1, rendered="промежуточная сцена"), load_evidence(2)]
+        with mock.patch.object(run_route, "read_instead_trace", side_effect=[earlier, loaded]):
+            result = run_route.wait_instead_fresh_scene(Path("trace.tsv"), 0,
+                                                         expected_command="load", timeout=2)
+        self.assertEqual(result, loaded)
 
 
 class TraceLifecycleTest(unittest.TestCase):

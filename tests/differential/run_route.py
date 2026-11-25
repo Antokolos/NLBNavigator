@@ -1179,6 +1179,23 @@ def trace_reinitialized(previous_identity, identity):
     return len(identity) < len(previous_identity) or identity[:len(previous_identity)] != previous_identity
 
 
+def trace_identity(records):
+    """Полное нормализованное содержимое записей трассы (все поля, не только ключевые)."""
+    return [tuple(sorted((str(key), str(value)) for key, value in record.items()))
+            for record in records]
+
+
+def wait_identity_invalid(previous, records):
+    return (trace_reinitialized(previous, trace_identity(records))
+            or not trace_sequence_valid(records))
+
+
+def trace_sequence_valid(records):
+    """seq строго возрастает и не повторяется."""
+    seqs = [record["seq"] for record in records]
+    return all(left < right for left, right in zip(seqs, seqs[1:]))
+
+
 def semantic_state(record):
     """Значимые поля состояния без rendered: страница, экран, порция, переменные"""
     if not record:
@@ -1219,8 +1236,10 @@ def pick_instead_state_record(action_type, menu_kind, after, new_events, previou
     """
     if trace_reset:
         return None, ["трасса INSTEAD переинициализирована: префикс записей не совпал"]
+    expected_command = menu_kind if menu_kind in ("save", "load") else None
     evidence = [record for record in new_events
-                if str(record.get("command", "")).split(" ", 1)[0] in ("save", "load")]
+                if expected_command is not None
+                and str(record.get("command", "")).split(" ", 1)[0] == expected_command]
     if menu_kind in ("save", "load") and not evidence:
         return None, ["нет свежей записи команды {} — выполнение не подтверждено".format(menu_kind)]
     scene_new = [record for record in new_events if record["kind"] == "scene"]
@@ -1299,14 +1318,24 @@ def read_instead_trace(path):
     return records
 
 
-def wait_instead_fresh_scene(trace_path, cursor, timeout=3.0):
-    """Ждёт в трассе новую сцену с текстом после загрузки: INSTEAD перерисовывает сцену не сразу"""
+def wait_instead_fresh_scene(trace_path, cursor, expected_command=None, timeout=3.0):
+    """Ждёт сцену с текстом после ожидаемой команды (для load — именно load)."""
     deadline = time.monotonic() + timeout
     records = read_instead_trace(trace_path)
     while True:
-        fresh = [record for record in records
-                 if record["seq"] > cursor and record["kind"] == "scene"
-                 and normalize_story_text(record.get("rendered", ""))]
+        load_seqs = [record["seq"] for record in records
+                     if expected_command is not None
+                     and str(record.get("command", "")).split(" ", 1)[0] == expected_command]
+        fresh = []
+        if expected_command is None:
+            fresh = [record for record in records
+                     if record["seq"] > cursor and record["kind"] == "scene"
+                     and normalize_story_text(record.get("rendered", ""))]
+        elif load_seqs:
+            load_seq = max(load_seqs)
+            fresh = [record for record in records
+                     if record["seq"] >= load_seq and record["kind"] == "scene"
+                     and normalize_story_text(record.get("rendered", ""))]
         if fresh or time.monotonic() >= deadline:
             return records
         time.sleep(0.15)
@@ -1590,23 +1619,26 @@ def run_instead(args, route, output_dir):
 
             after = read_instead_trace(trace_path)
             trace_max = max((record["seq"] for record in after), default=0)
-            identity = [(record["seq"], record["kind"], record.get("command", ""),
-                         record.get("page_id", ""), record.get("rendered", ""),
-                         record.get("portion_index", 0)) for record in after]
-            # Переинициализация трассы: она либо стала короче, либо изменился уже виденный префикс.
-            # Одного trace_max < cursor мало: перезаписанная трасса может успеть догнать старый seq.
-            trace_reset = trace_reinitialized(trace_seen, identity)
+            identity = trace_identity(after)
+            if not trace_sequence_valid(after):
+                trace_errors.append("{}: seq трассы не строго возрастает".format(step["id"]))
+                trace_reset = True
+            else:
+                trace_reset = trace_reinitialized(trace_seen, identity)
             if trace_reset:
                 trace_errors.append(
                     "{}: трасса INSTEAD переинициализирована (префикс записей изменился)".format(step["id"]))
                 cursor = trace_max
             menu_kind = instead_menu_kind(step["action"])
             if menu_kind == "load" and not trace_reset:
-                after = wait_instead_fresh_scene(trace_path, cursor)
+                after = wait_instead_fresh_scene(trace_path, cursor, expected_command="load")
                 trace_max = max((record["seq"] for record in after), default=trace_max)
-                identity = [(record["seq"], record["kind"], record.get("command", ""),
-                             record.get("page_id", ""), record.get("rendered", ""),
-                             record.get("portion_index", 0)) for record in after]
+                identity = trace_identity(after)
+                if wait_identity_invalid(trace_seen, after):
+                    trace_errors.append(
+                        "{}: трасса переинициализирована во время ожидания загрузки".format(step["id"]))
+                    trace_reset = True
+                    cursor = trace_max
             trace_seen = identity
             new_events = [record for record in after if record["seq"] > cursor]
             # choose — как select_choice с найденным номером (act NN)
