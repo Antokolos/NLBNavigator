@@ -1241,7 +1241,7 @@ def pick_instead_state_record(action_type, menu_kind, after, new_events, previou
     if menu_kind == "load":
         load_seq = max(record["seq"] for record in evidence)
         fresh = [record for record in after
-                 if record["kind"] == "scene" and record["seq"] > load_seq
+                 if record["kind"] == "scene" and record["seq"] >= load_seq
                  and normalize_story_text(record.get("rendered", ""))]
         if not fresh:
             return None, ["после загрузки нет свежей сцены с текстом; старый trace не подходит"]
@@ -1471,6 +1471,8 @@ def run_instead(args, route, output_dir):
         path.mkdir(parents=True, exist_ok=True)
     for name in (".config", ".local/share", ".cache"):
         (isolated_home / name).mkdir(parents=True, exist_ok=True)
+    if args.instead_seed_appdata:
+        shutil.copytree(args.instead_seed_appdata, isolated_appdata, dirs_exist_ok=True)
 
     adapter = Path(__file__).resolve().with_name("instead_trace.lua")
     create_instead_overlay(game, overlay)
@@ -1639,10 +1641,11 @@ def run_instead(args, route, output_dir):
                     all_scene = [event for event in after if event["kind"] == "scene"]
                     state_record = all_scene[-1] if all_scene else None
 
-            if state_record is None and not pick_errors:
-                trace_errors.append("{}: после действия нет новой сцены; inv/way и старый текст не подходят".format(
-                    step["id"]
-                ))
+            if state_record is None:
+                if not pick_errors:
+                    trace_errors.append("{}: после действия нет новой сцены; inv/way и старый текст не подходят".format(
+                        step["id"]
+                    ))
             else:
                 signature = trace_state_signature(state_record)
                 if step["action"]["type"] in ("key", "click", "advance", "select_choice") and previous_state is not None:
@@ -1853,6 +1856,8 @@ def parse_args():
     parser.add_argument("--base-theme", help="Каталог базовой темы INSTEAD (theme.ini), общий для обоих runtime")
     parser.add_argument("--game", help="Каталог экспорта INSTEAD")
     parser.add_argument("--instead-binary", help="Путь к sdl-instead")
+    parser.add_argument("--instead-seed-appdata", type=Path, default=None,
+                        help="Скопировать каталог appdata (сохранения INSTEAD) перед прогоном")
     parser.add_argument("--timeout", type=int, default=90)
     return parser.parse_args()
 
@@ -1892,5 +1897,8 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except Exception as error:
+        if os.environ.get("NLB_DEBUG_TRACEBACK"):
+            import traceback
+            traceback.print_exc()
         print("[ERROR] {}".format(error), file=sys.stderr)
         sys.exit(1)
