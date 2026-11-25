@@ -11,6 +11,44 @@ from pathlib import Path
 user32 = ctypes.WinDLL("user32", use_last_error=True)
 kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
 
+# Явные сигнатуры: на x64 HWND/WPARAM/LPARAM — 64-битные, без argtypes ctypes
+# может обрезать дескрипторы и координаты.
+HWND = wintypes.HWND
+UINT = wintypes.UINT
+BOOL = wintypes.BOOL
+DWORD = wintypes.DWORD
+LONG = wintypes.LONG
+WPARAM = ctypes.c_size_t
+LPARAM = ctypes.c_ssize_t
+for _name, _result, _args in [
+    ("GetWindowThreadProcessId", DWORD, [HWND, ctypes.POINTER(DWORD)]),
+    ("IsWindow", BOOL, [HWND]),
+    ("IsWindowVisible", BOOL, [HWND]),
+    ("IsIconic", BOOL, [HWND]),
+    ("GetClientRect", BOOL, [HWND, ctypes.POINTER(wintypes.RECT)]),
+    ("GetWindowRect", BOOL, [HWND, ctypes.POINTER(wintypes.RECT)]),
+    ("ClientToScreen", BOOL, [HWND, ctypes.POINTER(wintypes.POINT)]),
+    ("ScreenToClient", BOOL, [HWND, ctypes.POINTER(wintypes.POINT)]),
+    ("GetForegroundWindow", HWND, []),
+    ("SetForegroundWindow", BOOL, [HWND]),
+    ("ShowWindow", BOOL, [HWND, ctypes.c_int]),
+    ("AllowSetForegroundWindow", BOOL, [DWORD]),
+    ("AttachThreadInput", BOOL, [DWORD, DWORD, BOOL]),
+    ("PostMessageW", BOOL, [HWND, UINT, WPARAM, LPARAM]),
+    ("GetWindowTextLengthW", ctypes.c_int, [HWND]),
+    ("GetWindowTextW", ctypes.c_int, [HWND, wintypes.LPWSTR, ctypes.c_int]),
+    ("MapVirtualKeyW", UINT, [UINT, UINT]),
+    ("GetCursorPos", BOOL, [ctypes.POINTER(wintypes.POINT)]),
+    ("WindowFromPoint", HWND, [wintypes.POINT]),
+    ("GetAncestor", HWND, [HWND, UINT]),
+]:
+    _func = getattr(user32, _name)
+    _func.restype = _result
+    _func.argtypes = _args
+
+kernel32.GetCurrentThreadId.restype = DWORD
+kernel32.GetCurrentThreadId.argtypes = []
+
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(2)
 except Exception:
@@ -104,14 +142,14 @@ def focus(hwnd):
     user32.ShowWindow(hwnd, 9)  # SW_RESTORE
     user32.AllowSetForegroundWindow(0xFFFFFFFF)  # ASFW_ANY
     if user32.SetForegroundWindow(hwnd):
-        return True
+        return user32.GetForegroundWindow() == hwnd
     # Иногда Windows запрещает смену фокуса: присоединяем ввод к потоку окна
     foreground = user32.GetForegroundWindow()
     current = kernel32.GetCurrentThreadId()
     target = user32.GetWindowThreadProcessId(foreground, None)
     attached = bool(user32.AttachThreadInput(current, target, True))
     try:
-        return bool(user32.SetForegroundWindow(hwnd))
+        return bool(user32.SetForegroundWindow(hwnd)) and user32.GetForegroundWindow() == hwnd
     finally:
         if attached:
             user32.AttachThreadInput(current, target, False)
@@ -136,21 +174,23 @@ def key_lparams(vk, scan):
 def key(hwnd, name):
     vk = key_code(name)
     scan = user32.MapVirtualKeyW(vk, 0)
-    focus(hwnd)
-    # Сообщения окну: SDL2 обрабатывает WM_KEYDOWN/WM_KEYUP в своём оконной процедуре;
-    # SendInput зависит от фокуса, который Windows не всегда отдаёт фоновому процессу.
+    if not focus(hwnd):
+        raise RuntimeError("не удалось передать фокус окну для клавиши " + name)
     down, up = key_lparams(vk, scan)
-    user32.PostMessageW(hwnd, 0x0100, vk, down)  # WM_KEYDOWN
+    if not user32.PostMessageW(hwnd, 0x0100, vk, down):  # WM_KEYDOWN
+        raise RuntimeError("PostMessageW WM_KEYDOWN не доставлен: " + name)
     time.sleep(0.05)
-    user32.PostMessageW(hwnd, 0x0101, vk, up)    # WM_KEYUP
+    if not user32.PostMessageW(hwnd, 0x0101, vk, up):    # WM_KEYUP
+        raise RuntimeError("PostMessageW WM_KEYUP не доставлен: " + name)
 
 
 def click(hwnd, x, y):
     lparam = click_lparam(x, y)
-    user32.PostMessageW(hwnd, 0x0200, 0, lparam)        # WM_MOUSEMOVE
-    user32.PostMessageW(hwnd, 0x0201, 0x0001, lparam)   # WM_LBUTTONDOWN
-    time.sleep(0.05)
-    user32.PostMessageW(hwnd, 0x0202, 0, lparam)        # WM_LBUTTONUP
+    for message, wparam in ((0x0200, 0), (0x0201, 0x0001), (0x0202, 0)):
+        if not user32.PostMessageW(hwnd, message, wparam, lparam):
+            raise RuntimeError("PostMessageW мыши не доставлен: 0x{:04x}".format(message))
+        if message == 0x0201:
+            time.sleep(0.05)
 
 
 def cursor_client(hwnd):
@@ -164,8 +204,83 @@ def cursor_client(hwnd):
 
 
 def close_window(hwnd):
-    """Штатное закрытие окна (WM_CLOSE): даёт игре сохранить слоты и сбросить trace."""
-    user32.PostMessageW(hwnd, 0x0010, 0, 0)
+    """Штатное закрытие окна (WM_CLOSE). True — сообщение поставлено в очередь."""
+    return bool(user32.PostMessageW(hwnd, 0x0010, 0, 0))
+
+
+def is_window_alive(hwnd, pid):
+    if not hwnd or not user32.IsWindow(hwnd):
+        return False
+    owner = DWORD()
+    user32.GetWindowThreadProcessId(hwnd, ctypes.byref(owner))
+    return owner.value == pid and bool(user32.IsWindowVisible(hwnd))
+
+
+class CaptureError(RuntimeError):
+    """Снимок нельзя считать кадром именно этого окна."""
+
+
+def check_capture_state(state, pid, bounds):
+    """Ошибки состояния перед снимком; state — результат window_state()."""
+    errors = []
+    if not state.get("exists"):
+        errors.append("HWND не существует")
+    if state.get("pid") != pid:
+        errors.append("окно принадлежит PID {}, ожидался {}".format(state.get("pid"), pid))
+    if not state.get("visible"):
+        errors.append("окно невидимо")
+    if state.get("iconic"):
+        errors.append("окно свёрнуто")
+    if state.get("bounds") != tuple(bounds):
+        errors.append("геометрия клиента изменилась: {} != {}".format(state.get("bounds"), tuple(bounds)))
+    if state.get("covered"):
+        errors.append("окно перекрыто другим окном")
+    if not state.get("foreground"):
+        errors.append("окно не на переднем плане")
+    return errors
+
+
+def _root(hwnd):
+    return user32.GetAncestor(hwnd, 2) or hwnd  # GA_ROOT
+
+
+def window_state(hwnd, pid):
+    """Снимок состояния окна для проверки достоверности кадра."""
+    state = {"exists": bool(user32.IsWindow(hwnd)), "pid": None, "visible": False,
+             "iconic": False, "bounds": None, "covered": None, "foreground": False}
+    if not state["exists"]:
+        return state
+    owner = DWORD()
+    user32.GetWindowThreadProcessId(hwnd, ctypes.byref(owner))
+    state["pid"] = owner.value
+    state["visible"] = bool(user32.IsWindowVisible(hwnd))
+    state["iconic"] = bool(user32.IsIconic(hwnd))
+    state["bounds"] = _client_bounds(hwnd)
+    state["foreground"] = user32.GetForegroundWindow() == hwnd
+    if state["bounds"]:
+        x, y, width, height = state["bounds"]
+        covered = False
+        for ratio_x, ratio_y in ((0.5, 0.5), (0.1, 0.1), (0.9, 0.1), (0.1, 0.9), (0.9, 0.9)):
+            point = wintypes.POINT(x + int(width * ratio_x), y + int(height * ratio_y))
+            under = user32.WindowFromPoint(point)
+            if under and _root(under) != hwnd:
+                covered = True
+                break
+        state["covered"] = covered
+    return state
+
+
+def capture_client(hwnd, pid, bounds, path):
+    """Снимок клиентской области с проверкой, что это действительно окно pid."""
+    errors = check_capture_state(window_state(hwnd, pid), pid, bounds)
+    if errors:
+        raise CaptureError("недостоверный кадр: " + "; ".join(errors))
+    capture(bounds, path)
+    # После захвата повторно проверяем окно: оно могло закрыться/перекрыться.
+    errors = check_capture_state(window_state(hwnd, pid), pid, bounds)
+    if errors:
+        Path(path).unlink(missing_ok=True)
+        raise CaptureError("кадр отброшен после захвата: " + "; ".join(errors))
 
 
 def capture(bounds, path):
