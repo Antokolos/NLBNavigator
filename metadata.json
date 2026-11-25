@@ -1,0 +1,21 @@
+{
+  "pr": 73,
+  "issue": 69,
+  "tested_head": "a14d02f74705259a76375896e2f7a1f5be47a443",
+  "base_main": "a46dfc119c50bf807ea436253f07ea8d6cc63110",
+  "environment": {
+    "os": "Windows 10.0.26300 x64",
+    "python": "3.12.14 bundled (Pillow 12.3.0)",
+    "instead": "3.5.2, real SDL2 2.32.10 (MinGW)",
+    "game": "wolfman 888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead_export": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "results": {
+    "trace_tests": "21 OK",
+    "python_suite": "138 OK",
+    "b5_b6": "exit 0",
+    "matrix": "22/22 exit 0",
+    "ci": "success"
+  }
+}

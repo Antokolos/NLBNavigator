@@ -1,0 +1,3091 @@
++ C:\Users\admin\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe D:\deepseek-harness\default-workspace\.tmp\wt73\tests\differential\run_route.py --runtime instead --route D:\deepseek-harness\default-workspace\.tmp\wt73\tests\differential\routes\wolfman-opening.json --output D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\instead --game D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn --base-theme D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead\themes\default --instead-binary D:\deepseek-harness\default-workspace\.tools\instead\build-mingw\src\sdl-instead.exe
+[INSTEAD] starting step 1/7: title
+[INSTEAD] completed 1/7: title (2.3s, page=f7cb8bed-47a9-4ce2-b713-c9b53571c93f, portion=0/0, screen=page, vars=wolfiness=0,hp=0,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 2/7: opening
+[INSTEAD] completed 2/7: opening (2.24s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=0/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 3/7: opening-next-portion
+[INSTEAD] completed 3/7: opening-next-portion (2.34s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=1/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 4/7: opening-choices
+[INSTEAD] completed 4/7: opening-choices (3.72s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=9/10, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 5/7: jump-over-fence
+[INSTEAD] completed 5/7: jump-over-fence (2.84s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=0/5, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 6/7: robbery-final-portion
+[INSTEAD] completed 6/7: robbery-final-portion (2.84s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=4/5, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 7/7: robbery-choices
+[INSTEAD] completed 7/7: robbery-choices (2.33s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=4/5, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: WM_CLOSE отправлен
+[INSTEAD] cleanup openbox: not started
+[INSTEAD] cleanup: process logs closed
+{
+  "runtime": "instead",
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\00-title.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 53004,
+      "state_trace": {
+        "seq": 4,
+        "kind": "scene",
+        "command": "save D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\instead-appdata/saves/instead-game-overlay/autosave",
+        "arguments": "",
+        "rendered": "",
+        "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "location_id": "v_f7cb8bed_47a9_4ce2_b713_c9b53571c93f",
+        "room_id": "v_f7cb8bed_47a9_4ce2_b713_c9b53571c93f",
+        "screen_kind": "page",
+        "page_name": "Am I a Monster?",
+        "background": "images/title.jpg",
+        "portion_index": 0,
+        "portion_count": 0,
+        "more": false,
+        "room_text": "",
+        "action_text": "",
+        "objects_text": "",
+        "player_text": "",
+        "wolfiness": "0",
+        "hp": "0",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false",
+        "end_screen": false,
+        "step_id": "title",
+        "trace_count": 4,
+        "input_events": []
+      }
+    },
+    {
+      "id": "opening",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\01-opening.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 37134,
+      "changed_pixels_from_title": 2072782,
+      "state_trace": {
+        "seq": 6,
+        "kind": "scene",
+        "command": "user_kbd",
+        "arguments": "",
+        "rendered": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+        "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+        "screen_kind": "page",
+        "page_name": "Am I a Monster?",
+        "background": "images/1.jpg",
+        "portion_index": 0,
+        "portion_count": 10,
+        "more": true,
+        "room_text": "",
+        "action_text": "",
+        "objects_text": "",
+        "player_text": "",
+        "wolfiness": "0",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false",
+        "end_screen": false,
+        "step_id": "opening",
+        "trace_count": 12,
+        "input_events": [
+          {
+            "seq": 5,
+            "kind": "fmt",
+            "command": "user_kbd",
+            "arguments": "",
+            "rendered": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души. \n \n«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих. \n \n— Волк! Волк! — раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. \n \n Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. \n \n В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. \n \n Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам. \n \n \n \n«Волк здесь!» — подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. \n \n Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим! \n \n \n \n— Я монстр! — с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. \n \n Надо бежать! Но куда? Слева и справа — дома. Позади — трёхметровый бетонный забор. А впереди куча вооружённых людей. \n \n \n \n \n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 0,
+            "portion_count": 0,
+            "more": false,
+            "room_text": "true",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 6,
+            "kind": "scene",
+            "command": "user_kbd",
+            "arguments": "",
+            "rendered": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 0,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "opening-next-portion",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\02-opening-next-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 37608,
+      "changed_pixels_from_opening": 33830,
+      "state_trace": {
+        "seq": 13,
+        "kind": "scene",
+        "command": "click true,1,960,540",
+        "arguments": "",
+        "rendered": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+        "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+        "screen_kind": "page",
+        "page_name": "Am I a Monster?",
+        "background": "images/1.jpg",
+        "portion_index": 1,
+        "portion_count": 10,
+        "more": true,
+        "room_text": "",
+        "action_text": "",
+        "objects_text": "",
+        "player_text": "",
+        "wolfiness": "0",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false",
+        "end_screen": false,
+        "step_id": "opening-next-portion",
+        "trace_count": 16,
+        "input_events": [
+          {
+            "seq": 13,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 1,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "opening-choices",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\03-opening-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 33335,
+      "changed_pixels_from_opening-next-portion": 1069679,
+      "state_trace": {
+        "seq": 50,
+        "kind": "scene",
+        "command": "click true,1,960,540",
+        "arguments": "",
+        "rendered": "<a:act 01>Попытаться прорваться сквозь полицию</a>\n\n <a:act 02>Перепрыгнуть через забор</a>\n\n \n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+        "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6_choices",
+        "screen_kind": "choices",
+        "page_name": "Am I a Monster?",
+        "background": "images/1.jpg",
+        "portion_index": 9,
+        "portion_count": 10,
+        "more": false,
+        "room_text": "",
+        "action_text": "",
+        "objects_text": "",
+        "player_text": "",
+        "wolfiness": "0",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false",
+        "end_screen": false,
+        "step_id": "opening-choices",
+        "trace_count": 56,
+        "input_events": [
+          {
+            "seq": 17,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "— Волк! Волк! — раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 2,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 21,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 3,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 25,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 4,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 29,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 5,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 33,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "«Волк здесь!» — подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 6,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 37,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 7,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 41,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "— Я монстр! — с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 8,
+            "portion_count": 10,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 45,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Надо бежать! Но куда? Слева и справа — дома. Позади — трёхметровый бетонный забор. А впереди куча вооружённых людей.\n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 9,
+            "portion_count": 10,
+            "more": false,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 50,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "<a:act 01>Попытаться прорваться сквозь полицию</a>\n\n <a:act 02>Перепрыгнуть через забор</a>\n\n \n",
+            "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+            "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+            "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6_choices",
+            "screen_kind": "choices",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.jpg",
+            "portion_index": 9,
+            "portion_count": 10,
+            "more": false,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "jump-over-fence",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\04-jump-over-fence.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 95976,
+      "changed_pixels_from_opening-choices": 2012689,
+      "state_trace": {
+        "seq": 58,
+        "kind": "scene",
+        "command": "act 02",
+        "arguments": "",
+        "rendered": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+        "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+        "screen_kind": "page",
+        "page_name": "Am I a Monster?",
+        "background": "images/1.1.jpg",
+        "portion_index": 0,
+        "portion_count": 5,
+        "more": true,
+        "room_text": "",
+        "action_text": "",
+        "objects_text": "",
+        "player_text": "",
+        "wolfiness": "0",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false",
+        "end_screen": false,
+        "step_id": "jump-over-fence",
+        "trace_count": 64,
+        "input_events": [
+          {
+            "seq": 58,
+            "kind": "scene",
+            "command": "act 02",
+            "arguments": "",
+            "rendered": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+            "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+            "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.1.jpg",
+            "portion_index": 0,
+            "portion_count": 5,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "robbery-final-portion",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\05-robbery-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 96749,
+      "changed_pixels_from_jump-over-fence": 39098,
+      "state_trace": {
+        "seq": 77,
+        "kind": "scene",
+        "command": "click true,1,960,540",
+        "arguments": "",
+        "rendered": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.\n",
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+        "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+        "screen_kind": "page",
+        "page_name": "Am I a Monster?",
+        "background": "images/1.1.jpg",
+        "portion_index": 4,
+        "portion_count": 5,
+        "more": false,
+        "room_text": "",
+        "action_text": "",
+        "objects_text": "",
+        "player_text": "",
+        "wolfiness": "0",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false",
+        "end_screen": false,
+        "step_id": "robbery-final-portion",
+        "trace_count": 80,
+        "input_events": [
+          {
+            "seq": 65,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.\n",
+            "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+            "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.1.jpg",
+            "portion_index": 1,
+            "portion_count": 5,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 69,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление.\n",
+            "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+            "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.1.jpg",
+            "portion_index": 2,
+            "portion_count": 5,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 73,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться.\n",
+            "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+            "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.1.jpg",
+            "portion_index": 3,
+            "portion_count": 5,
+            "more": true,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          },
+          {
+            "seq": 77,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.\n",
+            "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+            "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "screen_kind": "page",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.1.jpg",
+            "portion_index": 4,
+            "portion_count": 5,
+            "more": false,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "robbery-choices",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\06-robbery-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 96967,
+      "changed_pixels_from_robbery-final-portion": 1069484,
+      "state_trace": {
+        "seq": 82,
+        "kind": "scene",
+        "command": "click true,1,960,540",
+        "arguments": "",
+        "rendered": "<a:act 01>Съесть грабителя</a>\n\n <a:act 02>Прогнать грабителя</a>\n\n \n",
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+        "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5_choices",
+        "screen_kind": "choices",
+        "page_name": "Am I a Monster?",
+        "background": "images/1.1.jpg",
+        "portion_index": 4,
+        "portion_count": 5,
+        "more": false,
+        "room_text": "",
+        "action_text": "",
+        "objects_text": "",
+        "player_text": "",
+        "wolfiness": "0",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false",
+        "end_screen": false,
+        "step_id": "robbery-choices",
+        "trace_count": 88,
+        "input_events": [
+          {
+            "seq": 82,
+            "kind": "scene",
+            "command": "click true,1,960,540",
+            "arguments": "",
+            "rendered": "<a:act 01>Съесть грабителя</a>\n\n <a:act 02>Прогнать грабителя</a>\n\n \n",
+            "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+            "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+            "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5_choices",
+            "screen_kind": "choices",
+            "page_name": "Am I a Monster?",
+            "background": "images/1.1.jpg",
+            "portion_index": 4,
+            "portion_count": 5,
+            "more": false,
+            "room_text": "",
+            "action_text": "",
+            "objects_text": "",
+            "player_text": "",
+            "wolfiness": "0",
+            "hp": "3",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false",
+            "end_screen": false
+          }
+        ]
+      }
+    }
+  ],
+  "text_checks": [
+    {
+      "step_id": "opening",
+      "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "passed": true,
+      "source": "iface.cmd",
+      "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+      "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+      "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen_kind": "page",
+      "portion_index": 0,
+      "portion_count": 10
+    },
+    {
+      "step_id": "opening-next-portion",
+      "expected_fragment": "Интересно, сколько я тут валяюсь",
+      "passed": true,
+      "source": "iface.cmd",
+      "raw_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+      "normalized_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+      "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen_kind": "page",
+      "portion_index": 1,
+      "portion_count": 10
+    },
+    {
+      "step_id": "jump-over-fence",
+      "expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "passed": true,
+      "source": "iface.cmd",
+      "raw_text": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+      "normalized_text": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+      "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen_kind": "page",
+      "portion_index": 0,
+      "portion_count": 5
+    }
+  ],
+  "errors": [],
+  "state_records": [
+    {
+      "seq": 4,
+      "kind": "scene",
+      "command": "save D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\instead-appdata/saves/instead-game-overlay/autosave",
+      "arguments": "",
+      "rendered": "",
+      "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+      "location_id": "v_f7cb8bed_47a9_4ce2_b713_c9b53571c93f",
+      "room_id": "v_f7cb8bed_47a9_4ce2_b713_c9b53571c93f",
+      "screen_kind": "page",
+      "page_name": "Am I a Monster?",
+      "background": "images/title.jpg",
+      "portion_index": 0,
+      "portion_count": 0,
+      "more": false,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "0",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "title",
+      "trace_count": 4,
+      "input_events": []
+    },
+    {
+      "seq": 6,
+      "kind": "scene",
+      "command": "user_kbd",
+      "arguments": "",
+      "rendered": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+      "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+      "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+      "screen_kind": "page",
+      "page_name": "Am I a Monster?",
+      "background": "images/1.jpg",
+      "portion_index": 0,
+      "portion_count": 10,
+      "more": true,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "3",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "opening",
+      "trace_count": 12,
+      "input_events": [
+        {
+          "seq": 5,
+          "kind": "fmt",
+          "command": "user_kbd",
+          "arguments": "",
+          "rendered": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души. \n \n«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих. \n \n— Волк! Волк! — раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. \n \n Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. \n \n В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. \n \n Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам. \n \n \n \n«Волк здесь!» — подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. \n \n Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим! \n \n \n \n— Я монстр! — с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. \n \n Надо бежать! Но куда? Слева и справа — дома. Позади — трёхметровый бетонный забор. А впереди куча вооружённых людей. \n \n \n \n \n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 0,
+          "portion_count": 0,
+          "more": false,
+          "room_text": "true",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 6,
+          "kind": "scene",
+          "command": "user_kbd",
+          "arguments": "",
+          "rendered": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 0,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        }
+      ]
+    },
+    {
+      "seq": 13,
+      "kind": "scene",
+      "command": "click true,1,960,540",
+      "arguments": "",
+      "rendered": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+      "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+      "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+      "screen_kind": "page",
+      "page_name": "Am I a Monster?",
+      "background": "images/1.jpg",
+      "portion_index": 1,
+      "portion_count": 10,
+      "more": true,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "3",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "opening-next-portion",
+      "trace_count": 16,
+      "input_events": [
+        {
+          "seq": 13,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 1,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        }
+      ]
+    },
+    {
+      "seq": 50,
+      "kind": "scene",
+      "command": "click true,1,960,540",
+      "arguments": "",
+      "rendered": "<a:act 01>Попытаться прорваться сквозь полицию</a>\n\n <a:act 02>Перепрыгнуть через забор</a>\n\n \n",
+      "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+      "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6_choices",
+      "screen_kind": "choices",
+      "page_name": "Am I a Monster?",
+      "background": "images/1.jpg",
+      "portion_index": 9,
+      "portion_count": 10,
+      "more": false,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "3",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "opening-choices",
+      "trace_count": 56,
+      "input_events": [
+        {
+          "seq": 17,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "— Волк! Волк! — раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 2,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 21,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 3,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 25,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 4,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 29,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 5,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 33,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "«Волк здесь!» — подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 6,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 37,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 7,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 41,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "— Я монстр! — с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 8,
+          "portion_count": 10,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 45,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Надо бежать! Но куда? Слева и справа — дома. Позади — трёхметровый бетонный забор. А впереди куча вооружённых людей.\n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 9,
+          "portion_count": 10,
+          "more": false,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 50,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "<a:act 01>Попытаться прорваться сквозь полицию</a>\n\n <a:act 02>Перепрыгнуть через забор</a>\n\n \n",
+          "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+          "location_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6",
+          "room_id": "v_f12432d9_dd8f_40fc_97bd_f9a15cc21ff6_choices",
+          "screen_kind": "choices",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.jpg",
+          "portion_index": 9,
+          "portion_count": 10,
+          "more": false,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        }
+      ]
+    },
+    {
+      "seq": 58,
+      "kind": "scene",
+      "command": "act 02",
+      "arguments": "",
+      "rendered": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+      "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+      "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+      "screen_kind": "page",
+      "page_name": "Am I a Monster?",
+      "background": "images/1.1.jpg",
+      "portion_index": 0,
+      "portion_count": 5,
+      "more": true,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "3",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "jump-over-fence",
+      "trace_count": 64,
+      "input_events": [
+        {
+          "seq": 58,
+          "kind": "scene",
+          "command": "act 02",
+          "arguments": "",
+          "rendered": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+          "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+          "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.1.jpg",
+          "portion_index": 0,
+          "portion_count": 5,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        }
+      ]
+    },
+    {
+      "seq": 77,
+      "kind": "scene",
+      "command": "click true,1,960,540",
+      "arguments": "",
+      "rendered": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.\n",
+      "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+      "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+      "screen_kind": "page",
+      "page_name": "Am I a Monster?",
+      "background": "images/1.1.jpg",
+      "portion_index": 4,
+      "portion_count": 5,
+      "more": false,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "3",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "robbery-final-portion",
+      "trace_count": 80,
+      "input_events": [
+        {
+          "seq": 65,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.\n",
+          "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+          "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.1.jpg",
+          "portion_index": 1,
+          "portion_count": 5,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 69,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление.\n",
+          "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+          "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.1.jpg",
+          "portion_index": 2,
+          "portion_count": 5,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 73,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться.\n",
+          "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+          "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.1.jpg",
+          "portion_index": 3,
+          "portion_count": 5,
+          "more": true,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        },
+        {
+          "seq": 77,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.\n",
+          "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+          "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "screen_kind": "page",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.1.jpg",
+          "portion_index": 4,
+          "portion_count": 5,
+          "more": false,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        }
+      ]
+    },
+    {
+      "seq": 82,
+      "kind": "scene",
+      "command": "click true,1,960,540",
+      "arguments": "",
+      "rendered": "<a:act 01>Съесть грабителя</a>\n\n <a:act 02>Прогнать грабителя</a>\n\n \n",
+      "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+      "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5_choices",
+      "screen_kind": "choices",
+      "page_name": "Am I a Monster?",
+      "background": "images/1.1.jpg",
+      "portion_index": 4,
+      "portion_count": 5,
+      "more": false,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "3",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "robbery-choices",
+      "trace_count": 88,
+      "input_events": [
+        {
+          "seq": 82,
+          "kind": "scene",
+          "command": "click true,1,960,540",
+          "arguments": "",
+          "rendered": "<a:act 01>Съесть грабителя</a>\n\n <a:act 02>Прогнать грабителя</a>\n\n \n",
+          "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+          "location_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5",
+          "room_id": "v_5b5d038f_ce4d_4cc8_8bee_81de8528b1a5_choices",
+          "screen_kind": "choices",
+          "page_name": "Am I a Monster?",
+          "background": "images/1.1.jpg",
+          "portion_index": 4,
+          "portion_count": 5,
+          "more": false,
+          "room_text": "",
+          "action_text": "",
+          "objects_text": "",
+          "player_text": "",
+          "wolfiness": "0",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false",
+          "end_screen": false
+        }
+      ]
+    }
+  ],
+  "input_state_validation": "key actions require fresh user_kbd events; click/advance actions require fresh click events; select_choice requires the matching semantic act NN event. Every action must be followed by a new scene snapshot with changed visible state; inventory-only and stale scene text are rejected.",
+  "metadata": {
+    "route_id": "wolfman-opening",
+    "route_sha256": "4217c13d063f92d4b6821e7f5b691e391d9bf871395214026409c15c146a5951",
+    "runner_sha256": "ba1f1411dcc1cd59f519140362668d6990ebbced54130c04ce7f1836e3352403",
+    "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+    "instead_binary": "D:\\deepseek-harness\\default-workspace\\.tools\\instead\\build-mingw\\src\\sdl-instead.exe",
+    "instead_package_version": null,
+    "appdata": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\instead-appdata"
+  }
+}
++ C:\Users\admin\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe D:\deepseek-harness\default-workspace\.tmp\wt73\tests\differential\run_route.py --runtime nlbnavigator --route D:\deepseek-harness\default-workspace\.tmp\wt73\tests\differential\routes\wolfman-opening.json --output D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator --timeout 420 --player D:\deepseek-harness\default-workspace\NLBNavigator\build-msys\nlb_sdl.exe --book D:\deepseek-harness\default-workspace\wolfman --theme D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn\themes\default --base-theme D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead\themes\default
+Оформление: тема игры: D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn\themes\default; базовая тема: D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead\themes\default; фон страниц STANDARD (gfx/bg.jpg): D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn\themes\default\gfx\bg.jpg; scr.gfx.bg: нет; шрифт текста: D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead-am_i_a_monster_vn\themes\default\fonts\sans.ttf; щелчок (snd.click): D:\deepseek-harness\default-workspace\NLBNavigator\test-data\instead\themes\default\click.wav
+settle:2000
+shot:D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator\00-title.png
+key:space
+settle:2000
+shot:D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator\01-opening.png
+click:960,540
+settle:2000
+shot:D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator\02-opening-next-portion.png
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+settle:2000
+shot:D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator\03-opening-choices.png
+clickchoice:1
+settle:2500
+shot:D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator\04-jump-over-fence.png
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+settle:2000
+shot:D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator\05-robbery-final-portion.png
+click:960,540
+settle:2000
+shot:D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening\nlbnavigator\06-robbery-choices.png
+{
+  "runtime": "nlbnavigator",
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\00-title.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 67911
+    },
+    {
+      "id": "opening",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\01-opening.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 44939,
+      "changed_pixels_from_title": 2003800
+    },
+    {
+      "id": "opening-next-portion",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\02-opening-next-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45396,
+      "changed_pixels_from_opening": 37072
+    },
+    {
+      "id": "opening-choices",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\03-opening-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45612,
+      "changed_pixels_from_opening-next-portion": 1049857
+    },
+    {
+      "id": "jump-over-fence",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\04-jump-over-fence.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 179276,
+      "changed_pixels_from_opening-choices": 2001769
+    },
+    {
+      "id": "robbery-final-portion",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\05-robbery-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 180117,
+      "changed_pixels_from_jump-over-fence": 40653
+    },
+    {
+      "id": "robbery-choices",
+      "screenshot": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\06-robbery-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 177959,
+      "changed_pixels_from_robbery-final-portion": 1050316
+    }
+  ],
+  "text_checks": [
+    {
+      "step_id": "opening",
+      "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "portion_index": 0,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "opening-next-portion",
+      "expected_fragment": "Интересно, сколько я тут валяюсь",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "portion_index": 1,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "jump-over-fence",
+      "expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+      "normalized_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+      "portion_index": 0,
+      "portion_count": 5,
+      "screen": "page"
+    }
+  ],
+  "errors": [],
+  "command": [
+    "D:\\deepseek-harness\\default-workspace\\NLBNavigator\\build-msys\\nlb_sdl.exe",
+    "D:\\deepseek-harness\\default-workspace\\wolfman",
+    "explore",
+    "vn",
+    "--no-sound",
+    "--theme",
+    "D:\\deepseek-harness\\default-workspace\\NLBNavigator\\test-data\\instead-am_i_a_monster_vn\\themes\\default",
+    "--base-theme",
+    "D:\\deepseek-harness\\default-workspace\\NLBNavigator\\test-data\\instead\\themes\\default",
+    "--lang",
+    "ru",
+    "--log",
+    "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\playthrough.log",
+    "--window",
+    "1920x1080",
+    "--script",
+    "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\route.script",
+    "--state-log",
+    "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\state-log.jsonl",
+    "--state-vars",
+    "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone"
+  ],
+  "screen_records": [],
+  "state_records": [
+    {
+      "schema": 1,
+      "index": 2,
+      "command": "shot:D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\00-title.png",
+      "ok": true,
+      "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 0,
+        "more": false,
+        "visible": []
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 0,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "title.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [],
+        "reactionText": [],
+        "roomText": [],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "title"
+    },
+    {
+      "schema": 1,
+      "index": 5,
+      "command": "shot:D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\01-opening.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening"
+    },
+    {
+      "schema": 1,
+      "index": 8,
+      "command": "shot:D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\02-opening-next-portion.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-next-portion"
+    },
+    {
+      "schema": 1,
+      "index": 19,
+      "command": "shot:D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\03-opening-choices.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 9,
+        "count": 10,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-choices"
+    },
+    {
+      "schema": 1,
+      "index": 22,
+      "command": "shot:D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\04-jump-over-fence.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 5,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "jump-over-fence"
+    },
+    {
+      "schema": 1,
+      "index": 28,
+      "command": "shot:D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\05-robbery-final-portion.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 5,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "robbery-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 31,
+      "command": "shot:D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\06-robbery-choices.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 5,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "robbery-choices"
+    }
+  ],
+  "state_log_validation": "ok: 32 записей",
+  "metadata": {
+    "route_id": "wolfman-opening",
+    "route_sha256": "4217c13d063f92d4b6821e7f5b691e391d9bf871395214026409c15c146a5951",
+    "runner_sha256": "ba1f1411dcc1cd59f519140362668d6990ebbced54130c04ce7f1836e3352403",
+    "navigator_commit": "4b9003e14585812bfd252c0035bd1bdcf5b8a452",
+    "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  }
+}
++ C:\Users\admin\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe D:\deepseek-harness\default-workspace\.tmp\wt73\tests\differential\run_route.py --runtime compare --route D:\deepseek-harness\default-workspace\.tmp\wt73\tests\differential\routes\wolfman-opening.json --output D:\deepseek-harness\default-workspace\.tmp\matrix73\wolfman-opening
+{
+  "route": "wolfman-opening",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-opening",
+      "route_sha256": "4217c13d063f92d4b6821e7f5b691e391d9bf871395214026409c15c146a5951",
+      "runner_sha256": "ba1f1411dcc1cd59f519140362668d6990ebbced54130c04ce7f1836e3352403",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "D:\\deepseek-harness\\default-workspace\\.tools\\instead\\build-mingw\\src\\sdl-instead.exe",
+      "instead_package_version": null,
+      "appdata": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-opening",
+      "route_sha256": "4217c13d063f92d4b6821e7f5b691e391d9bf871395214026409c15c146a5951",
+      "runner_sha256": "ba1f1411dcc1cd59f519140362668d6990ebbced54130c04ce7f1836e3352403",
+      "navigator_commit": "4b9003e14585812bfd252c0035bd1bdcf5b8a452",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "opening",
+      "instead_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "nlbnavigator_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "instead_check": {
+        "step_id": "opening",
+        "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+        "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 10
+      },
+      "nlbnavigator_check": {
+        "step_id": "opening",
+        "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "portion_index": 0,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "opening-next-portion",
+      "instead_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "nlbnavigator_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "instead_check": {
+        "step_id": "opening-next-portion",
+        "expected_fragment": "Интересно, сколько я тут валяюсь",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+        "normalized_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 10
+      },
+      "nlbnavigator_check": {
+        "step_id": "opening-next-portion",
+        "expected_fragment": "Интересно, сколько я тут валяюсь",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "portion_index": 1,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "jump-over-fence",
+      "instead_expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "nlbnavigator_expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "instead_check": {
+        "step_id": "jump-over-fence",
+        "expected_fragment": "Бежать прямо на вооружённых полицейских",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+        "normalized_text": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 5
+      },
+      "nlbnavigator_check": {
+        "step_id": "jump-over-fence",
+        "expected_fragment": "Бежать прямо на вооружённых полицейских",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+        "normalized_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+        "portion_index": 0,
+        "portion_count": 5,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\00-title.png",
+      "nlbnavigator": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\00-title.png",
+      "changed_pixels": 1943604,
+      "changed_fraction": 0.9373090277777778,
+      "mean_absolute_channel_error": 4.24166345164609,
+      "diff_image": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\diff\\title-diff.png"
+    },
+    {
+      "id": "opening",
+      "instead": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\01-opening.png",
+      "nlbnavigator": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\01-opening.png",
+      "changed_pixels": 1616079,
+      "changed_fraction": 0.7793590856481482,
+      "mean_absolute_channel_error": 3.202056970164609,
+      "diff_image": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\diff\\opening-diff.png"
+    },
+    {
+      "id": "opening-next-portion",
+      "instead": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\02-opening-next-portion.png",
+      "nlbnavigator": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\02-opening-next-portion.png",
+      "changed_pixels": 1618681,
+      "changed_fraction": 0.7806139081790123,
+      "mean_absolute_channel_error": 4.395976723251029,
+      "diff_image": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\diff\\opening-next-portion-diff.png"
+    },
+    {
+      "id": "opening-choices",
+      "instead": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\03-opening-choices.png",
+      "nlbnavigator": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\03-opening-choices.png",
+      "changed_pixels": 1721758,
+      "changed_fraction": 0.8303231095679012,
+      "mean_absolute_channel_error": 5.968402134773663,
+      "diff_image": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\diff\\opening-choices-diff.png"
+    },
+    {
+      "id": "jump-over-fence",
+      "instead": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\04-jump-over-fence.png",
+      "nlbnavigator": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\04-jump-over-fence.png",
+      "changed_pixels": 1862458,
+      "changed_fraction": 0.8981761188271605,
+      "mean_absolute_channel_error": 4.669730902777778,
+      "diff_image": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\diff\\jump-over-fence-diff.png"
+    },
+    {
+      "id": "robbery-final-portion",
+      "instead": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\05-robbery-final-portion.png",
+      "nlbnavigator": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\05-robbery-final-portion.png",
+      "changed_pixels": 1864955,
+      "changed_fraction": 0.8993803047839506,
+      "mean_absolute_channel_error": 5.599230163323045,
+      "diff_image": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\diff\\robbery-final-portion-diff.png"
+    },
+    {
+      "id": "robbery-choices",
+      "instead": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\instead\\06-robbery-choices.png",
+      "nlbnavigator": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\nlbnavigator\\06-robbery-choices.png",
+      "changed_pixels": 1904761,
+      "changed_fraction": 0.9185768711419753,
+      "mean_absolute_channel_error": 7.422390528549383,
+      "diff_image": "D:\\deepseek-harness\\default-workspace\\.tmp\\matrix73\\wolfman-opening\\diff\\robbery-choices-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}
+OK: wolfman-opening
