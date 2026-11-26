@@ -159,6 +159,38 @@ class PickLoadTest(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+    def test_load_rejects_scene_before_command(self):
+        scenes = [record(2), load_command(3)]
+        item, errors = run_route.pick_instead_state_record(
+            "menu", "load", scenes, scenes, None)
+        self.assertIsNone(item)
+        self.assertTrue(any("свежей сцены" in error for error in errors))
+
+    def test_wrong_or_incomplete_expected_scene_is_rejected(self):
+        expected = {"instead_page_id": "page-A", "instead_screen_kind": "page",
+                    "portion_index": 0, "portion_count": 2,
+                    "variables": dict(zip(run_route.TRACE_VARIABLES, (0, 2, False, False, False, False)))}
+        valid = load_evidence(2, page="page-A")
+        valid.update(portion_count=2, wolfiness="0", hp="2", barExit="false",
+                     forestExit="false", wolvesTalk="false", guardDone="false")
+        for field, value in (("page_id", "page-B"), ("screen_kind", "choices"),
+                             ("portion_index", 1), ("portion_count", 4), ("hp", "3"),
+                             ("forestExit", None), ("portion_count", None)):
+            with self.subTest(field=field, value=value):
+                candidate = dict(valid)
+                if value is None:
+                    del candidate[field]
+                else:
+                    candidate[field] = value
+                _, errors = run_route.pick_instead_state_record(
+                    "menu", "load", [candidate], [candidate], None, expected=expected)
+                self.assertTrue(errors)
+        item, errors = run_route.pick_instead_state_record(
+            "menu", "load", [valid], [valid], None, expected=expected)
+        self.assertEqual(item, valid)
+        self.assertEqual(errors, [])
+
+
 class ExpectedCommandTest(unittest.TestCase):
     def test_save_confirmed_only_by_load_rejected(self):
         item, errors = run_route.pick_instead_state_record(
@@ -201,7 +233,33 @@ class FullIdentityTest(unittest.TestCase):
         with mock.patch.object(run_route, "read_instead_trace", side_effect=[earlier, loaded]):
             result = run_route.wait_instead_fresh_scene(Path("trace.tsv"), 0,
                                                          expected_command="load", timeout=2)
-        self.assertEqual(result, loaded)
+        self.assertEqual(result, (loaded, False))
+
+    def test_wait_ignores_load_from_previous_step(self):
+        previous = [load_evidence(1)]
+        unrelated = previous + [record(2)]
+        loaded = unrelated + [load_evidence(3)]
+        with mock.patch.object(run_route, "read_instead_trace", side_effect=[unrelated, loaded]):
+            result = run_route.wait_instead_fresh_scene(
+                Path("trace.tsv"), 1, expected_command="load",
+                previous_identity=run_route.trace_identity(previous))
+        self.assertEqual(result, (loaded, False))
+
+    def test_wait_rejects_rewrite_of_record_first_seen_during_wait(self):
+        previous = [record(1)]
+        appended = previous + [record(2, rendered="первый опрос")]
+        rewritten = previous + [record(2, rendered="перезаписано"), load_evidence(3)]
+        with mock.patch.object(run_route, "read_instead_trace", side_effect=[appended, rewritten]):
+            result = run_route.wait_instead_fresh_scene(
+                Path("trace.tsv"), 1, expected_command="load",
+                previous_identity=run_route.trace_identity(previous))
+        self.assertEqual(result, (rewritten, True))
+
+    def test_wait_rejects_duplicate_even_with_fresh_load(self):
+        records = [record(1), load_evidence(2), record(2)]
+        with mock.patch.object(run_route, "read_instead_trace", return_value=records):
+            result = run_route.wait_instead_fresh_scene(Path("trace.tsv"), 1, expected_command="load")
+        self.assertEqual(result, (records, True))
 
 
 class TraceLifecycleTest(unittest.TestCase):

@@ -1,49 +1,57 @@
--- Test-only INSTEAD trace adapter.
--- Wrap the outer iface.cmd after export modules have installed their hooks.
+-- Адаптер тестовой трассировки. Устанавливается после загрузки модулей экспорта.
 local trace_path = os.getenv("NLB_TEST_TRACE")
 if not trace_path or not iface or type(iface.cmd) ~= "function" or not nlb then
     return
 end
 
--- Адаптер уже оборачивал ЭТУ функцию? При загрузке main.lua может как переиспользовать прежнюю
--- iface.cmd, так и создать новую. Слабая таблица ключей-функций (в Lua 5.1 у функции нет полей)
--- позволяет обернуть новую функцию и не обернуть повторно старую.
-local wrapped = rawget(_G, "__nlb_trace_wrapped")
-if type(wrapped) ~= "table" then
-    wrapped = setmetatable({}, { __mode = "k" })
-    _G.__nlb_trace_wrapped = wrapped
-end
-if wrapped[iface.cmd] then
-    return
+-- main.lua исполняется повторно при загрузке. Обе обёртки читают одно состояние
+-- из _G, а при создании новой Lua VM счётчик восстанавливается из TSV.
+local state = rawget(_G, "__nlb_trace_state")
+if not state then
+    state = {
+        wrapped = setmetatable({}, { __mode = "k" }),
+        active = {},
+        -- STEAD сериализует глобальные таблицы с подчёркиванием. Этот хук
+        -- оставляет состояние адаптера вне игрового сохранения.
+        save = function() end,
+    }
+    _G.__nlb_trace_state = state
 end
 
--- Загрузка сохранения (F9) перезапускает main.lua в том же процессе INSTEAD: адаптер
--- выполняется снова. Нельзя открывать трассу на запись — прежние записи терялись бы, а seq
--- начинался заново, и раннер не мог сопоставить состояние до и после загрузки. Поэтому файл
--- дополняется, seq продолжается с последнего записанного, заголовок пишется только один раз.
-local last_seq, need_header = 0, true
-local existing = io.open(trace_path, "r")
-if existing then
-    for line in existing:lines() do
-        if line:match("^#") then
+local function append_line(path, line)
+    local file, err = io.open(path, "a")
+    if not file then
+        print("NLB_TEST_TRACE: не удалось открыть файл: " .. tostring(err))
+        return false
+    end
+    local written, write_error = file:write(line .. "\n")
+    local closed, close_error = file:close()
+    if not written or not closed then
+        print("NLB_TEST_TRACE: не удалось записать строку: " .. tostring(write_error or close_error))
+        return false
+    end
+    return true
+end
+
+if state.path ~= trace_path then
+    local last_seq, need_header = 0, true
+    local existing = io.open(trace_path, "r")
+    if existing then
+        for line in existing:lines() do
             need_header = false
-        else
-            local seq = tonumber(line:match("^(%d+)"))
+            local seq = tonumber(line:match("^(%d+)\t"))
             if seq and seq > last_seq then last_seq = seq end
         end
+        existing:close()
     end
-    existing:close()
+    local header = "# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\tbarExit\tforestExit\twolvesTalk\tguardDone\tend_screen"
+    if need_header and not append_line(trace_path, header) then
+        state.snapshot = nil
+        return
+    end
+    state.path, state.sequence = trace_path, last_seq
 end
 
-local trace, open_error = io.open(trace_path, last_seq > 0 and "a" or "w")
-if not trace then
-    print("NLB_TEST_TRACE: cannot open trace file: " .. tostring(open_error))
-    return
-end
-
-local original_cmd = iface.cmd
-local original_fmt = iface.fmt
-local sequence = last_seq
 local unpack_values = table.unpack or unpack
 
 local function pack(...)
@@ -147,7 +155,7 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
         more = not pg._last
     end
 
-    sequence = sequence + 1
+    local sequence = state.sequence + 1
     local fields = {
         sequence, kind, command, arguments, rendered, page_id, location_name, room_name,
         screen_kind, page_name, background, portion_index, portion_count, more,
@@ -157,44 +165,73 @@ local function snapshot(command, kind, arguments, rendered, room_text, action_te
     local encoded = {}
     -- Numeric iteration preserves empty fields when a Lua value is nil.
     for index = 1, 25 do encoded[index] = encode_field(fields[index]) end
-    trace:write(table.concat(encoded, "\t") .. "\n")
-    trace:flush()
+    if append_line(state.path, table.concat(encoded, "\t")) then
+        state.sequence = sequence
+    end
 end
 
-if need_header then
-    trace:write("# seq\tkind\tcommand\targuments\trendered\tpage_id\tlocation_id\troom_id\tscreen_kind\tpage_name\tbackground\tportion_index\tportion_count\tmore\troom_text\taction_text\tobjects_text\tplayer_text\twolfiness\thp\tbarExit\tforestExit\twolvesTalk\tguardDone\tend_screen\n")
-    trace:flush()
+state.snapshot = snapshot
+
+-- Старый wrapper может оставаться внутри нового хука экспорта. В цепочке
+-- пишет только активная обёртка. Проверяем её до вызова оригинала: load
+-- может заменить хук, пока старая команда ещё выполняется. Результат
+-- записываем через актуальный snapshot, уже с объектами загруженной сцены.
+local function is_active(key, wrapper)
+    local current = rawget(_G, "__nlb_trace_state")
+    return current and current.active[key] == wrapper
 end
 
--- Keep iface.fmt as a secondary diagnostic source for STANDARD exports.
-if type(original_fmt) == "function" and not wrapped[iface.fmt] then
-    iface.fmt = function(self, command, state_changed, moved, room_text, action_text, objects_text, player_text, ...)
-        local returns = pack(original_fmt(
+local function record(...)
+    local current = rawget(_G, "__nlb_trace_state")
+    if current and current.snapshot then current.snapshot(...) end
+end
+
+local function install(key, make_wrapper)
+    local original = iface[key]
+    if type(original) ~= "function" then
+        state.active[key] = nil
+        return
+    end
+    if not state.wrapped[original] then
+        local wrapper
+        wrapper = make_wrapper(original, function() return is_active(key, wrapper) end)
+        state.wrapped[wrapper] = true
+        iface[key] = wrapper
+    end
+    state.active[key] = iface[key]
+end
+
+-- iface.fmt остаётся диагностическим источником для STANDARD.
+install("fmt", function(original, active)
+    return function(self, command, state_changed, moved, room_text, action_text, objects_text, player_text, ...)
+        local log = active()
+        local returns = pack(original(
             self, command, state_changed, moved,
             room_text, action_text, objects_text, player_text, ...
         ))
-        if command ~= "inv" and command ~= "user_timer" then
-            snapshot(tostring(command), "fmt", "", returns[1], room_text, action_text, objects_text, player_text)
+        if log and command ~= "inv" and command ~= "user_timer" then
+            record(tostring(command), "fmt", "", returns[1], room_text, action_text, objects_text, player_text)
         end
         return unpack_values(returns, 1, returns.n)
     end
-    wrapped[iface.fmt] = true
-end
+end)
 
-iface.cmd = function(self, command, ...)
-    local arguments = pack(...)
-    local returns = pack(original_cmd(self, command, ...))
-    local command_name = tostring(command)
-    if command_name ~= "user_timer" then
-        local result = returns[1]
-        local kind = command_name == "inv" and "inventory"
-            or command_name == "way" and "event"
-            or type(result) == "string" and "scene"
-            or "event"
-        local argument_text = {}
-        for index = 1, arguments.n do argument_text[index] = tostring(arguments[index]) end
-        snapshot(command_name, kind, table.concat(argument_text, ","), result, nil, nil, nil, nil)
+install("cmd", function(original, active)
+    return function(self, command, ...)
+        local log = active()
+        local arguments = pack(...)
+        local returns = pack(original(self, command, ...))
+        local command_name = tostring(command)
+        if log and command_name ~= "user_timer" then
+            local result = returns[1]
+            local kind = command_name == "inv" and "inventory"
+                or command_name == "way" and "event"
+                or type(result) == "string" and "scene"
+                or "event"
+            local argument_text = {}
+            for index = 1, arguments.n do argument_text[index] = tostring(arguments[index]) end
+            record(command_name, kind, table.concat(argument_text, ","), result, nil, nil, nil, nil)
+        end
+        return unpack_values(returns, 1, returns.n)
     end
-    return unpack_values(returns, 1, returns.n)
-end
-wrapped[iface.cmd] = true
+end)

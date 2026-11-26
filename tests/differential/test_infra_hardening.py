@@ -73,8 +73,8 @@ class SeedHomeTest(unittest.TestCase):
                         run_route.safe_seed_path(directory, value)
 
 
-class RemoveTreeTest(unittest.TestCase):
-    def test_symlink_to_source_is_not_followed(self):
+class InsteadOverlayTest(unittest.TestCase):
+    def test_existing_overlay_with_symlink_remains_untouched(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / "source"
@@ -87,8 +87,10 @@ class RemoveTreeTest(unittest.TestCase):
                 link.symlink_to(source, target_is_directory=True)
             except OSError:
                 self.skipTest("symlink недоступен")
-            run_route.remove_tree(overlay)
-            self.assertFalse(overlay.exists())
+            with self.assertRaises(FileExistsError):
+                run_route.create_instead_overlay(source, overlay)
+            self.assertTrue(overlay.is_dir())
+            self.assertTrue(link.is_symlink())
             self.assertEqual((source / "data.bin").read_text(encoding="utf-8"), "original")
 
 

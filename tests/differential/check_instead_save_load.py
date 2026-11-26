@@ -1,63 +1,22 @@
 #!/usr/bin/env python3
-"""INSTEAD save/load: B5 (Ð¿ÐµÑ€ÐµÐ·Ð°Ð¿ÑƒÑÐº Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐ°) Ð¸ B6 (Ð¿Ð¾Ð²Ñ‚Ð¾Ñ€Ð½Ñ‹Ðµ Ñ†Ð¸ÐºÐ»Ñ‹) â€” issue #69.
-
-Ð¡Ñ†ÐµÐ½Ð°Ñ€Ð¸Ð¸ ÑÑ‚Ñ€Ð¾ÑÑ‚ÑÑ Ð¸Ð· Ð¼Ð°Ñ€ÑˆÑ€ÑƒÑ‚Ð° wolfman-police-hospital-doctor:
-- ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ A (F8), Ð²Ñ‹Ð¹Ñ‚Ð¸, Ð·Ð°Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ Ð½Ð¾Ð²Ñ‹Ð¹ INSTEAD Ð¸ Ð·Ð°Ð³Ñ€ÑƒÐ·Ð¸Ñ‚ÑŒ ÑÐ»Ð¾Ñ‚ (F9);
-- Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ñ†Ð¸ÐºÐ»Ð¾Ð² save/load Ð² Ð¾Ð´Ð½Ð¾Ð¼ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐµ (A â†’ save â†’ B â†’ load â†’ A â†’ save â†’ B â†’ load).
-ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÑ‚ÑÑ ÐºÐ¾Ð´ Ñ€Ð°Ð½Ð½ÐµÑ€Ð° Ð¸ Ð¾Ñ‚Ñ‡Ñ‘Ñ‚Ñ‹ Ð¼Ð°Ñ€ÑˆÑ€ÑƒÑ‚Ð¾Ð²; trace-Ð¾ÑˆÐ¸Ð±ÐºÐ¸ (Ð²ÐºÐ»ÑŽÑ‡Ð°Ñ Ð¿ÐµÑ€ÐµÐ¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸ÑŽ) Ð½Ðµ
-Ð´Ð¾Ð¿ÑƒÑÐºÐ°ÑŽÑ‚ÑÑ.
-"""
+"""Проверяет быстрый слот Wolfman, повторную загрузку и независимый перезапуск INSTEAD."""
 import argparse
+import hashlib
 import json
-import shutil
+import shlex
 import subprocess
 import sys
 from pathlib import Path
 
-from run_route import load_route
+from run_route import (TRACE_VARIABLES, load_route, normalize_story_text,
+                       read_instead_trace, semantic_state, trace_sequence_valid)
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 ROUTE = HERE / "routes/wolfman-police-hospital-doctor.json"
 A_PAGE = "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717"
-
-
-def renamed(step, name, expect=None):
-    copy = dict(step, id=name, screenshot=f"{name}.png")
-    if expect is not None:
-        copy["expect"] = expect
-    copy.pop("visual_change_from", None)
-    return copy
-
-
-def menu(name, key, expect):
-    return {"id": name, "screenshot": f"{name}.png", "settle_ms": 2000,
-            "action": {"type": "menu", "nlbnavigator": (["f5"] if key == "F8" else ["f9", 1]), "instead": [{"key": key}]},
-            "expect": expect}
-
-
-def write_route(output, name, route, steps):
-    path = output / f"{name}.json"
-    path.write_text(json.dumps(dict(route, id=f"wolfman-instead-save-load-{name}", steps=steps),
-                               ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    load_route(path)
-    return path
-
-
-def run(route, output, args, seed=None):
-    command = [sys.executable, str(HERE / "run_route.py"), "--runtime", "instead",
-               "--route", str(route), "--output", str(output),
-               "--game", str(args.game), "--base-theme", str(args.base_theme),
-               "--instead-binary", str(args.instead_binary)]
-    if seed:
-        command += ["--instead-seed-appdata", str(seed)]
-    log = output / "runner.log"
-    output.mkdir(parents=True, exist_ok=True)
-    with log.open("w", encoding="utf-8") as stream:
-        code = subprocess.run(command, cwd=REPO, stdout=stream, stderr=subprocess.STDOUT).returncode
-    report = json.loads((output / "route-report.json").read_text(encoding="utf-8")) \
-        if (output / "route-report.json").is_file() else {}
-    return code, report
+B_PAGE = "d937c5c1-766c-4581-a03e-736560b0cc8f"
+SLOT = Path("instead-appdata/saves/instead-game-overlay/save9")
 
 
 def require(condition, message):
@@ -65,64 +24,156 @@ def require(condition, message):
         raise RuntimeError(message)
 
 
+def continuation(steps, tag):
+    renamed = []
+    for step in steps:
+        name = f"{tag}-{step['id']}"
+        copy = dict(step, id=name, screenshot=f"{name}.png")
+        copy.pop("visual_change_from", None)
+        renamed.append(copy)
+    return renamed
+
+
+def menu(name, key, page):
+    return {"id": name, "screenshot": f"{name}.png", "settle_ms": 2000,
+            "action": {"type": "menu", "nlbnavigator": ["f5" if key == "F8" else "f9", 1],
+                       "instead": [{"key": key}]},
+            "expect": {"instead_page_id": page} if page else {}}
+
+
+def write_json(path, data):
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def run(args, source, name, steps, expected_commands, seed=None, expected_exit=0):
+    output = args.output / name
+    output.mkdir()
+    route = args.output / f"{name}.json"
+    write_json(route, dict(source, id=f"wolfman-instead-save-load-{name}", steps=steps))
+    load_route(route)
+    command = [sys.executable, str(HERE / "run_route.py"), "--runtime", "instead",
+               "--route", str(route), "--output", str(output), "--game", str(args.game),
+               "--base-theme", str(args.base_theme), "--instead-binary", str(args.instead_binary)]
+    if seed is not None:
+        command += ["--instead-seed-save", str(seed)]
+    (output / "runner.command").write_text(shlex.join(command) + "\n", encoding="utf-8")
+    with (output / "runner.log").open("w", encoding="utf-8") as stream:
+        code = subprocess.run(command, cwd=REPO, stdout=stream, stderr=subprocess.STDOUT).returncode
+    (output / "runner.exit").write_text(f"{code}\n", encoding="utf-8")
+    print(f"{name}: раннер завершился с кодом {code}", flush=True)
+    report_path = output / "route-report.json"
+    require(report_path.is_file(), f"{name}: нет отчёта раннера")
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    require(code == expected_exit and report["ok"] == (code == 0), f"{name}: {report['errors']}")
+    require(report["process"]["exit_code"] == 0, f"{name}: завершение INSTEAD: {report['process']}")
+
+    trace_path = output / "instead-state.tsv"
+    trace = read_instead_trace(trace_path)
+    require(trace and trace_sequence_valid(trace), f"{name}: seq должны строго возрастать")
+    with trace_path.open(encoding="utf-8") as file:
+        headers = sum(line.startswith("#") for line in file)
+    require(headers == 1, f"{name}: число заголовков {headers}")
+    commands = []
+    for record in trace:
+        verb, _, path = record["command"].partition(" ")
+        if record["kind"] == "fmt" or verb not in ("save", "load"):
+            continue
+        path = path.replace("\\", "/")
+        # Экспорт может создавать собственное автосохранение. Проверяем отдельно
+        # команды, адресованные быстрому слоту; исходный TSV содержит и autosave.
+        if path.endswith("/autosave"):
+            continue
+        require(path.endswith("/saves/instead-game-overlay/save9"),
+                f"{name}: неожиданный слот в {record['command']}")
+        commands.append(record)
+    require([record["command"].split(" ", 1)[0] for record in commands] == expected_commands,
+            f"{name}: неожиданный порядок или число save/load")
+    proof = {"runner_exit": code, "process": report["process"], "headers": headers,
+             "records": len(trace), "first_seq": trace[0]["seq"], "last_seq": trace[-1]["seq"],
+             "commands": []}
+    for record in commands:
+        index = trace.index(record)
+        proof["commands"].append({"command": record, "before": trace[max(0, index - 1)],
+                                  "after": trace[min(len(trace) - 1, index + 1)]})
+    write_json(output / "trace-proof.json", proof)
+    return report, {record["step_id"]: record for record in report["state_records"]}
+
+
+def assert_checkpoint(record, page, count, wolfiness, hp):
+    variables = dict(zip(TRACE_VARIABLES, (str(wolfiness), str(hp), "false", "false", "false", "false")))
+    require((record["page_id"], record["screen_kind"], record["portion_index"], record["portion_count"])
+            == (page, "page", 0, count), f"Не совпало состояние сцены: {record['step_id']}")
+    require(all(record.get(name) == value for name, value in variables.items()),
+            f"Не совпали переменные сцены: {record['step_id']}")
+    require(record["background"] and normalize_story_text(record["rendered"]),
+            f"Нет ресурса или текста сцены: {record['step_id']}")
+
+
+def assert_same(actual, baseline):
+    # INSTEAD добавляет пустую строку к той же порции при перерисовке после F9.
+    actual_text = normalize_story_text(actual["rendered"]).rstrip("\r\n")
+    baseline_text = normalize_story_text(baseline["rendered"]).rstrip("\r\n")
+    require(semantic_state(actual) == semantic_state(baseline) and actual_text == baseline_text,
+            f"{actual['step_id']}: состояние отличается от {baseline['step_id']}")
+
+
+def slot_info(path):
+    data = path.read_bytes()
+    require(bool(data), f"Пустой слот: {path}")
+    require(b"__nlb_trace_state" not in data, f"Состояние трассировки попало в слот: {path}")
+    return {"path": str(path), "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--game", type=Path, required=True)
-    parser.add_argument("--base-theme", type=Path, required=True)
-    parser.add_argument("--instead-binary", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
+    for option in ("game", "base-theme", "instead-binary", "output"):
+        parser.add_argument("--" + option, type=Path, required=True)
     args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=False)
+    args.output = args.output.absolute()
+    args.output.mkdir(parents=True)
 
     source = load_route(ROUTE)
     steps = source["steps"]
     ids = [step["id"] for step in steps]
-    a = ids.index("hospital-page3")
-    b = ids.index("eat-doctor")
-    prefix = steps[:a + 1]
-    def portion(tag):
-        return [renamed(step, f"{tag}-{step['id']}") for step in steps[a + 1:b + 1]]
+    a, b = ids.index("hospital-page3"), ids.index("eat-doctor")
+    prefix, to_b = steps[:a + 1], steps[a + 1:b + 1]
+    save = menu("save-a", "F8", A_PAGE)
 
-    after_portion = portion("cycle")  # ÑÐºÑ€Ð°Ð½ Ð²Ð°Ñ€Ð¸Ð°Ð½Ñ‚Ð¾Ð² Ð¸ Â«ÑÑŠÐµÑÑ‚ÑŒ Ð²Ñ€Ð°Ñ‡Ð°Â»
+    cycles = prefix + [save] + continuation(to_b, "baseline")
+    for index in range(1, 4):
+        cycles += [menu(f"load-a-{index}", "F9", A_PAGE)] + continuation(to_b, f"cycle-{index}")
+    _, states = run(args, source, "cycles", cycles, ["save", "load", "load", "load"])
+    baseline_a, baseline_b = states["hospital-page3"], states["baseline-eat-doctor"]
+    assert_checkpoint(baseline_a, A_PAGE, 2, 0, 2)
+    assert_checkpoint(baseline_b, B_PAGE, 4, 1, 3)
+    assert_same(states["save-a"], baseline_a)
+    for index in range(1, 4):
+        assert_same(states[f"load-a-{index}"], baseline_a)
+        assert_same(states[f"cycle-{index}-eat-doctor"], baseline_b)
+    print("Три цикла A → B → A прошли с теми же экраном, текстом, ресурсом и шестью переменными.", flush=True)
 
-    b_expect = {"page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
-                "instead_page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f"}
-    save_expect = {"page_id": A_PAGE, "instead_page_id": A_PAGE}
-    load_expect = {"page_id": A_PAGE, "instead_page_id": A_PAGE}
-    save = menu("save-a", "F8", save_expect)
-    load = menu("load-a", "F9", load_expect)
+    save_report, states = run(args, source, "restart-save", prefix + [save], ["save"])
+    assert_same(states["save-a"], baseline_a)
+    seed = args.output / "restart-save" / SLOT
+    original = slot_info(seed)
+    load = menu("load-a", "F9", A_PAGE)
+    load_report, states = run(args, source, "restart-load", [steps[0], load] + continuation(to_b, "restart"),
+                              ["load"], seed=seed)
+    assert_same(states["load-a"], baseline_a)
+    assert_same(states["restart-eat-doctor"], baseline_b)
+    require(save_report["process"]["pid"] != load_report["process"]["pid"], "Ожидался новый процесс INSTEAD")
+    restored = slot_info(args.output / "restart-load" / SLOT)
+    require(original["bytes"] == restored["bytes"] and original["sha256"] == restored["sha256"],
+            "Содержимое перенесённого слота отличается")
+    write_json(args.output / "slots.json", {"cycles": slot_info(args.output / "cycles" / SLOT),
+                                           "original": original, "copied": restored})
 
-    # B5: ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ðµ, Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐ°, Ð½Ð¾Ð²Ñ‹Ð¹ Ð¿Ñ€Ð¾Ñ†ÐµÑÑ Ñ Ñ‚ÐµÐ¼ Ð¶Ðµ appdata
-    save_output = args.output / "restart-save"
-    save_route = write_route(args.output, "restart-save", source, prefix + [save])
-    code, report = run(save_route, save_output, args)
-    require(code == 0, f"restart-save: ÐºÐ¾Ð´ {code}, Ð¾ÑˆÐ¸Ð±ÐºÐ¸ {report.get('errors')}")
-    appdata = save_output / "instead-appdata"
-    require((appdata / "saves" / "instead-game-overlay" / "save9").is_file(),
-            "restart-save: INSTEAD Ð½Ðµ ÑÐ¾Ð·Ð´Ð°Ð» save9")
-    seed = args.output / "seed-appdata"
-    if seed.exists():
-        shutil.rmtree(seed)
-    shutil.copytree(appdata, seed)
-
-    load_output = args.output / "restart-load"
-    load_path = write_route(args.output, "restart-load", source,
-                             [steps[0], load] + after_portion)
-    code, report = run(load_path, load_output, args, seed)
-    require(code == 0, f"restart-load: ÐºÐ¾Ð´ {code}, Ð¾ÑˆÐ¸Ð±ÐºÐ¸ {report.get('errors')}")
-    require(report.get("ok") and not report.get("errors"),
-            "restart-load: Ð¾Ñ‚Ñ‡Ñ‘Ñ‚ Ð½Ðµ ok")
-
-    # B6: Ð¿Ð¾Ð²Ñ‚Ð¾Ñ€Ð½Ñ‹Ðµ Ñ†Ð¸ÐºÐ»Ñ‹ save/load Ð² Ð¾Ð´Ð½Ð¾Ð¼ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐµ
-    cycles_output = args.output / "cycles"
-    cycles_route = write_route(
-        args.output, "cycles", source,
-        prefix + [save] + portion("cycle1") + [load] + portion("cycle2")
-        + [menu("save-b", "F8", b_expect), menu("load-b", "F9", b_expect)])
-    code, report = run(cycles_route, cycles_output, args)
-    require(code == 0, f"cycles: ÐºÐ¾Ð´ {code}, Ð¾ÑˆÐ¸Ð±ÐºÐ¸ {report.get('errors')}")
-    require(report.get("ok") and not report.get("errors"), "cycles: Ð¾Ñ‚Ñ‡Ñ‘Ñ‚ Ð½Ðµ ok")
-    print("OK: INSTEAD save/load Ð²Ñ‹Ð´ÐµÑ€Ð¶Ð¸Ð²Ð°ÐµÑ‚ Ð¿ÐµÑ€ÐµÐ·Ð°Ð¿ÑƒÑÐº Ð¸ Ð¿Ð¾Ð²Ñ‚Ð¾Ñ€Ð½Ñ‹Ðµ Ñ†Ð¸ÐºÐ»Ñ‹")
+    report, _ = run(args, source, "missing-slot", [steps[0], menu("load-empty", "F9", None)],
+                    [], expected_exit=1)
+    require(any("нет свежей записи команды load" in error for error in report["errors"]),
+            "Отсутствующий слот не распознан")
+    require(not (args.output / "missing-slot" / SLOT).exists(), "В пустом профиле появился слот")
+    print("Перезапуск с одним файлом save9 и отрицательный контроль пустого слота прошли.")
 
 
 if __name__ == "__main__":
@@ -130,5 +181,3 @@ if __name__ == "__main__":
         main()
     except (OSError, RuntimeError, ValueError, KeyError) as error:
         sys.exit(str(error))
-
-

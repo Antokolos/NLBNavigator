@@ -1219,11 +1219,12 @@ def trace_sequence_valid(records):
 
 
 def semantic_state(record):
-    """Значимые поля состояния без rendered: страница, экран, порция, переменные"""
+    """Состояние сцены без rendered, который у команды сохранения может быть пустым."""
     if not record:
         return None
     return (record.get("page_id", ""), record.get("screen_kind", ""),
-            record.get("portion_index", 0),
+            record.get("portion_index", 0), record.get("portion_count", 0),
+            record.get("background", ""), record.get("end_screen", False),
             tuple(str(record.get(name, "")) for name in TRACE_VARIABLES))
 
 
@@ -1231,9 +1232,12 @@ def _load_expected_errors(record, expected):
     errors = []
     if not expected:
         return errors
-    if expected.get("page_id") and record.get("page_id") != expected["page_id"]:
-        errors.append("загрузка дала страницу {}, ожидалась {}".format(
-            record.get("page_id"), expected["page_id"]))
+    page = expected.get("instead_page_id", expected.get("page_id"))
+    if page and record.get("page_id") != page:
+        errors.append("загрузка дала страницу {}, ожидалась {}".format(record.get("page_id"), page))
+    screen = expected.get("instead_screen_kind")
+    if screen and record.get("screen_kind") != screen:
+        errors.append("загрузка дала экран {}, ожидался {}".format(record.get("screen_kind"), screen))
     if "portion_index" in expected and record.get("portion_index") != expected["portion_index"]:
         errors.append("загрузка дала порцию {}, ожидалась {}".format(
             record.get("portion_index"), expected["portion_index"]))
@@ -1241,7 +1245,7 @@ def _load_expected_errors(record, expected):
         errors.append("загрузка дала число порций {}, ожидалось {}".format(
             record.get("portion_count"), expected["portion_count"]))
     for name, value in (expected.get("variables") or {}).items():
-        if str(record.get(name, "")) != str(value):
+        if str(record.get(name, "")).lower() != str(value).lower():
             errors.append("загрузка дала {}={}, ожидалось {}".format(name, record.get(name, ""), value))
     return errors
 
@@ -1340,13 +1344,16 @@ def read_instead_trace(path):
     return records
 
 
-def wait_instead_fresh_scene(trace_path, cursor, expected_command=None, timeout=3.0):
+def wait_instead_fresh_scene(trace_path, cursor, expected_command=None, timeout=3.0, previous_identity=()):
     """Ждёт сцену с текстом после ожидаемой команды (для load — именно load)."""
     deadline = time.monotonic() + timeout
     records = read_instead_trace(trace_path)
     while True:
+        if wait_identity_invalid(previous_identity, records):
+            return records, True
+        previous_identity = trace_identity(records)
         load_seqs = [record["seq"] for record in records
-                     if expected_command is not None
+                     if record["seq"] > cursor and expected_command is not None
                      and str(record.get("command", "")).split(" ", 1)[0] == expected_command]
         fresh = []
         if expected_command is None:
@@ -1359,7 +1366,7 @@ def wait_instead_fresh_scene(trace_path, cursor, expected_command=None, timeout=
                      if record["seq"] >= load_seq and record["kind"] == "scene"
                      and normalize_story_text(record.get("rendered", ""))]
         if fresh or time.monotonic() >= deadline:
-            return records
+            return records, False
         time.sleep(0.15)
         records = read_instead_trace(trace_path)
 
@@ -1389,22 +1396,9 @@ def trace_state_signature(record):
     )
 
 
-def remove_tree(path):
-    """Удаление каталога, не заходя в junction-каталоги overlay (иначе можно стереть исходные данные)"""
-    path = Path(path)
-    if not path.exists():
-        return
-    if IS_WINDOWS:
-        for entry in list(path.iterdir()):
-            if entry.is_dir() and getattr(os.path, "isjunction", lambda _: False)(entry):
-                os.rmdir(entry)
-    shutil.rmtree(path)
-
-
 def create_instead_overlay(source_dir, overlay_dir):
-    if overlay_dir.exists():
-        remove_tree(overlay_dir)
-    overlay_dir.mkdir(parents=True, exist_ok=True)
+    # Повторный прогон получает новый каталог; существующий overlay сохраняется.
+    overlay_dir.mkdir()
     for entry in source_dir.iterdir():
         if entry.name in (".git", "main.lua"):
             continue
@@ -1539,13 +1533,16 @@ def run_instead(args, route, output_dir):
     isolated_appdata = output_dir / "instead-appdata"
     isolated_home = output_dir / "instead-home"
     for path in (isolated_appdata, isolated_home):
-        if path.exists():
-            shutil.rmtree(path)
-        path.mkdir(parents=True, exist_ok=True)
+        path.mkdir()
     for name in (".config", ".local/share", ".cache"):
         (isolated_home / name).mkdir(parents=True, exist_ok=True)
-    if args.instead_seed_appdata:
-        shutil.copytree(args.instead_seed_appdata, isolated_appdata, dirs_exist_ok=True)
+    if args.instead_seed_save:
+        seed = args.instead_seed_save
+        if seed.resolve(strict=True) != seed.absolute() or not seed.is_file():
+            raise ValueError("Для --instead-seed-save нужен обычный файл без перенаправлений")
+        slot = isolated_appdata / "saves" / overlay.name / "save9"
+        slot.parent.mkdir(parents=True)
+        shutil.copyfile(seed, slot)
 
     adapter = Path(__file__).resolve().with_name("instead_trace.lua")
     create_instead_overlay(game, overlay)
@@ -1675,10 +1672,12 @@ def run_instead(args, route, output_dir):
                 cursor = trace_max
             menu_kind = instead_menu_kind(step["action"])
             if menu_kind == "load" and not trace_reset:
-                after = wait_instead_fresh_scene(trace_path, cursor, expected_command="load")
+                before_wait = identity
+                after, wait_reset = wait_instead_fresh_scene(
+                    trace_path, cursor, expected_command="load", previous_identity=before_wait)
                 trace_max = max((record["seq"] for record in after), default=trace_max)
                 identity = trace_identity(after)
-                if wait_identity_invalid(trace_seen, after):
+                if wait_reset:
                     trace_errors.append(
                         "{}: трасса переинициализирована во время ожидания загрузки".format(step["id"]))
                     trace_reset = True
@@ -1779,6 +1778,9 @@ def run_instead(args, route, output_dir):
         trace_path.unlink(missing_ok=True)
 
     report = validate_run(route, output_dir, "instead", [], None, state_records)
+    report["process"] = {"pid": player.pid, "exit_code": player.poll()}
+    if player.returncode is None:
+        trace_errors.append("процесс INSTEAD остался запущен после завершения раннера")
     report["errors"].extend(trace_errors)
     report["ok"] = not report["errors"]
     record_by_id = {record["id"]: record for record in records}
@@ -1932,8 +1934,8 @@ def parse_args():
     parser.add_argument("--base-theme", help="Каталог базовой темы INSTEAD (theme.ini), общий для обоих runtime")
     parser.add_argument("--game", help="Каталог экспорта INSTEAD")
     parser.add_argument("--instead-binary", help="Путь к sdl-instead")
-    parser.add_argument("--instead-seed-appdata", type=Path, default=None,
-                        help="Скопировать каталог appdata (сохранения INSTEAD) перед прогоном")
+    parser.add_argument("--instead-seed-save", type=Path,
+                        help="Скопировать один файл в быстрый слот 9 изолированного INSTEAD")
     parser.add_argument("--timeout", type=int, default=90)
     return parser.parse_args()
 
