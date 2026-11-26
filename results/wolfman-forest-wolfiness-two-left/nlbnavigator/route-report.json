@@ -1,0 +1,5645 @@
+{
+  "runtime": "nlbnavigator",
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/00-title.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 67911
+    },
+    {
+      "id": "opening",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/01-opening.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 44938,
+      "changed_pixels_from_title": 2003808
+    },
+    {
+      "id": "opening-next-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/02-opening-next-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45392,
+      "changed_pixels_from_opening": 37083
+    },
+    {
+      "id": "opening-choices",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/03-opening-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45618,
+      "changed_pixels_from_opening-next-portion": 1049857
+    },
+    {
+      "id": "jump-over-fence",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/04-jump-over-fence.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 179259,
+      "changed_pixels_from_opening-choices": 2001769
+    },
+    {
+      "id": "robbery-final-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/05-robbery-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 180099,
+      "changed_pixels_from_jump-over-fence": 40664
+    },
+    {
+      "id": "robbery-choices",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/06-robbery-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 177957,
+      "changed_pixels_from_robbery-final-portion": 1050315
+    },
+    {
+      "id": "eat-robber",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/07-eat-robber.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 148711,
+      "changed_pixels_from_robbery-choices": 1995671
+    },
+    {
+      "id": "eat-robber-final-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/08-eat-robber-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 148900,
+      "changed_pixels_from_eat-robber": 27719
+    },
+    {
+      "id": "eat-branch-zoo",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/09-eat-branch-zoo.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 91213,
+      "changed_pixels_from_eat-robber-final-portion": 2000325
+    },
+    {
+      "id": "eat-branch-zoo-final-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/10-eat-branch-zoo-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 92831,
+      "changed_pixels_from_eat-branch-zoo": 64274
+    },
+    {
+      "id": "eat-branch-positive-condition",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/11-wolfiness-positive-outcome.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 201252,
+      "changed_pixels_from_eat-branch-zoo-final-portion": 1995662
+    },
+    {
+      "id": "zoo-escape-final-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/12-zoo-escape-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 203173,
+      "changed_pixels_from_eat-branch-positive-condition": 39138
+    },
+    {
+      "id": "road-page",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/13-road-page.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 235053,
+      "changed_pixels_from_zoo-escape-final-portion": 1998985
+    },
+    {
+      "id": "road-final-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/14-road-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 236419,
+      "changed_pixels_from_road-page": 37952
+    },
+    {
+      "id": "truckers-bar-entry",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/15-truckers-bar-entry.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 254540,
+      "changed_pixels_from_road-final-portion": 2000460
+    },
+    {
+      "id": "truckers-bar-final-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/16-truckers-bar-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 257834,
+      "changed_pixels_from_truckers-bar-entry": 63114
+    },
+    {
+      "id": "truckers-bar-greeting",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/17-truckers-bar-greeting.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 218518,
+      "changed_pixels_from_truckers-bar-final-portion": 2000594
+    },
+    {
+      "id": "wolfiness-positive-dialogue-outcome",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/18-wolfiness-positive-dialogue-outcome.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 214679,
+      "changed_pixels_from_truckers-bar-greeting": 2001339
+    },
+    {
+      "id": "wolfiness-positive-final-portion",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/19-wolfiness-positive-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 217912,
+      "changed_pixels_from_wolfiness-positive-dialogue-outcome": 82386
+    },
+    {
+      "id": "page13-positive-dialogue",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/20-page13-positive-dialogue.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 68951,
+      "changed_pixels_from_wolfiness-positive-final-portion": 1999272
+    },
+    {
+      "id": "page13-positive-choices",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/21-page13-positive-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 59761,
+      "changed_pixels_from_page13-positive-dialogue": 1050372
+    },
+    {
+      "id": "eat-philosopher",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/22-eat-philosopher.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 69551,
+      "changed_pixels_from_page13-positive-choices": 1999235
+    },
+    {
+      "id": "page10-after-philosopher",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/23-page10-after-philosopher.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 79955,
+      "changed_pixels_from_eat-philosopher": 1999872
+    },
+    {
+      "id": "forest-entry-wolfiness-two",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/24-forest-entry-wolfiness-two.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 73836,
+      "changed_pixels_from_page10-after-philosopher": 1992871
+    },
+    {
+      "id": "wolfiness-greater-than-one-outcome",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/25-wolfiness-greater-than-one-outcome.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 74318,
+      "changed_pixels_from_forest-entry-wolfiness-two": 834692
+    },
+    {
+      "id": "forest-page-16-choices",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/26-forest-page-16-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 70831,
+      "changed_pixels_from_wolfiness-greater-than-one-outcome": 995836
+    },
+    {
+      "id": "forest-page-16-left-to-page18",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/27-forest-page-16-left-to-page18.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 77789,
+      "changed_pixels_from_forest-page-16-choices": 1995479
+    },
+    {
+      "id": "page18-traveler-branch-choices",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/28-page18-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 73628,
+      "changed_pixels_from_forest-page-16-left-to-page18": 1013428
+    },
+    {
+      "id": "page18-left-to-page19",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/29-page18-left-to-page19.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 93366,
+      "changed_pixels_from_page18-traveler-branch-choices": 1997136
+    },
+    {
+      "id": "page19-traveler-choices",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/30-page19-traveler-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 88666,
+      "changed_pixels_from_page18-left-to-page19": 1008284
+    },
+    {
+      "id": "eat-traveler-page20",
+      "screenshot": "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/31-traveler-choice-page20.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 95227,
+      "changed_pixels_from_page19-traveler-choices": 1992901
+    }
+  ],
+  "text_checks": [
+    {
+      "step_id": "opening",
+      "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "portion_index": 0,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "opening-next-portion",
+      "expected_fragment": "Интересно, сколько я тут валяюсь",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "portion_index": 1,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "jump-over-fence",
+      "expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+      "normalized_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+      "portion_index": 0,
+      "portion_count": 5,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-robber",
+      "expected_fragment": "Только сейчас, глядя на этого трясущегося человечка",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри.",
+      "normalized_text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри.",
+      "portion_index": 0,
+      "portion_count": 3,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-robber-final-portion",
+      "expected_fragment": "страшный пир",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+      "normalized_text": "Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+      "portion_index": 2,
+      "portion_count": 3,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-branch-zoo",
+      "expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+      "normalized_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+      "portion_index": 0,
+      "portion_count": 5,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-branch-zoo-final-portion",
+      "expected_fragment": "вернулись к своим обычным делам",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+      "normalized_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+      "portion_index": 4,
+      "portion_count": 5,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-branch-positive-condition",
+      "expected_fragment": "Заметив, что волки потеряли к вам интерес",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+      "normalized_text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+      "portion_index": 0,
+      "portion_count": 11,
+      "screen": "page"
+    },
+    {
+      "step_id": "zoo-escape-final-portion",
+      "expected_fragment": "других полицейских на своём пути вы не встретили",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+      "normalized_text": "Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+      "portion_index": 10,
+      "portion_count": 11,
+      "screen": "page"
+    },
+    {
+      "step_id": "road-page",
+      "expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+      "normalized_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+      "portion_index": 0,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "road-final-portion",
+      "expected_fragment": "вы решили туда зайти",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+      "normalized_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+      "portion_index": 5,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "truckers-bar-entry",
+      "expected_fragment": "Усевшись за столик",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+      "normalized_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+      "portion_index": 0,
+      "portion_count": 2,
+      "screen": "page"
+    },
+    {
+      "step_id": "truckers-bar-final-portion",
+      "expected_fragment": "за столик подсел бородатый мужик",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+      "normalized_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+      "portion_index": 1,
+      "portion_count": 2,
+      "screen": "page"
+    },
+    {
+      "step_id": "truckers-bar-greeting",
+      "expected_fragment": "Доброго вам утречка",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "-- Доброго вам утречка! -- сказал мужик.",
+      "normalized_text": "-- Доброго вам утречка! -- сказал мужик.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "wolfiness-positive-dialogue-outcome",
+      "expected_fragment": "Вам не хотелось общаться",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+      "normalized_text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+      "portion_index": 0,
+      "portion_count": 17,
+      "screen": "page"
+    },
+    {
+      "step_id": "wolfiness-positive-final-portion",
+      "expected_fragment": "где и заснули под мерное гудение пчёл",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+      "normalized_text": "Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+      "portion_index": 16,
+      "portion_count": 17,
+      "screen": "page"
+    },
+    {
+      "step_id": "page13-positive-dialogue",
+      "expected_fragment": "вы заметили как из бара вышел философ",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+      "normalized_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-philosopher",
+      "expected_fragment": "загрызли прежде, чем он успел пикнуть",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Бородач повернулся лицом к стене и застыл на месте, очевидно, справляя малую нужду.  Бесшумно подкравшись к нему, вы дождались, пока он повернётся, и, бросившись любителю чая на грудь, загрызли прежде, чем он успел пикнуть.",
+      "normalized_text": "Бородач повернулся лицом к стене и застыл на месте, очевидно, справляя малую нужду.  Бесшумно подкравшись к нему, вы дождались, пока он повернётся, и, бросившись любителю чая на грудь, загрызли прежде, чем он успел пикнуть.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "page10-after-philosopher",
+      "expected_fragment": "Основательно подкрепившись",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+      "normalized_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "forest-entry-wolfiness-two",
+      "expected_fragment": "вы решили свернуть в лес",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+      "normalized_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "wolfiness-greater-than-one-outcome",
+      "expected_fragment": "запах так и манил вас направо",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+      "normalized_text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "forest-page-16-left-to-page18",
+      "expected_fragment": "Вы повернули налево",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+      "normalized_text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "page18-left-to-page19",
+      "expected_fragment": "Вы выбрали левый поворот",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+      "normalized_text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-traveler-page20",
+      "expected_fragment": "Зверского аппетита вы не чувствовали",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.",
+      "normalized_text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    }
+  ],
+  "errors": [],
+  "command": [
+    "/workspace/nlb-pr73.X0NnoXEm/build/nlb_sdl",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/wolfman",
+    "explore",
+    "vn",
+    "--no-sound",
+    "--theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default",
+    "--base-theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default",
+    "--lang",
+    "ru",
+    "--log",
+    "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/playthrough.log",
+    "--window",
+    "1920x1080",
+    "--script",
+    "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/route.script",
+    "--state-log",
+    "/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/state-log.jsonl",
+    "--state-vars",
+    "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone"
+  ],
+  "screen_records": [],
+  "state_records": [
+    {
+      "schema": 1,
+      "index": 2,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/00-title.png",
+      "ok": true,
+      "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 0,
+        "more": false,
+        "visible": []
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 0,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "title.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [],
+        "reactionText": [],
+        "roomText": [],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "title"
+    },
+    {
+      "schema": 1,
+      "index": 5,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/01-opening.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening"
+    },
+    {
+      "schema": 1,
+      "index": 8,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/02-opening-next-portion.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-next-portion"
+    },
+    {
+      "schema": 1,
+      "index": 19,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/03-opening-choices.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 9,
+        "count": 10,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-choices"
+    },
+    {
+      "schema": 1,
+      "index": 22,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/04-jump-over-fence.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 5,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "jump-over-fence"
+    },
+    {
+      "schema": 1,
+      "index": 28,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/05-robbery-final-portion.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 5,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "robbery-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 31,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/06-robbery-choices.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 5,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "robbery-choices"
+    },
+    {
+      "schema": 1,
+      "index": 34,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/07-eat-robber.png",
+      "ok": true,
+      "pageId": "85d2e46d-074a-4925-b54d-4a52299d9d93",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 3,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "85d2e46d-074a-4925-b54d-4a52299d9d93",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.3.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри. Медленно, не спуская глаз с грабителя, вы стали приближаться к нему. Нервы парня не выдержали, он бросил своё оружие и украденную сумку и с громким криком побежал прочь, но вы были быстрее. Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри. Медленно, не спуская глаз с грабителя, вы стали приближаться к нему. Нервы парня не выдержали, он бросил своё оружие и украденную сумку и с громким криком побежал прочь, но вы были быстрее. Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-robber"
+    },
+    {
+      "schema": 1,
+      "index": 38,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/08-eat-robber-final-portion.png",
+      "ok": true,
+      "pageId": "85d2e46d-074a-4925-b54d-4a52299d9d93",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 2,
+        "count": 3,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "85d2e46d-074a-4925-b54d-4a52299d9d93",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.3.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри. Медленно, не спуская глаз с грабителя, вы стали приближаться к нему. Нервы парня не выдержали, он бросил своё оружие и украденную сумку и с громким криком побежал прочь, но вы были быстрее. Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри. Медленно, не спуская глаз с грабителя, вы стали приближаться к нему. Нервы парня не выдержали, он бросил своё оружие и украденную сумку и с громким криком побежал прочь, но вы были быстрее. Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-robber-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 41,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/09-eat-branch-zoo.png",
+      "ok": true,
+      "pageId": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 5,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.4.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Домов на улице стало меньше. Похоже, это уже окраина города. Вы точно помнили, что где-то рядом был зоопарк, а в нём волчий вольер. В текущем положении люди представляли для вас гораздо большую опасность, чем волки, и в голове мелькнула безумная мысль, что вы сможете затеряться среди волчьей стаи и скрыться от погони. По крайней мере, дожить до утра. Что будет потом, вы старались не думать.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Перепрыгнуть через забор волчьего вольера было просто, гораздо проще, чем через бетонную стену. Поджав хвосты, волки сбились в кучу, скалясь и внимательно глядя на вас. Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Домов на улице стало меньше. Похоже, это уже окраина города. Вы точно помнили, что где-то рядом был зоопарк, а в нём волчий вольер. В текущем положении люди представляли для вас гораздо большую опасность, чем волки, и в голове мелькнула безумная мысль, что вы сможете затеряться среди волчьей стаи и скрыться от погони. По крайней мере, дожить до утра. Что будет потом, вы старались не думать.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Перепрыгнуть через забор волчьего вольера было просто, гораздо проще, чем через бетонную стену. Поджав хвосты, волки сбились в кучу, скалясь и внимательно глядя на вас. Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-branch-zoo"
+    },
+    {
+      "schema": 1,
+      "index": 47,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/10-eat-branch-zoo-final-portion.png",
+      "ok": true,
+      "pageId": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 5,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.4.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Домов на улице стало меньше. Похоже, это уже окраина города. Вы точно помнили, что где-то рядом был зоопарк, а в нём волчий вольер. В текущем положении люди представляли для вас гораздо большую опасность, чем волки, и в голове мелькнула безумная мысль, что вы сможете затеряться среди волчьей стаи и скрыться от погони. По крайней мере, дожить до утра. Что будет потом, вы старались не думать.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Перепрыгнуть через забор волчьего вольера было просто, гораздо проще, чем через бетонную стену. Поджав хвосты, волки сбились в кучу, скалясь и внимательно глядя на вас. Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Домов на улице стало меньше. Похоже, это уже окраина города. Вы точно помнили, что где-то рядом был зоопарк, а в нём волчий вольер. В текущем положении люди представляли для вас гораздо большую опасность, чем волки, и в голове мелькнула безумная мысль, что вы сможете затеряться среди волчьей стаи и скрыться от погони. По крайней мере, дожить до утра. Что будет потом, вы старались не думать.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Перепрыгнуть через забор волчьего вольера было просто, гораздо проще, чем через бетонную стену. Поджав хвосты, волки сбились в кучу, скалясь и внимательно глядя на вас. Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-branch-zoo-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 50,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/11-wolfiness-positive-outcome.png",
+      "ok": true,
+      "pageId": "30f2da3a-76a3-40b2-84f0-41714eb48ae4",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 11,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "30f2da3a-76a3-40b2-84f0-41714eb48ae4",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Через некоторое время на аллее послышались голоса. Лучи фонарей поспешно шарили по дорожкам, траве и вольерам. Через некоторое время к вольеру подошли трое. Кажется, двое из них были полицейскими. С оружием. Вы снова оскалились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Ты уверен, что всё в порядке, старик? -- резко спросил один из полицейских. -- все твои звери на месте?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч фонаря скользнул по вольеру. Вы вжались в землю, дыхание, казалось остановилось. Луч осветил стаю. Скользнул по вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А ну-ка, вот на этого ещё раз!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч вернулся назад. Вы замерли, мускулы напружинились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Этот вроде не похож на моих... А что это у него на шее такое? Телефон?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы решили не выяснять, что у вас такое на шее, вместо этого, оттолкнувшись лапами, совершили ещё один головокружительный прыжок, перемахнули через ограду и помчались вниз по аллее прочь. Полицейские явно не обладали вашими рефлексами и поначалу замерли, как вкопанные, но затем выхватили оружие и начали стрелять вам вслед. Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Через некоторое время на аллее послышались голоса. Лучи фонарей поспешно шарили по дорожкам, траве и вольерам. Через некоторое время к вольеру подошли трое. Кажется, двое из них были полицейскими. С оружием. Вы снова оскалились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Ты уверен, что всё в порядке, старик? -- резко спросил один из полицейских. -- все твои звери на месте?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч фонаря скользнул по вольеру. Вы вжались в землю, дыхание, казалось остановилось. Луч осветил стаю. Скользнул по вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А ну-ка, вот на этого ещё раз!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч вернулся назад. Вы замерли, мускулы напружинились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Этот вроде не похож на моих... А что это у него на шее такое? Телефон?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы решили не выяснять, что у вас такое на шее, вместо этого, оттолкнувшись лапами, совершили ещё один головокружительный прыжок, перемахнули через ограду и помчались вниз по аллее прочь. Полицейские явно не обладали вашими рефлексами и поначалу замерли, как вкопанные, но затем выхватили оружие и начали стрелять вам вслед. Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-branch-positive-condition"
+    },
+    {
+      "schema": 1,
+      "index": 62,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/12-zoo-escape-final-portion.png",
+      "ok": true,
+      "pageId": "30f2da3a-76a3-40b2-84f0-41714eb48ae4",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 10,
+        "count": 11,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "30f2da3a-76a3-40b2-84f0-41714eb48ae4",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Через некоторое время на аллее послышались голоса. Лучи фонарей поспешно шарили по дорожкам, траве и вольерам. Через некоторое время к вольеру подошли трое. Кажется, двое из них были полицейскими. С оружием. Вы снова оскалились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Ты уверен, что всё в порядке, старик? -- резко спросил один из полицейских. -- все твои звери на месте?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч фонаря скользнул по вольеру. Вы вжались в землю, дыхание, казалось остановилось. Луч осветил стаю. Скользнул по вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А ну-ка, вот на этого ещё раз!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч вернулся назад. Вы замерли, мускулы напружинились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Этот вроде не похож на моих... А что это у него на шее такое? Телефон?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы решили не выяснять, что у вас такое на шее, вместо этого, оттолкнувшись лапами, совершили ещё один головокружительный прыжок, перемахнули через ограду и помчались вниз по аллее прочь. Полицейские явно не обладали вашими рефлексами и поначалу замерли, как вкопанные, но затем выхватили оружие и начали стрелять вам вслед. Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Через некоторое время на аллее послышались голоса. Лучи фонарей поспешно шарили по дорожкам, траве и вольерам. Через некоторое время к вольеру подошли трое. Кажется, двое из них были полицейскими. С оружием. Вы снова оскалились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Ты уверен, что всё в порядке, старик? -- резко спросил один из полицейских. -- все твои звери на месте?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч фонаря скользнул по вольеру. Вы вжались в землю, дыхание, казалось остановилось. Луч осветил стаю. Скользнул по вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А ну-ка, вот на этого ещё раз!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Луч вернулся назад. Вы замерли, мускулы напружинились.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Этот вроде не похож на моих... А что это у него на шее такое? Телефон?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы решили не выяснять, что у вас такое на шее, вместо этого, оттолкнувшись лапами, совершили ещё один головокружительный прыжок, перемахнули через ограду и помчались вниз по аллее прочь. Полицейские явно не обладали вашими рефлексами и поначалу замерли, как вкопанные, но затем выхватили оружие и начали стрелять вам вслед. Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "zoo-escape-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 65,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/13-road-page.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 6,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "road-page"
+    },
+    {
+      "schema": 1,
+      "index": 72,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/14-road-final-portion.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 5,
+        "count": 6,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "road-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 75,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/15-truckers-bar-entry.png",
+      "ok": true,
+      "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 2,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "6.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "truckers-bar-entry"
+    },
+    {
+      "schema": 1,
+      "index": 78,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/16-truckers-bar-final-portion.png",
+      "ok": true,
+      "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "6.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "truckers-bar-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 81,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/17-truckers-bar-greeting.png",
+      "ok": true,
+      "pageId": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Доброго вам утречка! -- сказал мужик.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "7.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Доброго вам утречка! -- сказал мужик.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Доброго вам утречка! -- сказал мужик.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "truckers-bar-greeting"
+    },
+    {
+      "schema": 1,
+      "index": 84,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/18-wolfiness-positive-dialogue-outcome.png",
+      "ok": true,
+      "pageId": "b2f0838e-3068-4850-ad2f-4944075de38b",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 17,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "b2f0838e-3068-4850-ad2f-4944075de38b",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "8.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А я вижу, у вас день не задался? -- не отставал бородач.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да уж, -- рявкнули вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Потрясающе! -- воскликнул мужик. -- Вы типичный волколак.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Чего? -- не поняли вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Видите ли, я не всегда работал дальнобойщиком. По профессии я кандидат философских наук. Но жить на зарплату преподавателя... -- он вздохнул. -- Так вот, увидев вас, я отчего-то сразу вспомнил это мифическое существо. Оборотня.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Меня никто не кусал, -- зачем-то сказали вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Для превращения в волколака это и не требуется! -- радостно воскликнул мужик, счастливый от того, что нашёл собеседника.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вот это уже было интересно. Вы весь превратились в слух.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Достаточно накинуть волчью шкуру, произнести заклинание и дело сделано.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "В этот момент принесли чай, но вам было не до него. Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру…",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Что самое интересное, -- продолжал философ, -- самый надёжный способ убить такого оборотня -- это вонзить в него кол из боярышника. Вы, я вижу, не хотите чай? Так я выпью, пока он не остыл. -- С этими словами мужик взял чашку и, прежде чем вы успели его остановить, сделал большой глоток.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А-а, хорошо. Зря не стали чай, очень недурственно.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Побагровев от ярости, вы встали из-за стола и практически выбежали из бара, стараясь не слушать возгласы нового знакомого, раздававшиеся вслед. Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А я вижу, у вас день не задался? -- не отставал бородач.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да уж, -- рявкнули вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Потрясающе! -- воскликнул мужик. -- Вы типичный волколак.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Чего? -- не поняли вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Видите ли, я не всегда работал дальнобойщиком. По профессии я кандидат философских наук. Но жить на зарплату преподавателя... -- он вздохнул. -- Так вот, увидев вас, я отчего-то сразу вспомнил это мифическое существо. Оборотня.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Меня никто не кусал, -- зачем-то сказали вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Для превращения в волколака это и не требуется! -- радостно воскликнул мужик, счастливый от того, что нашёл собеседника.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вот это уже было интересно. Вы весь превратились в слух.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Достаточно накинуть волчью шкуру, произнести заклинание и дело сделано.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "В этот момент принесли чай, но вам было не до него. Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру…",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Что самое интересное, -- продолжал философ, -- самый надёжный способ убить такого оборотня -- это вонзить в него кол из боярышника. Вы, я вижу, не хотите чай? Так я выпью, пока он не остыл. -- С этими словами мужик взял чашку и, прежде чем вы успели его остановить, сделал большой глоток.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А-а, хорошо. Зря не стали чай, очень недурственно.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Побагровев от ярости, вы встали из-за стола и практически выбежали из бара, стараясь не слушать возгласы нового знакомого, раздававшиеся вслед. Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "wolfiness-positive-dialogue-outcome"
+    },
+    {
+      "schema": 1,
+      "index": 102,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/19-wolfiness-positive-final-portion.png",
+      "ok": true,
+      "pageId": "b2f0838e-3068-4850-ad2f-4944075de38b",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 16,
+        "count": 17,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "b2f0838e-3068-4850-ad2f-4944075de38b",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "8.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А я вижу, у вас день не задался? -- не отставал бородач.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да уж, -- рявкнули вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Потрясающе! -- воскликнул мужик. -- Вы типичный волколак.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Чего? -- не поняли вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Видите ли, я не всегда работал дальнобойщиком. По профессии я кандидат философских наук. Но жить на зарплату преподавателя... -- он вздохнул. -- Так вот, увидев вас, я отчего-то сразу вспомнил это мифическое существо. Оборотня.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Меня никто не кусал, -- зачем-то сказали вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Для превращения в волколака это и не требуется! -- радостно воскликнул мужик, счастливый от того, что нашёл собеседника.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вот это уже было интересно. Вы весь превратились в слух.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Достаточно накинуть волчью шкуру, произнести заклинание и дело сделано.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "В этот момент принесли чай, но вам было не до него. Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру…",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Что самое интересное, -- продолжал философ, -- самый надёжный способ убить такого оборотня -- это вонзить в него кол из боярышника. Вы, я вижу, не хотите чай? Так я выпью, пока он не остыл. -- С этими словами мужик взял чашку и, прежде чем вы успели его остановить, сделал большой глоток.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А-а, хорошо. Зря не стали чай, очень недурственно.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Побагровев от ярости, вы встали из-за стола и практически выбежали из бара, стараясь не слушать возгласы нового знакомого, раздававшиеся вслед. Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А я вижу, у вас день не задался? -- не отставал бородач.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да уж, -- рявкнули вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Потрясающе! -- воскликнул мужик. -- Вы типичный волколак.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Чего? -- не поняли вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Видите ли, я не всегда работал дальнобойщиком. По профессии я кандидат философских наук. Но жить на зарплату преподавателя... -- он вздохнул. -- Так вот, увидев вас, я отчего-то сразу вспомнил это мифическое существо. Оборотня.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Меня никто не кусал, -- зачем-то сказали вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Для превращения в волколака это и не требуется! -- радостно воскликнул мужик, счастливый от того, что нашёл собеседника.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вот это уже было интересно. Вы весь превратились в слух.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Достаточно накинуть волчью шкуру, произнести заклинание и дело сделано.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "В этот момент принесли чай, но вам было не до него. Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру…",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Что самое интересное, -- продолжал философ, -- самый надёжный способ убить такого оборотня -- это вонзить в него кол из боярышника. Вы, я вижу, не хотите чай? Так я выпью, пока он не остыл. -- С этими словами мужик взял чашку и, прежде чем вы успели его остановить, сделал большой глоток.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А-а, хорошо. Зря не стали чай, очень недурственно.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Побагровев от ярости, вы встали из-за стола и практически выбежали из бара, стараясь не слушать возгласы нового знакомого, раздававшиеся вслед. Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "wolfiness-positive-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 105,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/20-page13-positive-dialogue.png",
+      "ok": true,
+      "pageId": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "13.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть философа",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Украсть еду с кухни",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "page13-positive-dialogue"
+    },
+    {
+      "schema": 1,
+      "index": 108,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/21-page13-positive-choices.png",
+      "ok": true,
+      "pageId": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "0f773e1b-130f-465d-a8e5-3cabc8bfc1d1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "13.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть философа",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Украсть еду с кухни",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "page13-positive-choices"
+    },
+    {
+      "schema": 1,
+      "index": 111,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/22-eat-philosopher.png",
+      "ok": true,
+      "pageId": "46fc2603-670d-4e23-8ce1-618e20143ea2",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бородач повернулся лицом к стене и застыл на месте, очевидно, справляя малую нужду.  Бесшумно подкравшись к нему, вы дождались, пока он повернётся, и, бросившись любителю чая на грудь, загрызли прежде, чем он успел пикнуть.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "46fc2603-670d-4e23-8ce1-618e20143ea2",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "9.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бородач повернулся лицом к стене и застыл на месте, очевидно, справляя малую нужду.  Бесшумно подкравшись к нему, вы дождались, пока он повернётся, и, бросившись любителю чая на грудь, загрызли прежде, чем он успел пикнуть.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бородач повернулся лицом к стене и застыл на месте, очевидно, справляя малую нужду.  Бесшумно подкравшись к нему, вы дождались, пока он повернётся, и, бросившись любителю чая на грудь, загрызли прежде, чем он успел пикнуть.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-philosopher"
+    },
+    {
+      "schema": 1,
+      "index": 114,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/23-page10-after-philosopher.png",
+      "ok": true,
+      "pageId": "e40f707a-3934-43b4-b302-9ea6b4461531",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "e40f707a-3934-43b4-b302-9ea6b4461531",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "10.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "page10-after-philosopher"
+    },
+    {
+      "schema": 1,
+      "index": 117,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/24-forest-entry-wolfiness-two.png",
+      "ok": true,
+      "pageId": "05837065-8160-469f-8b29-e07d87549656",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "05837065-8160-469f-8b29-e07d87549656",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "15.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "forest-entry-wolfiness-two"
+    },
+    {
+      "schema": 1,
+      "index": 120,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/25-wolfiness-greater-than-one-outcome.png",
+      "ok": true,
+      "pageId": "3792ac23-4da9-4539-a393-95780a98771a",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "3792ac23-4da9-4539-a393-95780a98771a",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "16.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Налево",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Направо",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "wolfiness-greater-than-one-outcome"
+    },
+    {
+      "schema": 1,
+      "index": 123,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/26-forest-page-16-choices.png",
+      "ok": true,
+      "pageId": "3792ac23-4da9-4539-a393-95780a98771a",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "3792ac23-4da9-4539-a393-95780a98771a",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "16.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Налево",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Направо",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "forest-page-16-choices"
+    },
+    {
+      "schema": 1,
+      "index": 126,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/27-forest-page-16-left-to-page18.png",
+      "ok": true,
+      "pageId": "67573c54-0976-4a54-a3c9-f70696f5feae",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "67573c54-0976-4a54-a3c9-f70696f5feae",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "18.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Налево",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Направо",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "forest-page-16-left-to-page18"
+    },
+    {
+      "schema": 1,
+      "index": 129,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/28-page18-choices.png",
+      "ok": true,
+      "pageId": "67573c54-0976-4a54-a3c9-f70696f5feae",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "67573c54-0976-4a54-a3c9-f70696f5feae",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "18.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы повернули налево. Пробежав некоторое расстояние, вы снова оказались на развилке.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Налево",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Направо",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "page18-traveler-branch-choices"
+    },
+    {
+      "schema": 1,
+      "index": 132,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/29-page18-left-to-page19.png",
+      "ok": true,
+      "pageId": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "19.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть путника",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Не есть путника",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "page18-left-to-page19"
+    },
+    {
+      "schema": 1,
+      "index": 135,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/30-page19-traveler-choices.png",
+      "ok": true,
+      "pageId": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 2,
+        "hp": 3,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "19.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть путника",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Не есть путника",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 2    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "page19-traveler-choices"
+    },
+    {
+      "schema": 1,
+      "index": 138,
+      "command": "shot:/workspace/nlb-pr73.X0NnoXEm/results/wolfman-forest-wolfiness-two-left/nlbnavigator/31-traveler-choice-page20.png",
+      "ok": true,
+      "pageId": "0d9f5052-9f0a-4a5d-892b-05d8ac7f713f",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 3,
+        "hp": 4,
+        "barExit": true,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "0d9f5052-9f0a-4a5d-892b-05d8ac7f713f",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "20.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 3    Жизнь: 4",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-traveler-page20"
+    }
+  ],
+  "state_log_validation": "ok: 139 записей",
+  "metadata": {
+    "route_id": "wolfman-forest-wolfiness-two-left",
+    "route_sha256": "f88f4af32e79cc3a75010be735eafa83a01213f778a9b25ee8d078d7227c44a3",
+    "runner_sha256": "9903ac07177fed6c3738524bb4fbd7956b5aea76b911c4affce526d77dd8bad9",
+    "navigator_commit": "b104fddf6c9d10f3ae7df6ee5e5b7a9674a6b815",
+    "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  }
+}

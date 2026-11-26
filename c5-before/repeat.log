@@ -1,0 +1,2 @@
+tests/differential/check_instead_trace_lifecycle.lua:65: seq=5, ожидался 6
+/workspace/nlb-pr73.X0NnoXEm/c5-before/repeat/trace.tsv: 4 записей, заголовков 1, seq 1..4

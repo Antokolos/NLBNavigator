@@ -1,0 +1,45 @@
+{
+  "repository": "Antokolos/NLBNavigator",
+  "draft_pr": 73,
+  "issue": 69,
+  "initial_head": "5ecbe9ae8ff75dfd3fbdbcc9a3dee697b22fa413",
+  "merge_head": "9e4716ee50929dea7a42968e8e4065386e3bc534",
+  "tested_head": "b104fddf6c9d10f3ae7df6ee5e5b7a9674a6b815",
+  "main": "c90dfb725fb3a5ec7093078634ec0029f5582423",
+  "pins": {
+    "wolfman": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead-am_i_a_monster_vn": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "instead": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "environment": {
+    "os": "Debian 13.7 trixie amd64",
+    "display": "Xvfb 1920x1080x24 -noreset",
+    "sdl_video": "x11",
+    "sdl_audio": "dummy",
+    "magick_threads": 2,
+    "omp_threads": 2
+  },
+  "tools": {
+    "cmake": "3.31.6",
+    "ninja": "1.12.1",
+    "gcc": "14.2.0",
+    "python": "3.12.14",
+    "pillow": "13.0.0",
+    "instead": "3.5.2",
+    "luajit": "2.1.0+openresty20250117-2",
+    "xvfb": "2:21.1.16-1.3+deb13u4",
+    "openbox": "3.6.1-12+b2",
+    "xdotool": "1:3.20160805.1-5.1",
+    "imagemagick": "7.1.1-43",
+    "sdl3": "3.4.18",
+    "sdl3_image": "3.2.4",
+    "sdl3_ttf": "3.2.2",
+    "sdl3_mixer": "3.2.4"
+  },
+  "results": {
+    "routes": 22,
+    "checkpoints": 762,
+    "text_pairs": 551,
+    "advance_pairs": 53
+  }
+}

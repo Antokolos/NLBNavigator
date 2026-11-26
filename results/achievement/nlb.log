@@ -1,0 +1,8 @@
+award: runner exit=0, журнал /workspace/nlb-pr73.X0NnoXEm/results/achievement/scenarios/award.log
+award: подтверждены вызов площадки и строки id/granted
+readback: runner exit=0, журнал /workspace/nlb-pr73.X0NnoXEm/results/achievement/scenarios/readback.log
+readback: RIGHT_CHOICE записано, строк VILLAIN_PUNISHED: 2
+clean: runner exit=0, журнал /workspace/nlb-pr73.X0NnoXEm/results/achievement/scenarios/clean.log
+clean: RIGHT_CHOICE записано, строк VILLAIN_PUNISHED: 0
+reaward: runner exit=0, журнал /workspace/nlb-pr73.X0NnoXEm/results/achievement/scenarios/reaward.log
+reaward: обе строки VILLAIN_PUNISHED сохранены, повторных вызовов площадки нет

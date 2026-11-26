@@ -1,0 +1,18 @@
+Opening game: /workspace/nlb-pr73.X0NnoXEm/restart-debug/run/instead-game-overlay
+Using own themes directory...
+Video mode: 1920x1080@32bpp (opengl)
+Using own themes directory...
+DPI scale: 1.000000
+DEBUG init	/workspace/nlb-pr73.X0NnoXEm/restart-debug/run/instead-game-overlay/.nlb-test-trace.tsv	table	function	table	nil
+DEBUG ready	/workspace/nlb-pr73.X0NnoXEm/restart-debug/run/instead-game-overlay/.nlb-test-trace.tsv	0
+Initializing API...
+
+API initialized.
+
+DPI scale: 1.000000
+DEBUG init	/workspace/nlb-pr73.X0NnoXEm/restart-debug/run/instead-game-overlay/.nlb-test-trace.tsv	table	function	table	nil
+DEBUG ready	/workspace/nlb-pr73.X0NnoXEm/restart-debug/run/instead-game-overlay/.nlb-test-trace.tsv	4
+Initializing API...
+
+API initialized.
+

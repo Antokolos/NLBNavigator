@@ -1,0 +1,38 @@
+test_load_confirmed_only_by_save_rejected (test_instead_trace.ExpectedCommandTest.test_load_confirmed_only_by_save_rejected) ... ok
+test_save_confirmed_only_by_load_rejected (test_instead_trace.ExpectedCommandTest.test_save_confirmed_only_by_load_rejected) ... ok
+test_changed_screen_kind_is_detected (test_instead_trace.FullIdentityTest.test_changed_screen_kind_is_detected) ... ok
+test_changed_variable_in_old_record_is_detected (test_instead_trace.FullIdentityTest.test_changed_variable_in_old_record_is_detected) ... ok
+test_duplicate_and_non_monotonic_seq_rejected (test_instead_trace.FullIdentityTest.test_duplicate_and_non_monotonic_seq_rejected) ... ok
+test_rewrite_during_wait_detected (test_instead_trace.FullIdentityTest.test_rewrite_during_wait_detected) ... ok
+test_wait_for_load_not_satisfied_by_earlier_scene (test_instead_trace.FullIdentityTest.test_wait_for_load_not_satisfied_by_earlier_scene) ... ok
+test_wait_ignores_load_from_previous_step (test_instead_trace.FullIdentityTest.test_wait_ignores_load_from_previous_step) ... ok
+test_wait_rejects_duplicate_even_with_fresh_load (test_instead_trace.FullIdentityTest.test_wait_rejects_duplicate_even_with_fresh_load) ... ok
+test_wait_rejects_rewrite_of_record_first_seen_during_wait (test_instead_trace.FullIdentityTest.test_wait_rejects_rewrite_of_record_first_seen_during_wait) ... ok
+test_only_f8_is_save (test_instead_trace.InsteadMenuKindTest.test_only_f8_is_save) ... ok
+test_only_f9_is_load (test_instead_trace.InsteadMenuKindTest.test_only_f9_is_load) ... ok
+test_other_menu_and_actions (test_instead_trace.InsteadMenuKindTest.test_other_menu_and_actions) ... ok
+test_load_record_that_is_scene_with_text_accepted (test_instead_trace.PickLoadTest.test_load_record_that_is_scene_with_text_accepted) ... ok
+test_load_rejects_scene_before_command (test_instead_trace.PickLoadTest.test_load_rejects_scene_before_command) ... ok
+test_load_with_correct_expected_state (test_instead_trace.PickLoadTest.test_load_with_correct_expected_state) ... ok
+test_load_with_fresh_empty_rendered_rejected (test_instead_trace.PickLoadTest.test_load_with_fresh_empty_rendered_rejected) ... ok
+test_load_with_fresh_scene_succeeds (test_instead_trace.PickLoadTest.test_load_with_fresh_scene_succeeds) ... ok
+test_load_with_wrong_expected_state_rejected (test_instead_trace.PickLoadTest.test_load_with_wrong_expected_state_rejected) ... ok
+test_load_without_evidence_rejected (test_instead_trace.PickLoadTest.test_load_without_evidence_rejected) ... ok
+test_load_without_fresh_scene_rejected (test_instead_trace.PickLoadTest.test_load_without_fresh_scene_rejected) ... ok
+test_wrong_or_incomplete_expected_scene_is_rejected (test_instead_trace.PickLoadTest.test_wrong_or_incomplete_expected_scene_is_rejected) ... ok
+test_save_of_arbitrary_old_scene_without_fresh_evidence_rejected (test_instead_trace.PickSaveTest.test_save_of_arbitrary_old_scene_without_fresh_evidence_rejected) ... ok
+test_save_uses_confirmed_scene_when_only_empty_scene_appeared (test_instead_trace.PickSaveTest.test_save_uses_confirmed_scene_when_only_empty_scene_appeared) ... ok
+test_save_with_empty_rendered_but_changed_page_rejected (test_instead_trace.PickSaveTest.test_save_with_empty_rendered_but_changed_page_rejected) ... ok
+test_save_with_empty_rendered_but_changed_portion_rejected (test_instead_trace.PickSaveTest.test_save_with_empty_rendered_but_changed_portion_rejected) ... ok
+test_save_with_empty_rendered_but_changed_variables_rejected (test_instead_trace.PickSaveTest.test_save_with_empty_rendered_but_changed_variables_rejected) ... ok
+test_save_without_command_evidence_rejected (test_instead_trace.PickSaveTest.test_save_without_command_evidence_rejected) ... ok
+test_appended_records_are_not_reset (test_instead_trace.TraceLifecycleTest.test_appended_records_are_not_reset) ... ok
+test_capture_falls_back_to_last_scene (test_instead_trace.TraceLifecycleTest.test_capture_falls_back_to_last_scene) ... ok
+test_reset_rejected_for_save_and_load (test_instead_trace.TraceLifecycleTest.test_reset_rejected_for_save_and_load) ... ok
+test_rewritten_trace_longer_than_cursor_is_reset (test_instead_trace.TraceLifecycleTest.test_rewritten_trace_longer_than_cursor_is_reset) ... ok
+test_rewritten_trace_with_same_length_and_new_prefix_is_reset (test_instead_trace.TraceLifecycleTest.test_rewritten_trace_with_same_length_and_new_prefix_is_reset) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.454s
+
+OK

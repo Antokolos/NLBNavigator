@@ -1,0 +1,11 @@
+[INSTEAD] starting step 1/2: title
+[INSTEAD] completed 1/2: title (3.06s, page=f7cb8bed-47a9-4ce2-b713-c9b53571c93f, portion=0/0, screen=page, vars=wolfiness=0,hp=0,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 2/2: load-a
+[INSTEAD] completed 2/2: load-a (6.39s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 44819
+[INSTEAD] cleanup player: exited after SIGTERM with status 0
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 44810
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Проверка INSTEAD не прошла: load-a: отсутствует Lua state trace для контрольной точки; load-a: нет свежей записи команды load — выполнение не подтверждено

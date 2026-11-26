@@ -1,0 +1,2 @@
+tests/differential/check_instead_trace_lifecycle.lua:118: остались открытые файлы: 2
+/workspace/nlb-pr73.X0NnoXEm/c5-before/both/trace.tsv: 4 записей, заголовков 1, seq 1..4

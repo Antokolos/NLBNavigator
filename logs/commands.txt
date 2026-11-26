@@ -1,0 +1,10 @@
+source /workspace/nlb-developer-env-v1/activate.sh
+cmake -S /workspace/NLBNavigator -B /workspace/nlb-pr73.X0NnoXEm/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DNLB_BUILD_TESTS=ON
+cmake --build /workspace/nlb-pr73.X0NnoXEm/build --target nlb_main nlb_sdl nlb_save_portion_test --parallel 4
+ctest --test-dir /workspace/nlb-pr73.X0NnoXEm/build -V
+python3 -m unittest discover -s tests/differential -p 'test_*.py' -v
+python3 tests/differential/validate_catalog.py
+/workspace/nlb-pr73.X0NnoXEm/lua-run tests/differential/check_instead_trace_lifecycle.lua tests/differential/instead_trace.lua <новый каталог> <сценарий>
+NLB_CLICK_PAUSE=0.27 bash /workspace/nlb-pr73.X0NnoXEm/run-final.sh c6 c6-final 704
+python3 /workspace/nlb-pr73.X0NnoXEm/local-suite.py 4
+git diff --check origin/main...HEAD

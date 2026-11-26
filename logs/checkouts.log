@@ -1,0 +1,3 @@
+diff-check=0
+## fix/issue-69-instead-save-trace
+b104fddf6c9d10f3ae7df6ee5e5b7a9674a6b815 Проверить жизненный цикл трассы INSTEAD при загрузке (#69)

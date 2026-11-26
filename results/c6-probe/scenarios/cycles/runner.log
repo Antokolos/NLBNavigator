@@ -1,0 +1,51 @@
+[INSTEAD] starting step 1/22: title
+[INSTEAD] completed 1/22: title (3.2s, page=f7cb8bed-47a9-4ce2-b713-c9b53571c93f, portion=0/0, screen=page, vars=wolfiness=0,hp=0,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 2/22: opening
+[INSTEAD] completed 2/22: opening (3.09s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=0/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 3/22: opening-next-portion
+[INSTEAD] completed 3/22: opening-next-portion (3.17s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=1/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 4/22: opening-choices
+[INSTEAD] completed 4/22: opening-choices (6.58s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=9/10, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 5/22: try-to-break-through-police
+[INSTEAD] completed 5/22: try-to-break-through-police (4.12s, page=b12a01be-cd61-4dba-b427-1ce3afc06fc6, portion=0/10, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 6/22: hospital-page3
+[INSTEAD] completed 6/22: hospital-page3 (7.57s, page=8c1fa8c6-8027-43c8-8d8b-0bf454d5e717, portion=0/2, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 7/22: save-a
+[INSTEAD] completed 7/22: save-a (2.83s, page=8c1fa8c6-8027-43c8-8d8b-0bf454d5e717, portion=0/2, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 8/22: baseline-hospital-page3-last
+[INSTEAD] completed 8/22: baseline-hospital-page3-last (2.96s, page=8c1fa8c6-8027-43c8-8d8b-0bf454d5e717, portion=1/2, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 9/22: baseline-hospital-choices
+[INSTEAD] completed 9/22: baseline-hospital-choices (3.49s, page=8c1fa8c6-8027-43c8-8d8b-0bf454d5e717, portion=1/2, screen=choices, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 10/22: baseline-eat-doctor
+[INSTEAD] completed 10/22: baseline-eat-doctor (4.15s, page=d937c5c1-766c-4581-a03e-736560b0cc8f, portion=0/4, screen=page, vars=wolfiness=1,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 11/22: load-a-1
+[INSTEAD] completed 11/22: load-a-1 (5.92s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 12/22: cycle-1-hospital-page3-last
+[INSTEAD] completed 12/22: cycle-1-hospital-page3-last (2.97s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 13/22: cycle-1-hospital-choices
+[INSTEAD] completed 13/22: cycle-1-hospital-choices (3.4s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 14/22: cycle-1-eat-doctor
+[INSTEAD] completed 14/22: cycle-1-eat-doctor (4.16s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 15/22: load-a-2
+[INSTEAD] completed 15/22: load-a-2 (5.93s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 16/22: cycle-2-hospital-page3-last
+[INSTEAD] completed 16/22: cycle-2-hospital-page3-last (2.96s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 17/22: cycle-2-hospital-choices
+[INSTEAD] completed 17/22: cycle-2-hospital-choices (3.34s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 18/22: cycle-2-eat-doctor
+[INSTEAD] completed 18/22: cycle-2-eat-doctor (4.21s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 19/22: load-a-3
+[INSTEAD] completed 19/22: load-a-3 (6.01s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 20/22: cycle-3-hospital-page3-last
+[INSTEAD] completed 20/22: cycle-3-hospital-page3-last (2.85s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 21/22: cycle-3-hospital-choices
+[INSTEAD] completed 21/22: cycle-3-hospital-choices (3.41s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 22/22: cycle-3-eat-doctor
+[INSTEAD] completed 22/22: cycle-3-eat-doctor (4.12s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 41920
+[INSTEAD] cleanup player: exited after SIGTERM with status 0
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 41916
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Проверка INSTEAD не прошла: load-a-1: отсутствует Lua state trace для контрольной точки; cycle-1-hospital-page3-last: отсутствует Lua state trace для контрольной точки; cycle-1-hospital-choices: отсутствует Lua state trace для контрольной точки; cycle-1-eat-doctor: отсутствует Lua state trace для контрольной точки; load-a-2: отсутствует Lua state trace для контрольной точки; cycle-2-hospital-page3-last: отсутствует Lua state trace для контрольной точки; cycle-2-hospital-choices: отсутствует Lua state trace для контрольной точки; cycle-2-eat-doctor: отсутствует Lua state trace для контрольной точки; load-a-3: отсутствует Lua state trace для контрольной точки; cycle-3-hospital-page3-last: отсутствует Lua state trace для контрольной точки; cycle-3-hospital-choices: отсутствует Lua state trace для контрольной точки; cycle-3-eat-doctor: отсутствует Lua state trace для контрольной точки; load-a-1: нет свежей записи команды load — выполнение не подтверждено; cycle-1-hospital-page3-last: INSTEAD trace не зафиксировал ожидаемый input event; cycle-1-hospital-page3-last: после действия нет новой сцены; inv/way и старый текст не подходят; cycle-1-hospital-choices: INSTEAD trace не зафиксировал ожидаемый input event; cycle-1-hospital-choices: после действия нет новой сцены; inv/way и старый текст не подходят; cycle-1-eat-doctor: INSTEAD trace не зафиксировал ожидаемый input event; cycle-1-eat-doctor: после действия нет новой сцены; inv/way и старый текст не подходят; load-a-2: нет свежей записи команды load — выполнение не подтверждено; cycle-2-hospital-page3-last: INSTEAD trace не зафиксировал ожидаемый input event; cycle-2-hospital-page3-last: после действия нет новой сцены; inv/way и старый текст не подходят; cycle-2-hospital-choices: INSTEAD trace не зафиксировал ожидаемый input event; cycle-2-hospital-choices: после действия нет новой сцены; inv/way и старый текст не подходят; cycle-2-eat-doctor: INSTEAD trace не зафиксировал ожидаемый input event; cycle-2-eat-doctor: после действия нет новой сцены; inv/way и старый текст не подходят; load-a-3: нет свежей записи команды load — выполнение не подтверждено; cycle-3-hospital-page3-last: INSTEAD trace не зафиксировал ожидаемый input event; cycle-3-hospital-page3-last: после действия нет новой сцены; inv/way и старый текст не подходят; cycle-3-hospital-choices: INSTEAD trace не зафиксировал ожидаемый input event; cycle-3-hospital-choices: после действия нет новой сцены; inv/way и старый текст не подходят; cycle-3-eat-doctor: INSTEAD trace не зафиксировал ожидаемый input event; cycle-3-eat-doctor: после действия нет новой сцены; inv/way и старый текст не подходят

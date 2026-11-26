@@ -1,0 +1,1 @@
+tests/differential/check_instead_trace_lifecycle.lua:65: seq=nil, ожидался 3

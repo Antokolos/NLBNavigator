@@ -1,0 +1,2 @@
+tests/differential/check_instead_trace_lifecycle.lua:55: /workspace/nlb-pr73.X0NnoXEm/c5-before/new-file/next.tsv: No such file or directory
+/workspace/nlb-pr73.X0NnoXEm/c5-before/new-file/trace.tsv: 4 записей, заголовков 1, seq 1..4
