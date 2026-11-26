@@ -226,6 +226,13 @@ public:
     bool canSave() const;
     bool loadGame(const std::string& path, std::string& error);
     SaveInfo readSaveInfo(const std::string& path) const;
+    /// Состояние экрана, сохраняемое вместе с игрой (например, порция VN): движок хранит его как
+    /// непрозрачные строки записями `ui` и возвращает после загрузки. Игровое состояние (страница,
+    /// переменные) — отдельно, в PlayerContext. Экран задаёт его перед сохранением и забирает после
+    /// загрузки; старые сохранения поля не содержат — тогда состояние экрана пустое.
+    using UiState = std::map<std::string, std::string>;
+    void setUiState(const UiState& state) { m_uiState = state; }
+    const UiState& uiState() const { return m_uiState; }
     /// На странице есть таймер — ожидание имеет смысл
     bool hasTimer() const;
 
@@ -380,6 +387,8 @@ private:
     std::optional<std::string> m_pendingExternalGame;
     /// Снимок SNAPSHOT — игра целиком, записанная как сохранение (writeSave); пусто — снимка нет
     std::string m_snapshot;
+    /// Состояние экрана (порция VN и т.п.), сохранённое записями `ui`; в старых файлах пусто
+    UiState m_uiState;
     void writeSave(std::ostream& out) const;
     /// Ставит игру в состояние из проверенного сохранения (или снимка) и показывает страницу
     void applySave(const std::vector<std::vector<std::string>>& records);
