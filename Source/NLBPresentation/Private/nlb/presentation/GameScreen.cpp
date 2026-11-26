@@ -339,19 +339,13 @@ void GameScreen::startTransition() {
 
 void GameScreen::update(int milliseconds) {
     if (m_transitionActive) m_transitionMs += std::max(0, milliseconds);
-    // Загрузка восстановила порцию: применить после pull(), который мог сбросить её на 0.
-    // takeRestoredViewState забираем ДО afterCommand, чтобы afterCommand не опубликовал
-    // промежуточный 0 и не уничтожил ещё не применённое состояние.
-    Session::ViewState restored;
-    const bool restoredPending = m_session.takeRestoredViewState(restored);
-    if (m_session.revision() != m_seenRevision) afterCommand(!restoredPending);
-    if (restoredPending) applyRestoredViewState(restored);
+    if (m_session.revision() != m_seenRevision) afterCommand();
     updatePause();
-    publishViewState();
-    if (m_menu != Menu::None) return;  // время книги идёт, только пока игрок не в меню (пауза)
-    const uint64_t revision = m_session.revision();
-    m_session.advance(milliseconds);
-    if (m_session.revision() != revision) pull();
+    if (m_menu == Menu::None) {  // в меню время книги остановлено
+        const uint64_t revision = m_session.revision();
+        m_session.advance(milliseconds);
+        if (m_session.revision() != revision) pull();
+    }
     // Автоматический переход мог сменить страницу/сбросить порцию — публикуем окончательное
     // состояние, а не то, что было до advance().
     publishViewState();
@@ -363,7 +357,7 @@ void GameScreen::publishViewState() {
 }
 
 void GameScreen::applyRestoredViewState(const Session::ViewState& state) {
-    size_t index = 0;
+    unsigned long long index = 0;
     const auto it = state.find("vn.portion");
     if (it != state.end() && !it->second.empty()) {
         // Только полностью числовое значение: "12abc", "-1", "+1" и мусор дают первую порцию,
@@ -377,15 +371,15 @@ void GameScreen::applyRestoredViewState(const Session::ViewState& state) {
         }
         if (digits) {
             try {
-                const unsigned long long value = std::stoull(it->second);
-                if (value > 0) index = static_cast<size_t>(value);
+                index = std::stoull(it->second);
             } catch (...) {
                 // переполнение/повреждённое значение — первая порция
             }
         }
     }
     const auto parts = portions();
-    m_portion = parts.empty() ? 0 : std::min(index, parts.size() - 1);
+    const size_t last = parts.empty() ? 0 : parts.size() - 1;
+    m_portion = index > last ? last : static_cast<size_t>(index);
     m_voicedPortion = SIZE_MAX;  // озвучка восстановленной порции — заново
     m_scroll = 0;
 }
@@ -405,8 +399,13 @@ void GameScreen::processEvents(const std::vector<PlayerEngine::Event>& events) {
     }
 }
 
-void GameScreen::afterCommand(bool publish) {
+void GameScreen::afterCommand() {
+    // pull() сбрасывает порцию при смене страницы. Публикуем только окончательное
+    // состояние, в том числе при прямом вызове после загрузки из фронтенда.
+    Session::ViewState restored;
+    const bool restoredPending = m_session.takeRestoredViewState(restored);
     pull();
+    if (restoredPending) applyRestoredViewState(restored);
     m_showChoices = false;
     // Страница без текста: показывать нечего — сразу экран вариантов (если вариант один тривиальный —
     // ждём «дальше», чтобы игрок увидел сцену)
@@ -436,7 +435,7 @@ void GameScreen::afterCommand(bool publish) {
             showGameOver();
         }
     }
-    if (publish) publishViewState();
+    publishViewState();
 }
 
 void GameScreen::updateEffects(const ScreenModel& before) {

@@ -633,7 +633,11 @@ void PlayerEngine::walkTo(const std::string& pageId, bool fromAutowired) {
     if (++m_transitions > MAX_TRANSITIONS_PER_COMMAND) {
         throw NLBConsistencyException("Too many automatic transitions (endless auto-link loop?) at page " + pageId);
     }
+    const Page* previousPage = m_page;
     enterPage(page, fromAutowired);
+    // SNAPSHOT пишется в settle() до обновления GameScreen. На новой странице
+    // состояние предыдущего экрана уже недействительно.
+    if (m_page != previousPage) m_uiState.clear();
 }
 
 void PlayerEngine::enterPage(Page* page, bool fromAutowired) {

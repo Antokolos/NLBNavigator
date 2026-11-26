@@ -305,7 +305,7 @@ void Session::restart() {
     m_selected.clear();
     m_viewState.clear();
     m_restoredViewState.clear();
-    m_viewStateRestored = false;
+    m_viewStateRestored = true;  // применить пустое состояние, даже если UUID страницы не сменился
     m_engine->restart();
     afterCommand();
 }
@@ -335,7 +335,7 @@ std::string Session::slotPath(int slot) const {
 
 bool Session::save(int slot, std::string& error) {
     if (m_options.savesDir.empty()) { error = "сохранения недоступны"; return false; }
-    // состояние экрана (порция VN и т.п.) — часть сохранения; экран обновляет его в update()
+    // Сохраняем последнее опубликованное или только что восстановленное состояние экрана.
     m_engine->setUiState(m_viewState);
     const bool ok = m_engine->saveGame(slotPath(slot), error);
     if (ok) logAction("Сохранить в слот " + std::to_string(slot));

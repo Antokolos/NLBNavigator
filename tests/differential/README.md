@@ -560,3 +560,18 @@ After CI #147, `main` advanced to `620f2ee9ec98c08ecc8a240c47f5e079b071d3aa`. Th
   }
 }
 ~~~
+
+### Регрессия жизненного цикла VN-порции в C++
+
+Тесты вызывают `Session`, `PlayerEngine` и `GameScreen` с небольшой
+синтетической книгой и подменным рендерером. Дисплей, SDL и скачанные книги
+для этих тестов не требуются. Укажите новый абсолютный каталог сборки вне
+рабочего дерева. Каждый сценарий оставляет книгу и сохранения в своём
+подкаталоге сборки.
+
+```bash
+build_dir=$(mktemp -d /tmp/nlb-portion.XXXXXXXX)
+cmake -S . -B "$build_dir" -DNLB_BUILD_TESTS=ON -DNLB_BUILD_APPS=OFF
+cmake --build "$build_dir" --target nlb_save_portion_test
+ctest --test-dir "$build_dir" --output-on-failure -R '^save_portion\.'
+```

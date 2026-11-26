@@ -131,7 +131,7 @@ public:
     void key(Key key, int digit = 0);              ///< digit: 1..9 для Key::Digit
 
     /// После команд, отданных напрямую session.engine() (сценарии тестов)
-    void afterCommand(bool publish = true);
+    void afterCommand();
     /// Какие темы подключены и что из них взято (для журнала фронтенда: разобраться с оформлением)
     std::string describeThemes() const;
     /// Полноэкранный режим — дело фронтенда: если он умеет, пусть даст переключатель и текущее
