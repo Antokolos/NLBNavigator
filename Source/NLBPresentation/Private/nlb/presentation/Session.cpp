@@ -303,6 +303,9 @@ void Session::restart() {
     m_logPage.clear();
     m_logRevision = static_cast<uint64_t>(-1);
     m_selected.clear();
+    m_viewState.clear();
+    m_restoredViewState.clear();
+    m_viewStateRestored = true;  // применить пустое состояние, даже если UUID страницы не сменился
     m_engine->restart();
     afterCommand();
 }
@@ -319,6 +322,11 @@ void Session::tryAgain() {
     m_selected.clear();
     m_engine->tryAgain();
     afterCommand();
+    m_restoredViewState = m_engine->uiState();
+    m_viewState = m_restoredViewState;
+    m_engine->setUiState(m_viewState);
+    m_viewStateRestored = true;
+    ++m_localRevision;  // экран должен перерисоваться с восстановленной порцией
 }
 
 std::string Session::slotPath(int slot) const {
@@ -327,6 +335,8 @@ std::string Session::slotPath(int slot) const {
 
 bool Session::save(int slot, std::string& error) {
     if (m_options.savesDir.empty()) { error = "сохранения недоступны"; return false; }
+    // Сохраняем последнее опубликованное или только что восстановленное состояние экрана.
+    m_engine->setUiState(m_viewState);
     const bool ok = m_engine->saveGame(slotPath(slot), error);
     if (ok) logAction("Сохранить в слот " + std::to_string(slot));
     return ok;
@@ -337,10 +347,41 @@ bool Session::load(int slot, std::string& error) {
     logAction("Загрузить слот " + std::to_string(slot));
     m_logPage.clear();
     m_logRevision = static_cast<uint64_t>(-1);
+    m_viewStateRestored = false;
+    m_restoredViewState.clear();
     const bool ok = m_engine->loadGame(slotPath(slot), error);
     m_selected.clear();
     afterCommand();
+    if (ok) {
+        m_restoredViewState = m_engine->uiState();
+        // Сразу синхронизируем «текущее» состояние экрана: save() без промежуточного update()
+        // не должен записать старую порцию. Старое сохранение без ui даёт пустое состояние.
+        m_viewState = m_restoredViewState;
+        m_engine->setUiState(m_viewState);
+        m_viewStateRestored = true;
+        ++m_localRevision;  // экран должен перерисоваться с восстановленной порцией
+    }
     return ok;
+}
+
+void Session::setViewState(const std::string& key, const std::string& value) {
+    m_viewState[key] = value;
+    // Держим состояние экрана в движке актуальным: иначе SNAPSHOT (writeSave внутри движка)
+    // и повторное сохранение сразу после загрузки записали бы устаревшую порцию.
+    if (m_engine) m_engine->setUiState(m_viewState);
+}
+
+std::string Session::viewState(const std::string& key) const {
+    const auto it = m_viewState.find(key);
+    return it == m_viewState.end() ? std::string() : it->second;
+}
+
+bool Session::takeRestoredViewState(ViewState& state) {
+    if (!m_viewStateRestored) return false;
+    state = m_restoredViewState;
+    m_restoredViewState.clear();
+    m_viewStateRestored = false;
+    return true;
 }
 
 PlayerEngine::SaveInfo Session::saveInfo(int slot) const {

@@ -99,3 +99,5 @@ Session.vim
 # Python: байт-код
 __pycache__/
 *.pyc
+
+!/tests/presentation/*.cpp
