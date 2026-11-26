@@ -1,0 +1,6 @@
+award: runner exit=0, журнал /workspace/nlb-pr72.brkxnMDx/results/achievement/scenarios/award.log
+award: подтверждены вызов площадки и строки id/granted
+readback: runner exit=0, журнал /workspace/nlb-pr72.brkxnMDx/results/achievement/scenarios/readback.log
+readback: RIGHT_CHOICE записано, строк VILLAIN_PUNISHED: 2
+clean: runner exit=1, журнал /workspace/nlb-pr72.brkxnMDx/results/achievement/scenarios/clean.log
+clean: ошибка выполнения маршрута, см. /workspace/nlb-pr72.brkxnMDx/results/achievement/scenarios/clean.log

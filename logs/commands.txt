@@ -1,0 +1,8 @@
+source /workspace/nlb-developer-env-v1/activate.sh
+cmake -S /workspace/NLBNavigator -B /workspace/nlb-pr72.brkxnMDx/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DNLB_BUILD_TESTS=ON
+cmake --build /workspace/nlb-pr72.brkxnMDx/build --target nlb_save_portion_test nlb_main nlb_sdl --parallel 4
+ctest --test-dir /workspace/nlb-pr72.brkxnMDx/build -V
+python3 -m unittest discover -s tests/differential -p 'test_*.py' -v
+python3 tests/differential/validate_catalog.py
+python3 /workspace/nlb-pr72.brkxnMDx/local-suite.py 5
+git diff --check origin/main...HEAD

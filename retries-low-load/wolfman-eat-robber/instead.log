@@ -1,0 +1,12 @@
+[INSTEAD] starting step 1/26: title
+[INSTEAD] completed 1/26: title (3.34s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 2/26: opening
+[INSTEAD] completed 2/26: opening (5.82s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 3/26: opening-next-portion
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 20612
+[INSTEAD] cleanup player: exited after SIGTERM with status 0
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 20585
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Не удалось снять X11-экран /workspace/nlb-pr72.brkxnMDx/retries-low-load/wolfman-eat-robber/instead/02-opening-next-portion.png: 

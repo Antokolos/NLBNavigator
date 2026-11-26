@@ -1,0 +1,7 @@
+(EE) 
+Fatal server error:
+(EE) Server is already active for display 410
+	If this server is no longer running, remove /tmp/.X410-lock
+	and start again.
+(EE) 
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root

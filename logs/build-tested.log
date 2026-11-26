@@ -1,0 +1,38 @@
+[1/5] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/Session.h:11,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/GameScreen.h:11,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp: In member function ‘float nlb::presentation::GameScreen::renderParagraphs(const std::vector<nlb::presentation::Paragraph>&, float, float, float, const nlb::presentation::FontRef&, const nlb::presentation::ScreenTheme::Window&, bool, float)’:
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1216:31: warning: missing initializer for member ‘nlb::presentation::GameScreen::renderParagraphs(const std::vector<nlb::presentation::Paragraph>&, float, float, float, const nlb::presentation::FontRef&, const nlb::presentation::ScreenTheme::Window&, bool, float)::Word::image’ [-Wmissing-field-initializers]
+ 1216 |                 line.push_back({w, ww, run.kind, run.target, glued});
+      |                 ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp: In member function ‘void nlb::presentation::GameScreen::renderTextWindow(const nlb::presentation::ScreenTheme::Window&)’:
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1342:37: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1342 |                 title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.roomTitle, "-1"});
+      |                 ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1355:56: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1355 |             if (!ways.runs.empty()) ways.runs.push_back({TextRun::Kind::Plain, " | ", ""});
+      |                                     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1356:32: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1356 |             ways.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
+      |             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1398:86: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1398 |                     if (!composed.back().runs.empty()) composed.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
+      |                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1434:31: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1434 |             alt.runs.push_back({TextRun::Kind::Plain, c.altText, ""});
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1440:32: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1440 |             link.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
+      |             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[2/5] Linking CXX static library libNLBReader.a
+[3/5] Linking CXX executable nlb_sdl
+[4/5] Linking CXX executable nlb_save_portion_test
+[5/5] Linking CXX executable nlb_main

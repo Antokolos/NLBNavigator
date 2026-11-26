@@ -1,0 +1,8 @@
+[INSTEAD] starting step 1/34: title
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 17094
+[INSTEAD] cleanup player: exited after SIGTERM with status 0
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 17084
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Не удалось снять X11-экран /workspace/nlb-pr72.brkxnMDx/results/wolfman-forest-wolfiness-zero-right/instead/00-title.png: 

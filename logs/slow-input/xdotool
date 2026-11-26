@@ -1,0 +1,20 @@
+#!/bin/sh
+actual=/workspace/nlb-developer-env-v1/debian/usr/bin/xdotool
+case "$1" in
+    click)
+        "$actual" "$@" || exit $?
+        sleep "${NLB_CLICK_PAUSE:-0.15}"
+        ;;
+    search)
+        if [ ! -e "$HOME/.x11-first-search" ]; then
+            : > "$HOME/.x11-first-search"
+            sleep 1.7
+        fi
+        exec "$actual" "$@"
+        ;;
+    windowfocus)
+        "$actual" "$@" || exit $?
+        sleep 1.5
+        ;;
+    *) exec "$actual" "$@" ;;
+esac

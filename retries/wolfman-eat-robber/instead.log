@@ -1,0 +1,60 @@
+[INSTEAD] starting step 1/26: title
+[INSTEAD] completed 1/26: title (6.39s, page=f7cb8bed-47a9-4ce2-b713-c9b53571c93f, portion=0/0, screen=page, vars=wolfiness=0,hp=0,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 2/26: opening
+[INSTEAD] completed 2/26: opening (4.61s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=0/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 3/26: opening-next-portion
+[INSTEAD] completed 3/26: opening-next-portion (3.92s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=1/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 4/26: opening-choices
+[INSTEAD] completed 4/26: opening-choices (6.68s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=9/10, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 5/26: jump-over-fence
+[INSTEAD] completed 5/26: jump-over-fence (5.61s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=0/5, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 6/26: robbery-final-portion
+[INSTEAD] completed 6/26: robbery-final-portion (6.71s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=4/5, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 7/26: robbery-choices
+[INSTEAD] completed 7/26: robbery-choices (6.22s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=4/5, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 8/26: eat-robber
+[INSTEAD] completed 8/26: eat-robber (5.66s, page=85d2e46d-074a-4925-b54d-4a52299d9d93, portion=0/3, screen=page, vars=wolfiness=1,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 9/26: eat-robber-final-portion
+[INSTEAD] completed 9/26: eat-robber-final-portion (4.42s, page=85d2e46d-074a-4925-b54d-4a52299d9d93, portion=2/3, screen=page, vars=wolfiness=1,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 10/26: eat-branch-zoo
+[INSTEAD] completed 10/26: eat-branch-zoo (6.78s, page=5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915, portion=0/5, screen=page, vars=wolfiness=1,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 11/26: eat-branch-zoo-final-portion
+[INSTEAD] completed 11/26: eat-branch-zoo-final-portion (6.99s, page=5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915, portion=4/5, screen=page, vars=wolfiness=1,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 12/26: eat-branch-positive-condition
+[INSTEAD] completed 12/26: eat-branch-positive-condition (5.58s, page=30f2da3a-76a3-40b2-84f0-41714eb48ae4, portion=0/11, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 13/26: zoo-escape-final-portion
+[INSTEAD] completed 13/26: zoo-escape-final-portion (6.92s, page=30f2da3a-76a3-40b2-84f0-41714eb48ae4, portion=10/11, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 14/26: road-page
+[INSTEAD] completed 14/26: road-page (4.44s, page=c28ae684-785a-4442-8756-8f5a7e9fb0c1, portion=0/6, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 15/26: road-final-portion
+[INSTEAD] completed 15/26: road-final-portion (5.98s, page=c28ae684-785a-4442-8756-8f5a7e9fb0c1, portion=5/6, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 16/26: truckers-bar-entry
+[INSTEAD] completed 16/26: truckers-bar-entry (5.18s, page=4a4652ec-a6c1-4619-b82e-d469e6227589, portion=0/2, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 17/26: truckers-bar-final-portion
+[INSTEAD] completed 17/26: truckers-bar-final-portion (5.99s, page=4a4652ec-a6c1-4619-b82e-d469e6227589, portion=1/2, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 18/26: truckers-bar-greeting
+[INSTEAD] completed 18/26: truckers-bar-greeting (4.8s, page=2ff7b229-4eb9-4c30-8962-4d8ed95a490b, portion=0/1, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 19/26: wolfiness-positive-dialogue-outcome
+[INSTEAD] completed 19/26: wolfiness-positive-dialogue-outcome (4.6s, page=b2f0838e-3068-4850-ad2f-4944075de38b, portion=0/17, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 20/26: wolfiness-positive-final-portion
+[INSTEAD] completed 20/26: wolfiness-positive-final-portion (7.85s, page=b2f0838e-3068-4850-ad2f-4944075de38b, portion=15/17, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 21/26: page13-positive-dialogue
+[INSTEAD] completed 21/26: page13-positive-dialogue (4.24s, page=b2f0838e-3068-4850-ad2f-4944075de38b, portion=16/17, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 22/26: page13-positive-choices
+[INSTEAD] completed 22/26: page13-positive-choices (5.11s, page=0f773e1b-130f-465d-a8e5-3cabc8bfc1d1, portion=0/1, screen=page, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 23/26: eat-philosopher
+[INSTEAD] completed 23/26: eat-philosopher (5.6s, page=0f773e1b-130f-465d-a8e5-3cabc8bfc1d1, portion=0/1, screen=choices, vars=wolfiness=1,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 24/26: page10-after-philosopher
+[INSTEAD] completed 24/26: page10-after-philosopher (5.45s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 25/26: forest-entry-wolfiness-two
+[INSTEAD] completed 25/26: forest-entry-wolfiness-two (4.64s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 26/26: wolfiness-greater-than-one-outcome
+[INSTEAD] completed 26/26: wolfiness-greater-than-one-outcome (6.12s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 16975
+[INSTEAD] cleanup player: grace period expired; sending SIGKILL
+[INSTEAD] cleanup player: reaped after SIGKILL with status -9
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 16969
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Проверка INSTEAD не прошла: forest-entry-wolfiness-two: изменилось 0 пикселей, требуется не менее 1000; wolfiness-greater-than-one-outcome: изменилось 0 пикселей, требуется не менее 1000; wolfiness-positive-final-portion: INSTEAD portion_index=15, ожидалось 16; wolfiness-positive-final-portion: INSTEAD в отображённой порции нет 'где и заснули под мерное гудение пчёл'; page13-positive-dialogue: INSTEAD ожидалась страница 0f773e1b-130f-465d-a8e5-3cabc8bfc1d1, получена b2f0838e-3068-4850-ad2f-4944075de38b; page13-positive-dialogue: INSTEAD portion_index=16, ожидалось 0; page13-positive-dialogue: INSTEAD portion_count=17, ожидалось 1; page13-positive-dialogue: INSTEAD ожидался фон *images/13.jpg, получен images/8.jpg; page13-positive-dialogue: INSTEAD в отображённой порции нет 'вы заметили как из бара вышел философ'; page13-positive-choices: INSTEAD ожидался экран choices, получен page; page13-positive-choices: INSTEAD среди вариантов нет 'Съесть философа'; page13-positive-choices: INSTEAD среди вариантов нет 'Украсть еду с кухни'; eat-philosopher: INSTEAD ожидалась страница 46fc2603-670d-4e23-8ce1-618e20143ea2, получена 0f773e1b-130f-465d-a8e5-3cabc8bfc1d1; eat-philosopher: INSTEAD ожидался экран page, получен choices; eat-philosopher: INSTEAD переменная wolfiness=1, ожидалось 2; eat-philosopher: INSTEAD переменная hp=2, ожидалось 3; eat-philosopher: INSTEAD ожидался фон *images/9.jpg, получен images/13.jpg; eat-philosopher: INSTEAD в отображённой порции нет 'загрызли прежде, чем он успел пикнуть'; page10-after-philosopher: отсутствует Lua state trace для контрольной точки; forest-entry-wolfiness-two: отсутствует Lua state trace для контрольной точки; wolfiness-greater-than-one-outcome: отсутствует Lua state trace для контрольной точки; eat-philosopher: INSTEAD trace не зафиксировал ожидаемый input event; page10-after-philosopher: после действия нет новой сцены; inv/way и старый текст не подходят; forest-entry-wolfiness-two: после действия нет новой сцены; inv/way и старый текст не подходят; wolfiness-greater-than-one-outcome: после действия нет новой сцены; inv/way и старый текст не подходят

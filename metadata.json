@@ -1,0 +1,50 @@
+{
+  "repository": "Antokolos/NLBNavigator",
+  "pull_request": 72,
+  "head": "c54de525ee38aa7a14c16e6d2c245c667ca9793c",
+  "main": "6a5f6bab0411caa21648557eba270e295fe2f325",
+  "branch": "fix/issue-68-vn-save-portion",
+  "data": {
+    "wolfman": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead_export": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "tools": {
+    "cxx": "14.2.0",
+    "cmake": "3.31.6",
+    "ninja": "1.12.1",
+    "python": "3.12.14",
+    "sdl3": "3.4.18",
+    "sdl3_image": "3.2.4",
+    "sdl3_ttf": "3.2.2",
+    "sdl3_mixer": "3.2.4",
+    "instead": "3.5.2",
+    "imagemagick": "7.1.1-43",
+    "openbox": "3.6.1",
+    "xdotool": "3.20160805.1",
+    "xvfb": "2:21.1.16-1.3+deb13u4"
+  },
+  "display": {
+    "width": 1920,
+    "height": 1080,
+    "depth": 24,
+    "driver": "x11",
+    "audio": "dummy",
+    "magick_thread_limit": 2,
+    "omp_num_threads": 2,
+    "noreset": true
+  },
+  "ci": {
+    "run_id": 45841992577,
+    "url": "https://github.com/Antokolos/NLBNavigator/actions/runs/45841992577"
+  },
+  "local_results": {
+    "cpp_tests": 10,
+    "python_passed": 119,
+    "python_skipped": 18,
+    "paired_routes": 22,
+    "checkpoints": 762,
+    "text_rows": 551,
+    "advance_pairs": 53
+  }
+}

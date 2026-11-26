@@ -1,0 +1,8 @@
+repository=/workspace/NLBNavigator
+build=/workspace/nlb-pr72.brkxnMDx/build
+environment=/workspace/nlb-developer-env-v1
+inputs=/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data
+results=/workspace/nlb-pr72.brkxnMDx/results
+wolfman 888b4b7a7a564693274f53341728ee9f3b4c2879
+instead-am_i_a_monster_vn 0db8d2c611faa596987baaf041763ef6c9282484
+instead 1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e

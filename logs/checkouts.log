@@ -1,0 +1,4 @@
+## fix/issue-68-vn-save-portion
+c54de525ee38aa7a14c16e6d2c245c667ca9793c Проверить и исправить жизненный цикл сохранения VN-порции (#68)
+6a5f6bab0411caa21648557eba270e295fe2f325 Merge pull request #75 from Antokolos/fix/windows-local-driver-hardening
+diff --check=0

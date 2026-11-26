@@ -1,0 +1,23 @@
+/workspace/nlb-developer-env-v1/debian/usr/bin/cmake
+/workspace/nlb-developer-env-v1/debian/usr/bin/ctest
+/workspace/nlb-developer-env-v1/debian/usr/bin/ninja
+/usr/bin/gcc
+/usr/bin/g++
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3
+/workspace/nlb-developer-env-v1/debian/usr/bin/Xvfb
+/workspace/nlb-developer-env-v1/debian/usr/bin/openbox
+/workspace/nlb-developer-env-v1/instead/bin/sdl-instead
+/workspace/nlb-developer-env-v1/debian/usr/bin/xdotool
+/usr/bin/import
+cmake version 3.31.6
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+1.12.1
+g++ (Debian 14.2.0-19) 14.2.0
+Python 3.12.14
+13.0.0
+3.5.2
+	libSDL3_image.so.0 => /workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu/libSDL3_image.so.0 (0x00007f44af283000)
+	libSDL3_ttf.so.0 => /workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu/libSDL3_ttf.so.0 (0x00007f44af264000)
+	libSDL3_mixer.so.0 => /workspace/nlb-developer-env-v1/mixer/lib/libSDL3_mixer.so.0 (0x00007f44af233000)
+	libSDL3.so.0 => /workspace/nlb-developer-env-v1/sdl/lib/libSDL3.so.0 (0x00007f44aeeaa000)

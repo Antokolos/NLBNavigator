@@ -1,0 +1,14 @@
+{
+  "runtime": "instead",
+  "completed_steps": [
+    "title",
+    "opening"
+  ],
+  "total_steps": 26,
+  "state_records": [],
+  "trace_errors": [
+    "title: после действия нет новой сцены; inv/way и старый текст не подходят",
+    "opening: INSTEAD trace не зафиксировал ожидаемый input event",
+    "opening: после действия нет новой сцены; inv/way и старый текст не подходят"
+  ]
+}
