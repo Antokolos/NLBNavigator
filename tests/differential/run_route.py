@@ -1170,6 +1170,147 @@ def instead_advance_until(action, window, trace_path, current, player):
 
 # Переменные книги в Lua trace INSTEAD (instead_trace.lua) — те же, что nlb_sdl пишет по --state-vars
 TRACE_VARIABLES = ("wolfiness", "hp", "barExit", "forestExit", "wolvesTalk", "guardDone")
+TRACE_SEMANTIC_FIELDS = ("page_id", "screen_kind", "portion_index", "portion_count",
+                         "more", "background", "end_screen") + TRACE_VARIABLES
+
+# Клавиши INSTEAD 3.5.2 (src/game.c, kbd_instead): F2/F3 — меню сохранения/загрузки слотов,
+# F5 — look (обновление сцены), F8 — быстрое сохранение в слот 9, F9 — загрузка слота 9.
+# Раннер различает только быстрые F8/F9: F5 сцену меняет и не является сохранением.
+INSTEAD_SAVE_KEYS = {"f8"}
+INSTEAD_LOAD_KEYS = {"f9"}
+
+
+def instead_menu_kind(action):
+    """('save'|'load'|None) по клавишам INSTEAD в menu-действии"""
+    if action.get("type") != "menu":
+        return None
+    keys = {str(item.get("key", "")).lower() for item in action.get("instead", [])
+            if isinstance(item, dict) and "key" in item}
+    if keys & INSTEAD_LOAD_KEYS:
+        return "load"
+    if keys & INSTEAD_SAVE_KEYS:
+        return "save"
+    return None
+
+
+def trace_reinitialized(previous_identity, identity):
+    """Трасса переинициализирована: короче прежней или изменился уже виденный префикс.
+
+    Сравнения max_seq < cursor недостаточно: перезаписанная трасса может догнать старый seq.
+    """
+    if not previous_identity:
+        return False
+    return len(identity) < len(previous_identity) or identity[:len(previous_identity)] != previous_identity
+
+
+def trace_identity(records):
+    """Полное нормализованное содержимое записей трассы (все поля, не только ключевые)."""
+    return [tuple(sorted((str(key), str(value)) for key, value in record.items()))
+            for record in records]
+
+
+def wait_identity_invalid(previous, records):
+    return (trace_reinitialized(previous, trace_identity(records))
+            or not trace_sequence_valid(records))
+
+
+def trace_sequence_valid(records):
+    """seq строго возрастает и не повторяется."""
+    seqs = [record["seq"] for record in records]
+    return all(left < right for left, right in zip(seqs, seqs[1:]))
+
+
+def semantic_state(record):
+    """Состояние сцены без rendered, который у команды сохранения может быть пустым."""
+    if not record:
+        return None
+    state = tuple(record.get(field) for field in TRACE_SEMANTIC_FIELDS)
+    return state if None not in state else None
+
+
+def _instead_quick_slot_seq(records, verb):
+    """Последняя команда iface.cmd для save9. Записи iface.fmt диагностические."""
+    seq = None
+    for record in records:
+        if record["kind"] not in ("scene", "event"):
+            continue
+        command, _, path = record.get("command", "").partition(" ")
+        slot = path.replace("\\", "/").rsplit("/", 1)[-1]
+        if command == verb and slot == "save9":
+            seq = record["seq"] if seq is None else max(seq, record["seq"])
+    return seq
+
+
+def _load_expected_errors(record, expected):
+    errors = []
+    if not expected:
+        return errors
+    page = expected.get("instead_page_id", expected.get("page_id"))
+    if page and record.get("page_id") != page:
+        errors.append("загрузка дала страницу {}, ожидалась {}".format(record.get("page_id"), page))
+    screen = expected.get("instead_screen_kind")
+    if screen and record.get("screen_kind") != screen:
+        errors.append("загрузка дала экран {}, ожидался {}".format(record.get("screen_kind"), screen))
+    if "portion_index" in expected and record.get("portion_index") != expected["portion_index"]:
+        errors.append("загрузка дала порцию {}, ожидалась {}".format(
+            record.get("portion_index"), expected["portion_index"]))
+    if "portion_count" in expected and record.get("portion_count") != expected["portion_count"]:
+        errors.append("загрузка дала число порций {}, ожидалось {}".format(
+            record.get("portion_count"), expected["portion_count"]))
+    for name, value in (expected.get("variables") or {}).items():
+        if str(record.get(name, "")).lower() != str(value).lower():
+            errors.append("загрузка дала {}={}, ожидалось {}".format(name, record.get(name, ""), value))
+    return errors
+
+
+def pick_instead_state_record(action_type, menu_kind, after, new_events, previous_semantic,
+                              trace_reset=False, expected=None):
+    """(запись состояния, ошибки) для capture/menu/advance_until INSTEAD.
+
+    Сохранение требует запись команды save для save9 и полный снимок неизменной сцены,
+    сделанный при этой команде или после неё. При пустом rendered берётся последний
+    текст сцены с тем же semantic_state.
+    Загрузка требует запись load для save9 и свежую сцену с текстом; при передаче
+    expected проверяются страница/порция/переменные. Старый trace доказательством не считается.
+    """
+    if trace_reset:
+        return None, ["трасса INSTEAD переинициализирована: префикс записей не совпал"]
+    if menu_kind in ("save", "load"):
+        command_seq = _instead_quick_slot_seq(new_events, menu_kind)
+        if command_seq is None:
+            return None, ["нет свежей записи команды {} для save9 — выполнение не подтверждено".format(menu_kind)]
+    if menu_kind == "save":
+        if previous_semantic is None:
+            return None, ["нет подтверждённого состояния перед сохранением"]
+        scenes = [record for record in new_events if record["kind"] == "scene"]
+        if not any(record["seq"] >= command_seq for record in scenes):
+            return None, ["после команды save для save9 нет свежей сцены"]
+        for record in scenes:
+            state = semantic_state(record)
+            if state is None:
+                return None, ["сцена при сохранении содержит неполное семантическое состояние"]
+            if state != previous_semantic:
+                return None, ["сохранение изменило состояние: {} -> {}".format(previous_semantic, state)]
+        candidates = [record for record in after
+                      if record["kind"] == "scene"
+                      and normalize_story_text(record.get("rendered", ""))
+                      and semantic_state(record) == previous_semantic]
+        if not candidates:
+            return None, ["нет сцены с текстом для подтверждённого состояния сохранения"]
+        return candidates[-1], []
+    if menu_kind == "load":
+        fresh = [record for record in new_events
+                 if record["kind"] == "scene" and record["seq"] >= command_seq
+                 and normalize_story_text(record.get("rendered", ""))]
+        if not fresh:
+            return None, ["после загрузки нет свежей сцены с текстом; старый trace не подходит"]
+        record = fresh[-1]
+        return record, _load_expected_errors(record, expected)
+    if action_type in ("capture", "menu", "advance_until"):
+        all_scene = [record for record in after if record["kind"] == "scene"]
+        return (all_scene[-1] if all_scene else None), []
+    return None, []
+
 
 
 def instead_step_summary(record):
@@ -1217,6 +1358,26 @@ def read_instead_trace(path):
     return records
 
 
+def wait_instead_fresh_scene(trace_path, cursor, expected_command=None, timeout=3.0, previous_identity=()):
+    """Ждёт свежую сцену с текстом, при заданной команде — от подтверждения save9."""
+    deadline = time.monotonic() + timeout
+    records = read_instead_trace(trace_path)
+    while True:
+        if wait_identity_invalid(previous_identity, records):
+            return records, True
+        previous_identity = trace_identity(records)
+        new_events = [record for record in records if record["seq"] > cursor]
+        command_seq = (cursor + 1 if expected_command is None
+                       else _instead_quick_slot_seq(new_events, expected_command))
+        fresh = command_seq is not None and any(
+            record["seq"] >= command_seq and record["kind"] == "scene"
+            and normalize_story_text(record.get("rendered", "")) for record in new_events)
+        if fresh or time.monotonic() >= deadline:
+            return records, False
+        time.sleep(0.15)
+        records = read_instead_trace(trace_path)
+
+
 def trace_input_matches(action, record):
     command = record.get("command", "")
     if action["type"] == "key":
@@ -1242,22 +1403,9 @@ def trace_state_signature(record):
     )
 
 
-def remove_tree(path):
-    """Удаление каталога, не заходя в junction-каталоги overlay (иначе можно стереть исходные данные)"""
-    path = Path(path)
-    if not path.exists():
-        return
-    if IS_WINDOWS:
-        for entry in list(path.iterdir()):
-            if entry.is_dir() and getattr(os.path, "isjunction", lambda _: False)(entry):
-                os.rmdir(entry)
-    shutil.rmtree(path)
-
-
 def create_instead_overlay(source_dir, overlay_dir):
-    if overlay_dir.exists():
-        remove_tree(overlay_dir)
-    overlay_dir.mkdir(parents=True, exist_ok=True)
+    # Повторный прогон получает новый каталог; существующий overlay сохраняется.
+    overlay_dir.mkdir()
     for entry in source_dir.iterdir():
         if entry.name in (".git", "main.lua"):
             continue
@@ -1392,11 +1540,16 @@ def run_instead(args, route, output_dir):
     isolated_appdata = output_dir / "instead-appdata"
     isolated_home = output_dir / "instead-home"
     for path in (isolated_appdata, isolated_home):
-        if path.exists():
-            shutil.rmtree(path)
-        path.mkdir(parents=True, exist_ok=True)
+        path.mkdir()
     for name in (".config", ".local/share", ".cache"):
         (isolated_home / name).mkdir(parents=True, exist_ok=True)
+    if args.instead_seed_save:
+        seed = args.instead_seed_save
+        if seed.resolve(strict=True) != seed.absolute() or not seed.is_file():
+            raise ValueError("Для --instead-seed-save нужен обычный файл без перенаправлений")
+        slot = isolated_appdata / "saves" / overlay.name / "save9"
+        slot.parent.mkdir(parents=True)
+        shutil.copyfile(seed, slot)
 
     adapter = Path(__file__).resolve().with_name("instead_trace.lua")
     create_instead_overlay(game, overlay)
@@ -1431,6 +1584,8 @@ def run_instead(args, route, output_dir):
     state_records = []
     trace_errors = []
     previous_state = None
+    previous_semantic = None
+    trace_seen = []
     cursor = 0
     try:
         if not IS_WINDOWS:
@@ -1511,6 +1666,30 @@ def run_instead(args, route, output_dir):
             records.append({"id": step["id"], "screenshot": str(path)})
 
             after = read_instead_trace(trace_path)
+            trace_max = max((record["seq"] for record in after), default=0)
+            identity = trace_identity(after)
+            if not trace_sequence_valid(after):
+                trace_errors.append("{}: seq трассы не строго возрастает".format(step["id"]))
+                trace_reset = True
+            else:
+                trace_reset = trace_reinitialized(trace_seen, identity)
+            if trace_reset:
+                trace_errors.append(
+                    "{}: трасса INSTEAD переинициализирована (префикс записей изменился)".format(step["id"]))
+                cursor = trace_max
+            menu_kind = instead_menu_kind(step["action"])
+            if menu_kind == "load" and not trace_reset:
+                before_wait = identity
+                after, wait_reset = wait_instead_fresh_scene(
+                    trace_path, cursor, expected_command="load", previous_identity=before_wait)
+                trace_max = max((record["seq"] for record in after), default=trace_max)
+                identity = trace_identity(after)
+                if wait_reset:
+                    trace_errors.append(
+                        "{}: трасса переинициализирована во время ожидания загрузки".format(step["id"]))
+                    trace_reset = True
+                    cursor = trace_max
+            trace_seen = identity
             new_events = [record for record in after if record["seq"] > cursor]
             # choose — как select_choice с найденным номером (act NN)
             check_action = (dict(step["action"], type="select_choice", index=choose_index)
@@ -1526,21 +1705,29 @@ def run_instead(args, route, output_dir):
                 ))
 
             input_seq = max((event["seq"] for event in action_events), default=cursor)
-            scene_events = [
-                event for event in new_events
-                if event["kind"] == "scene" and event["seq"] >= input_seq
-            ]
-            state_record = scene_events[-1] if scene_events else None
-            # capture и menu (сохранение, загрузка) могут не дать новой сцены — тогда последняя;
-            # advance_until без щелчков (условие уже выполнено) — тоже
-            if step["action"]["type"] in ("capture", "menu", "advance_until") and state_record is None:
-                all_scene = [event for event in after if event["kind"] == "scene"]
-                state_record = all_scene[-1] if all_scene else None
+            pick_errors = []
+            if menu_kind is not None:
+                state_record, pick_errors = pick_instead_state_record(
+                    step["action"]["type"], menu_kind, after, new_events, previous_semantic,
+                    trace_reset, step.get("expect"))
+                trace_errors.extend("{}: {}".format(step["id"], error) for error in pick_errors)
+            else:
+                scene_events = [
+                    event for event in new_events
+                    if event["kind"] == "scene" and event["seq"] >= input_seq
+                ]
+                state_record = scene_events[-1] if scene_events else None
+                # capture и advance_until без щелчков (условие уже выполнено) могут не дать
+                # новой сцены — тогда последняя
+                if step["action"]["type"] in ("capture", "advance_until") and state_record is None:
+                    all_scene = [event for event in after if event["kind"] == "scene"]
+                    state_record = all_scene[-1] if all_scene else None
 
             if state_record is None:
-                trace_errors.append("{}: после действия нет новой сцены; inv/way и старый текст не подходят".format(
-                    step["id"]
-                ))
+                if not pick_errors:
+                    trace_errors.append("{}: после действия нет новой сцены; inv/way и старый текст не подходят".format(
+                        step["id"]
+                    ))
             else:
                 signature = trace_state_signature(state_record)
                 if step["action"]["type"] in ("key", "click", "advance", "select_choice") and previous_state is not None:
@@ -1556,6 +1743,7 @@ def run_instead(args, route, output_dir):
                 mapped["input_events"] = action_events
                 state_records.append(mapped)
                 previous_state = signature
+                previous_semantic = semantic_state(state_record)
             cursor = max((record["seq"] for record in after), default=cursor)
 
             # Persist progress after every checkpoint so CI artifacts remain useful
@@ -1597,6 +1785,9 @@ def run_instead(args, route, output_dir):
         trace_path.unlink(missing_ok=True)
 
     report = validate_run(route, output_dir, "instead", [], None, state_records)
+    report["process"] = {"pid": player.pid, "exit_code": player.poll()}
+    if player.returncode is None:
+        trace_errors.append("процесс INSTEAD остался запущен после завершения раннера")
     report["errors"].extend(trace_errors)
     report["ok"] = not report["errors"]
     record_by_id = {record["id"]: record for record in records}
@@ -1750,6 +1941,8 @@ def parse_args():
     parser.add_argument("--base-theme", help="Каталог базовой темы INSTEAD (theme.ini), общий для обоих runtime")
     parser.add_argument("--game", help="Каталог экспорта INSTEAD")
     parser.add_argument("--instead-binary", help="Путь к sdl-instead")
+    parser.add_argument("--instead-seed-save", type=Path,
+                        help="Скопировать один файл в быстрый слот 9 изолированного INSTEAD")
     parser.add_argument("--timeout", type=int, default=90)
     return parser.parse_args()
 
