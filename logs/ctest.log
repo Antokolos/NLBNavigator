@@ -1,0 +1,100 @@
+Internal ctest changing into directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+UpdateCTestConfiguration  from :/workspace/nlb-pr73-c8.DjZUEaC0/build/DartConfiguration.tcl
+UpdateCTestConfiguration  from :/workspace/nlb-pr73-c8.DjZUEaC0/build/DartConfiguration.tcl
+Test project /workspace/nlb-pr73-c8.DjZUEaC0/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+      Start  1: save_portion.advance_save
+
+1: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "advance_save" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+1: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+1: Test timeout computed to be: 10000000
+1: advance_save: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/advance_save-2882290006"
+ 1/10 Test  #1: save_portion.advance_save ........   Passed    0.01 sec
+test 2
+      Start  2: save_portion.load_save
+
+2: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "load_save" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+2: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+2: Test timeout computed to be: 10000000
+2: load_save: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/load_save-461982807"
+ 2/10 Test  #2: save_portion.load_save ...........   Passed    0.01 sec
+test 3
+      Start  3: save_portion.snapshot
+
+3: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "snapshot" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+3: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+3: Test timeout computed to be: 10000000
+3: snapshot: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/snapshot-1728119436"
+ 3/10 Test  #3: save_portion.snapshot ............   Passed    0.01 sec
+test 4
+      Start  4: save_portion.restart
+
+4: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "restart" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+4: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+4: Test timeout computed to be: 10000000
+4: restart: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/restart-613308685"
+ 4/10 Test  #4: save_portion.restart .............   Passed    0.01 sec
+test 5
+      Start  5: save_portion.failed_load
+
+5: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "failed_load" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+5: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+5: Test timeout computed to be: 10000000
+5: failed_load: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/failed_load-1263474250"
+ 5/10 Test  #5: save_portion.failed_load .........   Passed    0.01 sec
+test 6
+      Start  6: save_portion.legacy
+
+6: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "legacy" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+6: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+6: Test timeout computed to be: 10000000
+6: legacy: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/legacy-964035466"
+ 6/10 Test  #6: save_portion.legacy ..............   Passed    0.01 sec
+test 7
+      Start  7: save_portion.invalid
+
+7: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "invalid" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+7: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+7: Test timeout computed to be: 10000000
+7: Обработано некорректное значение: []
+7: Обработано некорректное значение: [12abc]
+7: Обработано некорректное значение: [-1]
+7: Обработано некорректное значение: [+1]
+7: Обработано некорректное значение: [18446744073709551616]
+7: Обработано некорректное значение: [текст]
+7: invalid: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/invalid-85369621"
+ 7/10 Test  #7: save_portion.invalid .............   Passed    0.05 sec
+test 8
+      Start  8: save_portion.clamp
+
+8: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "clamp" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+8: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+8: Test timeout computed to be: 10000000
+8: clamp: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/clamp-3573709164"
+ 8/10 Test  #8: save_portion.clamp ...............   Passed    0.01 sec
+test 9
+      Start  9: save_portion.standard
+
+9: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "standard" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+9: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+9: Test timeout computed to be: 10000000
+9: standard: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/standard-770658656"
+ 9/10 Test  #9: save_portion.standard ............   Passed    0.01 sec
+test 10
+      Start 10: save_portion.timer
+
+10: Test command: /workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_save_portion_test "timer" "/workspace/nlb-pr73-c8.DjZUEaC0/build"
+10: Working Directory: /workspace/nlb-pr73-c8.DjZUEaC0/build
+10: Test timeout computed to be: 10000000
+10: timer: OK, "/workspace/nlb-pr73-c8.DjZUEaC0/build/timer-3616040262"
+10/10 Test #10: save_portion.timer ...............   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 10
+
+Total Test time (real) =   0.14 sec

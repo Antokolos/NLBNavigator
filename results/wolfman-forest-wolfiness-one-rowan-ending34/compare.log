@@ -1,0 +1,1790 @@
+{
+  "route": "wolfman-forest-wolfiness-one-rowan-ending34",
+  "comparison_is_advisory": true,
+  "advance_comparison": [
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page29.page20-to-page22",
+      "instead": [
+        {
+          "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+          "screen": "page",
+          "portion_index": 0,
+          "portion_count": 1,
+          "text": "Ваше животное чутьё подсказывало, что дом врага уже совсем близко. Вы ускорили б",
+          "rendered": "Ваше животное чутьё подсказывало, что дом врага уже совсем близко. Вы ускорили бег.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "nlbnavigator": [
+        {
+          "page_id": "86893ac1-6506-4fdd-bbfc-8008d6ad6b31",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 0,
+          "portion_count": 1,
+          "text": "Ваше животное чутьё подсказывало, что дом врага уже совсем близко. Вы ускорили б",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "mismatch": null
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page29.page22-to-page17",
+      "instead": [
+        {
+          "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+          "screen": "page",
+          "portion_index": 0,
+          "portion_count": 3,
+          "text": "Наконец вы приблизились к дому своего врага. Вы узнали приземистый, но большой о",
+          "rendered": "Наконец вы приблизились к дому своего врага. Вы узнали приземистый, но большой особняк с заброшенным садом, плавно переходящим в лес, из которого вы пришли.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "nlbnavigator": [
+        {
+          "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 0,
+          "portion_count": 3,
+          "text": "Наконец вы приблизились к дому своего врага. Вы узнали приземистый, но большой о",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "mismatch": null
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page29.page17-to-page18",
+      "instead": [
+        {
+          "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+          "screen": "page",
+          "portion_index": 1,
+          "portion_count": 3,
+          "text": "Чугунная ограда вокруг особняка была густо увита растениями, а лесные деревья по",
+          "rendered": "Чугунная ограда вокруг особняка была густо увита растениями, а лесные деревья подступали к ней вплотную.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+          "screen": "page",
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "Вы медленно стали подбираться ко входу в здание.",
+          "rendered": "Вы медленно стали подбираться ко входу в здание.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "portion_index": 0,
+          "portion_count": 5,
+          "text": "Внезапно раздалось рычание, и перед вами возник волк с оскаленной мордой. Это бы",
+          "rendered": "Внезапно раздалось рычание, и перед вами возник волк с оскаленной мордой. Это был огромный зверь, крупнее вас.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "nlbnavigator": [
+        {
+          "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 1,
+          "portion_count": 3,
+          "text": "Чугунная ограда вокруг особняка была густо увита растениями, а лесные деревья по",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "5848772f-134b-412e-9e5e-f9d2feedb3b0",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "Вы медленно стали подбираться ко входу в здание.",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 0,
+          "portion_count": 5,
+          "text": "Внезапно раздалось рычание, и перед вами возник волк с оскаленной мордой. Это бы",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "mismatch": null
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page29.page18-to-page19",
+      "instead": [
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "portion_index": 1,
+          "portion_count": 5,
+          "text": "Как заворожённый, вы смотрели ему в глаза. Это было поистине жуткое зрелище: чел",
+          "rendered": "Как заворожённый, вы смотрели ему в глаза. Это было поистине жуткое зрелище: человеческие глаза на звериной морде с оскаленной пастью.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "portion_index": 2,
+          "portion_count": 5,
+          "text": "Зверь бросился вперёд, а вы кинулись ему навстречу. Хищник ловко парировал атаки",
+          "rendered": "Зверь бросился вперёд, а вы кинулись ему навстречу. Хищник ловко парировал атаки, и вскоре стало понятно, что он сильнее и опытнее.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "portion_index": 3,
+          "portion_count": 5,
+          "text": "Если бы битва продолжалась, навряд ли удалось бы выбраться отсюда живым, не гово",
+          "rendered": "Если бы битва продолжалась, навряд ли удалось бы выбраться отсюда живым, не говоря уже о том, чтобы одержать победу.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "portion_index": 4,
+          "portion_count": 5,
+          "text": "Улучив момент, вы нырнули в ближайшие кусты и бросились прочь. Кажется, противни",
+          "rendered": "Улучив момент, вы нырнули в ближайшие кусты и бросились прочь. Кажется, противник не стал вас преследовать. По крайней мере, когда вы обернулись, сзади уже никого не было.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+          "screen": "page",
+          "portion_index": 0,
+          "portion_count": 3,
+          "text": "Дрожа, вы улеглись под кустом, зализывая раны. Вскоре забрезжил рассвет, и вы пр",
+          "rendered": "Дрожа, вы улеглись под кустом, зализывая раны. Вскоре забрезжил рассвет, и вы приготовились к очередной болезненной трансформации...",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "nlbnavigator": [
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 1,
+          "portion_count": 5,
+          "text": "Как заворожённый, вы смотрели ему в глаза. Это было поистине жуткое зрелище: чел",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 2,
+          "portion_count": 5,
+          "text": "Зверь бросился вперёд, а вы кинулись ему навстречу. Хищник ловко парировал атаки",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 3,
+          "portion_count": 5,
+          "text": "Если бы битва продолжалась, навряд ли удалось бы выбраться отсюда живым, не гово",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "433426b4-2e3f-4461-ab7a-e87119808471",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 4,
+          "portion_count": 5,
+          "text": "Улучив момент, вы нырнули в ближайшие кусты и бросились прочь. Кажется, противни",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 0,
+          "portion_count": 3,
+          "text": "Дрожа, вы улеглись под кустом, зализывая раны. Вскоре забрезжил рассвет, и вы пр",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "mismatch": null
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page29.page19-to-page29-choices",
+      "instead": [
+        {
+          "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+          "screen": "page",
+          "portion_index": 1,
+          "portion_count": 3,
+          "text": "Вы снова стали человеком, и вид у вас был неважный. Раны, нанесённые охранником ",
+          "rendered": "Вы снова стали человеком, и вид у вас был неважный. Раны, нанесённые охранником вашего врага, болели и кровоточили.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+          "screen": "page",
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "«Нужно как-то победить это чудовище», — подумали вы.",
+          "rendered": "«Нужно как-то победить это чудовище», — подумали вы.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "e307ea1f-9d44-45f0-aa58-15607482293b",
+          "screen": "page",
+          "portion_index": 0,
+          "portion_count": 1,
+          "text": "В мозгу всплыли смутные воспоминания о каком-то дереве с ягодами, заострённая ве",
+          "rendered": "В мозгу всплыли смутные воспоминания о каком-то дереве с ягодами, заострённая ветка которого должна помочь одолеть волколака. Но какое именно дерево упоминалось, вы не помнили.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "e307ea1f-9d44-45f0-aa58-15607482293b",
+          "screen": "choices",
+          "portion_index": 0,
+          "portion_count": 1,
+          "text": "<a:act 01>Выбрать рябину</a> <a:act 02>Выбрать боярышник</a> <a:act 03>Выбрать к",
+          "rendered": "<a:act 01>Выбрать рябину</a> <a:act 02>Выбрать боярышник</a> <a:act 03>Выбрать калину</a>",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "nlbnavigator": [
+        {
+          "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 1,
+          "portion_count": 3,
+          "text": "Вы снова стали человеком, и вид у вас был неважный. Раны, нанесённые охранником ",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "8c0da93f-8301-442b-a9fd-60d68d9610d0",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "«Нужно как-то победить это чудовище», — подумали вы.",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "e307ea1f-9d44-45f0-aa58-15607482293b",
+          "screen": "page",
+          "finished": false,
+          "portion_index": 0,
+          "portion_count": 1,
+          "text": "В мозгу всплыли смутные воспоминания о каком-то дереве с ягодами, заострённая ве",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "e307ea1f-9d44-45f0-aa58-15607482293b",
+          "screen": "choices",
+          "finished": false,
+          "portion_index": 0,
+          "portion_count": 1,
+          "text": "В мозгу всплыли смутные воспоминания о каком-то дереве с ягодами, заострённая ве",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "mismatch": null
+    },
+    {
+      "step_id": "page31-to-ending34",
+      "instead": [
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "page",
+          "portion_index": 0,
+          "portion_count": 3,
+          "text": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым ",
+          "rendered": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым углом. Соорудив примитивное оружие, вы вернулись к особняку.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "nlbnavigator": [
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "page",
+          "finished": true,
+          "portion_index": 0,
+          "portion_count": 3,
+          "text": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым ",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "mismatch": null
+    },
+    {
+      "step_id": "page31-to-ending34-end-screen",
+      "instead": [
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "page",
+          "portion_index": 1,
+          "portion_count": 3,
+          "text": "Вас встретил мускулистый лохматый мужчина. По выражению его лица вы поняли, что ",
+          "rendered": "Вас встретил мускулистый лохматый мужчина. По выражению его лица вы поняли, что он по-прежнему не собирается вас пропускать.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "page",
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "Оборотень кинулся на вас. Вы резко выбросили из-за спины руку с зажатым в ней ко",
+          "rendered": "Оборотень кинулся на вас. Вы резко выбросили из-за спины руку с зажатым в ней колом. Охранник, не успев остановиться, налетел грудью прямо на острую палку. Он заревел от боли и бросился на вас. Из его смертельных объятий вам уже не суждено было выбраться.",
+          "end_screen": false,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "choices",
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "<g:themes/default/gfx/theendru.png><c> <a:act 01>Попробовать ещё раз</a> </c>",
+          "rendered": "<g:themes/default/gfx/theendru.png><c> <a:act 01>Попробовать ещё раз</a> </c>",
+          "end_screen": true,
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "nlbnavigator": [
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "page",
+          "finished": true,
+          "portion_index": 1,
+          "portion_count": 3,
+          "text": "Вас встретил мускулистый лохматый мужчина. По выражению его лица вы поняли, что ",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "page",
+          "finished": true,
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "Оборотень кинулся на вас. Вы резко выбросили из-за спины руку с зажатым в ней ко",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        },
+        {
+          "page_id": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+          "screen": "finished",
+          "finished": true,
+          "portion_index": 2,
+          "portion_count": 3,
+          "text": "Оборотень кинулся на вас. Вы резко выбросили из-за спины руку с зажатым в ней ко",
+          "variables": {
+            "wolfiness": "1",
+            "hp": "4",
+            "barExit": "true",
+            "forestExit": "true",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          }
+        }
+      ],
+      "mismatch": null
+    }
+  ],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-forest-wolfiness-one-rowan-ending34",
+      "route_sha256": "5a97fde87d6b4d23224adf698e3ba6a12604c9382969ce508f112212f0bdd4ef",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-developer-env-v1/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-forest-wolfiness-one-rowan-ending34",
+      "route_sha256": "5a97fde87d6b4d23224adf698e3ba6a12604c9382969ce508f112212f0bdd4ef",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "8222b56b83d6a8ba6d2862c7e7f7f83bc62a6720",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.opening",
+      "instead_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "nlbnavigator_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.opening",
+        "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+        "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 10
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.opening",
+        "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "portion_index": 0,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.opening-next-portion",
+      "instead_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "nlbnavigator_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.opening-next-portion",
+        "expected_fragment": "Интересно, сколько я тут валяюсь",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+        "normalized_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 10
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.opening-next-portion",
+        "expected_fragment": "Интересно, сколько я тут валяюсь",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "portion_index": 1,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.jump-over-fence",
+      "instead_expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "nlbnavigator_expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.jump-over-fence",
+        "expected_fragment": "Бежать прямо на вооружённых полицейских",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+        "normalized_text": "Бежать прямо на вооружённых полицейских — не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.\n",
+        "page_id": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 5
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.jump-over-fence",
+        "expected_fragment": "Бежать прямо на вооружённых полицейских",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+        "normalized_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+        "portion_index": 0,
+        "portion_count": 5,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-robber",
+      "instead_expected_fragment": "Оскалив зубы, вы громко зарычали",
+      "nlbnavigator_expected_fragment": "Оскалив зубы, вы громко зарычали",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-robber",
+        "expected_fragment": "Оскалив зубы, вы громко зарычали",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Оскалив зубы, вы громко зарычали и сделали вид, что хотите броситься на грабителя. Этого оказалось достаточно.\n",
+        "normalized_text": "Оскалив зубы, вы громко зарычали и сделали вид, что хотите броситься на грабителя. Этого оказалось достаточно.\n",
+        "page_id": "5a8afdd9-5412-424e-b72e-1373d99795a2",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-robber",
+        "expected_fragment": "Оскалив зубы, вы громко зарычали",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Оскалив зубы, вы громко зарычали и сделали вид, что хотите броситься на грабителя. Этого оказалось достаточно.",
+        "normalized_text": "Оскалив зубы, вы громко зарычали и сделали вид, что хотите броситься на грабителя. Этого оказалось достаточно.",
+        "portion_index": 0,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-robber-final-portion",
+      "instead_expected_fragment": "диким зверем",
+      "nlbnavigator_expected_fragment": "диким зверем",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-robber-final-portion",
+        "expected_fragment": "диким зверем",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Только сейчас вы поняли, как голодны. Вытряхнув всё из сумки, вы набросились на мясо, как дикий зверь. Собственно, вы и были сейчас диким зверем.\n",
+        "normalized_text": "Только сейчас вы поняли, как голодны. Вытряхнув всё из сумки, вы набросились на мясо, как дикий зверь. Собственно, вы и были сейчас диким зверем.\n",
+        "page_id": "5a8afdd9-5412-424e-b72e-1373d99795a2",
+        "screen_kind": "page",
+        "portion_index": 3,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-robber-final-portion",
+        "expected_fragment": "диким зверем",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Только сейчас вы поняли, как голодны. Вытряхнув всё из сумки, вы набросились на мясо, как дикий зверь. Собственно, вы и были сейчас диким зверем.",
+        "normalized_text": "Только сейчас вы поняли, как голодны. Вытряхнув всё из сумки, вы набросились на мясо, как дикий зверь. Собственно, вы и были сейчас диким зверем.",
+        "portion_index": 3,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo",
+      "instead_expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+      "nlbnavigator_expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo",
+        "expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.\n",
+        "normalized_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.\n",
+        "page_id": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 5
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo",
+        "expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+        "normalized_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+        "portion_index": 0,
+        "portion_count": 5,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo-final-portion",
+      "instead_expected_fragment": "вернулись к своим обычным делам",
+      "nlbnavigator_expected_fragment": "вернулись к своим обычным делам",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo-final-portion",
+        "expected_fragment": "вернулись к своим обычным делам",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.\n",
+        "normalized_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.\n",
+        "page_id": "5d3bc0dc-ad8f-48d9-ba6d-66a39afd9915",
+        "screen_kind": "page",
+        "portion_index": 4,
+        "portion_count": 5
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo-final-portion",
+        "expected_fragment": "вернулись к своим обычным делам",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+        "normalized_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+        "portion_index": 4,
+        "portion_count": 5,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zero-condition",
+      "instead_expected_fragment": "Успокоившись, вы оглядели себя ещё раз",
+      "nlbnavigator_expected_fragment": "Успокоившись, вы оглядели себя ещё раз",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zero-condition",
+        "expected_fragment": "Успокоившись, вы оглядели себя ещё раз",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Успокоившись, вы оглядели себя ещё раз. С виду весьма похоже на обычного волка, только немного крупнее.\n",
+        "normalized_text": "Успокоившись, вы оглядели себя ещё раз. С виду весьма похоже на обычного волка, только немного крупнее.\n",
+        "page_id": "ffa05a49-c979-4e9f-9b89-42936e21b81a",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 12
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zero-condition",
+        "expected_fragment": "Успокоившись, вы оглядели себя ещё раз",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Успокоившись, вы оглядели себя ещё раз. С виду весьма похоже на обычного волка, только немного крупнее.",
+        "normalized_text": "Успокоившись, вы оглядели себя ещё раз. С виду весьма похоже на обычного волка, только немного крупнее.",
+        "portion_index": 0,
+        "portion_count": 12,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.zoo-escape-final-portion",
+      "instead_expected_fragment": "пошёл следом за ними",
+      "nlbnavigator_expected_fragment": "пошёл следом за ними",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.zoo-escape-final-portion",
+        "expected_fragment": "пошёл следом за ними",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Стражи порядка развернулись и пошли прочь. Олаф продолжал какое-то время смотреть на волков, а потом тоже развернулся и пошёл следом за ними.\n",
+        "normalized_text": "Стражи порядка развернулись и пошли прочь. Олаф продолжал какое-то время смотреть на волков, а потом тоже развернулся и пошёл следом за ними.\n",
+        "page_id": "ffa05a49-c979-4e9f-9b89-42936e21b81a",
+        "screen_kind": "page",
+        "portion_index": 11,
+        "portion_count": 12
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.zoo-escape-final-portion",
+        "expected_fragment": "пошёл следом за ними",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Стражи порядка развернулись и пошли прочь. Олаф продолжал какое-то время смотреть на волков, а потом тоже развернулся и пошёл следом за ними.",
+        "normalized_text": "Стражи порядка развернулись и пошли прочь. Олаф продолжал какое-то время смотреть на волков, а потом тоже развернулся и пошёл следом за ними.",
+        "portion_index": 11,
+        "portion_count": 12,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.road-page",
+      "instead_expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "nlbnavigator_expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.road-page",
+        "expected_fragment": "Вы мчались по пустынным ночным улицам",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.\n",
+        "normalized_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.\n",
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 6
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.road-page",
+        "expected_fragment": "Вы мчались по пустынным ночным улицам",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+        "normalized_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+        "portion_index": 0,
+        "portion_count": 6,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.road-final-portion",
+      "instead_expected_fragment": "вы решили туда зайти",
+      "nlbnavigator_expected_fragment": "вы решили туда зайти",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.road-final-portion",
+        "expected_fragment": "вы решили туда зайти",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.\n",
+        "normalized_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.\n",
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "screen_kind": "page",
+        "portion_index": 5,
+        "portion_count": 6
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.road-final-portion",
+        "expected_fragment": "вы решили туда зайти",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+        "normalized_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+        "portion_index": 5,
+        "portion_count": 6,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-entry",
+      "instead_expected_fragment": "Усевшись за столик",
+      "nlbnavigator_expected_fragment": "Усевшись за столик",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-entry",
+        "expected_fragment": "Усевшись за столик",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.\n",
+        "normalized_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.\n",
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-entry",
+        "expected_fragment": "Усевшись за столик",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+        "normalized_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+        "portion_index": 0,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-final-portion",
+      "instead_expected_fragment": "за столик подсел бородатый мужик",
+      "nlbnavigator_expected_fragment": "за столик подсел бородатый мужик",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-final-portion",
+        "expected_fragment": "за столик подсел бородатый мужик",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.\n",
+        "normalized_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.\n",
+        "page_id": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-final-portion",
+        "expected_fragment": "за столик подсел бородатый мужик",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+        "normalized_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+        "portion_index": 1,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-greeting",
+      "instead_expected_fragment": "Доброго вам утречка",
+      "nlbnavigator_expected_fragment": "Доброго вам утречка",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-greeting",
+        "expected_fragment": "Доброго вам утречка",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "— Доброго вам утречка! — сказал мужик.\n",
+        "normalized_text": "— Доброго вам утречка! — сказал мужик.\n",
+        "page_id": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-greeting",
+        "expected_fragment": "Доброго вам утречка",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "-- Доброго вам утречка! -- сказал мужик.",
+        "normalized_text": "-- Доброго вам утречка! -- сказал мужик.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-dialogue-outcome",
+      "instead_expected_fragment": "Здравствуйте",
+      "nlbnavigator_expected_fragment": "Здравствуйте",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-dialogue-outcome",
+        "expected_fragment": "Здравствуйте",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "— Здравствуйте, — ответили вы.\n",
+        "normalized_text": "— Здравствуйте, — ответили вы.\n",
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 9
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-dialogue-outcome",
+        "expected_fragment": "Здравствуйте",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "-- Здравствуйте, -- ответили вы.",
+        "normalized_text": "-- Здравствуйте, -- ответили вы.",
+        "portion_index": 0,
+        "portion_count": 9,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-final-portion",
+      "instead_expected_fragment": "где и заснули под мерное гудение пчёл",
+      "nlbnavigator_expected_fragment": "где и заснули под мерное гудение пчёл",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-final-portion",
+        "expected_fragment": "где и заснули под мерное гудение пчёл",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.\n",
+        "normalized_text": "Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.\n",
+        "page_id": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "screen_kind": "page",
+        "portion_index": 8,
+        "portion_count": 9
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-final-portion",
+        "expected_fragment": "где и заснули под мерное гудение пчёл",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+        "normalized_text": "Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+        "portion_index": 8,
+        "portion_count": 9,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.page13-zero-dialogue",
+      "instead_expected_fragment": "из бара вышел утренний знакомец",
+      "nlbnavigator_expected_fragment": "из бара вышел утренний знакомец",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.page13-zero-dialogue",
+        "expected_fragment": "из бара вышел утренний знакомец",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.\n",
+        "normalized_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.\n",
+        "page_id": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.page13-zero-dialogue",
+        "expected_fragment": "из бара вышел утренний знакомец",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+        "normalized_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.steal-food-from-kitchen",
+      "instead_expected_fragment": "удалось взять себя в руки",
+      "nlbnavigator_expected_fragment": "удалось взять себя в руки",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.steal-food-from-kitchen",
+        "expected_fragment": "удалось взять себя в руки",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Всё же вам удалось взять себя в руки. Презрительно отвернувшись, вы тенью промелькнули к помещению, откуда доносились ароматы съестного.\n",
+        "normalized_text": "Всё же вам удалось взять себя в руки. Презрительно отвернувшись, вы тенью промелькнули к помещению, откуда доносились ароматы съестного.\n",
+        "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.steal-food-from-kitchen",
+        "expected_fragment": "удалось взять себя в руки",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Всё же вам удалось взять себя в руки. Презрительно отвернувшись, вы тенью промелькнули к помещению, откуда доносились ароматы съестного.",
+        "normalized_text": "Всё же вам удалось взять себя в руки. Презрительно отвернувшись, вы тенью промелькнули к помещению, откуда доносились ароматы съестного.",
+        "portion_index": 0,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.steal-food-final-portion",
+      "instead_expected_fragment": "огромный кусок сырого мяса",
+      "nlbnavigator_expected_fragment": "огромный кусок сырого мяса",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.steal-food-final-portion",
+        "expected_fragment": "огромный кусок сырого мяса",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Это оказалась кухня. На ваше счастье, там никого не было. Без труда запрыгнув в открытое окно, вы с удовольствием съели огромный кусок сырого мяса, которое повар оставил размораживаться.\n",
+        "normalized_text": "Это оказалась кухня. На ваше счастье, там никого не было. Без труда запрыгнув в открытое окно, вы с удовольствием съели огромный кусок сырого мяса, которое повар оставил размораживаться.\n",
+        "page_id": "338bd8d1-fc55-42c0-8e67-65f58628a5c0",
+        "screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.steal-food-final-portion",
+        "expected_fragment": "огромный кусок сырого мяса",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Это оказалась кухня. На ваше счастье, там никого не было. Без труда запрыгнув в открытое окно, вы с удовольствием съели огромный кусок сырого мяса, которое повар оставил размораживаться.",
+        "normalized_text": "Это оказалась кухня. На ваше счастье, там никого не было. Без труда запрыгнув в открытое окно, вы с удовольствием съели огромный кусок сырого мяса, которое повар оставил размораживаться.",
+        "portion_index": 1,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.page10-after-kitchen",
+      "instead_expected_fragment": "Основательно подкрепившись",
+      "nlbnavigator_expected_fragment": "Основательно подкрепившись",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.page10-after-kitchen",
+        "expected_fragment": "Основательно подкрепившись",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.\n",
+        "normalized_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.\n",
+        "page_id": "e40f707a-3934-43b4-b302-9ea6b4461531",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.page10-after-kitchen",
+        "expected_fragment": "Основательно подкрепившись",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+        "normalized_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.forest-entry-wolfiness-zero",
+      "instead_expected_fragment": "вы решили свернуть в лес",
+      "nlbnavigator_expected_fragment": "вы решили свернуть в лес",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.forest-entry-wolfiness-zero",
+        "expected_fragment": "вы решили свернуть в лес",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?\n",
+        "normalized_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?\n",
+        "page_id": "05837065-8160-469f-8b29-e07d87549656",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.forest-entry-wolfiness-zero",
+        "expected_fragment": "вы решили свернуть в лес",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+        "normalized_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-not-greater-than-one-outcome",
+      "instead_expected_fragment": "масса разнообразных запахов",
+      "nlbnavigator_expected_fragment": "масса разнообразных запахов",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-not-greater-than-one-outcome",
+        "expected_fragment": "масса разнообразных запахов",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы принюхались. В воздухе чувствовалась масса разнообразных запахов.\n",
+        "normalized_text": "Вы принюхались. В воздухе чувствовалась масса разнообразных запахов.\n",
+        "page_id": "58180cad-f8db-42f7-a04a-994e1c56f991",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-not-greater-than-one-outcome",
+        "expected_fragment": "масса разнообразных запахов",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы принюхались. В воздухе чувствовалась масса разнообразных запахов.",
+        "normalized_text": "Вы принюхались. В воздухе чувствовалась масса разнообразных запахов.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.forest-page-17-right-to-page23",
+      "instead_expected_fragment": "Казалось, лес стал гуще",
+      "nlbnavigator_expected_fragment": "Казалось, лес стал гуще",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.forest-page-17-right-to-page23",
+        "expected_fragment": "Казалось, лес стал гуще",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы повернули направо. Казалось, лес стал гуще.\n",
+        "normalized_text": "Вы повернули направо. Казалось, лес стал гуще.\n",
+        "page_id": "e10b657b-d06c-4b34-be66-a7322266755c",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.forest-page-17-right-to-page23",
+        "expected_fragment": "Казалось, лес стал гуще",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы повернули направо. Казалось, лес стал гуще.",
+        "normalized_text": "Вы повернули направо. Казалось, лес стал гуще.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.wolves-avoided-page25",
+      "instead_expected_fragment": "В кустах то и дело раздавались какие-то шорохи",
+      "nlbnavigator_expected_fragment": "В кустах то и дело раздавались какие-то шорохи",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolves-avoided-page25",
+        "expected_fragment": "В кустах то и дело раздавались какие-то шорохи",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "В кустах то и дело раздавались какие-то шорохи. Вам стало казаться, будто за вами следят. Но вы продолжали упрямо двигаться к своей цели, стараясь ни на что не обращать внимания. Вскоре, вы оказались на развилке.\n",
+        "normalized_text": "В кустах то и дело раздавались какие-то шорохи. Вам стало казаться, будто за вами следят. Но вы продолжали упрямо двигаться к своей цели, стараясь ни на что не обращать внимания. Вскоре, вы оказались на развилке.\n",
+        "page_id": "a27840f3-04f2-4156-8854-1abf0061e0c9",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.wolves-avoided-page25",
+        "expected_fragment": "В кустах то и дело раздавались какие-то шорохи",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "В кустах то и дело раздавались какие-то шорохи. Вам стало казаться, будто за вами следят. Но вы продолжали упрямо двигаться к своей цели, стараясь ни на что не обращать внимания. Вскоре, вы оказались на развилке.",
+        "normalized_text": "В кустах то и дело раздавались какие-то шорохи. Вам стало казаться, будто за вами следят. Но вы продолжали упрямо двигаться к своей цели, стараясь ни на что не обращать внимания. Вскоре, вы оказались на развилке.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.page25-left-to-page19",
+      "instead_expected_fragment": "Вы выбрали левый поворот",
+      "nlbnavigator_expected_fragment": "Вы выбрали левый поворот",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.page25-left-to-page19",
+        "expected_fragment": "Вы выбрали левый поворот",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.\n",
+        "normalized_text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.\n",
+        "page_id": "f87e0749-c4b3-4a3f-878b-47964d1994ab",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.page25-left-to-page19",
+        "expected_fragment": "Вы выбрали левый поворот",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+        "normalized_text": "Вы выбрали левый поворот. Вдруг, вы услышали лёгкое шуршание. Кто-то двигался вам навстречу. Затаившись в кустах, вы увидели запоздалого путника. Он двигался по дорожке, испуганно озираясь.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfman-forest-wolfiness-one-to-page20.eat-traveler-page20",
+      "instead_expected_fragment": "Зверского аппетита вы не чувствовали",
+      "nlbnavigator_expected_fragment": "Зверского аппетита вы не чувствовали",
+      "instead_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.eat-traveler-page20",
+        "expected_fragment": "Зверского аппетита вы не чувствовали",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.\n",
+        "normalized_text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.\n",
+        "page_id": "0d9f5052-9f0a-4a5d-892b-05d8ac7f713f",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 1
+      },
+      "nlbnavigator_check": {
+        "step_id": "wolfman-forest-wolfiness-one-to-page20.eat-traveler-page20",
+        "expected_fragment": "Зверского аппетита вы не чувствовали",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.",
+        "normalized_text": "Зверского аппетита вы не чувствовали, но упустить лёгкую добычу было бы глупо. Когда человек поравнялся с вашим укрытием, вы, молнией кинулись на него. Похоже, жертва даже не успела понять что происходит, как вы уже перегрызли ей горло.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": true,
+  "steps": [
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.title",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.00-title.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.00-title.png",
+      "changed_pixels": 1942698,
+      "changed_fraction": 0.9368721064814814,
+      "mean_absolute_channel_error": 3.935291441615226,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.title-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.opening",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.01-opening.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.01-opening.png",
+      "changed_pixels": 1613358,
+      "changed_fraction": 0.778046875,
+      "mean_absolute_channel_error": 2.9036408500514406,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.opening-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.opening-next-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.02-opening-next-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.02-opening-next-portion.png",
+      "changed_pixels": 1615981,
+      "changed_fraction": 0.779311824845679,
+      "mean_absolute_channel_error": 4.121699299125514,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.opening-next-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.opening-choices",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.03-opening-choices.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.03-opening-choices.png",
+      "changed_pixels": 1720331,
+      "changed_fraction": 0.8296349344135803,
+      "mean_absolute_channel_error": 5.697935474537037,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.opening-choices-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.jump-over-fence",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.04-jump-over-fence.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.04-jump-over-fence.png",
+      "changed_pixels": 1858994,
+      "changed_fraction": 0.8965055941358024,
+      "mean_absolute_channel_error": 4.404564043209876,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.jump-over-fence-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.robbery-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.05-robbery-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.05-robbery-final-portion.png",
+      "changed_pixels": 1861640,
+      "changed_fraction": 0.8977816358024692,
+      "mean_absolute_channel_error": 5.356980934927983,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.robbery-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.robbery-choices",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.06-robbery-choices.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.06-robbery-choices.png",
+      "changed_pixels": 1903309,
+      "changed_fraction": 0.9178766396604938,
+      "mean_absolute_channel_error": 7.070167341820988,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.robbery-choices-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.chase-robber",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.07-chase-robber.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.07-chase-robber.png",
+      "changed_pixels": 1843811,
+      "changed_fraction": 0.8891835455246914,
+      "mean_absolute_channel_error": 3.7563639724794236,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.chase-robber-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.chase-robber-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.08-chase-robber-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.08-chase-robber-final-portion.png",
+      "changed_pixels": 1842567,
+      "changed_fraction": 0.8885836226851852,
+      "mean_absolute_channel_error": 3.8427300347222224,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.chase-robber-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.09-chase-branch-zoo.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.09-chase-branch-zoo.png",
+      "changed_pixels": 1884175,
+      "changed_fraction": 0.9086492091049383,
+      "mean_absolute_channel_error": 5.596024466306584,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.10-chase-branch-zoo-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.10-chase-branch-zoo-final-portion.png",
+      "changed_pixels": 1881110,
+      "changed_fraction": 0.9071711033950617,
+      "mean_absolute_channel_error": 4.421180555555556,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.chase-branch-zoo-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.chase-branch-zero-condition",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.11-wolfiness-zero-outcome.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.11-wolfiness-zero-outcome.png",
+      "changed_pixels": 1906735,
+      "changed_fraction": 0.9195288387345679,
+      "mean_absolute_channel_error": 4.206173000257202,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.chase-branch-zero-condition-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.zoo-escape-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.12-zoo-escape-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.12-zoo-escape-final-portion.png",
+      "changed_pixels": 1906874,
+      "changed_fraction": 0.9195958719135803,
+      "mean_absolute_channel_error": 4.619226305298354,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.zoo-escape-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.road-page",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.13-road-page.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.13-road-page.png",
+      "changed_pixels": 1496280,
+      "changed_fraction": 0.7215856481481482,
+      "mean_absolute_channel_error": 3.0279284014917693,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.road-page-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.road-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.14-road-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.14-road-final-portion.png",
+      "changed_pixels": 1500646,
+      "changed_fraction": 0.7236911651234568,
+      "mean_absolute_channel_error": 3.9677419302983536,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.road-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-entry",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.15-truckers-bar-entry.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.15-truckers-bar-entry.png",
+      "changed_pixels": 1696375,
+      "changed_fraction": 0.8180820794753086,
+      "mean_absolute_channel_error": 4.575876575360082,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.truckers-bar-entry-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.16-truckers-bar-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.16-truckers-bar-final-portion.png",
+      "changed_pixels": 1691386,
+      "changed_fraction": 0.8156761188271605,
+      "mean_absolute_channel_error": 3.499670299639918,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.truckers-bar-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.truckers-bar-greeting",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.17-truckers-bar-greeting.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.17-truckers-bar-greeting.png",
+      "changed_pixels": 1583068,
+      "changed_fraction": 0.7634394290123456,
+      "mean_absolute_channel_error": 2.4947170781893004,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.truckers-bar-greeting-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-dialogue-outcome",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.18-wolfiness-zero-dialogue-outcome.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.18-wolfiness-zero-dialogue-outcome.png",
+      "changed_pixels": 1796259,
+      "changed_fraction": 0.8662514467592592,
+      "mean_absolute_channel_error": 3.812633584104938,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-dialogue-outcome-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.19-wolfiness-zero-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.19-wolfiness-zero-final-portion.png",
+      "changed_pixels": 1789652,
+      "changed_fraction": 0.863065200617284,
+      "mean_absolute_channel_error": 4.72631606867284,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.wolfiness-zero-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.page13-zero-dialogue",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.20-page13-zero-dialogue.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.20-page13-zero-dialogue.png",
+      "changed_pixels": 1519329,
+      "changed_fraction": 0.732701099537037,
+      "mean_absolute_channel_error": 3.573091081532922,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.page13-zero-dialogue-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.page13-zero-choices",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.21-page13-zero-choices.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.21-page13-zero-choices.png",
+      "changed_pixels": 1695349,
+      "changed_fraction": 0.817587287808642,
+      "mean_absolute_channel_error": 7.256765528549383,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.page13-zero-choices-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.steal-food-from-kitchen",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.22-steal-food-from-kitchen.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.22-steal-food-from-kitchen.png",
+      "changed_pixels": 1559632,
+      "changed_fraction": 0.7521373456790124,
+      "mean_absolute_channel_error": 2.829895190329218,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.steal-food-from-kitchen-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.steal-food-final-portion",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.23-steal-food-final-portion.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.23-steal-food-final-portion.png",
+      "changed_pixels": 1559828,
+      "changed_fraction": 0.7522318672839506,
+      "mean_absolute_channel_error": 3.144651652520576,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.steal-food-final-portion-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.page10-after-kitchen",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.24-page10-after-kitchen.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.24-page10-after-kitchen.png",
+      "changed_pixels": 1942667,
+      "changed_fraction": 0.9368571566358025,
+      "mean_absolute_channel_error": 4.202946244855967,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.page10-after-kitchen-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.forest-entry-wolfiness-zero",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.25-forest-entry-wolfiness-zero.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.25-forest-entry-wolfiness-zero.png",
+      "changed_pixels": 1890804,
+      "changed_fraction": 0.9118460648148148,
+      "mean_absolute_channel_error": 4.253322080761317,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.forest-entry-wolfiness-zero-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.wolfiness-not-greater-than-one-outcome",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.26-wolfiness-not-greater-than-one-outcome.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.26-wolfiness-not-greater-than-one-outcome.png",
+      "changed_pixels": 1931534,
+      "changed_fraction": 0.9314882330246913,
+      "mean_absolute_channel_error": 3.9874067644032927,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.wolfiness-not-greater-than-one-outcome-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.forest-page-17-choices",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.27-forest-page-17-choices.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.27-forest-page-17-choices.png",
+      "changed_pixels": 1923970,
+      "changed_fraction": 0.9278404706790123,
+      "mean_absolute_channel_error": 4.965001607510288,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.forest-page-17-choices-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.forest-page-17-right-to-page23",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.28-forest-page-17-right-to-page23.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.28-forest-page-17-right-to-page23.png",
+      "changed_pixels": 1787237,
+      "changed_fraction": 0.8619005594135802,
+      "mean_absolute_channel_error": 2.8043082883230457,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.forest-page-17-right-to-page23-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.wolves-avoided-page25",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.29-forest-page-25.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.29-forest-page-25.png",
+      "changed_pixels": 1904068,
+      "changed_fraction": 0.9182426697530864,
+      "mean_absolute_channel_error": 5.2468973443930045,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.wolves-avoided-page25-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.page25-traveler-branch-choices",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.30-page25-choices.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.30-page25-choices.png",
+      "changed_pixels": 1882446,
+      "changed_fraction": 0.9078153935185185,
+      "mean_absolute_channel_error": 4.138034657921811,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.page25-traveler-branch-choices-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.page25-left-to-page19",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.31-page25-left-to-page19.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.31-page25-left-to-page19.png",
+      "changed_pixels": 1935574,
+      "changed_fraction": 0.9334365354938272,
+      "mean_absolute_channel_error": 5.099741673096708,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.page25-left-to-page19-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.page19-traveler-choices",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.32-page19-traveler-choices.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.32-page19-traveler-choices.png",
+      "changed_pixels": 1929644,
+      "changed_fraction": 0.930576774691358,
+      "mean_absolute_channel_error": 5.294802758487655,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.page19-traveler-choices-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page20.eat-traveler-page20",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page20.33-traveler-choice-page20.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page20.33-traveler-choice-page20.png",
+      "changed_pixels": 1933664,
+      "changed_fraction": 0.9325154320987654,
+      "mean_absolute_channel_error": 5.784691197273663,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page20.eat-traveler-page20-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page29.page20-to-page22",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page29.page20-to-page22.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page29.page20-to-page22.png",
+      "changed_pixels": 1926407,
+      "changed_fraction": 0.9290157214506173,
+      "mean_absolute_channel_error": 3.813397633744856,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page29.page20-to-page22-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page29.page22-to-page17",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page29.page22-to-page17.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page29.page22-to-page17.png",
+      "changed_pixels": 1904995,
+      "changed_fraction": 0.9186897183641975,
+      "mean_absolute_channel_error": 4.625350919495885,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page29.page22-to-page17-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page29.page17-to-page18",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page29.page17-to-page18.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page29.page17-to-page18.png",
+      "changed_pixels": 1871338,
+      "changed_fraction": 0.9024585262345679,
+      "mean_absolute_channel_error": 3.578677822788066,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page29.page17-to-page18-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page29.page18-to-page19",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page29.page18-to-page19.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page29.page18-to-page19.png",
+      "changed_pixels": 1890588,
+      "changed_fraction": 0.9117418981481481,
+      "mean_absolute_channel_error": 4.356703157150206,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page29.page18-to-page19-diff.png"
+    },
+    {
+      "id": "wolfman-forest-wolfiness-one-to-page29.page19-to-page29-choices",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/wolfman-forest-wolfiness-one-to-page29.page29-choices.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/wolfman-forest-wolfiness-one-to-page29.page29-choices.png",
+      "changed_pixels": 1832285,
+      "changed_fraction": 0.8836250964506173,
+      "mean_absolute_channel_error": 4.953560796039095,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/wolfman-forest-wolfiness-one-to-page29.page19-to-page29-choices-diff.png"
+    },
+    {
+      "id": "choose-rowan",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/choose-rowan.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/choose-rowan.png",
+      "changed_pixels": 1895830,
+      "changed_fraction": 0.9142698688271605,
+      "mean_absolute_channel_error": 3.3856413966049383,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/choose-rowan-diff.png"
+    },
+    {
+      "id": "page31-to-ending34",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/page31-to-ending34.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/page31-to-ending34.png",
+      "changed_pixels": 1937492,
+      "changed_fraction": 0.9343614969135803,
+      "mean_absolute_channel_error": 5.8137008101851855,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/page31-to-ending34-diff.png"
+    },
+    {
+      "id": "page31-to-ending34-end-screen",
+      "instead": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/instead/page31-to-ending34-end-screen.png",
+      "nlbnavigator": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/nlbnavigator/page31-to-ending34-end-screen.png",
+      "changed_pixels": 1945536,
+      "changed_fraction": 0.9382407407407407,
+      "mean_absolute_channel_error": 4.34375803755144,
+      "diff_image": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-forest-wolfiness-one-rowan-ending34/diff/page31-to-ending34-end-screen-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

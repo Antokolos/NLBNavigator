@@ -1,0 +1,1 @@
+/workspace/nlb-pr73-c8.DjZUEaC0/lua-run tests/differential/check_instead_trace_lifecycle.lua tests/differential/instead_trace.lua /workspace/nlb-pr73-c8.DjZUEaC0/c5/scene scene 

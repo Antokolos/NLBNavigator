@@ -1,0 +1,177 @@
+{
+  "repository": "Antokolos/NLBNavigator",
+  "draft_pr": 73,
+  "issue": 69,
+  "review": "C8",
+  "initial_head": "b104fddf6c9d10f3ae7df6ee5e5b7a9674a6b815",
+  "tested_head": "8222b56b83d6a8ba6d2862c7e7f7f83bc62a6720",
+  "main": "c90dfb725fb3a5ec7093078634ec0029f5582423",
+  "ue": "67f7de82bf8007c680908d98d0c8033517a52cde",
+  "prior_evidence": "539331bbcad7b654a9002c4aacba3c91a978bde4",
+  "pins": {
+    "wolfman": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead-am_i_a_monster_vn": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "instead": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "environment": {
+    "os": "Debian 13.7 trixie amd64",
+    "display": "Xvfb 1920x1080x24 -noreset",
+    "sdl_video": "x11",
+    "sdl_audio": "dummy",
+    "magick_threads": 2,
+    "omp_threads": 2,
+    "llvmpipe_threads": 2,
+    "xdotool_click_pause_seconds": 0.27,
+    "graphical_workers": 3
+  },
+  "tools": {
+    "cmake": "3.31.6",
+    "ninja": "1.12.1",
+    "gcc": "14.2.0",
+    "python": "3.12.14",
+    "pillow": "13.0.0",
+    "instead": "3.5.2",
+    "luajit": "2.1.0+openresty20250117-2",
+    "xvfb": "2:21.1.16-1.3+deb13u4",
+    "openbox": "3.6.1",
+    "xdotool": "3.20160805.1",
+    "imagemagick": "7.1.1-43",
+    "sdl3": "3.4.18",
+    "sdl3_image": "3.2.4",
+    "sdl3_ttf": "3.2.2",
+    "sdl3_mixer": "3.2.4"
+  },
+  "results": {
+    "routes": 22,
+    "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+    "checkpoints": 762,
+    "text_pairs": 551,
+    "advance_pairs": 53,
+    "python": {
+      "passed": 158,
+      "skipped": 18,
+      "failed": 0
+    },
+    "c8": {
+      "before_failures": 19,
+      "after_tests": 39
+    },
+    "c5": {
+      "append": 0,
+      "both": 0,
+      "cmd": 0,
+      "fmt": 0,
+      "global-reset": 0,
+      "inflight": 0,
+      "nested": 0,
+      "new-file": 0,
+      "repeat": 0,
+      "scene": 0,
+      "unchanged": 0
+    },
+    "c6": {
+      "cycles": {
+        "runner_exit": 0,
+        "process": {
+          "pid": 3606,
+          "exit_code": 0
+        },
+        "first_seq": 1,
+        "last_seq": 213,
+        "commands": [
+          {
+            "seq": 110,
+            "command": "save /workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/cycles/instead-appdata/saves/instead-game-overlay/save9",
+            "kind": "scene",
+            "rendered": ""
+          },
+          {
+            "seq": 131,
+            "command": "load /workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/cycles/instead-appdata/saves/instead-game-overlay/save9",
+            "kind": "scene",
+            "rendered": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n"
+          },
+          {
+            "seq": 158,
+            "command": "load /workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/cycles/instead-appdata/saves/instead-game-overlay/save9",
+            "kind": "scene",
+            "rendered": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n"
+          },
+          {
+            "seq": 185,
+            "command": "load /workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/cycles/instead-appdata/saves/instead-game-overlay/save9",
+            "kind": "scene",
+            "rendered": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n"
+          }
+        ]
+      },
+      "restart-save": {
+        "runner_exit": 0,
+        "process": {
+          "pid": 4247,
+          "exit_code": 0
+        },
+        "first_seq": 1,
+        "last_seq": 112,
+        "commands": [
+          {
+            "seq": 110,
+            "command": "save /workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/restart-save/instead-appdata/saves/instead-game-overlay/save9",
+            "kind": "scene",
+            "rendered": ""
+          }
+        ]
+      },
+      "restart-load": {
+        "runner_exit": 0,
+        "process": {
+          "pid": 4482,
+          "exit_code": 0
+        },
+        "first_seq": 1,
+        "last_seq": 33,
+        "commands": [
+          {
+            "seq": 5,
+            "command": "load /workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/restart-load/instead-appdata/saves/instead-game-overlay/save9",
+            "kind": "scene",
+            "rendered": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n"
+          }
+        ]
+      },
+      "missing-slot": {
+        "runner_exit": 1,
+        "process": {
+          "pid": 4589,
+          "exit_code": 0
+        },
+        "first_seq": 1,
+        "last_seq": 6,
+        "commands": []
+      }
+    },
+    "slots": {
+      "cycles": {
+        "path": "/workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/cycles/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 62384,
+        "sha256": "8ed3e06d08361b6712ef935b6ec1819dc1fea4070ae01db6759b0f6cb905bdf1"
+      },
+      "original": {
+        "path": "/workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/restart-save/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 62844,
+        "sha256": "caf4ddb429a0a7d19ac89e4e4800a745cae6ad3c92e396c9bcade624c106c2f0"
+      },
+      "copied": {
+        "path": "/workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/restart-load/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 62844,
+        "sha256": "caf4ddb429a0a7d19ac89e4e4800a745cae6ad3c92e396c9bcade624c106c2f0"
+      }
+    },
+    "achievement": {
+      "award": 46,
+      "readback": 42,
+      "clean": 42,
+      "reaward": 46
+    }
+  }
+}

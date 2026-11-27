@@ -1,0 +1,112 @@
+diff --git a/tests/differential/test_instead_trace.py b/tests/differential/test_instead_trace.py
+index 5517ac0..2abed6b 100644
+--- a/tests/differential/test_instead_trace.py
++++ b/tests/differential/test_instead_trace.py
+@@ -11,7 +11,8 @@ import run_route  # noqa: E402
+ def record(seq, command="look", kind="scene", rendered="Текст сцены", page="page-1",
+            portion=0, **variables):
+     item = {"seq": seq, "kind": kind, "command": command, "rendered": rendered,
+-            "page_id": page, "screen_kind": "page", "portion_index": portion}
++            "page_id": page, "screen_kind": "page", "portion_index": portion,
++            "portion_count": 0, "more": False, "background": "", "end_screen": False}
+     for name in run_route.TRACE_VARIABLES:
+         item[name] = str(variables.get(name, ""))
+     return item
+@@ -22,7 +23,7 @@ def empty_scene(seq, page="page-1", portion=0, **variables):
+ 
+ 
+ def save_evidence(seq):
+-    return record(seq, command="save D:/saves/save9", kind="fmt", rendered="")
++    return record(seq, command="save D:/saves/save9", kind="event", rendered="")
+ 
+ 
+ def load_evidence(seq, rendered="Загруженный текст", page="page-1", portion=0):
+@@ -31,7 +32,7 @@ def load_evidence(seq, rendered="Загруженный текст", page="page-
+ 
+ def load_command(seq):
+     """Запись команды load без сцены; в реальной трассе обычно совмещена со scene."""
+-    return record(seq, command="load D:/saves/save9", kind="fmt", rendered="")
++    return record(seq, command="load D:/saves/save9", kind="event", rendered="")
+ 
+ 
+ class InsteadMenuKindTest(unittest.TestCase):
+@@ -205,6 +206,79 @@ class ExpectedCommandTest(unittest.TestCase):
+         self.assertIsNone(item)
+         self.assertTrue(any("load" in error for error in errors))
+ 
++    def test_autosave_and_other_slots_do_not_confirm_quick_commands(self):
++        for verb in ("save", "load"):
++            for target in ("/tmp/game/autosave", r"D:\Game Saves\save1",
++                           "/tmp/game/save90", "/tmp/game/save9.bak", "/tmp/save9/", ""):
++                with self.subTest(verb=verb, target=target):
++                    old = record(1)
++                    events = [record(2, command=f"{verb} {target}".rstrip()), record(3)]
++                    item, errors = run_route.pick_instead_state_record(
++                        "menu", verb, [old, *events], events, run_route.semantic_state(old))
++                    self.assertIsNone(item)
++                    self.assertTrue(any("не подтверждено" in error for error in errors))
++
++    def test_fmt_does_not_confirm_save_even_with_an_unrelated_scene(self):
++        old = record(1)
++        for command in ("save", "save /tmp/game/save9"):
++            with self.subTest(command=command):
++                diagnostic = record(2, command=command, kind="fmt", rendered="")
++                for events in ([diagnostic], [diagnostic, record(3)]):
++                    item, errors = run_route.pick_instead_state_record(
++                        "menu", "save", [old, *events], events, run_route.semantic_state(old))
++                    self.assertIsNone(item)
++                    self.assertTrue(any("не подтверждено" in error for error in errors))
++
++    def test_save_needs_a_scene_at_or_after_the_command(self):
++        old = record(1)
++        # Сцена текущего шага, записанная до команды, тоже не подтверждает результат.
++        events = [empty_scene(2), save_evidence(3)]
++        item, errors = run_route.pick_instead_state_record(
++            "menu", "save", [old, *events], events, run_route.semantic_state(old))
++        self.assertIsNone(item)
++        self.assertTrue(any("свежей сцены" in error for error in errors))
++
++    def test_save_rejects_incomplete_and_changed_scene(self):
++        old = record(1)
++        for field, bad_value in (("portion_count", None), ("guardDone", None),
++                                 ("portion_count", 2), ("more", True),
++                                 ("screen_kind", "choices"), ("background", "other.png"),
++                                 ("end_screen", True)):
++            with self.subTest(field=field, value=bad_value):
++                saved = dict(empty_scene(2), command="save /tmp/game/save9")
++                if bad_value is None:
++                    del saved[field]
++                else:
++                    saved[field] = bad_value
++                item, errors = run_route.pick_instead_state_record(
++                    "menu", "save", [old, saved], [saved], run_route.semantic_state(old))
++                self.assertIsNone(item)
++                self.assertTrue(errors)
++
++    def test_save_with_empty_rendered_and_load_with_text_on_both_platforms(self):
++        old = record(1)
++        for target in ("/tmp/game with spaces/save9", r"D:\Game Saves\save9"):
++            with self.subTest(target=target):
++                saved = dict(empty_scene(2), command=f"save {target}")
++                loaded = record(3, command=f"load {target}", rendered="Текст после загрузки")
++                for verb, event, expected in (("save", saved, old), ("load", loaded, loaded)):
++                    item, errors = run_route.pick_instead_state_record(
++                        "menu", verb, [old, event], [event], run_route.semantic_state(old))
++                    self.assertEqual((item, errors), (expected, []))
++
++    def test_wait_ignores_wrong_slot_and_fmt_until_real_load(self):
++        old = [record(1)]
++        wrong_slot = [*old, record(2, command=r"load D:\Game Saves\save1")]
++        diagnostic = [*wrong_slot, record(3, command=r"load D:\Game Saves\save9", kind="fmt"),
++                      record(4)]
++        loaded = [*diagnostic, record(5, command=r"load D:\Game Saves\save9")]
++        with mock.patch.object(run_route, "read_instead_trace",
++                               side_effect=[wrong_slot, diagnostic, loaded]):
++            result = run_route.wait_instead_fresh_scene(
++                Path("trace.tsv"), 1, expected_command="load",
++                previous_identity=run_route.trace_identity(old))
++        self.assertEqual(result, (loaded, False))
++
+ 
+ class FullIdentityTest(unittest.TestCase):
+     def test_changed_variable_in_old_record_is_detected(self):

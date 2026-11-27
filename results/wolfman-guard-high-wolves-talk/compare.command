@@ -1,0 +1,1 @@
+nice -n 6 python3 tests/differential/run_route.py --runtime compare --route tests/differential/routes/wolfman-guard-high-wolves-talk.json --output /workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-guard-high-wolves-talk 

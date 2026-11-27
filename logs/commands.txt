@@ -1,0 +1,15 @@
+Все команды исполнены из /workspace/NLBNavigator, если не указано иное.
+source /workspace/nlb-developer-env-v1/activate.sh
+cmake -S /workspace/NLBNavigator -B "/workspace/nlb-pr73-c8.DjZUEaC0/build" -G Ninja -DCMAKE_BUILD_TYPE=Release -DNLB_BUILD_TESTS=ON
+cmake --build "/workspace/nlb-pr73-c8.DjZUEaC0/build" --target nlb_main nlb_sdl nlb_save_portion_test --parallel 3
+ctest --test-dir "/workspace/nlb-pr73-c8.DjZUEaC0/build" -V
+python3 -m unittest discover -s tests/differential -p test_instead_trace.py -v
+python3 -m unittest discover -s tests/differential -p 'test_*.py' -v
+python3 tests/differential/validate_catalog.py
+cc -I /workspace/nlb-developer-env-v1/debian/usr/include/luajit-2.1 "/workspace/nlb-pr73-c8.DjZUEaC0/lua-run.c" -L /workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu -lluajit-5.1 -o "/workspace/nlb-pr73-c8.DjZUEaC0/lua-run"
+bash "/workspace/nlb-pr73-c8.DjZUEaC0/check-pins.sh" "/workspace/nlb-pr73-c8.DjZUEaC0/pins-status-before"
+NLB_CLICK_PAUSE=0.27 bash "/workspace/nlb-pr73-c8.DjZUEaC0/run-final.sh" c6 c6-final 704
+python3 "/workspace/nlb-pr73-c8.DjZUEaC0/local-suite.py" 3
+bash "/workspace/nlb-pr73-c8.DjZUEaC0/check-pins.sh" "/workspace/nlb-pr73-c8.DjZUEaC0/pins-status-after"
+git diff --check origin/main...HEAD
+git status --porcelain=v1 --untracked-files=all

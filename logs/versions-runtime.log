@@ -1,0 +1,21 @@
+Openbox 3.6.1
+Copyright (c) 2004   Mikael Magnusson
+Copyright (c) 2002   Dana Jansens
+
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions. See the file COPYING for details.
+
+dpkg-query: no packages found matching xvfb
+dpkg-query: no packages found matching openbox
+dpkg-query: no packages found matching xdotool
+dpkg-query: no packages found matching libluajit-5.1-2
+/workspace/nlb-developer-env-v1/mixer/lib/pkgconfig/sdl3-mixer.pc:8:Version: 3.2.4
+/workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu/pkgconfig/sdl3.pc:9:Version: 3.2.10
+/workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu/pkgconfig/sdl3-ttf.pc:8:Version: 3.2.2
+/workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu/pkgconfig/sdl3-image.pc:8:Version: 3.2.4
+/workspace/nlb-developer-env-v1/sdl/lib/pkgconfig/sdl3.pc:9:Version: 3.4.18
+	libSDL3_image.so.0 => /workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu/libSDL3_image.so.0 (0x00007fa644bb7000)
+	libSDL3_ttf.so.0 => /workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu/libSDL3_ttf.so.0 (0x00007fa644b98000)
+	libSDL3_mixer.so.0 => /workspace/nlb-developer-env-v1/mixer/lib/libSDL3_mixer.so.0 (0x00007fa644b67000)
+	libSDL3.so.0 => /workspace/nlb-developer-env-v1/sdl/lib/libSDL3.so.0 (0x00007fa6447de000)

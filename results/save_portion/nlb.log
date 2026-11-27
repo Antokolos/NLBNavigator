@@ -1,0 +1,12 @@
+baseline: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/baseline.log
+first-portion: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/first-portion.log
+second-portion: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/second-portion.log
+second-portion-save: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/second-portion-save.log
+second-portion-restart: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/second-portion-restart.log
+middle-portion: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/middle-portion.log
+middle-portion-restart: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/middle-portion-restart.log
+baseline-page4-3: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/baseline-page4-3.log
+last-portion: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/last-portion.log
+last-portion-restart: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/last-portion-restart.log
+old-save-restart: runner exit=0, журнал /workspace/nlb-pr73-c8.DjZUEaC0/results/save_portion/scenarios/old-save-restart.log
+OK: порция VN восстанавливается на всех проверенных позициях; старые сохранения совместимы

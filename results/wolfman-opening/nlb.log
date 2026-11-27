@@ -1,0 +1,1372 @@
+Оформление: тема игры: /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default; базовая тема: /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default; фон страниц STANDARD (gfx/bg.jpg): /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default/gfx/bg.jpg; scr.gfx.bg: нет; шрифт текста: /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default/fonts/sans.ttf; щелчок (snd.click): /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default/click.wav
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/00-title.png
+key:space
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/01-opening.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/02-opening-next-portion.png
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/03-opening-choices.png
+clickchoice:1
+settle:2500
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/04-jump-over-fence.png
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/05-robbery-final-portion.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/06-robbery-choices.png
+{
+  "runtime": "nlbnavigator",
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/00-title.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 67911
+    },
+    {
+      "id": "opening",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/01-opening.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 44938,
+      "changed_pixels_from_title": 2003808
+    },
+    {
+      "id": "opening-next-portion",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/02-opening-next-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45392,
+      "changed_pixels_from_opening": 37083
+    },
+    {
+      "id": "opening-choices",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/03-opening-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45618,
+      "changed_pixels_from_opening-next-portion": 1049857
+    },
+    {
+      "id": "jump-over-fence",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/04-jump-over-fence.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 179259,
+      "changed_pixels_from_opening-choices": 2001769
+    },
+    {
+      "id": "robbery-final-portion",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/05-robbery-final-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 180099,
+      "changed_pixels_from_jump-over-fence": 40664
+    },
+    {
+      "id": "robbery-choices",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/06-robbery-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 177957,
+      "changed_pixels_from_robbery-final-portion": 1050315
+    }
+  ],
+  "text_checks": [
+    {
+      "step_id": "opening",
+      "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "portion_index": 0,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "opening-next-portion",
+      "expected_fragment": "Интересно, сколько я тут валяюсь",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "portion_index": 1,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "jump-over-fence",
+      "expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+      "normalized_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+      "portion_index": 0,
+      "portion_count": 5,
+      "screen": "page"
+    }
+  ],
+  "errors": [],
+  "command": [
+    "/workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_sdl",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/wolfman",
+    "explore",
+    "vn",
+    "--no-sound",
+    "--theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default",
+    "--base-theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default",
+    "--lang",
+    "ru",
+    "--log",
+    "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/playthrough.log",
+    "--window",
+    "1920x1080",
+    "--script",
+    "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/route.script",
+    "--state-log",
+    "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/state-log.jsonl",
+    "--state-vars",
+    "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone"
+  ],
+  "screen_records": [],
+  "state_records": [
+    {
+      "schema": 1,
+      "index": 2,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/00-title.png",
+      "ok": true,
+      "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 0,
+        "more": false,
+        "visible": []
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 0,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "title.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [],
+        "reactionText": [],
+        "roomText": [],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "title"
+    },
+    {
+      "schema": 1,
+      "index": 5,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/01-opening.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening"
+    },
+    {
+      "schema": 1,
+      "index": 8,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/02-opening-next-portion.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-next-portion"
+    },
+    {
+      "schema": 1,
+      "index": 19,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/03-opening-choices.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 9,
+        "count": 10,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-choices"
+    },
+    {
+      "schema": 1,
+      "index": 22,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/04-jump-over-fence.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 5,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "jump-over-fence"
+    },
+    {
+      "schema": 1,
+      "index": 28,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/05-robbery-final-portion.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 5,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "robbery-final-portion"
+    },
+    {
+      "schema": 1,
+      "index": 31,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-opening/nlbnavigator/06-robbery-choices.png",
+      "ok": true,
+      "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 5,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "5b5d038f-ce4d-4cc8-8bee-81de8528b1a5",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Но когда раздались выстрелы, ваше тело всё сделало само. С силой оттолкнувшись от земли, вы взмыли в воздух, не успев даже удивиться, приземлились с другой стороны забора, и, не дожидаясь, пока преследователи найдут обходной путь, побежали по узким улочкам, не разбирая дороги, стремясь поскорее убраться отсюда как можно дальше.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Мохнатым вихрем влетев за угол, вы чуть не врезались в сцепившихся людей. Похоже, в данный момент совершалось ещё одно преступление. Долговязый худой парень в маске и кожаной куртке молча пытался вырвать сумку у женщины, а та так же молча пыталась ему сопротивляться. Ваше появление поразило их, как удар молнии. Глаза женщины округлились, она тут же выпустила сумку из рук и, завопив, убежала за угол. Грабитель же отступил к стене и выбросил в вашу сторону дрожащую руку с ножом.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Прогнать грабителя",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "robbery-choices"
+    }
+  ],
+  "state_log_validation": "ok: 32 записей",
+  "metadata": {
+    "route_id": "wolfman-opening",
+    "route_sha256": "a30ced32f51d249054126b5993f2530d7c7dd98eb7f24fec067f4557a8492352",
+    "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+    "navigator_commit": "8222b56b83d6a8ba6d2862c7e7f7f83bc62a6720",
+    "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  }
+}

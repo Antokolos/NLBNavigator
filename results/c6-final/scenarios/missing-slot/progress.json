@@ -1,0 +1,43 @@
+{
+  "runtime": "instead",
+  "completed_steps": [
+    "title",
+    "load-empty"
+  ],
+  "total_steps": 2,
+  "state_records": [
+    {
+      "seq": 4,
+      "kind": "scene",
+      "command": "save /workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/missing-slot/instead-appdata/saves/instead-game-overlay/autosave",
+      "arguments": "",
+      "rendered": "",
+      "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+      "location_id": "v_f7cb8bed_47a9_4ce2_b713_c9b53571c93f",
+      "room_id": "v_f7cb8bed_47a9_4ce2_b713_c9b53571c93f",
+      "screen_kind": "page",
+      "page_name": "Am I a Monster?",
+      "background": "images/title.jpg",
+      "portion_index": 0,
+      "portion_count": 0,
+      "more": false,
+      "room_text": "",
+      "action_text": "",
+      "objects_text": "",
+      "player_text": "",
+      "wolfiness": "0",
+      "hp": "0",
+      "barExit": "false",
+      "forestExit": "false",
+      "wolvesTalk": "false",
+      "guardDone": "false",
+      "end_screen": false,
+      "step_id": "title",
+      "trace_count": 4,
+      "input_events": []
+    }
+  ],
+  "trace_errors": [
+    "load-empty: нет свежей записи команды load для save9 — выполнение не подтверждено"
+  ]
+}

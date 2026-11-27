@@ -1,0 +1,420 @@
+[
+  {
+    "route": "wolfman-opening",
+    "checkpoints": 7,
+    "text_pairs": 3,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-opening"
+  },
+  {
+    "route": "wolfman-eat-robber",
+    "checkpoints": 26,
+    "text_pairs": 21,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-eat-robber"
+  },
+  {
+    "route": "wolfman-chase-robber",
+    "checkpoints": 27,
+    "text_pairs": 22,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-chase-robber"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-zero-right",
+    "checkpoints": 34,
+    "text_pairs": 26,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-zero-right"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-zero-left",
+    "checkpoints": 33,
+    "text_pairs": 25,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-zero-left"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-two-right",
+    "checkpoints": 34,
+    "text_pairs": 26,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-two-right"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-two-left",
+    "checkpoints": 32,
+    "text_pairs": 24,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-two-left"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-two-page18-bypass",
+    "checkpoints": 30,
+    "text_pairs": 23,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-two-page18-bypass"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-two-page24-bypass",
+    "checkpoints": 32,
+    "text_pairs": 25,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-two-page24-bypass"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-zero-page18-bypass",
+    "checkpoints": 31,
+    "text_pairs": 24,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-zero-page18-bypass"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-zero-page25-bypass",
+    "checkpoints": 32,
+    "text_pairs": 25,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-zero-page25-bypass"
+  },
+  {
+    "route": "wolfman-guard-high-wolves-talk",
+    "checkpoints": 35,
+    "text_pairs": 28,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-guard-high-wolves-talk"
+  },
+  {
+    "route": "wolfman-guard-high-wolves-attack",
+    "checkpoints": 33,
+    "text_pairs": 26,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-guard-high-wolves-attack"
+  },
+  {
+    "route": "wolfman-guard-low-wolfiness-escape",
+    "checkpoints": 46,
+    "text_pairs": 38,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-guard-low-wolfiness-escape"
+  },
+  {
+    "route": "wolfman-police-hospital-doctor",
+    "checkpoints": 40,
+    "text_pairs": 35,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-police-hospital-doctor"
+  },
+  {
+    "route": "wolfman-police-hospital-corpse",
+    "checkpoints": 30,
+    "text_pairs": 25,
+    "advance_pairs": 0,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-police-hospital-corpse"
+  },
+  {
+    "route": "wolfman-guard-high-wolves-talk-ending38",
+    "checkpoints": 39,
+    "text_pairs": 28,
+    "advance_pairs": 4,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-guard-high-wolves-talk-ending38"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-three-ending37",
+    "checkpoints": 40,
+    "text_pairs": 24,
+    "advance_pairs": 8,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-three-ending37"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-one-rowan-ending34",
+    "checkpoints": 42,
+    "text_pairs": 26,
+    "advance_pairs": 7,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-one-rowan-ending34"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-one-kalina-ending34",
+    "checkpoints": 42,
+    "text_pairs": 26,
+    "advance_pairs": 7,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-one-kalina-ending34"
+  },
+  {
+    "route": "wolfman-forest-wolfiness-one-hawthorn-ending39",
+    "checkpoints": 44,
+    "text_pairs": 26,
+    "advance_pairs": 9,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-forest-wolfiness-one-hawthorn-ending39"
+  },
+  {
+    "route": "wolfman-police-hospital-corpse-ending41",
+    "checkpoints": 53,
+    "text_pairs": 25,
+    "advance_pairs": 18,
+    "codes": [
+      0,
+      0,
+      0
+    ],
+    "attempts": {
+      "results": [
+        0,
+        0,
+        0
+      ]
+    },
+    "directory": "results/wolfman-police-hospital-corpse-ending41"
+  }
+]

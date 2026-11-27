@@ -1,0 +1,50 @@
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.7
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+amd64
+/usr/bin/gcc
+/usr/bin/g++
+/workspace/nlb-developer-env-v1/debian/usr/bin/cmake
+/workspace/nlb-developer-env-v1/debian/usr/bin/ctest
+/workspace/nlb-developer-env-v1/debian/usr/bin/ninja
+/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3
+/workspace/nlb-developer-env-v1/instead/bin/sdl-instead
+/workspace/nlb-developer-env-v1/debian/usr/bin/openbox
+/workspace/nlb-developer-env-v1/debian/usr/bin/xdotool
+/workspace/nlb-developer-env-v1/debian/usr/bin/Xvfb
+/usr/bin/import
+14.2.0
+cmake version 3.31.6
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+1.12.1
+Python 3.12.14
+13.0.0
+3.5.2
+Version: ImageMagick 7.1.1-43 Q16 x86_64 22550 https://imagemagick.org
+Copyright: (C) 1999 ImageMagick Studio LLC
+License: https://imagemagick.org/script/license.php
+Features: Cipher DPC Modules OpenMP(4.5) 
+Delegates (built-in): bzlib djvu fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lqr ltdl lzma openexr pangocairo png raw tiff webp wmf x xml zlib zstd
+Compiler: gcc (14.2)
+Openbox-Message: 14:09:17.407: Unable to make directory '/home/agent/.cache/openbox': Read-only file system
+Openbox 3.6.1
+Copyright (c) 2004   Mikael Magnusson
+Copyright (c) 2002   Dana Jansens
+
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions. See the file COPYING for details.
+
+xdotool version 3.20160805.1
+Package sdl3-mixer was not found in the pkg-config search path.
+Perhaps you should add the directory containing `sdl3-mixer.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'sdl3-mixer', required by 'virtual:world', not found

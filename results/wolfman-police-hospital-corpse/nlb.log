@@ -1,0 +1,5043 @@
+Оформление: тема игры: /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default; базовая тема: /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default; фон страниц STANDARD (gfx/bg.jpg): /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default/gfx/bg.jpg; scr.gfx.bg: нет; шрифт текста: /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default/fonts/sans.ttf; щелчок (snd.click): /workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default/click.wav
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/00-title.png
+key:space
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/01-opening.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/02-opening-next-portion.png
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/03-opening-choices.png
+clickchoice:0
+settle:3000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/04-police-branch.png
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+click:960,540
+settle:3000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/05-hospital-page3.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/hospital-page3-last.png
+click:960,540
+settle:2500
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/06-hospital-choices.png
+clickchoice:1
+settle:3000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/07-eat-corpse.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/08-corpse-page14-portion-1.png
+click:960,540
+settle:3000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/09-page5-after-corpse.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-1.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-2.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-3.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-4.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-5.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page6-portion-0.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page6-portion-1.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page7-portion-0.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-0.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-1.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-2.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-3.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-4.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-5.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-6.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-7.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-8.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page13-portion-0.png
+click:960,540
+settle:2500
+shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-kitchen-choices.png
+{
+  "runtime": "nlbnavigator",
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/00-title.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 67911
+    },
+    {
+      "id": "opening",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/01-opening.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 44938,
+      "changed_pixels_from_title": 2003808
+    },
+    {
+      "id": "opening-next-portion",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/02-opening-next-portion.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45392,
+      "changed_pixels_from_opening": 37083
+    },
+    {
+      "id": "opening-choices",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/03-opening-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 45618,
+      "changed_pixels_from_opening-next-portion": 1049857
+    },
+    {
+      "id": "try-to-break-through-police",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/04-police-branch.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 44896,
+      "changed_pixels_from_opening-choices": 2001469
+    },
+    {
+      "id": "hospital-page3",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/05-hospital-page3.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 41529,
+      "changed_pixels_from_try-to-break-through-police": 2000661
+    },
+    {
+      "id": "hospital-page3-last",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/hospital-page3-last.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 42279,
+      "changed_pixels_from_hospital-page3": 76471
+    },
+    {
+      "id": "hospital-choices",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/06-hospital-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 43605,
+      "changed_pixels_from_hospital-page3-last": 1052598
+    },
+    {
+      "id": "eat-corpse",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/07-eat-corpse.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 42262,
+      "changed_pixels_from_hospital-choices": 1052623
+    },
+    {
+      "id": "corpse-page14-portion-1",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/08-corpse-page14-portion-1.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 42277,
+      "changed_pixels_from_eat-corpse": 38975
+    },
+    {
+      "id": "page5-after-corpse",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/09-page5-after-corpse.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 235054,
+      "changed_pixels_from_corpse-page14-portion-1": 1998893
+    },
+    {
+      "id": "corpse-page5-portion-1",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-1.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 235652,
+      "changed_pixels_from_page5-after-corpse": 28706
+    },
+    {
+      "id": "corpse-page5-portion-2",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-2.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 235884,
+      "changed_pixels_from_corpse-page5-portion-1": 29067
+    },
+    {
+      "id": "corpse-page5-portion-3",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-3.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 235357,
+      "changed_pixels_from_corpse-page5-portion-2": 27727
+    },
+    {
+      "id": "corpse-page5-portion-4",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-4.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 235335,
+      "changed_pixels_from_corpse-page5-portion-3": 23019
+    },
+    {
+      "id": "corpse-page5-portion-5",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-5.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 236419,
+      "changed_pixels_from_corpse-page5-portion-4": 36946
+    },
+    {
+      "id": "corpse-page6-portion-0",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page6-portion-0.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 254540,
+      "changed_pixels_from_corpse-page5-portion-5": 2000460
+    },
+    {
+      "id": "corpse-page6-portion-1",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page6-portion-1.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 257834,
+      "changed_pixels_from_corpse-page6-portion-0": 63114
+    },
+    {
+      "id": "corpse-page7-portion-0",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page7-portion-0.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 218519,
+      "changed_pixels_from_corpse-page6-portion-1": 2000594
+    },
+    {
+      "id": "corpse-page12-portion-0",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-0.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 219372,
+      "changed_pixels_from_corpse-page7-portion-0": 2001858
+    },
+    {
+      "id": "corpse-page12-portion-1",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-1.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 221371,
+      "changed_pixels_from_corpse-page12-portion-0": 47980
+    },
+    {
+      "id": "corpse-page12-portion-2",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-2.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 221394,
+      "changed_pixels_from_corpse-page12-portion-1": 2798
+    },
+    {
+      "id": "corpse-page12-portion-3",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-3.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 224683,
+      "changed_pixels_from_corpse-page12-portion-2": 26073
+    },
+    {
+      "id": "corpse-page12-portion-4",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-4.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 224926,
+      "changed_pixels_from_corpse-page12-portion-3": 33031
+    },
+    {
+      "id": "corpse-page12-portion-5",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-5.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 224617,
+      "changed_pixels_from_corpse-page12-portion-4": 30861
+    },
+    {
+      "id": "corpse-page12-portion-6",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-6.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 223653,
+      "changed_pixels_from_corpse-page12-portion-5": 25612
+    },
+    {
+      "id": "corpse-page12-portion-7",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-7.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 224741,
+      "changed_pixels_from_corpse-page12-portion-6": 26378
+    },
+    {
+      "id": "corpse-page12-portion-8",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-8.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 226029,
+      "changed_pixels_from_corpse-page12-portion-7": 39166
+    },
+    {
+      "id": "corpse-page13-portion-0",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page13-portion-0.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 69301,
+      "changed_pixels_from_corpse-page12-portion-8": 1998750
+    },
+    {
+      "id": "corpse-kitchen-choices",
+      "screenshot": "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-kitchen-choices.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 59762,
+      "changed_pixels_from_corpse-page13-portion-0": 1050372
+    }
+  ],
+  "text_checks": [
+    {
+      "step_id": "opening",
+      "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+      "portion_index": 0,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "opening-next-portion",
+      "expected_fragment": "Интересно, сколько я тут валяюсь",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+      "portion_index": 1,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "try-to-break-through-police",
+      "expected_fragment": "Сделав ставку на внезапность",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы.",
+      "normalized_text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы.",
+      "portion_index": 0,
+      "portion_count": 10,
+      "screen": "page"
+    },
+    {
+      "step_id": "hospital-page3",
+      "expected_fragment": "Вы очнулись от яркого света",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+      "normalized_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+      "portion_index": 0,
+      "portion_count": 2,
+      "screen": "page"
+    },
+    {
+      "step_id": "eat-corpse",
+      "expected_fragment": "Оскалив зубы, вы начали медленно подниматься",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения.",
+      "normalized_text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения.",
+      "portion_index": 0,
+      "portion_count": 2,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page14-portion-1",
+      "expected_fragment": "Вы снова приняли звериное обличье",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы снова приняли звериное обличье. Ощущая дикий голод, вы набросились на труп на соседнем столе. Торопливо завершив кровавую трапезу, вы выбрались из здания. Вы ощущали сытость, правда рана немного ныла.",
+      "normalized_text": "Вы снова приняли звериное обличье. Ощущая дикий голод, вы набросились на труп на соседнем столе. Торопливо завершив кровавую трапезу, вы выбрались из здания. Вы ощущали сытость, правда рана немного ныла.",
+      "portion_index": 1,
+      "portion_count": 2,
+      "screen": "page"
+    },
+    {
+      "step_id": "page5-after-corpse",
+      "expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+      "normalized_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+      "portion_index": 0,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page5-portion-1",
+      "expected_fragment": "Заметив заброшенное, полуразвалившееся строение",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали.",
+      "normalized_text": "Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали.",
+      "portion_index": 1,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page5-portion-2",
+      "expected_fragment": "Вы проснулись от холода",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки.",
+      "normalized_text": "Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки.",
+      "portion_index": 2,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page5-portion-3",
+      "expected_fragment": "Быстро одевшись, вы направились к шоссе",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка.",
+      "normalized_text": "Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка.",
+      "portion_index": 3,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page5-portion-4",
+      "expected_fragment": "Вы абсолютно точно помнили",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность.",
+      "normalized_text": "Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность.",
+      "portion_index": 4,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page5-portion-5",
+      "expected_fragment": "Как назло, на дороге не появлялось",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+      "normalized_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+      "portion_index": 5,
+      "portion_count": 6,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page6-portion-0",
+      "expected_fragment": "Усевшись за столик",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+      "normalized_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+      "portion_index": 0,
+      "portion_count": 2,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page6-portion-1",
+      "expected_fragment": "Этого должно было хватить на чашку чая",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+      "normalized_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+      "portion_index": 1,
+      "portion_count": 2,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page7-portion-0",
+      "expected_fragment": "Доброго вам утречка!",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "-- Доброго вам утречка! -- сказал мужик.",
+      "normalized_text": "-- Доброго вам утречка! -- сказал мужик.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-0",
+      "expected_fragment": "Здравствуйте",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "-- Здравствуйте, -- ответили вы.",
+      "normalized_text": "-- Здравствуйте, -- ответили вы.",
+      "portion_index": 0,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-1",
+      "expected_fragment": "У вас свободно?",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "-- У вас свободно?",
+      "normalized_text": "-- У вас свободно?",
+      "portion_index": 1,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-2",
+      "expected_fragment": "Да, пожалуйста",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "-- Да, пожалуйста.",
+      "normalized_text": "-- Да, пожалуйста.",
+      "portion_index": 2,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-3",
+      "expected_fragment": "Свободных столиков было много",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались.",
+      "normalized_text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались.",
+      "portion_index": 3,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-4",
+      "expected_fragment": "Как раз в этот момент принесли чай",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете.",
+      "normalized_text": "Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете.",
+      "portion_index": 4,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-5",
+      "expected_fragment": "Выйдя на улицу, вы сняли с шеи телефон",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса.",
+      "normalized_text": "Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса.",
+      "portion_index": 5,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-6",
+      "expected_fragment": "Если накинуть на плечи волчью шкуру",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый.",
+      "normalized_text": "Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый.",
+      "portion_index": 6,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-7",
+      "expected_fragment": "Лучшее средство победить его",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме.",
+      "normalized_text": "Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме.",
+      "portion_index": 7,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page12-portion-8",
+      "expected_fragment": "Там вы действительно примеряли волчью шкуру",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+      "normalized_text": "Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+      "portion_index": 8,
+      "portion_count": 9,
+      "screen": "page"
+    },
+    {
+      "step_id": "corpse-page13-portion-0",
+      "expected_fragment": "Когда вы покинули царство Морфея",
+      "passed": true,
+      "source": "state-log",
+      "raw_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+      "normalized_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+      "portion_index": 0,
+      "portion_count": 1,
+      "screen": "page"
+    }
+  ],
+  "errors": [],
+  "command": [
+    "/workspace/nlb-pr73-c8.DjZUEaC0/build/nlb_sdl",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/wolfman",
+    "explore",
+    "vn",
+    "--no-sound",
+    "--theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default",
+    "--base-theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default",
+    "--lang",
+    "ru",
+    "--log",
+    "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/playthrough.log",
+    "--window",
+    "1920x1080",
+    "--script",
+    "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/route.script",
+    "--state-log",
+    "/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/state-log.jsonl",
+    "--state-vars",
+    "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone"
+  ],
+  "screen_records": [],
+  "state_records": [
+    {
+      "schema": 1,
+      "index": 2,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/00-title.png",
+      "ok": true,
+      "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 0,
+        "more": false,
+        "visible": []
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 0,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "title.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [],
+        "reactionText": [],
+        "roomText": [],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "title"
+    },
+    {
+      "schema": 1,
+      "index": 5,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/01-opening.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening"
+    },
+    {
+      "schema": 1,
+      "index": 8,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/02-opening-next-portion.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-next-portion"
+    },
+    {
+      "schema": 1,
+      "index": 19,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/03-opening-choices.png",
+      "ok": true,
+      "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 9,
+        "count": 10,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "1.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": true,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Волк! Волк! -- раздались крики. Люди бросились врассыпную. Спасаясь от зверя, вы побежали вместе с ними. Постоянно оглядываясь, граждане продолжали вопить. Вы тоже пару раз обернулись, с ужасом ожидая увидеть оскаленную пасть, но позади никого не было. В конце концов, решив отделиться от обезумевшей группы, вы свернули в переулок и спрятались за мусорным баком. Через пару минут, вой сирен раздался совсем рядом. Осторожно высунувшись из своего укрытия, вы увидели полицейских. Они двигались прямо к вам.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "\"Волк здесь!\" -- подумали вы, холодея от страха. Вы принялись нервно оглядываться по сторонам. Внезапно, у противоположной стены вы увидели что-то тёмное и мохнатое. Вы застыли на месте. Сердце колотилось, в ушах шумело. Вдруг,  несмотря на панику, вы сделали страшное открытие: у противоположной стены стояло выброшенное кем-то зеркало. Отражение в нём было вашим!",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Я монстр! -- с отчаянием вскричали вы. Но полицейские услышали жуткий душераздирающий вой. Теперь стало ясно: они шли убить вас. Надо бежать! Но куда? Слева и справа -- дома. Позади -- трёхметровый бетонный забор. А впереди куча вооружённых людей.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Попытаться прорваться сквозь полицию",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Перепрыгнуть через забор",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "opening-choices"
+    },
+    {
+      "schema": 1,
+      "index": 22,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/04-police-branch.png",
+      "ok": true,
+      "pageId": "b12a01be-cd61-4dba-b427-1ce3afc06fc6",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 10,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "b12a01be-cd61-4dba-b427-1ce3afc06fc6",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "2.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы. Неожиданно, луна скрылась за тучей. На ваше счастье, фонари не работали и наступила кромешная тьма. Вы уже почти свернули в знакомый переулок, как вдруг одна из пуль настигла вас. Вы жалобно взвизгнули и, пробежав ещё пару метров, рухнули будто подкошенный.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Надо проверить, что там. Все за мной, -- скомандовал один из полицейских. Двигаясь очень осторожно и держа пистолеты наготове, стражи порядка приблизились к тому месту, где вы упали.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Ребята, отбой! Здесь только какой-то голый мужик. Наверное задели, когда палили в зверя. Вызовите скорую.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Но откуда он взялся?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Наверное, гостил у чьей-нибудь жены, а её супруг вернулся раньше времени. Вот он и сиганул с балкона.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А что там у него на шее?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Похоже, сотовый.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Чудак. Я бы на его месте лучше трусы схватил.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Машина медицинской помощи прибыла довольно быстро. Врачи констатировали смерть потерпевшего и, погрузив тело, отправили его в морг.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы. Неожиданно, луна скрылась за тучей. На ваше счастье, фонари не работали и наступила кромешная тьма. Вы уже почти свернули в знакомый переулок, как вдруг одна из пуль настигла вас. Вы жалобно взвизгнули и, пробежав ещё пару метров, рухнули будто подкошенный.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Надо проверить, что там. Все за мной, -- скомандовал один из полицейских. Двигаясь очень осторожно и держа пистолеты наготове, стражи порядка приблизились к тому месту, где вы упали.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Ребята, отбой! Здесь только какой-то голый мужик. Наверное задели, когда палили в зверя. Вызовите скорую.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Но откуда он взялся?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Наверное, гостил у чьей-нибудь жены, а её супруг вернулся раньше времени. Вот он и сиганул с балкона.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- А что там у него на шее?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Похоже, сотовый.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Чудак. Я бы на его месте лучше трусы схватил.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Машина медицинской помощи прибыла довольно быстро. Врачи констатировали смерть потерпевшего и, погрузив тело, отправили его в морг.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "try-to-break-through-police"
+    },
+    {
+      "schema": 1,
+      "index": 34,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/05-hospital-page3.png",
+      "ok": true,
+      "pageId": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 2,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "3.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном. Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном. Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть врача",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Съесть труп",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "hospital-page3"
+    },
+    {
+      "schema": 1,
+      "index": 37,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/hospital-page3-last.png",
+      "ok": true,
+      "pageId": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "3.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном. Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном. Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть врача",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Съесть труп",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "hospital-page3-last"
+    },
+    {
+      "schema": 1,
+      "index": 40,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/06-hospital-choices.png",
+      "ok": true,
+      "pageId": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "3.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном. Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном. Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть врача",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Съесть труп",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "hospital-choices"
+    },
+    {
+      "schema": 1,
+      "index": 43,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/07-eat-corpse.png",
+      "ok": true,
+      "pageId": "a2b6a777-a95c-4518-8623-ec797a483c46",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 2,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "a2b6a777-a95c-4518-8623-ec797a483c46",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "3.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения. Вы снова приняли звериное обличье. Ощущая дикий голод, вы набросились на труп на соседнем столе. Торопливо завершив кровавую трапезу, вы выбрались из здания. Вы ощущали сытость, правда рана немного ныла.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения. Вы снова приняли звериное обличье. Ощущая дикий голод, вы набросились на труп на соседнем столе. Торопливо завершив кровавую трапезу, вы выбрались из здания. Вы ощущали сытость, правда рана немного ныла.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "eat-corpse"
+    },
+    {
+      "schema": 1,
+      "index": 46,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/08-corpse-page14-portion-1.png",
+      "ok": true,
+      "pageId": "a2b6a777-a95c-4518-8623-ec797a483c46",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы снова приняли звериное обличье. Ощущая дикий голод, вы набросились на труп на соседнем столе. Торопливо завершив кровавую трапезу, вы выбрались из здания. Вы ощущали сытость, правда рана немного ныла.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "a2b6a777-a95c-4518-8623-ec797a483c46",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "3.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения. Вы снова приняли звериное обличье. Ощущая дикий голод, вы набросились на труп на соседнем столе. Торопливо завершив кровавую трапезу, вы выбрались из здания. Вы ощущали сытость, правда рана немного ныла.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения. Вы снова приняли звериное обличье. Ощущая дикий голод, вы набросились на труп на соседнем столе. Торопливо завершив кровавую трапезу, вы выбрались из здания. Вы ощущали сытость, правда рана немного ныла.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page14-portion-1"
+    },
+    {
+      "schema": 1,
+      "index": 49,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/09-page5-after-corpse.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 6,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "page5-after-corpse"
+    },
+    {
+      "schema": 1,
+      "index": 52,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-1.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 6,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page5-portion-1"
+    },
+    {
+      "schema": 1,
+      "index": 55,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-2.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 2,
+        "count": 6,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page5-portion-2"
+    },
+    {
+      "schema": 1,
+      "index": 58,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-3.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 3,
+        "count": 6,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page5-portion-3"
+    },
+    {
+      "schema": 1,
+      "index": 61,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-4.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 6,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page5-portion-4"
+    },
+    {
+      "schema": 1,
+      "index": 64,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page5-portion-5.png",
+      "ok": true,
+      "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 5,
+        "count": 6,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "5.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками. Заметив заброшенное, полуразвалившееся строение, вы решили дождаться рассвета там. Свернувшись клубочком, вы задремали. Вы проснулись от холода, когда уже забрезжил серый рассвет. Прокравшись в соседний двор, где на верёвках сушились вещи, вы сняли рубашку и брюки. Быстро одевшись, вы направились к шоссе. Но больше всего волновал вопрос: кто или что заставило вас превратиться в волка. Вы абсолютно точно помнили, что никакое животное вас не кусало и даже не царапало. Вы ощущали растерянность. Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page5-portion-5"
+    },
+    {
+      "schema": 1,
+      "index": 67,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page6-portion-0.png",
+      "ok": true,
+      "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 2,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "6.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page6-portion-0"
+    },
+    {
+      "schema": 1,
+      "index": 70,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page6-portion-1.png",
+      "ok": true,
+      "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "4a4652ec-a6c1-4619-b82e-d469e6227589",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "6.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру. Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page6-portion-1"
+    },
+    {
+      "schema": 1,
+      "index": 73,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page7-portion-0.png",
+      "ok": true,
+      "pageId": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Доброго вам утречка! -- сказал мужик.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "2ff7b229-4eb9-4c30-8962-4d8ed95a490b",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "7.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Доброго вам утречка! -- сказал мужик.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Доброго вам утречка! -- сказал мужик.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page7-portion-0"
+    },
+    {
+      "schema": 1,
+      "index": 76,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-0.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-0"
+    },
+    {
+      "schema": 1,
+      "index": 79,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-1.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 1,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-1"
+    },
+    {
+      "schema": 1,
+      "index": 82,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-2.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 2,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-2"
+    },
+    {
+      "schema": 1,
+      "index": 85,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-3.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 3,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-3"
+    },
+    {
+      "schema": 1,
+      "index": 88,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-4.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 4,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-4"
+    },
+    {
+      "schema": 1,
+      "index": 91,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-5.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 5,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-5"
+    },
+    {
+      "schema": 1,
+      "index": 94,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-6.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 6,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-6"
+    },
+    {
+      "schema": 1,
+      "index": 97,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-7.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 7,
+        "count": 9,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-7"
+    },
+    {
+      "schema": 1,
+      "index": 100,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page12-portion-8.png",
+      "ok": true,
+      "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 8,
+        "count": 9,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "94e84eb0-0ba0-475f-b839-71da445fa595",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "12.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Здравствуйте, -- ответили вы.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- У вас свободно?",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "-- Да, пожалуйста.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          },
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Свободных столиков было много, из чего вы сделали вывод, что мужик жаждал общения. Но вам требовалось уединение, чтобы как следует подумать о той ситуации, в которой вы оказались. Как раз в этот момент принесли чай. Выпив его почти залпом, вы поспешили встать из-за стола, так как вам в голову пришла отличная идея: почитать про оборотней в интернете. Выйдя на улицу, вы сняли с шеи телефон. Вот какую информацию вам удалось найти: \"Превратиться в волка можно не только после укуса. Если накинуть на плечи волчью шкуру и произнести заклинание, вы станете волколаком. Волколак -- очень сильный и хитрый. Лучшее средство победить его -- вонзить кол из боярышника\". Вы вспомнили, как несколько дней назад гостили у одного товарища в загородном доме. Там вы действительно примеряли волчью шкуру… Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page12-portion-8"
+    },
+    {
+      "schema": 1,
+      "index": 103,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-page13-portion-0.png",
+      "ok": true,
+      "pageId": "a470c96a-d30d-4944-80b4-4623c297afe3",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "13.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть философа",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Украсть еду с кухни",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-page13-portion-0"
+    },
+    {
+      "schema": 1,
+      "index": 106,
+      "command": "shot:/workspace/nlb-pr73-c8.DjZUEaC0/results/wolfman-police-hospital-corpse/nlbnavigator/corpse-kitchen-choices.png",
+      "ok": true,
+      "pageId": "a470c96a-d30d-4944-80b4-4623c297afe3",
+      "screen": "choices",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 1,
+        "more": false,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 2,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "a470c96a-d30d-4944-80b4-4623c297afe3",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "13.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел утренний знакомец. Увидев его, вы поняли, что очень, очень голодны.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Съесть философа",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          },
+          {
+            "index": 1,
+            "text": "Украсть еду с кухни",
+            "enabled": true,
+            "trivial": false,
+            "inlineLink": false,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 0    Жизнь: 2",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "corpse-kitchen-choices"
+    }
+  ],
+  "state_log_validation": "ok: 107 записей",
+  "metadata": {
+    "route_id": "wolfman-police-hospital-corpse",
+    "route_sha256": "e3d4fbca64a34010071beba55bd32cb8187a81cf710b7b439806182b77ab263d",
+    "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+    "navigator_commit": "8222b56b83d6a8ba6d2862c7e7f7f83bc62a6720",
+    "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  }
+}

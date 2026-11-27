@@ -1,0 +1,12 @@
+{
+  "runner_exit": 1,
+  "process": {
+    "pid": 4589,
+    "exit_code": 0
+  },
+  "headers": 1,
+  "records": 6,
+  "first_seq": 1,
+  "last_seq": 6,
+  "commands": []
+}

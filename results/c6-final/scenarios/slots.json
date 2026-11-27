@@ -1,0 +1,17 @@
+{
+  "cycles": {
+    "path": "/workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/cycles/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62384,
+    "sha256": "8ed3e06d08361b6712ef935b6ec1819dc1fea4070ae01db6759b0f6cb905bdf1"
+  },
+  "original": {
+    "path": "/workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/restart-save/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62844,
+    "sha256": "caf4ddb429a0a7d19ac89e4e4800a745cae6ad3c92e396c9bcade624c106c2f0"
+  },
+  "copied": {
+    "path": "/workspace/nlb-pr73-c8.DjZUEaC0/results/c6-final/scenarios/restart-load/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62844,
+    "sha256": "caf4ddb429a0a7d19ac89e4e4800a745cae6ad3c92e396c9bcade624c106c2f0"
+  }
+}
