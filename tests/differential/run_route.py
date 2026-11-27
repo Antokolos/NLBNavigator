@@ -1170,6 +1170,8 @@ def instead_advance_until(action, window, trace_path, current, player):
 
 # Переменные книги в Lua trace INSTEAD (instead_trace.lua) — те же, что nlb_sdl пишет по --state-vars
 TRACE_VARIABLES = ("wolfiness", "hp", "barExit", "forestExit", "wolvesTalk", "guardDone")
+TRACE_SEMANTIC_FIELDS = ("page_id", "screen_kind", "portion_index", "portion_count",
+                         "more", "background", "end_screen") + TRACE_VARIABLES
 
 # Клавиши INSTEAD 3.5.2 (src/game.c, kbd_instead): F2/F3 — меню сохранения/загрузки слотов,
 # F5 — look (обновление сцены), F8 — быстрое сохранение в слот 9, F9 — загрузка слота 9.
@@ -1222,10 +1224,21 @@ def semantic_state(record):
     """Состояние сцены без rendered, который у команды сохранения может быть пустым."""
     if not record:
         return None
-    return (record.get("page_id", ""), record.get("screen_kind", ""),
-            record.get("portion_index", 0), record.get("portion_count", 0),
-            record.get("background", ""), record.get("end_screen", False),
-            tuple(str(record.get(name, "")) for name in TRACE_VARIABLES))
+    state = tuple(record.get(field) for field in TRACE_SEMANTIC_FIELDS)
+    return state if None not in state else None
+
+
+def _instead_quick_slot_seq(records, verb):
+    """Последняя команда iface.cmd для save9. Записи iface.fmt диагностические."""
+    seq = None
+    for record in records:
+        if record["kind"] not in ("scene", "event"):
+            continue
+        command, _, path = record.get("command", "").partition(" ")
+        slot = path.replace("\\", "/").rsplit("/", 1)[-1]
+        if command == verb and slot == "save9":
+            seq = record["seq"] if seq is None else max(seq, record["seq"])
+    return seq
 
 
 def _load_expected_errors(record, expected):
@@ -1254,28 +1267,30 @@ def pick_instead_state_record(action_type, menu_kind, after, new_events, previou
                               trace_reset=False, expected=None):
     """(запись состояния, ошибки) для capture/menu/advance_until INSTEAD.
 
-    Сохранение не меняет состояние: требуется свежая запись самой команды save и отсутствие
-    свежих scene с другим semantic_state (UUID/экран/порция/переменные) — даже если rendered пуст.
-    Для отображения берётся последняя сцена с текстом и тем же semantic_state.
-    Загрузка: требуется свежая запись load и свежая scene с текстом после неё; при передаче
+    Сохранение требует запись команды save для save9 и полный снимок неизменной сцены,
+    сделанный при этой команде или после неё. При пустом rendered берётся последний
+    текст сцены с тем же semantic_state.
+    Загрузка требует запись load для save9 и свежую сцену с текстом; при передаче
     expected проверяются страница/порция/переменные. Старый trace доказательством не считается.
     """
     if trace_reset:
         return None, ["трасса INSTEAD переинициализирована: префикс записей не совпал"]
-    expected_command = menu_kind if menu_kind in ("save", "load") else None
-    evidence = [record for record in new_events
-                if expected_command is not None
-                and str(record.get("command", "")).split(" ", 1)[0] == expected_command]
-    if menu_kind in ("save", "load") and not evidence:
-        return None, ["нет свежей записи команды {} — выполнение не подтверждено".format(menu_kind)]
-    scene_new = [record for record in new_events if record["kind"] == "scene"]
+    if menu_kind in ("save", "load"):
+        command_seq = _instead_quick_slot_seq(new_events, menu_kind)
+        if command_seq is None:
+            return None, ["нет свежей записи команды {} для save9 — выполнение не подтверждено".format(menu_kind)]
     if menu_kind == "save":
         if previous_semantic is None:
             return None, ["нет подтверждённого состояния перед сохранением"]
-        changed = [record for record in scene_new if semantic_state(record) != previous_semantic]
-        if changed:
-            return None, ["сохранение изменило состояние: {} -> {}".format(
-                previous_semantic, semantic_state(changed[-1]))]
+        scenes = [record for record in new_events if record["kind"] == "scene"]
+        if not any(record["seq"] >= command_seq for record in scenes):
+            return None, ["после команды save для save9 нет свежей сцены"]
+        for record in scenes:
+            state = semantic_state(record)
+            if state is None:
+                return None, ["сцена при сохранении содержит неполное семантическое состояние"]
+            if state != previous_semantic:
+                return None, ["сохранение изменило состояние: {} -> {}".format(previous_semantic, state)]
         candidates = [record for record in after
                       if record["kind"] == "scene"
                       and normalize_story_text(record.get("rendered", ""))
@@ -1284,9 +1299,8 @@ def pick_instead_state_record(action_type, menu_kind, after, new_events, previou
             return None, ["нет сцены с текстом для подтверждённого состояния сохранения"]
         return candidates[-1], []
     if menu_kind == "load":
-        load_seq = max(record["seq"] for record in evidence)
-        fresh = [record for record in after
-                 if record["kind"] == "scene" and record["seq"] >= load_seq
+        fresh = [record for record in new_events
+                 if record["kind"] == "scene" and record["seq"] >= command_seq
                  and normalize_story_text(record.get("rendered", ""))]
         if not fresh:
             return None, ["после загрузки нет свежей сцены с текстом; старый trace не подходит"]
@@ -1345,26 +1359,19 @@ def read_instead_trace(path):
 
 
 def wait_instead_fresh_scene(trace_path, cursor, expected_command=None, timeout=3.0, previous_identity=()):
-    """Ждёт сцену с текстом после ожидаемой команды (для load — именно load)."""
+    """Ждёт свежую сцену с текстом, при заданной команде — от подтверждения save9."""
     deadline = time.monotonic() + timeout
     records = read_instead_trace(trace_path)
     while True:
         if wait_identity_invalid(previous_identity, records):
             return records, True
         previous_identity = trace_identity(records)
-        load_seqs = [record["seq"] for record in records
-                     if record["seq"] > cursor and expected_command is not None
-                     and str(record.get("command", "")).split(" ", 1)[0] == expected_command]
-        fresh = []
-        if expected_command is None:
-            fresh = [record for record in records
-                     if record["seq"] > cursor and record["kind"] == "scene"
-                     and normalize_story_text(record.get("rendered", ""))]
-        elif load_seqs:
-            load_seq = max(load_seqs)
-            fresh = [record for record in records
-                     if record["seq"] >= load_seq and record["kind"] == "scene"
-                     and normalize_story_text(record.get("rendered", ""))]
+        new_events = [record for record in records if record["seq"] > cursor]
+        command_seq = (cursor + 1 if expected_command is None
+                       else _instead_quick_slot_seq(new_events, expected_command))
+        fresh = command_seq is not None and any(
+            record["seq"] >= command_seq and record["kind"] == "scene"
+            and normalize_story_text(record.get("rendered", "")) for record in new_events)
         if fresh or time.monotonic() >= deadline:
             return records, False
         time.sleep(0.15)
