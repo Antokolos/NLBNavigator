@@ -1,0 +1,5 @@
+# seq	kind	command	arguments	rendered	page_id	location_id	room_id	screen_kind	page_name	background	portion_index	portion_count	more	room_text	action_text	objects_text	player_text	wolfiness	hp	barExit	forestExit	wolvesTalk	guardDone	end_screen
+1	fmt	начало		текст формата	room-one	v_room_one	v_room_one	page	Первая комната		0	0	false											false
+2	scene	начало		текст команды	room-one	v_room_one	v_room_one	page	Первая комната		0	0	false											false
+3	fmt	после		текст формата	room-one	v_room_one	v_room_one	page	Первая комната		0	0	false											false
+4	scene	после		текст команды	room-one	v_room_one	v_room_one	page	Первая комната		0	0	false											false

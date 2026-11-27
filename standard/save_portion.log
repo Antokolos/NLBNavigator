@@ -1,0 +1,12 @@
+baseline: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/baseline.log
+first-portion: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/first-portion.log
+second-portion: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/second-portion.log
+second-portion-save: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/second-portion-save.log
+second-portion-restart: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/second-portion-restart.log
+middle-portion: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/middle-portion.log
+middle-portion-restart: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/middle-portion-restart.log
+baseline-page4-3: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/baseline-page4-3.log
+last-portion: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/last-portion.log
+last-portion-restart: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/last-portion-restart.log
+old-save-restart: runner exit=0, журнал /workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/old-save-restart.log
+OK: порция VN восстанавливается на всех проверенных позициях; старые сохранения совместимы

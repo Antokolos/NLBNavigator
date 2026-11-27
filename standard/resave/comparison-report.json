@@ -1,0 +1,59 @@
+{
+  "route": "wolfman-save-portion-resave",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-save-portion-resave",
+      "route_sha256": "4df8ec694d0e9b04945bc58eae3240e6cc513b80a9a0f679a5edad5b024ad35c",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-environment/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/instead/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-save-portion-resave",
+      "route_sha256": "4df8ec694d0e9b04945bc58eae3240e6cc513b80a9a0f679a5edad5b024ad35c",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/instead/00-title.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/nlbnavigator/00-title.png",
+      "changed_pixels": 1900484,
+      "changed_fraction": 0.916514274691358,
+      "mean_absolute_channel_error": 3.3554927019032923,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/diff/title-diff.png"
+    },
+    {
+      "id": "load-a",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/instead/load-a.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/nlbnavigator/load-a.png",
+      "changed_pixels": 1220821,
+      "changed_fraction": 0.5887446952160493,
+      "mean_absolute_channel_error": 2.1711612654320986,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/diff/load-a-diff.png"
+    },
+    {
+      "id": "resave-a",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/instead/resave-a.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/nlbnavigator/resave-a.png",
+      "changed_pixels": 1220821,
+      "changed_fraction": 0.5887446952160493,
+      "mean_absolute_channel_error": 2.1711612654320986,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/resave/diff/resave-a-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

@@ -1,0 +1,7 @@
+standard/cycles/nlbnavigator command: exit=0
+standard/cycles compare: exit=0
+standard save_load: exit=0
+standard save_portion: exit=0
+standard/resave/nlbnavigator command: exit=0
+standard/resave/instead command: exit=0
+standard/resave compare: exit=0

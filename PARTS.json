@@ -1,0 +1,10 @@
+[
+  {
+    "original": "matrix/ending/nlbnavigator/state-log.jsonl",
+    "sha256": "1e0a44463897e2ccea86776df23e6159a51838b493346612d3f9e0caef26b9e9",
+    "parts": [
+      "matrix/ending/nlbnavigator/state-log.jsonl.part-001.txt",
+      "matrix/ending/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
+  }
+]

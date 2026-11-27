@@ -1,0 +1,7 @@
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 1929
+[INSTEAD] cleanup player: exited after SIGTERM with status 0
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 1926
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Command '['xwininfo', '-id', 'X']' timed out after 3 seconds

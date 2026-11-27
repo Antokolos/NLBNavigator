@@ -1,0 +1,33 @@
+matrix/baseline/nlbnavigator command: exit=0
+matrix/baseline/instead command: exit=0
+matrix/baseline compare: exit=0
+matrix/a1-roundtrip/nlbnavigator command: exit=0
+matrix/a1-roundtrip/instead command: exit=0
+matrix/a1-roundtrip compare: exit=0
+matrix/a1-restart/nlbnavigator command: exit=0
+matrix/a1-restart/instead command: exit=0
+matrix/a1-restart compare: exit=0
+matrix/b2-roundtrip/nlbnavigator command: exit=0
+matrix/b2-roundtrip/instead command: exit=0
+matrix/b2-roundtrip compare: exit=0
+matrix/b2-restart/nlbnavigator command: exit=0
+matrix/b2-restart/instead command: exit=0
+matrix/b2-restart compare: exit=0
+matrix/b3-roundtrip/nlbnavigator command: exit=0
+matrix/b3-roundtrip/instead command: exit=0
+matrix/b3-roundtrip compare: exit=0
+matrix/b3-restart/nlbnavigator command: exit=0
+matrix/b3-restart/instead command: exit=0
+matrix/b3-restart compare: exit=0
+matrix/choices/nlbnavigator command: exit=0
+matrix/choices/instead command: exit=0
+matrix/choices compare: exit=0
+Traceback (most recent call last):
+  File "/workspace/scratch/paired-save-load.Lkx4pC/matrix.py", line 51, in <module>
+    route = write_route(OUT, "ending", ending,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/NLBNavigator/tests/differential/check_wolfman_save_portion.py", line 65, in write_route
+    load_route(path)
+  File "/workspace/NLBNavigator/tests/differential/run_route.py", line 38, in load_route
+    raise ValueError("; ".join(prefix_errors))
+ValueError: /workspace/scratch/paired-save-load.Lkx4pC/matrix/ending.json: фрагмент /workspace/scratch/paired-save-load.Lkx4pC/matrix/fragments/wolfman-forest-wolfiness-one-to-page29.json: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/matrix/fragments/wolfman-forest-wolfiness-one-to-page29.json'

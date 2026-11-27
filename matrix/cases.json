@@ -1,0 +1,22 @@
+{
+  "a1": {
+    "baseline": "hospital-page3-last",
+    "follow": [
+      "hospital-choices",
+      "eat-doctor"
+    ]
+  },
+  "b2": {
+    "baseline": "doctor-page4-portion-2",
+    "follow": [
+      "doctor-page4-portion-3",
+      "page5-after-doctor"
+    ]
+  },
+  "b3": {
+    "baseline": "doctor-page4-portion-3",
+    "follow": [
+      "page5-after-doctor"
+    ]
+  }
+}

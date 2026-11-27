@@ -1,0 +1,12 @@
+{
+  "original": {
+    "path": "/workspace/scratch/paired-save-load.Lkx4pC/instead-standard/restart-save/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62798,
+    "sha256": "283286b088e74c226b467f7bed67c96511ef184e460b4445bace31bee2407ddb"
+  },
+  "copied": {
+    "path": "/workspace/scratch/paired-save-load.Lkx4pC/instead-retry/restart-load/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62798,
+    "sha256": "283286b088e74c226b467f7bed67c96511ef184e460b4445bace31bee2407ddb"
+  }
+}

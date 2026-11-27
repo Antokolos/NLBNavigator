@@ -1,0 +1,97 @@
+{
+  "route": "wolfman-save-portion-a1-restart",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-save-portion-a1-restart",
+      "route_sha256": "e204679abf4498ffee4c6ae18ba7969bd98fbed7bde9425a95c0caccd8057acc",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-environment/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/instead/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-save-portion-a1-restart",
+      "route_sha256": "e204679abf4498ffee4c6ae18ba7969bd98fbed7bde9425a95c0caccd8057acc",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "replay-eat-doctor",
+      "instead_expected_fragment": "Ощутив запах панического ужаса",
+      "nlbnavigator_expected_fragment": "Ощутив запах панического ужаса",
+      "instead_check": {
+        "step_id": "replay-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "replay-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "portion_index": 0,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/instead/00-title.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/nlbnavigator/00-title.png",
+      "changed_pixels": 1900484,
+      "changed_fraction": 0.916514274691358,
+      "mean_absolute_channel_error": 3.3554927019032923,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/diff/title-diff.png"
+    },
+    {
+      "id": "load-a",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/instead/load-a.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/nlbnavigator/load-a.png",
+      "changed_pixels": 1229020,
+      "changed_fraction": 0.592698688271605,
+      "mean_absolute_channel_error": 3.3292206790123458,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/diff/load-a-diff.png"
+    },
+    {
+      "id": "replay-hospital-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/instead/replay-hospital-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/nlbnavigator/replay-hospital-choices.png",
+      "changed_pixels": 1485837,
+      "changed_fraction": 0.7165494791666667,
+      "mean_absolute_channel_error": 13.520745724022634,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/diff/replay-hospital-choices-diff.png"
+    },
+    {
+      "id": "replay-eat-doctor",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/instead/replay-eat-doctor.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/nlbnavigator/replay-eat-doctor.png",
+      "changed_pixels": 1808074,
+      "changed_fraction": 0.8719492669753086,
+      "mean_absolute_channel_error": 3.951070601851852,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/a1-restart/diff/replay-eat-doctor-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

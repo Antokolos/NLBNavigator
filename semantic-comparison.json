@@ -1,0 +1,4129 @@
+[
+  {
+    "check": "D1/hospital-page3/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D1/hospital-page3-last/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D1/hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D1/eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D1/doctor-page4-portion-1/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 1,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Вновь обретя звериный облик, вы настигли медработника уже в коридоре. Набросившись сзади, вы повалили его на пол и в мгновение ока перегрызли горло."
+    }
+  },
+  {
+    "check": "D1/doctor-page4-portion-2/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D1/doctor-page4-portion-3/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D1/page5-after-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D1/nlbnavigator/hospital-page3/expected",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D1/nlbnavigator/eat-doctor/expected",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D1/instead/hospital-page3/expected",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D1/instead/eat-doctor/expected",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/hospital-page3/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/hospital-page3/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/hospital-page3/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/save-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/save-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/save-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/baseline-hospital-page3-last/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/baseline-hospital-page3-last/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/baseline-hospital-page3-last/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/baseline-hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/baseline-hospital-choices/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/baseline-hospital-choices/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/baseline-eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/baseline-eat-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/baseline-eat-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/load-a-1/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/load-a-1/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/load-a-1/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/cycle-1-hospital-page3-last/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-1-hospital-page3-last/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-1-hospital-page3-last/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-1-hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-1-hospital-choices/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-1-hospital-choices/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-1-eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/cycle-1-eat-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/cycle-1-eat-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/load-a-2/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/load-a-2/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/load-a-2/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/cycle-2-hospital-page3-last/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-2-hospital-page3-last/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-2-hospital-page3-last/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-2-hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-2-hospital-choices/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-2-hospital-choices/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-2-eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/cycle-2-eat-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/cycle-2-eat-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/load-a-3/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/load-a-3/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/load-a-3/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D2/cycle-3-hospital-page3-last/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-3-hospital-page3-last/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-3-hospital-page3-last/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D2/cycle-3-hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-3-hospital-choices/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-3-hospital-choices/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D2/cycle-3-eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/cycle-3-eat-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D2/cycle-3-eat-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "standard/cycles/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          36
+        ],
+        [
+          "load",
+          49
+        ],
+        [
+          "load",
+          62
+        ],
+        [
+          "load",
+          75
+        ]
+      ],
+      "expected": [
+        "save",
+        "load",
+        "load",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "instead-standard/cycles/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          110
+        ],
+        [
+          "load",
+          131
+        ],
+        [
+          "load",
+          158
+        ],
+        [
+          "load",
+          185
+        ]
+      ],
+      "expected": [
+        "save",
+        "load",
+        "load",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D3/save/save-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D3/save/save-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D3/save/save-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D3/restart/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D3/restart/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D3/restart/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D3/restart/replay-hospital-page3-last/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D3/restart/replay-hospital-page3-last/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D3/restart/restart-hospital-page3-last/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D3/restart/replay-hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D3/restart/replay-hospital-choices/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D3/restart/restart-hospital-choices/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D3/restart/replay-eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D3/restart/replay-eat-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D3/restart/restart-eat-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D3/nlbnavigator/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "standard/save_load/save-only/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13901,
+        "sha256": "e77d36822ecfcc79f5a56c9a0b7b0f1bedaf9cc147dde6038b23d23960571020"
+      },
+      {
+        "file": "standard/save_load/restart/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13901,
+        "sha256": "e77d36822ecfcc79f5a56c9a0b7b0f1bedaf9cc147dde6038b23d23960571020"
+      }
+    ]
+  },
+  {
+    "check": "standard/save_load/save-only/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          36
+        ]
+      ],
+      "expected": [
+        "save"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "standard/save_load/restart/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          4
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D3/instead/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "instead-standard/restart-save/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 62798,
+        "sha256": "283286b088e74c226b467f7bed67c96511ef184e460b4445bace31bee2407ddb"
+      },
+      {
+        "file": "instead-retry/restart-load/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 62798,
+        "sha256": "283286b088e74c226b467f7bed67c96511ef184e460b4445bace31bee2407ddb"
+      }
+    ]
+  },
+  {
+    "check": "instead-standard/restart-save/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          110
+        ]
+      ],
+      "expected": [
+        "save"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "instead-retry/restart-load/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          5
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D3/INSTEAD/new-process",
+    "ok": true,
+    "detail": [
+      1626,
+      2553
+    ]
+  },
+  {
+    "check": "D4/a1/roundtrip/hospital-page3-last/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/hospital-page3-last/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/hospital-page3-last/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/save-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/save-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/save-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/replay-hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/replay-hospital-choices/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/replay-hospital-choices/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/replay-eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/replay-eat-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D4/a1/roundtrip/replay-eat-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "matrix/a1-roundtrip/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          39
+        ],
+        [
+          "load",
+          49
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "matrix/a1-roundtrip/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          114
+        ],
+        [
+          "load",
+          131
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/a1/restart/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/restart/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/restart/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза."
+    }
+  },
+  {
+    "check": "D4/a1/restart/replay-hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D4/a1/restart/replay-hospital-choices/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D4/a1/restart/replay-hospital-choices/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D4/a1/restart/replay-eat-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D4/a1/restart/replay-eat-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "D4/a1/restart/replay-eat-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 0,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+    }
+  },
+  {
+    "check": "matrix/a1-restart/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          4
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/a1/nlbnavigator/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "matrix/a1-roundtrip/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13853,
+        "sha256": "1805c8f0a075a261ed737279ad1f6e44a965ce358f97ea888df1dfba0eefa7cf"
+      },
+      {
+        "file": "matrix/a1-restart/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13853,
+        "sha256": "1805c8f0a075a261ed737279ad1f6e44a965ce358f97ea888df1dfba0eefa7cf"
+      }
+    ]
+  },
+  {
+    "check": "matrix/a1-restart/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          5
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/a1/instead/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "matrix/a1-roundtrip/instead/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 62713,
+        "sha256": "c6b41907f7ecc35d0bd04ee510565b6a09125eb45426916a637973af80920dec"
+      },
+      {
+        "file": "matrix/a1-restart/instead/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 62713,
+        "sha256": "c6b41907f7ecc35d0bd04ee510565b6a09125eb45426916a637973af80920dec"
+      }
+    ]
+  },
+  {
+    "check": "D4/b2/roundtrip/doctor-page4-portion-2/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/doctor-page4-portion-2/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/doctor-page4-portion-2/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/save-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/save-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/save-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/replay-doctor-page4-portion-3/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/replay-doctor-page4-portion-3/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/replay-doctor-page4-portion-3/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/replay-page5-after-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/replay-page5-after-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b2/roundtrip/replay-page5-after-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "matrix/b2-roundtrip/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          51
+        ],
+        [
+          "load",
+          61
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "matrix/b2-roundtrip/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          138
+        ],
+        [
+          "load",
+          151
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/b2/restart/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/restart/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/restart/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 2,
+      "count": 4,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются."
+    }
+  },
+  {
+    "check": "D4/b2/restart/replay-doctor-page4-portion-3/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b2/restart/replay-doctor-page4-portion-3/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b2/restart/replay-doctor-page4-portion-3/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b2/restart/replay-page5-after-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b2/restart/replay-page5-after-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b2/restart/replay-page5-after-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "matrix/b2-restart/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          4
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/b2/nlbnavigator/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "matrix/b2-roundtrip/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13945,
+        "sha256": "1d71f1f9867fc1d589b81944b3572b06eb1c83cdb162f38b5977656bafa30921"
+      },
+      {
+        "file": "matrix/b2-restart/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13945,
+        "sha256": "1d71f1f9867fc1d589b81944b3572b06eb1c83cdb162f38b5977656bafa30921"
+      }
+    ]
+  },
+  {
+    "check": "matrix/b2-restart/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          5
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/b2/instead/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "matrix/b2-roundtrip/instead/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 64409,
+        "sha256": "0e1be3e5cb9f977f304ec370d2f131fb21864f07394cd3950da8be8e9d9a06e1"
+      },
+      {
+        "file": "matrix/b2-restart/instead/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 64409,
+        "sha256": "0e1be3e5cb9f977f304ec370d2f131fb21864f07394cd3950da8be8e9d9a06e1"
+      }
+    ]
+  },
+  {
+    "check": "D4/b3/roundtrip/doctor-page4-portion-3/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/doctor-page4-portion-3/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/doctor-page4-portion-3/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/save-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/save-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/save-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/replay-page5-after-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/replay-page5-after-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b3/roundtrip/replay-page5-after-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "matrix/b3-roundtrip/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          54
+        ],
+        [
+          "load",
+          61
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "matrix/b3-roundtrip/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          142
+        ],
+        [
+          "load",
+          151
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/b3/restart/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/restart/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/restart/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "index": 3,
+      "count": 4,
+      "more": false,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "4",
+      "visible": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась."
+    }
+  },
+  {
+    "check": "D4/b3/restart/replay-page5-after-doctor/cross",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b3/restart/replay-page5-after-doctor/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "D4/b3/restart/replay-page5-after-doctor/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+      "screen": "page",
+      "index": 0,
+      "count": 6,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "3",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "5",
+      "visible": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками."
+    }
+  },
+  {
+    "check": "matrix/b3-restart/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          4
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/b3/nlbnavigator/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "matrix/b3-roundtrip/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13943,
+        "sha256": "37a07078d918a229c9d670c3579b548dc21712c733e08008484addea52f7b430"
+      },
+      {
+        "file": "matrix/b3-restart/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+        "bytes": 13943,
+        "sha256": "37a07078d918a229c9d670c3579b548dc21712c733e08008484addea52f7b430"
+      }
+    ]
+  },
+  {
+    "check": "matrix/b3-restart/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          5
+        ]
+      ],
+      "expected": [
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D4/b3/instead/seed",
+    "ok": true,
+    "detail": [
+      {
+        "file": "matrix/b3-roundtrip/instead/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 64433,
+        "sha256": "4c7a3d43f39a18ac5354ac67e7b9df528e0a1d7ba8300f012eba11dc5035e99a"
+      },
+      {
+        "file": "matrix/b3-restart/instead/instead-appdata/saves/instead-game-overlay/save9",
+        "bytes": 64433,
+        "sha256": "4c7a3d43f39a18ac5354ac67e7b9df528e0a1d7ba8300f012eba11dc5035e99a"
+      }
+    ]
+  },
+  {
+    "check": "D5/SDL/empty",
+    "ok": true,
+    "detail": 5
+  },
+  {
+    "check": "D5/INSTEAD/empty",
+    "ok": true,
+    "detail": 6
+  },
+  {
+    "check": "instead-retry/missing-slot/commands",
+    "ok": true,
+    "detail": {
+      "observed": [],
+      "expected": [],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D5/resave/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D5/resave/load-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D5/resave/load-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D5/resave/resave-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D5/resave/resave-a/SDL-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "D5/resave/resave-a/INSTEAD-baseline",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "page",
+      "index": 0,
+      "count": 2,
+      "more": true,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном."
+    }
+  },
+  {
+    "check": "standard/resave/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          4
+        ],
+        [
+          "save",
+          8
+        ]
+      ],
+      "expected": [
+        "load",
+        "save"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "standard/resave/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "load",
+          5
+        ],
+        [
+          "save",
+          13
+        ]
+      ],
+      "expected": [
+        "load",
+        "save"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D5/choices/nlbnavigator/save-a/same-scene",
+    "ok": false,
+    "detail": {
+      "screen": [
+        "page",
+        "choices"
+      ],
+      "visible": [
+        "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+        [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      ]
+    }
+  },
+  {
+    "check": "D5/choices/nlbnavigator/load-a/same-scene",
+    "ok": false,
+    "detail": {
+      "screen": [
+        "page",
+        "choices"
+      ],
+      "visible": [
+        "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+        [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      ]
+    }
+  },
+  {
+    "check": "matrix/choices/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          42
+        ],
+        [
+          "load",
+          46
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D5/choices/instead/save-a/same-scene",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "D5/choices/instead/load-a/same-scene",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "screen": "choices",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "3",
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "matrix/choices/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          122
+        ],
+        [
+          "load",
+          123
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D5/choices/save-a/cross",
+    "ok": false,
+    "detail": {
+      "screen": [
+        "page",
+        "choices"
+      ],
+      "visible": [
+        "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+        [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      ]
+    }
+  },
+  {
+    "check": "D5/choices/load-a/cross",
+    "ok": false,
+    "detail": {
+      "screen": [
+        "page",
+        "choices"
+      ],
+      "visible": [
+        "Приоткрыв глаза, вы увидели склонившегося над вами мужика в медицинской маске. Он пытался снять телефон с вашей шеи. Заметив, что вы на него смотрите, медработник сильно вздрогнул и попятился, выпучив глаза.",
+        [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      ]
+    }
+  },
+  {
+    "check": "D5/ending/nlbnavigator/save-a/same-scene",
+    "ok": true,
+    "detail": {
+      "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+      "screen": "page",
+      "index": 0,
+      "count": 3,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "4",
+        "barExit": "true",
+        "forestExit": "true",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "34",
+      "visible": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым углом.  Соорудив примитивное оружие, вы вернулись к особняку."
+    }
+  },
+  {
+    "check": "D5/ending/nlbnavigator/load-a/same-scene",
+    "ok": true,
+    "detail": {
+      "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+      "screen": "page",
+      "index": 0,
+      "count": 3,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "4",
+        "barExit": "true",
+        "forestExit": "true",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "34",
+      "visible": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым углом.  Соорудив примитивное оружие, вы вернулись к особняку."
+    }
+  },
+  {
+    "check": "matrix/ending/nlbnavigator/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          176
+        ],
+        [
+          "load",
+          180
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D5/ending/instead/save-a/same-scene",
+    "ok": true,
+    "detail": {
+      "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+      "screen": "page",
+      "index": 0,
+      "count": 3,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "4",
+        "barExit": "true",
+        "forestExit": "true",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "34",
+      "visible": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым углом.  Соорудив примитивное оружие, вы вернулись к особняку."
+    }
+  },
+  {
+    "check": "D5/ending/instead/load-a/same-scene",
+    "ok": true,
+    "detail": {
+      "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+      "screen": "page",
+      "index": 0,
+      "count": 3,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "4",
+        "barExit": "true",
+        "forestExit": "true",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "34",
+      "visible": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым углом.  Соорудив примитивное оружие, вы вернулись к особняку."
+    }
+  },
+  {
+    "check": "matrix/ending/instead/commands",
+    "ok": true,
+    "detail": {
+      "observed": [
+        [
+          "save",
+          478
+        ],
+        [
+          "load",
+          479
+        ]
+      ],
+      "expected": [
+        "save",
+        "load"
+      ],
+      "underlying_checks": true
+    }
+  },
+  {
+    "check": "D5/ending/save-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+      "screen": "page",
+      "index": 0,
+      "count": 3,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "4",
+        "barExit": "true",
+        "forestExit": "true",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "34",
+      "visible": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым углом.  Соорудив примитивное оружие, вы вернулись к особняку."
+    }
+  },
+  {
+    "check": "D5/ending/load-a/cross",
+    "ok": true,
+    "detail": {
+      "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+      "screen": "page",
+      "index": 0,
+      "count": 3,
+      "more": true,
+      "variables": {
+        "wolfiness": "1",
+        "hp": "4",
+        "barExit": "true",
+        "forestExit": "true",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "background": "34",
+      "visible": "На ней вы и остановили свой выбор. Вам удалось сломать толстую ветку под острым углом.  Соорудив примитивное оружие, вы вернулись к особняку."
+    }
+  },
+  {
+    "check": "D5/ending/next",
+    "ok": true,
+    "detail": {
+      "SDL": {
+        "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+        "screen": "end",
+        "index": 2,
+        "count": 3,
+        "more": false,
+        "variables": {
+          "wolfiness": "1",
+          "hp": "4",
+          "barExit": "true",
+          "forestExit": "true",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "background": "34",
+        "visible": "Оборотень кинулся на вас. Вы резко выбросили из-за спины руку с зажатым в ней колом. Охранник, не успев остановиться, налетел грудью прямо на острую палку. Он заревел от боли и бросился на вас. Из его смертельных объятий вам уже не суждено было выбраться."
+      },
+      "INSTEAD": {
+        "page": "9a78cd0b-cc2b-4c46-bf73-e807ed71189c",
+        "screen": "end",
+        "index": 2,
+        "count": 3,
+        "more": false,
+        "variables": {
+          "wolfiness": "1",
+          "hp": "4",
+          "barExit": "true",
+          "forestExit": "true",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "background": "34",
+        "visible": "<g:themes/default/gfx/theendru.png><c>\n<a:act 01>Попробовать ещё раз</a>\n</c> "
+      }
+    }
+  }
+]

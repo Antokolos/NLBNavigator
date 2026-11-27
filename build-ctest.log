@@ -1,0 +1,118 @@
+[1/6] Building CXX object CMakeFiles/nlb_save_portion_test.dir/tests/presentation/save_portion.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/builtin-features.inc:10,
+                 from /workspace/NLBNavigator/tests/presentation/save_portion.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/builtin-features.inc:29:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Assign(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:7:35: warning: unused parameter ‘left’ [-Wunused-parameter]
+    7 | packToken Assign(const packToken& left, const packToken& right, evaluationData* data) {
+      |                  ~~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Comma(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:50:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   50 | packToken Comma(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Colon(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:59:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   59 | packToken Colon(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::UnaryNotOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:137:46: warning: unused parameter ‘left’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                             ~~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:137:92: warning: unused parameter ‘data’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                            ~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::FormatOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:196:94: warning: unused parameter ‘data’ [-Wunused-parameter]
+  196 | packToken FormatOperation(const packToken& p_left, const packToken& p_right, evaluationData* data) {
+      |                                                                              ~~~~~~~~~~~~~~~~^~~~
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/builtin-features.inc:31:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::True(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::False(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:24: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |            ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:43: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |                              ~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::None(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::LineComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:21:67: warning: unused parameter ‘data’ [-Wunused-parameter]
+   21 | void LineComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                       ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::SlashStarComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:26:72: warning: unused parameter ‘data’ [-Wunused-parameter]
+   26 | void SlashStarComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                            ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::KeywordOperator(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:34: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                      ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:53: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                        ~~~~~~~~~~~~~^~~~
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/builtin-features.inc:33:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc: In function ‘cparse::packToken builtin_typeSpecificFunctions::list_pop(cparse::TokenMap)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc:72:13: warning: comparison of unsigned expression in ‘< 0’ is always false [-Wtype-limits]
+   72 |     if (pos < 0) pos = list.list().size()-pos;
+      |         ~~~~^~~
+[2/6] Building CXX object CMakeFiles/nlb_save_portion_test.dir/Source/thirdparty/cparse/shunting-yard.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp: In copy constructor ‘cparse::calculator::RAII_TokenQueue_t::RAII_TokenQueue_t(const cparse::calculator::RAII_TokenQueue_t&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:271:46: warning: unused parameter ‘rpn’ [-Wunused-parameter]
+  271 |   RAII_TokenQueue_t(const RAII_TokenQueue_t& rpn) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp: In member function ‘cparse::calculator::RAII_TokenQueue_t& cparse::calculator::RAII_TokenQueue_t::operator=(const cparse::calculator::RAII_TokenQueue_t&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:274:57: warning: unused parameter ‘rpn’ [-Wunused-parameter]
+  274 |   RAII_TokenQueue_t& operator=(const RAII_TokenQueue_t& rpn) {
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp: In function ‘bool match_op_id(cparse::opID_t, cparse::opID_t)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:51:12: warning: ‘result’ is used uninitialized [-Wuninitialized]
+   51 |   if (val[0] && val[1]) return true;
+      |       ~~~~~^
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:49:12: note: ‘result’ declared here
+   49 |   uint64_t result = id & mask;
+      |            ^~~~~~
+[3/6] Building CXX object CMakeFiles/nlb_save_portion_test.dir/Source/thirdparty/cparse/packToken.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/packToken.cpp:5:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[4/6] Building CXX object CMakeFiles/nlb_save_portion_test.dir/Source/thirdparty/cparse/functions.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/functions.cpp:3:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[5/6] Building CXX object CMakeFiles/nlb_save_portion_test.dir/Source/thirdparty/cparse/containers.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/containers.cpp:3:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[6/6] Linking CXX executable nlb_save_portion_test

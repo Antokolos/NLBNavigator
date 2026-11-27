@@ -1,0 +1,455 @@
+{
+  "route": "wolfman-instead-save-load-cycles",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-instead-save-load-cycles",
+      "route_sha256": "628d4f638d75ee9e6b92766bae7545bb47e3ccac1961e7a444f366d5b9966ed9",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-environment/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/scratch/paired-save-load.Lkx4pC/instead-standard/cycles/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-instead-save-load-cycles",
+      "route_sha256": "628d4f638d75ee9e6b92766bae7545bb47e3ccac1961e7a444f366d5b9966ed9",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "opening",
+      "instead_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "nlbnavigator_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "instead_check": {
+        "step_id": "opening",
+        "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+        "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 10
+      },
+      "nlbnavigator_check": {
+        "step_id": "opening",
+        "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "portion_index": 0,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "opening-next-portion",
+      "instead_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "nlbnavigator_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "instead_check": {
+        "step_id": "opening-next-portion",
+        "expected_fragment": "Интересно, сколько я тут валяюсь",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+        "normalized_text": "«Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал», — подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.\n",
+        "page_id": "f12432d9-dd8f-40fc-97bd-f9a15cc21ff6",
+        "screen_kind": "page",
+        "portion_index": 1,
+        "portion_count": 10
+      },
+      "nlbnavigator_check": {
+        "step_id": "opening-next-portion",
+        "expected_fragment": "Интересно, сколько я тут валяюсь",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "portion_index": 1,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "try-to-break-through-police",
+      "instead_expected_fragment": "Сделав ставку на внезапность",
+      "nlbnavigator_expected_fragment": "Сделав ставку на внезапность",
+      "instead_check": {
+        "step_id": "try-to-break-through-police",
+        "expected_fragment": "Сделав ставку на внезапность",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы.\n",
+        "normalized_text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы.\n",
+        "page_id": "b12a01be-cd61-4dba-b427-1ce3afc06fc6",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 10
+      },
+      "nlbnavigator_check": {
+        "step_id": "try-to-break-through-police",
+        "expected_fragment": "Сделав ставку на внезапность",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы.",
+        "normalized_text": "Сделав ставку на внезапность, вы вырвались из-за бака и скачками понеслись прочь. От неожиданности полицейские замешкались, но через несколько секунд раздались выстрелы.",
+        "portion_index": 0,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "hospital-page3",
+      "instead_expected_fragment": "Вы очнулись от яркого света",
+      "nlbnavigator_expected_fragment": "Вы очнулись от яркого света",
+      "instead_check": {
+        "step_id": "hospital-page3",
+        "expected_fragment": "Вы очнулись от яркого света",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n",
+        "normalized_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n",
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "hospital-page3",
+        "expected_fragment": "Вы очнулись от яркого света",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+        "normalized_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+        "portion_index": 0,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "baseline-eat-doctor",
+      "instead_expected_fragment": "Ощутив запах панического ужаса",
+      "nlbnavigator_expected_fragment": "Ощутив запах панического ужаса",
+      "instead_check": {
+        "step_id": "baseline-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "baseline-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "portion_index": 0,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "cycle-1-eat-doctor",
+      "instead_expected_fragment": "Ощутив запах панического ужаса",
+      "nlbnavigator_expected_fragment": "Ощутив запах панического ужаса",
+      "instead_check": {
+        "step_id": "cycle-1-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "cycle-1-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "portion_index": 0,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "cycle-2-eat-doctor",
+      "instead_expected_fragment": "Ощутив запах панического ужаса",
+      "nlbnavigator_expected_fragment": "Ощутив запах панического ужаса",
+      "instead_check": {
+        "step_id": "cycle-2-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "cycle-2-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "portion_index": 0,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "cycle-3-eat-doctor",
+      "instead_expected_fragment": "Ощутив запах панического ужаса",
+      "nlbnavigator_expected_fragment": "Ощутив запах панического ужаса",
+      "instead_check": {
+        "step_id": "cycle-3-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.\n",
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "cycle-3-eat-doctor",
+        "expected_fragment": "Ощутив запах панического ужаса",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "normalized_text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+        "portion_index": 0,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/00-title.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/00-title.png",
+      "changed_pixels": 1900484,
+      "changed_fraction": 0.916514274691358,
+      "mean_absolute_channel_error": 3.3554927019032923,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/title-diff.png"
+    },
+    {
+      "id": "opening",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/01-opening.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/01-opening.png",
+      "changed_pixels": 1612474,
+      "changed_fraction": 0.7776205632716049,
+      "mean_absolute_channel_error": 2.8531942836934157,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/opening-diff.png"
+    },
+    {
+      "id": "opening-next-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/02-opening-next-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/02-opening-next-portion.png",
+      "changed_pixels": 1615090,
+      "changed_fraction": 0.778882137345679,
+      "mean_absolute_channel_error": 4.071366062242798,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/opening-next-portion-diff.png"
+    },
+    {
+      "id": "opening-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/03-opening-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/03-opening-choices.png",
+      "changed_pixels": 1719440,
+      "changed_fraction": 0.8292052469135802,
+      "mean_absolute_channel_error": 5.647602237654321,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/opening-choices-diff.png"
+    },
+    {
+      "id": "try-to-break-through-police",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/04-police-branch.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/04-police-branch.png",
+      "changed_pixels": 1543841,
+      "changed_fraction": 0.744522087191358,
+      "mean_absolute_channel_error": 3.0104361175411523,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/try-to-break-through-police-diff.png"
+    },
+    {
+      "id": "hospital-page3",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/05-hospital-page3.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/05-hospital-page3.png",
+      "changed_pixels": 1238818,
+      "changed_fraction": 0.5974238040123456,
+      "mean_absolute_channel_error": 4.417253890174897,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/hospital-page3-diff.png"
+    },
+    {
+      "id": "save-a",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/save-a.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/save-a.png",
+      "changed_pixels": 1220817,
+      "changed_fraction": 0.5887427662037037,
+      "mean_absolute_channel_error": 2.171058545524691,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/save-a-diff.png"
+    },
+    {
+      "id": "baseline-hospital-page3-last",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/baseline-hospital-page3-last.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/baseline-hospital-page3-last.png",
+      "changed_pixels": 1229016,
+      "changed_fraction": 0.5926967592592592,
+      "mean_absolute_channel_error": 3.3291179591049382,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/baseline-hospital-page3-last-diff.png"
+    },
+    {
+      "id": "baseline-hospital-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/baseline-hospital-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/baseline-hospital-choices.png",
+      "changed_pixels": 1485837,
+      "changed_fraction": 0.7165494791666667,
+      "mean_absolute_channel_error": 13.520745724022634,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/baseline-hospital-choices-diff.png"
+    },
+    {
+      "id": "baseline-eat-doctor",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/baseline-eat-doctor.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/baseline-eat-doctor.png",
+      "changed_pixels": 1808074,
+      "changed_fraction": 0.8719492669753086,
+      "mean_absolute_channel_error": 3.951070601851852,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/baseline-eat-doctor-diff.png"
+    },
+    {
+      "id": "load-a-1",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/load-a-1.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/load-a-1.png",
+      "changed_pixels": 1220860,
+      "changed_fraction": 0.5887635030864198,
+      "mean_absolute_channel_error": 2.1728841949588475,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/load-a-1-diff.png"
+    },
+    {
+      "id": "cycle-1-hospital-page3-last",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-1-hospital-page3-last.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-1-hospital-page3-last.png",
+      "changed_pixels": 1229016,
+      "changed_fraction": 0.5926967592592592,
+      "mean_absolute_channel_error": 3.3291179591049382,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-1-hospital-page3-last-diff.png"
+    },
+    {
+      "id": "cycle-1-hospital-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-1-hospital-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-1-hospital-choices.png",
+      "changed_pixels": 1485837,
+      "changed_fraction": 0.7165494791666667,
+      "mean_absolute_channel_error": 13.520745724022634,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-1-hospital-choices-diff.png"
+    },
+    {
+      "id": "cycle-1-eat-doctor",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-1-eat-doctor.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-1-eat-doctor.png",
+      "changed_pixels": 1808074,
+      "changed_fraction": 0.8719492669753086,
+      "mean_absolute_channel_error": 3.951070601851852,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-1-eat-doctor-diff.png"
+    },
+    {
+      "id": "load-a-2",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/load-a-2.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/load-a-2.png",
+      "changed_pixels": 1220860,
+      "changed_fraction": 0.5887635030864198,
+      "mean_absolute_channel_error": 2.1728841949588475,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/load-a-2-diff.png"
+    },
+    {
+      "id": "cycle-2-hospital-page3-last",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-2-hospital-page3-last.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-2-hospital-page3-last.png",
+      "changed_pixels": 1229016,
+      "changed_fraction": 0.5926967592592592,
+      "mean_absolute_channel_error": 3.3291179591049382,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-2-hospital-page3-last-diff.png"
+    },
+    {
+      "id": "cycle-2-hospital-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-2-hospital-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-2-hospital-choices.png",
+      "changed_pixels": 1485837,
+      "changed_fraction": 0.7165494791666667,
+      "mean_absolute_channel_error": 13.520745724022634,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-2-hospital-choices-diff.png"
+    },
+    {
+      "id": "cycle-2-eat-doctor",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-2-eat-doctor.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-2-eat-doctor.png",
+      "changed_pixels": 1808074,
+      "changed_fraction": 0.8719492669753086,
+      "mean_absolute_channel_error": 3.951070601851852,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-2-eat-doctor-diff.png"
+    },
+    {
+      "id": "load-a-3",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/load-a-3.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/load-a-3.png",
+      "changed_pixels": 1220860,
+      "changed_fraction": 0.5887635030864198,
+      "mean_absolute_channel_error": 2.1728841949588475,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/load-a-3-diff.png"
+    },
+    {
+      "id": "cycle-3-hospital-page3-last",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-3-hospital-page3-last.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-3-hospital-page3-last.png",
+      "changed_pixels": 1229016,
+      "changed_fraction": 0.5926967592592592,
+      "mean_absolute_channel_error": 3.3291179591049382,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-3-hospital-page3-last-diff.png"
+    },
+    {
+      "id": "cycle-3-hospital-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-3-hospital-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-3-hospital-choices.png",
+      "changed_pixels": 1485837,
+      "changed_fraction": 0.7165494791666667,
+      "mean_absolute_channel_error": 13.520745724022634,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-3-hospital-choices-diff.png"
+    },
+    {
+      "id": "cycle-3-eat-doctor",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/instead/cycle-3-eat-doctor.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/nlbnavigator/cycle-3-eat-doctor.png",
+      "changed_pixels": 1808074,
+      "changed_fraction": 0.8719492669753086,
+      "mean_absolute_channel_error": 3.951070601851852,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/standard/cycles/diff/cycle-3-eat-doctor-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

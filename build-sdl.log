@@ -1,0 +1,1733 @@
+[1/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/CoordsLw.cpp.o
+[2/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/Constants.cpp.o
+[3/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/ConsoleProgressData.cpp.o
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/ConsoleProgressData.cpp: In member function ‘virtual void ConsoleProgressData::setNoteText(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/ConsoleProgressData.cpp:22:58: warning: unused parameter ‘text’ [-Wunused-parameter]
+   22 | void ConsoleProgressData::setNoteText(const std::string& text)
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~
+[4/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/SpecialVariablesNameHelper.cpp.o
+[5/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/Modification.cpp.o
+[6/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/DummyNLB.cpp.o
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual std::set<std::__cxx11::basic_string<char> > DummyNLB::getAllAchievementNames(bool) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:7:61: warning: unused parameter ‘recursive’ [-Wunused-parameter]
+    7 | std::set<std::string> DummyNLB::getAllAchievementNames(bool recursive) const {
+      |                                                        ~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual void DummyNLB::exportMedia(bool, const std::string&, const std::string&, const std::vector<MediaFile*>&, MediaFile::Type) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:92:10: warning: unused parameter ‘isRoot’ [-Wunused-parameter]
+   92 |     bool isRoot,
+      |     ~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:93:24: warning: unused parameter ‘mainExportDir’ [-Wunused-parameter]
+   93 |     const std::string& mainExportDir,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:94:24: warning: unused parameter ‘mediaDirName’ [-Wunused-parameter]
+   94 |     const std::string& mediaDirName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:95:36: warning: unused parameter ‘mediaFiles’ [-Wunused-parameter]
+   95 |     const std::vector<MediaFile*>& mediaFiles,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:96:21: warning: unused parameter ‘mediaType’ [-Wunused-parameter]
+   96 |     MediaFile::Type mediaType
+      |     ~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual bool DummyNLB::isAutowired(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:121:47: warning: unused parameter ‘pageId’ [-Wunused-parameter]
+  121 | bool DummyNLB::isAutowired(const std::string& pageId) const {
+      |                            ~~~~~~~~~~~~~~~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual Page* DummyNLB::getPageById(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:125:48: warning: unused parameter ‘id’ [-Wunused-parameter]
+  125 | Page* DummyNLB::getPageById(const std::string& id) const {
+      |                             ~~~~~~~~~~~~~~~~~~~^~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual Obj* DummyNLB::getObjById(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:133:46: warning: unused parameter ‘objId’ [-Wunused-parameter]
+  133 | Obj* DummyNLB::getObjById(const std::string& objId) const {
+      |                           ~~~~~~~~~~~~~~~~~~~^~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual Page* DummyNLB::createFilteredPage(const std::string&, const History&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:138:24: warning: unused parameter ‘sourceId’ [-Wunused-parameter]
+  138 |     const std::string& sourceId,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:139:20: warning: unused parameter ‘history’ [-Wunused-parameter]
+  139 |     const History& history
+      |     ~~~~~~~~~~~~~~~^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual bool DummyNLB::load(const std::string&, ProgressData&)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:145:24: warning: unused parameter ‘path’ [-Wunused-parameter]
+  145 |     const std::string& path,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:146:19: warning: unused parameter ‘progressData’ [-Wunused-parameter]
+  146 |     ProgressData& progressData
+      |     ~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual Variable* DummyNLB::getVariableById(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:151:56: warning: unused parameter ‘varId’ [-Wunused-parameter]
+  151 | Variable* DummyNLB::getVariableById(const std::string& varId) const {
+      |                                     ~~~~~~~~~~~~~~~~~~~^~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual SearchResultTableModel DummyNLB::getLeafs(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:159:62: warning: unused parameter ‘modulePageId’ [-Wunused-parameter]
+  159 | SearchResultTableModel DummyNLB::getLeafs(const std::string& modulePageId) const {
+      |                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual SearchResultTableModel DummyNLB::searchText(const SearchContract&, const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:164:27: warning: unused parameter ‘searchContract’ [-Wunused-parameter]
+  164 |     const SearchContract& searchContract,
+      |     ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:165:24: warning: unused parameter ‘modulePageId’ [-Wunused-parameter]
+  165 |     const std::string& modulePageId
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual SearchResultTableModel DummyNLB::getVariables(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:170:66: warning: unused parameter ‘modulePageId’ [-Wunused-parameter]
+  170 | SearchResultTableModel DummyNLB::getVariables(const std::string& modulePageId) const {
+      |                                               ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual bool DummyNLB::findVariable(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:174:48: warning: unused parameter ‘variableNameToFind’ [-Wunused-parameter]
+  174 | bool DummyNLB::findVariable(const std::string& variableNameToFind) const {
+      |                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual SearchResultTableModel DummyNLB::checkBook(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:178:63: warning: unused parameter ‘modulePageId’ [-Wunused-parameter]
+  178 | SearchResultTableModel DummyNLB::checkBook(const std::string& modulePageId) const {
+      |                                            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp: In member function ‘virtual NonLinearBook* DummyNLB::findExternalModule(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/DummyNLB.cpp:206:64: warning: unused parameter ‘name’ [-Wunused-parameter]
+  206 | NonLinearBook* DummyNLB::findExternalModule(const std::string& name) const {
+      |                                             ~~~~~~~~~~~~~~~~~~~^~~~
+[7/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/PartialProgressData.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/PartialProgressData.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/PartialProgressData.cpp:1:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setProgressValue(int)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:11:31: warning: unused parameter ‘progress’ [-Wunused-parameter]
+   11 |     void setProgressValue(int progress) override {};
+      |                           ~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setNoteText(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:12:41: warning: unused parameter ‘text’ [-Wunused-parameter]
+   12 |     void setNoteText(const std::string& text) override {};
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~
+[8/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/SearchContract.cpp.o
+[9/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/TextChunk.cpp.o
+[10/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/Theme.cpp.o
+[11/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/PropertyManager.cpp.o
+[12/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/SearchResultTableModel.cpp.o
+[13/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/Variable.cpp.o
+[14/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/ModificationsTableModel.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/VariableImpl.h:5,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/ModificationsTableModel.cpp:4:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/ModificationsTableModel.cpp: In member function ‘bool ModificationsTableModel::isCellEditable(int, int) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/api/ModificationsTableModel.cpp:233:50: warning: unused parameter ‘rowIndex’ [-Wunused-parameter]
+  233 | bool ModificationsTableModel::isCellEditable(int rowIndex, int columnIndex) const {
+      |                                              ~~~~^~~~~~~~
+[15/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/NonLinearBook.cpp.o
+[16/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/Obj.cpp.o
+[17/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/NodeItem.cpp.o
+[18/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/api/Page.cpp.o
+[19/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/Clipboard.cpp.o
+[20/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/CommandChainCommand.cpp.o
+[21/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/AbstractModifyingItem.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/AbstractModifyingItem.cpp:2:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+[22/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/CoordsImpl.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/CoordsImpl.h:5,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/CoordsImpl.cpp:1:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+[23/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/MediaExportParameters.cpp.o
+[24/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/MediaFileImpl.cpp.o
+[25/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/AbstractNodeItem.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/CoordsImpl.h:5,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/AbstractNodeItem.cpp:2:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/PartialProgressData.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/PageImpl.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/AbstractNodeItem.cpp:5:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setProgressValue(int)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:11:31: warning: unused parameter ‘progress’ [-Wunused-parameter]
+   11 |     void setProgressValue(int progress) override {};
+      |                           ~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setNoteText(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:12:41: warning: unused parameter ‘text’ [-Wunused-parameter]
+   12 |     void setNoteText(const std::string& text) override {};
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/AbstractNodeItem.cpp: In member function ‘void AbstractNodeItem::writeContent(const FileManipulator*, const std::string&, NonLinearBookImpl*)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/AbstractNodeItem.cpp:457:54: warning: unused parameter ‘nonLinearBook’ [-Wunused-parameter]
+  457 |                                   NonLinearBookImpl* nonLinearBook) {
+      |                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+[26/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/ModificationImpl.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ModificationImpl.cpp:2:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+[27/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/LinkImpl.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/CoordsImpl.h:5,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/LinkImpl.h:8,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/LinkImpl.cpp:1:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+[28/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/NullObj.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp:1:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NullObj.h: In member function ‘virtual void NullObj::setId(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NullObj.h:92:35: warning: unused parameter ‘id’ [-Wunused-parameter]
+   92 |     void setId(const std::string& id) override {}
+      |                ~~~~~~~~~~~~~~~~~~~^~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp: In member function ‘virtual Obj* NullObj::getCommonToObj(NonLinearBook*) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp:58:45: warning: unused parameter ‘nonLinearBook’ [-Wunused-parameter]
+   58 | Obj* NullObj::getCommonToObj(NonLinearBook* nonLinearBook) const {
+      |                              ~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp: In member function ‘virtual Coords& NullObj::getRelativeCoords(bool) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp:182:41: warning: unused parameter ‘lookInMorphs’ [-Wunused-parameter]
+  182 | Coords& NullObj::getRelativeCoords(bool lookInMorphs) const {
+      |                                    ~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp: In member function ‘virtual std::string NullObj::getCumulativeText(const std::vector<std::__cxx11::basic_string<char> >&, std::map<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> >&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp:211:37: warning: unused parameter ‘objIdsToBeExcluded’ [-Wunused-parameter]
+  211 |     const std::vector<std::string>& objIdsToBeExcluded,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NullObj.cpp:212:41: warning: unused parameter ‘visitedVars’ [-Wunused-parameter]
+  212 |     std::map<std::string, std::string>& visitedVars
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+[29/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/AbstractIdentifiableItem.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/AbstractIdentifiableItem.cpp:10:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+[30/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/PartialProgressData.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:15,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:1:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setProgressValue(int)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:11:31: warning: unused parameter ‘progress’ [-Wunused-parameter]
+   11 |     void setProgressValue(int progress) override {};
+      |                           ~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setNoteText(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:12:41: warning: unused parameter ‘text’ [-Wunused-parameter]
+   12 |     void setNoteText(const std::string& text) override {};
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:16:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:34:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h: In member function ‘virtual Modification* RootModulePage::getModificationById(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h:86:66: warning: unused parameter ‘modId’ [-Wunused-parameter]
+   86 |     virtual Modification* getModificationById(const std::string& modId) const override { return nullptr; }
+      |                                               ~~~~~~~~~~~~~~~~~~~^~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h: In member function ‘virtual Link* RootModulePage::getLinkById(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h:96:50: warning: unused parameter ‘id’ [-Wunused-parameter]
+   96 |     virtual Link* getLinkById(const std::string& id) const override { return nullptr; }
+      |                               ~~~~~~~~~~~~~~~~~~~^~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h: In member function ‘virtual std::string RootModulePage::addObserver(NLBObserver*)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h:99:50: warning: unused parameter ‘observer’ [-Wunused-parameter]
+   99 |     virtual std::string addObserver(NLBObserver* observer) override { return nlb::Constants::EMPTY_STRING; }
+      |                                     ~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h: In member function ‘virtual void RootModulePage::removeObserver(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/RootModulePage.h:100:52: warning: unused parameter ‘observerId’ [-Wunused-parameter]
+  100 |     virtual void removeObserver(const std::string& observerId) override {}
+      |                                 ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h: In constructor ‘NonLinearBookFacade::NonLinearBookFacade(Author*, VCSAdapter*)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:62:26: warning: ‘NonLinearBookFacade::m_parentFacade’ will be initialized after [-Wreorder]
+   62 |     NonLinearBookFacade* m_parentFacade;
+      |                          ^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:60:13: warning:   ‘Author* NonLinearBookFacade::m_author’ [-Wreorder]
+   60 |     Author* m_author;
+      |             ^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:42:1: warning:   when initialized here [-Wreorder]
+   42 | NonLinearBookFacade::NonLinearBookFacade(Author* author, VCSAdapter* vcsAdapter)
+      | ^~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:60:13: warning: ‘NonLinearBookFacade::m_author’ will be initialized after [-Wreorder]
+   60 |     Author* m_author;
+      |             ^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:59:17: warning:   ‘VCSAdapter* NonLinearBookFacade::m_vcsAdapter’ [-Wreorder]
+   59 |     VCSAdapter* m_vcsAdapter;
+      |                 ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:42:1: warning:   when initialized here [-Wreorder]
+   42 | NonLinearBookFacade::NonLinearBookFacade(Author* author, VCSAdapter* vcsAdapter)
+      | ^~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:59:17: warning: ‘NonLinearBookFacade::m_vcsAdapter’ will be initialized after [-Wreorder]
+   59 |     VCSAdapter* m_vcsAdapter;
+      |                 ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:51:18: warning:   ‘UndoManager* NonLinearBookFacade::m_undoManager’ [-Wreorder]
+   51 |     UndoManager* m_undoManager;
+      |                  ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:42:1: warning:   when initialized here [-Wreorder]
+   42 | NonLinearBookFacade::NonLinearBookFacade(Author* author, VCSAdapter* vcsAdapter)
+      | ^~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h: In constructor ‘NonLinearBookFacade::NonLinearBookFacade(NonLinearBookFacade*, Author*, VCSAdapter*, NonLinearBookImpl*)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:62:26: warning: ‘NonLinearBookFacade::m_parentFacade’ will be initialized after [-Wreorder]
+   62 |     NonLinearBookFacade* m_parentFacade;
+      |                          ^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:60:13: warning:   ‘Author* NonLinearBookFacade::m_author’ [-Wreorder]
+   60 |     Author* m_author;
+      |             ^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:53:1: warning:   when initialized here [-Wreorder]
+   53 | NonLinearBookFacade::NonLinearBookFacade(
+      | ^~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:60:13: warning: ‘NonLinearBookFacade::m_author’ will be initialized after [-Wreorder]
+   60 |     Author* m_author;
+      |             ^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:59:17: warning:   ‘VCSAdapter* NonLinearBookFacade::m_vcsAdapter’ [-Wreorder]
+   59 |     VCSAdapter* m_vcsAdapter;
+      |                 ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:53:1: warning:   when initialized here [-Wreorder]
+   53 | NonLinearBookFacade::NonLinearBookFacade(
+      | ^~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:59:17: warning: ‘NonLinearBookFacade::m_vcsAdapter’ will be initialized after [-Wreorder]
+   59 |     VCSAdapter* m_vcsAdapter;
+      |                 ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookFacade.h:43:24: warning:   ‘NonLinearBookImpl* NonLinearBookFacade::m_nlb’ [-Wreorder]
+   43 |     NonLinearBookImpl* m_nlb;
+      |                        ^~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:53:1: warning:   when initialized here [-Wreorder]
+   53 | NonLinearBookFacade::NonLinearBookFacade(
+      | ^~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp: In member function ‘void NonLinearBookFacade::updateLink(Link*, const std::string&, const std::string&, MultiLangString*, MultiLangString*, bool, bool)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:314:11: warning: unused parameter ‘link’ [-Wunused-parameter]
+  314 |     Link* link,
+      |     ~~~~~~^~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:315:24: warning: unused parameter ‘linkVariableName’ [-Wunused-parameter]
+  315 |     const std::string& linkVariableName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:316:24: warning: unused parameter ‘linkConstraintValue’ [-Wunused-parameter]
+  316 |     const std::string& linkConstraintValue,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:317:22: warning: unused parameter ‘linkText’ [-Wunused-parameter]
+  317 |     MultiLangString* linkText,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:318:22: warning: unused parameter ‘linkAltText’ [-Wunused-parameter]
+  318 |     MultiLangString* linkAltText,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:319:10: warning: unused parameter ‘autoFlag’ [-Wunused-parameter]
+  319 |     bool autoFlag,
+      |     ~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:320:10: warning: unused parameter ‘once’ [-Wunused-parameter]
+  320 |     bool once
+      |     ~~~~~^~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp: In member function ‘void NonLinearBookFacade::updateObj(Obj*, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, bool, bool, bool, MultiLangString*, MultiLangString*, MultiLangString*, MultiLangString*, bool, bool, bool, bool, bool, const std::string&, Obj::MovementDirection, Obj::Effect, int, int, int, int, Obj::CoordsOrigin, bool, bool, bool, bool, bool, const std::string&, const std::string&, bool, bool, bool, bool)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:345:10: warning: unused parameter ‘obj’ [-Wunused-parameter]
+  345 |     Obj* obj,
+      |     ~~~~~^~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:346:24: warning: unused parameter ‘objVariableName’ [-Wunused-parameter]
+  346 |     const std::string& objVariableName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:347:24: warning: unused parameter ‘objDefTagVariableValue’ [-Wunused-parameter]
+  347 |     const std::string& objDefTagVariableValue,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:348:24: warning: unused parameter ‘objConstraintValue’ [-Wunused-parameter]
+  348 |     const std::string& objConstraintValue,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:349:24: warning: unused parameter ‘objCommonToName’ [-Wunused-parameter]
+  349 |     const std::string& objCommonToName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:350:24: warning: unused parameter ‘objName’ [-Wunused-parameter]
+  350 |     const std::string& objName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:351:24: warning: unused parameter ‘imageFileName’ [-Wunused-parameter]
+  351 |     const std::string& imageFileName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:352:24: warning: unused parameter ‘soundFileName’ [-Wunused-parameter]
+  352 |     const std::string& soundFileName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:353:10: warning: unused parameter ‘soundSFX’ [-Wunused-parameter]
+  353 |     bool soundSFX,
+      |     ~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:354:10: warning: unused parameter ‘animatedImage’ [-Wunused-parameter]
+  354 |     bool animatedImage,
+      |     ~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:355:10: warning: unused parameter ‘suppressDsc’ [-Wunused-parameter]
+  355 |     bool suppressDsc,
+      |     ~~~~~^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:356:22: warning: unused parameter ‘objDisp’ [-Wunused-parameter]
+  356 |     MultiLangString* objDisp,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:357:22: warning: unused parameter ‘objText’ [-Wunused-parameter]
+  357 |     MultiLangString* objText,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:358:22: warning: unused parameter ‘objActText’ [-Wunused-parameter]
+  358 |     MultiLangString* objActText,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:359:22: warning: unused parameter ‘objNouseText’ [-Wunused-parameter]
+  359 |     MultiLangString* objNouseText,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:360:10: warning: unused parameter ‘objIsGraphical’ [-Wunused-parameter]
+  360 |     bool objIsGraphical,
+      |     ~~~~~^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:361:10: warning: unused parameter ‘objIsShowOnCursor’ [-Wunused-parameter]
+  361 |     bool objIsShowOnCursor,
+      |     ~~~~~^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:362:10: warning: unused parameter ‘objIsPreserved’ [-Wunused-parameter]
+  362 |     bool objIsPreserved,
+      |     ~~~~~^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:363:10: warning: unused parameter ‘objIsLoadOnce’ [-Wunused-parameter]
+  363 |     bool objIsLoadOnce,
+      |     ~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:364:10: warning: unused parameter ‘objIsCollapsable’ [-Wunused-parameter]
+  364 |     bool objIsCollapsable,
+      |     ~~~~~^~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:365:24: warning: unused parameter ‘offset’ [-Wunused-parameter]
+  365 |     const std::string& offset,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:366:28: warning: unused parameter ‘movementDirection’ [-Wunused-parameter]
+  366 |     Obj::MovementDirection movementDirection,
+      |     ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:367:17: warning: unused parameter ‘effect’ [-Wunused-parameter]
+  367 |     Obj::Effect effect,
+      |     ~~~~~~~~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:368:9: warning: unused parameter ‘startFrame’ [-Wunused-parameter]
+  368 |     int startFrame,
+      |     ~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:369:9: warning: unused parameter ‘maxFrame’ [-Wunused-parameter]
+  369 |     int maxFrame,
+      |     ~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:370:9: warning: unused parameter ‘preloadFrames’ [-Wunused-parameter]
+  370 |     int preloadFrames,
+      |     ~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:371:9: warning: unused parameter ‘pauseFrames’ [-Wunused-parameter]
+  371 |     int pauseFrames,
+      |     ~~~~^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:372:23: warning: unused parameter ‘coordsOrigin’ [-Wunused-parameter]
+  372 |     Obj::CoordsOrigin coordsOrigin,
+      |     ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:373:10: warning: unused parameter ‘objIsClearUnderTooltip’ [-Wunused-parameter]
+  373 |     bool objIsClearUnderTooltip,
+      |     ~~~~~^~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:374:10: warning: unused parameter ‘objIsActOnKey’ [-Wunused-parameter]
+  374 |     bool objIsActOnKey,
+      |     ~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:375:10: warning: unused parameter ‘objIsCacheText’ [-Wunused-parameter]
+  375 |     bool objIsCacheText,
+      |     ~~~~~^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:376:10: warning: unused parameter ‘objIsLooped’ [-Wunused-parameter]
+  376 |     bool objIsLooped,
+      |     ~~~~~^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:377:10: warning: unused parameter ‘objIsNoRedrawOnAct’ [-Wunused-parameter]
+  377 |     bool objIsNoRedrawOnAct,
+      |     ~~~~~^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:378:24: warning: unused parameter ‘objMorphOver’ [-Wunused-parameter]
+  378 |     const std::string& objMorphOver,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:379:24: warning: unused parameter ‘objMorphOut’ [-Wunused-parameter]
+  379 |     const std::string& objMorphOut,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:380:10: warning: unused parameter ‘objIsTakable’ [-Wunused-parameter]
+  380 |     bool objIsTakable,
+      |     ~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:381:10: warning: unused parameter ‘objIsCallback’ [-Wunused-parameter]
+  381 |     bool objIsCallback,
+      |     ~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:382:10: warning: unused parameter ‘imageInScene’ [-Wunused-parameter]
+  382 |     bool imageInScene,
+      |     ~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:383:10: warning: unused parameter ‘imageInInventory’ [-Wunused-parameter]
+  383 |     bool imageInInventory
+      |     ~~~~~^~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp: In member function ‘void NonLinearBookFacade::offsetContainedObjects(CommandChainCommand*, NodeItem*, float, float)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:517:14: warning: unused variable ‘nodeCoords’ [-Wunused-variable]
+  517 |         auto nodeCoords = node->getCoords();
+      |              ^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp: In member function ‘void NonLinearBookFacade::changeContainer(const std::string&, const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:547:14: warning: unused variable ‘obj’ [-Wunused-variable]
+  547 |         auto obj = m_nlb->getObjImplById(objId);
+      |              ^~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:545:63: warning: ‘prevContainer’ may be used uninitialized [-Wmaybe-uninitialized]
+  544 |     if ((prevContainer == nullptr && newContainer != nullptr) ||
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  545 |         (prevContainer != nullptr && newContainer == nullptr) ||
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+  546 |         (prevContainer != nullptr && prevContainer->getId() != newContainer->getId())) {
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:528:23: note: ‘prevContainer’ was declared here
+  528 |     AbstractNodeItem* prevContainer;
+      |                       ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:544:63: warning: ‘newContainer’ may be used uninitialized [-Wmaybe-uninitialized]
+  544 |     if ((prevContainer == nullptr && newContainer != nullptr) ||
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+  545 |         (prevContainer != nullptr && newContainer == nullptr) ||
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookFacade.cpp:536:23: note: ‘newContainer’ was declared here
+  536 |     AbstractNodeItem* newContainer;
+      |                       ^~~~~~~~~~~~
+[31/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/ObserverHandler.cpp.o
+[32/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/SearchResult.cpp.o
+[33/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/VariableImpl.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/VariableImpl.h:5,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/VariableImpl.cpp:2:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/VariableImpl.cpp: In member function ‘void VariableImpl::writeVariable(FileManipulator&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/VariableImpl.cpp:209:22: warning: unused parameter ‘fileManipulator’ [-Wunused-parameter]
+  209 |     FileManipulator& fileManipulator,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+[34/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:10,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:1:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h: In constructor ‘ObjImpl::ObjImpl(NonLinearBook*)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:274:10: warning: ‘ObjImpl::m_soundSFX’ will be initialized after [-Wreorder]
+  274 |     bool m_soundSFX;
+      |          ^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:272:10: warning:   ‘bool ObjImpl::m_animatedImage’ [-Wreorder]
+  272 |     bool m_animatedImage;
+      |          ^~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:91:1: warning:   when initialized here [-Wreorder]
+   91 | ObjImpl::ObjImpl(NonLinearBook* currentNLB)
+      | ^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:275:10: warning: ‘ObjImpl::m_suppressDsc’ will be initialized after [-Wreorder]
+  275 |     bool m_suppressDsc;
+      |          ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:245:21: warning:   ‘MultiLangString ObjImpl::m_text’ [-Wreorder]
+  245 |     MultiLangString m_text;
+      |                     ^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:91:1: warning:   when initialized here [-Wreorder]
+   91 | ObjImpl::ObjImpl(NonLinearBook* currentNLB)
+      | ^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:247:21: warning: ‘ObjImpl::m_nouseText’ will be initialized after [-Wreorder]
+  247 |     MultiLangString m_nouseText;
+      |                     ^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:244:21: warning:   ‘MultiLangString ObjImpl::m_disp’ [-Wreorder]
+  244 |     MultiLangString m_disp;
+      |                     ^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:91:1: warning:   when initialized here [-Wreorder]
+   91 | ObjImpl::ObjImpl(NonLinearBook* currentNLB)
+      | ^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:277:10: warning: ‘ObjImpl::m_imageInInventory’ will be initialized after [-Wreorder]
+  277 |     bool m_imageInInventory;
+      |          ^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:270:17: warning:   ‘std::string ObjImpl::m_containerId’ [-Wreorder]
+  270 |     std::string m_containerId;
+      |                 ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:91:1: warning:   when initialized here [-Wreorder]
+   91 | ObjImpl::ObjImpl(NonLinearBook* currentNLB)
+      | ^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h: In constructor ‘ObjImpl::ObjImpl(NonLinearBook*, float, float)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:274:10: warning: ‘ObjImpl::m_soundSFX’ will be initialized after [-Wreorder]
+  274 |     bool m_soundSFX;
+      |          ^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:272:10: warning:   ‘bool ObjImpl::m_animatedImage’ [-Wreorder]
+  272 |     bool m_animatedImage;
+      |          ^~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:133:1: warning:   when initialized here [-Wreorder]
+  133 | ObjImpl::ObjImpl(NonLinearBook* currentNLB, float left, float top)
+      | ^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:275:10: warning: ‘ObjImpl::m_suppressDsc’ will be initialized after [-Wreorder]
+  275 |     bool m_suppressDsc;
+      |          ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:245:21: warning:   ‘MultiLangString ObjImpl::m_text’ [-Wreorder]
+  245 |     MultiLangString m_text;
+      |                     ^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:133:1: warning:   when initialized here [-Wreorder]
+  133 | ObjImpl::ObjImpl(NonLinearBook* currentNLB, float left, float top)
+      | ^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:247:21: warning: ‘ObjImpl::m_nouseText’ will be initialized after [-Wreorder]
+  247 |     MultiLangString m_nouseText;
+      |                     ^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:244:21: warning:   ‘MultiLangString ObjImpl::m_disp’ [-Wreorder]
+  244 |     MultiLangString m_disp;
+      |                     ^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:133:1: warning:   when initialized here [-Wreorder]
+  133 | ObjImpl::ObjImpl(NonLinearBook* currentNLB, float left, float top)
+      | ^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:277:10: warning: ‘ObjImpl::m_imageInInventory’ will be initialized after [-Wreorder]
+  277 |     bool m_imageInInventory;
+      |          ^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:270:17: warning:   ‘std::string ObjImpl::m_containerId’ [-Wreorder]
+  270 |     std::string m_containerId;
+      |                 ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/ObjImpl.cpp:133:1: warning:   when initialized here [-Wreorder]
+  133 | ObjImpl::ObjImpl(NonLinearBook* currentNLB, float left, float top)
+      | ^~~~~~~
+[35/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/PageImpl.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/PartialProgressData.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/PageImpl.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/PageImpl.cpp:2:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setProgressValue(int)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:11:31: warning: unused parameter ‘progress’ [-Wunused-parameter]
+   11 |     void setProgressValue(int progress) override {};
+      |                           ~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setNoteText(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:12:41: warning: unused parameter ‘text’ [-Wunused-parameter]
+   12 |     void setNoteText(const std::string& text) override {};
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/PageImpl.cpp:3:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/PageImpl.cpp: In member function ‘void PageImpl::writePage(FileManipulator*, const std::string&, NonLinearBookImpl*, PartialProgressData*)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/PageImpl.cpp:500:26: warning: unused parameter ‘partialProgressData’ [-Wunused-parameter]
+  500 |     PartialProgressData* partialProgressData)
+      |     ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+[36/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBReader/Private/nlb/domain/NLBReader.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/NLBReader.cpp:9:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/NLBReader.cpp: In static member function ‘static void NLBReader::validateBook(NonLinearBook*)’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/NLBReader.cpp:181:45: warning: unused parameter ‘book’ [-Wunused-parameter]
+  181 | void NLBReader::validateBook(NonLinearBook* book)
+      |                              ~~~~~~~~~~~~~~~^~~~
+[37/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/PartialProgressData.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/PageImpl.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:3:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setProgressValue(int)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:11:31: warning: unused parameter ‘progress’ [-Wunused-parameter]
+   11 |     void setProgressValue(int progress) override {};
+      |                           ~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setNoteText(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:12:41: warning: unused parameter ‘text’ [-Wunused-parameter]
+   12 |     void setNoteText(const std::string& text) override {};
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/ObjImpl.h:10,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:4:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘virtual void NonLinearBookImpl::exportMedia(bool, const std::string&, const std::string&, const std::vector<MediaFile*>&, MediaFile::Type) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:343:42: warning: unused parameter ‘recursively’ [-Wunused-parameter]
+  343 | void NonLinearBookImpl::exportMedia(bool recursively, const std::string& mediaDir,
+      |                                     ~~~~~^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:343:74: warning: unused parameter ‘mediaDir’ [-Wunused-parameter]
+  343 | void NonLinearBookImpl::exportMedia(bool recursively, const std::string& mediaDir,
+      |                                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:344:56: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  344 |                                     const std::string& exportDir,
+      |                                     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:345:68: warning: unused parameter ‘mediaFiles’ [-Wunused-parameter]
+  345 |                                     const std::vector<MediaFile*>& mediaFiles,
+      |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:346:53: warning: unused parameter ‘type’ [-Wunused-parameter]
+  346 |                                     MediaFile::Type type) const {
+      |                                     ~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘virtual Page* NonLinearBookImpl::createFilteredPage(const std::string&, const History&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:356:64: warning: unused parameter ‘pageId’ [-Wunused-parameter]
+  356 | Page* NonLinearBookImpl::createFilteredPage(const std::string& pageId,
+      |                                             ~~~~~~~~~~~~~~~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:357:60: warning: unused parameter ‘history’ [-Wunused-parameter]
+  357 |                                             const History& history) const {
+      |                                             ~~~~~~~~~~~~~~~^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘virtual SearchResultTableModel NonLinearBookImpl::checkBook(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:453:72: warning: unused parameter ‘filter’ [-Wunused-parameter]
+  453 | SearchResultTableModel NonLinearBookImpl::checkBook(const std::string& filter) const {
+      |                                                     ~~~~~~~~~~~~~~~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘virtual NonLinearBook::VariableStatistics NonLinearBookImpl::getVariableStatistics() const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:556:20: warning: enumeration value ‘TAG’ not handled in switch [-Wswitch]
+  556 |             switch (variable->getType()) {
+      |                    ^
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToChoiceScript(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:875:65: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  875 | void NonLinearBookImpl::exportToChoiceScript(const std::string& exportDir) const {
+      |                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToQSPTextFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:883:64: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  883 | void NonLinearBookImpl::exportToQSPTextFile(const std::string& exportDir) const {
+      |                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToURQTextFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:891:64: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  891 | void NonLinearBookImpl::exportToURQTextFile(const std::string& exportDir) const {
+      |                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToPDFFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:899:60: warning: unused parameter ‘exportFile’ [-Wunused-parameter]
+  899 | void NonLinearBookImpl::exportToPDFFile(const std::string& exportFile) const {
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToTXTFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:907:60: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  907 | void NonLinearBookImpl::exportToTXTFile(const std::string& exportDir) const {
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToHTMLFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:915:61: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  915 | void NonLinearBookImpl::exportToHTMLFile(const std::string& exportDir) const {
+      |                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToJSIQFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:923:61: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  923 | void NonLinearBookImpl::exportToJSIQFile(const std::string& exportDir) const {
+      |                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToSTEADFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:931:62: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  931 | void NonLinearBookImpl::exportToSTEADFile(const std::string& exportDir) const {
+      |                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToVNSTEADFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:939:64: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  939 | void NonLinearBookImpl::exportToVNSTEADFile(const std::string& exportDir) const {
+      |                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::exportToASMFile(const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:947:60: warning: unused parameter ‘exportDir’ [-Wunused-parameter]
+  947 | void NonLinearBookImpl::exportToASMFile(const std::string& exportDir) const {
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘void NonLinearBookImpl::writeMediaFiles(FileManipulator*, const std::string&, const std::vector<MediaFile*>&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:1496:22: warning: unused variable ‘mediaFile’ [-Wunused-variable]
+ 1496 |     for (const auto& mediaFile : mediaFiles) {
+      |                      ^~~~~~~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:1:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h: In constructor ‘NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(NonLinearBookImpl*, const std::string&, Theme, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, bool, bool, bool, bool)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:439:39: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newLicense’ will be initialized after [-Wreorder]
+  439 |             std::string m_oldLicense, m_newLicense;
+      |                                       ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:439:25: warning:   ‘std::string NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldLicense’ [-Wreorder]
+  439 |             std::string m_oldLicense, m_newLicense;
+      |                         ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:440:31: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newTheme’ will be initialized after [-Wreorder]
+  440 |             Theme m_oldTheme, m_newTheme;
+      |                               ^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:440:19: warning:   ‘Theme NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldTheme’ [-Wreorder]
+  440 |             Theme m_oldTheme, m_newTheme;
+      |                   ^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:441:40: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newLanguage’ will be initialized after [-Wreorder]
+  441 |             std::string m_oldLanguage, m_newLanguage;
+      |                                        ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:441:25: warning:   ‘std::string NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldLanguage’ [-Wreorder]
+  441 |             std::string m_oldLanguage, m_newLanguage;
+      |                         ^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:442:37: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newTitle’ will be initialized after [-Wreorder]
+  442 |             std::string m_oldTitle, m_newTitle;
+      |                                     ^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:442:25: warning:   ‘std::string NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldTitle’ [-Wreorder]
+  442 |             std::string m_oldTitle, m_newTitle;
+      |                         ^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:443:38: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newAuthor’ will be initialized after [-Wreorder]
+  443 |             std::string m_oldAuthor, m_newAuthor;
+      |                                      ^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:443:25: warning:   ‘std::string NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldAuthor’ [-Wreorder]
+  443 |             std::string m_oldAuthor, m_newAuthor;
+      |                         ^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:444:39: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newVersion’ will be initialized after [-Wreorder]
+  444 |             std::string m_oldVersion, m_newVersion;
+      |                                       ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:444:25: warning:   ‘std::string NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldVersion’ [-Wreorder]
+  444 |             std::string m_oldVersion, m_newVersion;
+      |                         ^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:445:58: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newPerfectGameAchievementName’ will be initialized after [-Wreorder]
+  445 |             std::string m_oldPerfectGameAchievementName, m_newPerfectGameAchievementName;
+      |                                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:445:25: warning:   ‘std::string NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldPerfectGameAchievementName’ [-Wreorder]
+  445 |             std::string m_oldPerfectGameAchievementName, m_newPerfectGameAchievementName;
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:446:37: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newFullAutowire’ will be initialized after [-Wreorder]
+  446 |             bool m_oldFullAutowire, m_newFullAutowire;
+      |                                     ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:446:18: warning:   ‘bool NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldFullAutowire’ [-Wreorder]
+  446 |             bool m_oldFullAutowire, m_newFullAutowire;
+      |                  ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:447:38: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newSuppressMedia’ will be initialized after [-Wreorder]
+  447 |             bool m_oldSuppressMedia, m_newSuppressMedia;
+      |                                      ^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:447:18: warning:   ‘bool NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldSuppressMedia’ [-Wreorder]
+  447 |             bool m_oldSuppressMedia, m_newSuppressMedia;
+      |                  ^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:448:38: warning: ‘NonLinearBookImpl::UpdateBookPropertiesCommand::m_newSuppressSound’ will be initialized after [-Wreorder]
+  448 |             bool m_oldSuppressSound, m_newSuppressSound;
+      |                                      ^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/NonLinearBookImpl.h:448:18: warning:   ‘bool NonLinearBookImpl::UpdateBookPropertiesCommand::m_oldSuppressSound’ [-Wreorder]
+  448 |             bool m_oldSuppressSound, m_newSuppressSound;
+      |                  ^~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2041:1: warning:   when initialized here [-Wreorder]
+ 2041 | NonLinearBookImpl::UpdateBookPropertiesCommand::UpdateBookPropertiesCommand(
+      | ^~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘NLBCommand* NonLinearBookImpl::createDeleteCommand(const std::vector<std::__cxx11::basic_string<char> >&, const std::vector<std::__cxx11::basic_string<char> >&)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2140:84: warning: unused parameter ‘pageIds’ [-Wunused-parameter]
+ 2140 | NLBCommand* NonLinearBookImpl::createDeleteCommand(const std::vector<std::string>& pageIds,
+      |                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2141:37: warning: unused parameter ‘objIds’ [-Wunused-parameter]
+ 2141 |     const std::vector<std::string>& objIds)
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp: In member function ‘NLBCommand* NonLinearBookImpl::createUpdatePageCommand(Page*, const std::string&, bool, bool, const std::string&, bool, const std::string&, const std::string&, const std::string&, MultiLangString*, MultiLangString*, Theme, bool, bool, const std::string&, bool, MultiLangString*, bool, bool, MultiLangString*, const std::string&, const std::string&, bool, MultiLangString*, MultiLangString*, bool, bool, bool, const std::string&, const std::string&, bool, bool, bool, LinksTableModel*)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2170:62: warning: unused parameter ‘page’ [-Wunused-parameter]
+ 2170 | NLBCommand* NonLinearBookImpl::createUpdatePageCommand(Page* page,
+      |                                                        ~~~~~~^~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2171:24: warning: unused parameter ‘imageFileName’ [-Wunused-parameter]
+ 2171 |     const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2171:44: warning: unused parameter ‘imageBackground’ [-Wunused-parameter]
+ 2171 |     const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName,
+      |                                       ~~~~~^~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2171:66: warning: unused parameter ‘imageAnimated’ [-Wunused-parameter]
+ 2171 |     const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName,
+      |                                                             ~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2171:100: warning: unused parameter ‘soundFileName’ [-Wunused-parameter]
+ 2171 |     const std::string& imageFileName, bool imageBackground, bool imageAnimated, const std::string& soundFileName,
+      |                                                                                 ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2172:10: warning: unused parameter ‘soundSFX’ [-Wunused-parameter]
+ 2172 |     bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName,
+      |     ~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2172:39: warning: unused parameter ‘pageVariableName’ [-Wunused-parameter]
+ 2172 |     bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName,
+      |                    ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2172:76: warning: unused parameter ‘pageTimerVariableName’ [-Wunused-parameter]
+ 2172 |     bool soundSFX, const std::string& pageVariableName, const std::string& pageTimerVariableName,
+      |                                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2173:24: warning: unused parameter ‘pageDefTagVariableValue’ [-Wunused-parameter]
+ 2173 |     const std::string& pageDefTagVariableValue, MultiLangString* pageText,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2173:66: warning: unused parameter ‘pageText’ [-Wunused-parameter]
+ 2173 |     const std::string& pageDefTagVariableValue, MultiLangString* pageText,
+      |                                                 ~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2174:22: warning: unused parameter ‘pageCaptionText’ [-Wunused-parameter]
+ 2174 |     MultiLangString* pageCaptionText, Theme theme, bool useCaption, bool useMPL,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2174:45: warning: unused parameter ‘theme’ [-Wunused-parameter]
+ 2174 |     MultiLangString* pageCaptionText, Theme theme, bool useCaption, bool useMPL,
+      |                                       ~~~~~~^~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2174:57: warning: unused parameter ‘useCaption’ [-Wunused-parameter]
+ 2174 |     MultiLangString* pageCaptionText, Theme theme, bool useCaption, bool useMPL,
+      |                                                    ~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2174:74: warning: unused parameter ‘useMPL’ [-Wunused-parameter]
+ 2174 |     MultiLangString* pageCaptionText, Theme theme, bool useCaption, bool useMPL,
+      |                                                                     ~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2175:24: warning: unused parameter ‘moduleName’ [-Wunused-parameter]
+ 2175 |     const std::string& moduleName, bool moduleExternal, MultiLangString* traverseText,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2175:41: warning: unused parameter ‘moduleExternal’ [-Wunused-parameter]
+ 2175 |     const std::string& moduleName, bool moduleExternal, MultiLangString* traverseText,
+      |                                    ~~~~~^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2175:74: warning: unused parameter ‘traverseText’ [-Wunused-parameter]
+ 2175 |     const std::string& moduleName, bool moduleExternal, MultiLangString* traverseText,
+      |                                                         ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2176:10: warning: unused parameter ‘autoTraverse’ [-Wunused-parameter]
+ 2176 |     bool autoTraverse, bool autoReturn, MultiLangString* returnText, const std::string& returnPageId,
+      |     ~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2176:29: warning: unused parameter ‘autoReturn’ [-Wunused-parameter]
+ 2176 |     bool autoTraverse, bool autoReturn, MultiLangString* returnText, const std::string& returnPageId,
+      |                        ~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2176:58: warning: unused parameter ‘returnText’ [-Wunused-parameter]
+ 2176 |     bool autoTraverse, bool autoReturn, MultiLangString* returnText, const std::string& returnPageId,
+      |                                         ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2176:89: warning: unused parameter ‘returnPageId’ [-Wunused-parameter]
+ 2176 |     bool autoTraverse, bool autoReturn, MultiLangString* returnText, const std::string& returnPageId,
+      |                                                                      ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2177:24: warning: unused parameter ‘moduleConsraintVariableName’ [-Wunused-parameter]
+ 2177 |     const std::string& moduleConsraintVariableName, bool autowire, MultiLangString* autowireInText,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2177:58: warning: unused parameter ‘autowire’ [-Wunused-parameter]
+ 2177 |     const std::string& moduleConsraintVariableName, bool autowire, MultiLangString* autowireInText,
+      |                                                     ~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2177:85: warning: unused parameter ‘autowireInText’ [-Wunused-parameter]
+ 2177 |     const std::string& moduleConsraintVariableName, bool autowire, MultiLangString* autowireInText,
+      |                                                                    ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2178:22: warning: unused parameter ‘autowireOutText’ [-Wunused-parameter]
+ 2178 |     MultiLangString* autowireOutText, bool autoIn, bool needsAction, bool autoOut,
+      |     ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2178:44: warning: unused parameter ‘autoIn’ [-Wunused-parameter]
+ 2178 |     MultiLangString* autowireOutText, bool autoIn, bool needsAction, bool autoOut,
+      |                                       ~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2178:57: warning: unused parameter ‘needsAction’ [-Wunused-parameter]
+ 2178 |     MultiLangString* autowireOutText, bool autoIn, bool needsAction, bool autoOut,
+      |                                                    ~~~~~^~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2178:75: warning: unused parameter ‘autoOut’ [-Wunused-parameter]
+ 2178 |     MultiLangString* autowireOutText, bool autoIn, bool needsAction, bool autoOut,
+      |                                                                      ~~~~~^~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2179:24: warning: unused parameter ‘autowireInConstraint’ [-Wunused-parameter]
+ 2179 |     const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave,
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2179:65: warning: unused parameter ‘autowireOutConstraint’ [-Wunused-parameter]
+ 2179 |     const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave,
+      |                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2179:93: warning: unused parameter ‘globalAutowire’ [-Wunused-parameter]
+ 2179 |     const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave,
+      |                                                                                        ~~~~~^~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2179:114: warning: unused parameter ‘noSave’ [-Wunused-parameter]
+ 2179 |     const std::string& autowireInConstraint, const std::string& autowireOutConstraint, bool globalAutowire, bool noSave,
+      |                                                                                                             ~~~~~^~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2180:10: warning: unused parameter ‘autosFirst’ [-Wunused-parameter]
+ 2180 |     bool autosFirst, LinksTableModel* linksTableModel)
+      |     ~~~~~^~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/domain/NonLinearBookImpl.cpp:2180:39: warning: unused parameter ‘linksTableModel’ [-Wunused-parameter]
+ 2180 |     bool autosFirst, LinksTableModel* linksTableModel)
+      |                      ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+[38/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/AudioDirector.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/AudioDirector.h:7,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/AudioDirector.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[39/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBReader/Private/nlb/domain/NLBExplorer.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/NLBExplorer.h:3,
+                 from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/NLBExplorer.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[40/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/BookMediaSource.cpp.o
+[41/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBReader/Private/nlb/domain/NLBExplorerScreenReader.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/NLBExplorer.h:3,
+                 from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/NLBExplorerScreenReader.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[42/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/ScreenModelJson.cpp.o
+[43/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/Session.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/Session.h:11,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/Session.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/PartialProgressData.h:4,
+                 from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/domain/PageImpl.h:4,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/Session.cpp:5:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setProgressValue(int)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:11:31: warning: unused parameter ‘progress’ [-Wunused-parameter]
+   11 |     void setProgressValue(int progress) override {};
+      |                           ~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setNoteText(const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/api/DummyProgressData.h:12:41: warning: unused parameter ‘text’ [-Wunused-parameter]
+   12 |     void setNoteText(const std::string& text) override {};
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~
+[44/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/Localization.cpp.o
+[45/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp.o
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp: In static member function ‘static nlb::presentation::ScreenTheme nlb::presentation::ScreenTheme::defaults(bool)’:
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:82:108: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::upImage’ [-Wmissing-field-initializers]
+   82 |         t.text = {{248, 838, 1424, 204}, {255, 255, 255, 255}, {0, 255, 0, 255}, {255, 215, 0, 255}, "", 32};
+      |                                                                                                            ^
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:82:108: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::downImage’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:82:108: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontItalicFile’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:82:108: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontBoldFile’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:83:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::upImage’ [-Wmissing-field-initializers]
+   83 |         t.inventory = {{0, 1050, 1920, 30}, {255, 255, 255, 255}, {0, 255, 0, 255}, {255, 215, 0, 255}, "", 24};
+      |                                                                                                               ^
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:83:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::downImage’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:83:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontItalicFile’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:83:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontBoldFile’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:88:107: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::upImage’ [-Wmissing-field-initializers]
+   88 |         t.text = {{68, 670, 1704, 301}, {255, 255, 255, 255}, {0, 255, 0, 255}, {255, 215, 0, 255}, "", 24};
+      |                                                                                                           ^
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:88:107: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::downImage’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:88:107: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontItalicFile’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:88:107: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontBoldFile’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:89:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::upImage’ [-Wmissing-field-initializers]
+   89 |         t.inventory = {{68, 982, 1704, 90}, {255, 255, 255, 255}, {0, 255, 0, 255}, {255, 215, 0, 255}, "", 24};
+      |                                                                                                               ^
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:89:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::downImage’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:89:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontItalicFile’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/ScreenTheme.cpp:89:111: warning: missing initializer for member ‘nlb::presentation::ScreenTheme::Window::fontBoldFile’ [-Wmissing-field-initializers]
+[46/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/platform/PlatformBridge.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/platform/PlatformBridge.h:10,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/platform/PlatformBridge.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[47/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBReader/Private/nlb/domain/PlayerContext.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerContext.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[48/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/FileManipulator.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/util/FileManipulator.cpp:3:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+[49/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/Session.h:11,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/GameScreen.h:11,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp: In member function ‘float nlb::presentation::GameScreen::renderParagraphs(const std::vector<nlb::presentation::Paragraph>&, float, float, float, const nlb::presentation::FontRef&, const nlb::presentation::ScreenTheme::Window&, bool, float)’:
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1216:31: warning: missing initializer for member ‘nlb::presentation::GameScreen::renderParagraphs(const std::vector<nlb::presentation::Paragraph>&, float, float, float, const nlb::presentation::FontRef&, const nlb::presentation::ScreenTheme::Window&, bool, float)::Word::image’ [-Wmissing-field-initializers]
+ 1216 |                 line.push_back({w, ww, run.kind, run.target, glued});
+      |                 ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp: In member function ‘void nlb::presentation::GameScreen::renderTextWindow(const nlb::presentation::ScreenTheme::Window&)’:
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1342:37: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1342 |                 title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.roomTitle, "-1"});
+      |                 ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1355:56: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1355 |             if (!ways.runs.empty()) ways.runs.push_back({TextRun::Kind::Plain, " | ", ""});
+      |                                     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1356:32: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1356 |             ways.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
+      |             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1398:86: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1398 |                     if (!composed.back().runs.empty()) composed.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
+      |                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1434:31: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1434 |             alt.runs.push_back({TextRun::Kind::Plain, c.altText, ""});
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1440:32: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1440 |             link.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
+      |             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[50/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/FileUtils.cpp.o
+[51/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBReader/Private/nlb/domain/ModificationInterpreter.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/ModificationInterpreter.h:10,
+                 from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/ModificationInterpreter.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/ModificationInterpreter.cpp:10:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+[52/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/Json.cpp.o
+[53/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/MultiLangString.cpp.o
+[54/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/ResourceManager.cpp.o
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/ResourceManager.h:9,
+                 from /workspace/NLBNavigator/Source/NLBCore/Private/nlb/util/ResourceManager.cpp:2:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/util/ResourceManager.cpp: In static member function ‘static std::map<std::__cxx11::basic_string<char>, std::vector<std::__cxx11::basic_string<char> > > ResourceManager::getResourceFolderFiles(void*)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/util/ResourceManager.cpp:19:95: warning: unused parameter ‘loader’ [-Wunused-parameter]
+   19 | std::map<std::string, std::vector<std::string>> ResourceManager::getResourceFolderFiles(void* loader) {
+      |                                                                                         ~~~~~~^~~~~~
+[55/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/BookPack.cpp.o
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/util/BookPack.cpp: In static member function ‘static std::unique_ptr<BookPack> BookPack::build(const std::string&, std::string&, bool, const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/util/BookPack.cpp:91:65: warning: missing initializer for member ‘BookPack::Entry::sourceFile’ [-Wmissing-field-initializers]
+   91 |     pack->m_entries[""] = Entry{Entry::Type::Directory, 0, 0, {}};
+      |                                                                 ^
+/workspace/NLBNavigator/Source/NLBCore/Private/nlb/util/BookPack.cpp:137:73: warning: missing initializer for member ‘BookPack::Entry::sourceFile’ [-Wmissing-field-initializers]
+  137 |         pack->m_entries[prefix] = Entry{Entry::Type::Directory, 0, 0, {}};
+      |                                                                         ^
+[56/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/QuotationHelper.cpp.o
+[57/71] Building CXX object CMakeFiles/NLBPlatforms.dir/Source/NLBPlatforms/PlatformFactory.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/platform/PlatformBridge.h:10,
+                 from /workspace/NLBNavigator/Source/NLBPlatforms/PlatformFactory.h:7,
+                 from /workspace/NLBNavigator/Source/NLBPlatforms/PlatformFactory.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[58/71] Building CXX object CMakeFiles/NLBAudioSDL.dir/Source/NLBAudioSDL/Private/nlb/audio/SdlAudioBackend.cpp.o
+[59/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:13:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::restart()’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:158:27: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+  158 |         m_events.push_back({Event::Kind::Music, ""});
+      |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:158:27: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:158:27: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::walkTo(const std::string&, bool)’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:630:27: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+  630 |         m_events.push_back({Event::Kind::Info, "Страница не найдена: " + pageId});
+      |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:630:27: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:630:27: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::applySave(const std::vector<std::vector<std::__cxx11::basic_string<char> > >&)’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:951:27: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+  951 |         m_events.push_back({Event::Kind::Music, music});
+      |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:951:27: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:951:27: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:958:27: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+  958 |         m_events.push_back({Event::Kind::ExternalGame, m_externalGame->name});
+      |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:958:27: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:958:27: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:960:27: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+  960 |         m_events.push_back({Event::Kind::Finish, ""});
+      |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:960:27: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:960:27: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::refreshSceneImages()’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1005:31: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+ 1005 |             m_events.push_back({kind, image->text, image->frames, ""});
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1005:31: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::settle(bool)’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1051:27: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1051 |         m_events.push_back({Event::Kind::Finish, ""});
+      |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1051:27: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1051:27: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::startPendingExternalGame()’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1065:23: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1065 |     m_events.push_back({Event::Kind::ExternalGame, m_externalGame->name});
+      |     ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1065:23: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1065:23: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::renderPage()’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1172:55: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1172 |         if (!trim(caption).empty()) m_events.push_back({Event::Kind::PageCaption, caption});
+      |                                     ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1172:55: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1172:55: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1176:27: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1176 |         m_events.push_back({Event::Kind::PageText, text});
+      |         ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1176:27: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1176:27: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1189:51: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1189 |         if (!trim(dsc).empty()) m_events.push_back({Event::Kind::ObjectText, dsc});
+      |                                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1189:51: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1189:51: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1195:31: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1195 |             m_events.push_back({Event::Kind::AltText, displayText(m_interpreter->expandText(link.altText))});
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1195:31: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1195:31: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1205:35: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1205 |                 m_events.push_back({Event::Kind::Text, text});
+      |                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1205:35: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1205:35: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1212:31: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1212 |             m_events.push_back({Event::Kind::Info, item.text});
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1212:31: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1212:31: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1218:56: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1218 |             Event e{Event::Kind::Achievement, item.text};
+      |                                                        ^
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1218:56: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1218:56: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::flushOutput(bool)’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1234:35: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1234 |                 m_events.push_back({Event::Kind::Text, text});
+      |                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1234:35: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1234:35: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1243:31: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1243 |             m_events.push_back({Event::Kind::Info, item.text});
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1243:31: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1243:31: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1249:56: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1249 |             Event e{Event::Kind::Achievement, item.text};
+      |                                                        ^
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1249:56: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1249:56: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘void PlayerEngine::appendMediaEvents(const std::vector<PlayerContext::OutputItem>&)’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1261:51: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1261 |             case OK::Image:     m_events.push_back({Event::Kind::Image, item.text}); break;
+      |                                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1261:51: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1261:51: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1262:51: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1262 |             case OK::Animation: m_events.push_back({Event::Kind::Animation, item.text, item.frames}); break;
+      |                                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1262:51: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1262:51: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1263:51: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1263 |             case OK::Sound:     m_events.push_back({Event::Kind::Sound, item.text}); break;
+      |                                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1263:51: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1263:51: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1264:51: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1264 |             case OK::Voice:     m_events.push_back({Event::Kind::Voice, item.text}); break;
+      |                                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1264:51: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1264:51: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1265:51: warning: missing initializer for member ‘PlayerEngine::Event::id’ [-Wmissing-field-initializers]
+ 1265 |             case OK::Music:     m_events.push_back({Event::Kind::Music, item.text}); m_currentMusic = item.text; break;
+      |                                 ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1265:51: warning: missing initializer for member ‘PlayerEngine::Event::subject’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1265:51: warning: missing initializer for member ‘PlayerEngine::Event::position’ [-Wmissing-field-initializers]
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘std::vector<nlb::presentation::Paragraph> PlayerEngine::objectsText(const std::vector<std::__cxx11::basic_string<char> >&) const’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1359:42: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1359 |         else result.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘PlayerEngine::PageView PlayerEngine::view() const’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1576:97: warning: missing initializer for member ‘PlayerEngine::ObjectView::placement’ [-Wmissing-field-initializers]
+ 1576 |             ObjectView view{instanceId, label, obj->isTakable(), active, objPosition(instanceId)};
+      |                                                                                                 ^
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1591:34: warning: missing initializer for member ‘PlayerEngine::ObjectView::placement’ [-Wmissing-field-initializers]
+ 1591 |             v.inventory.push_back({instanceId, objDisp(instanceId), false, active, objPosition(instanceId)});
+      |             ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp: In member function ‘std::vector<nlb::presentation::TextRun> PlayerEngine::textRuns(const std::string&, const std::string&) const’:
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1808:27: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1808 |             runs.push_back({nlb::presentation::TextRun::Kind::Plain, text.substr(pos), ""});
+      |             ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/NLBNavigator/Source/NLBReader/Private/nlb/domain/PlayerEngine.cpp:1811:39: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1811 |         if (open > pos) runs.push_back({nlb::presentation::TextRun::Kind::Plain, text.substr(pos, open - pos), ""});
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[60/71] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBCore/Private/nlb/util/StringHelper.cpp.o
+[61/71] Linking CXX static library libNLBReader.a
+[62/71] Building CXX object CMakeFiles/nlb_sdl.dir/Source/PlatformPaths.cpp.o
+[63/71] Linking CXX static library libNLBPlatforms.a
+[64/71] Linking CXX static library libNLBAudioSDL.a
+[65/71] Building CXX object CMakeFiles/nlb_sdl.dir/Source/thirdparty/cparse/packToken.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/packToken.cpp:5:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[66/71] Building CXX object CMakeFiles/nlb_sdl.dir/Source/thirdparty/cparse/functions.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/functions.cpp:3:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[67/71] Building CXX object CMakeFiles/nlb_sdl.dir/Source/NLBSdl/SdlPlayer.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/Session.h:11,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/GameScreen.h:11,
+                 from /workspace/NLBNavigator/Source/NLBSdl/SdlPlayer.h:12,
+                 from /workspace/NLBNavigator/Source/NLBSdl/SdlPlayer.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[68/71] Building CXX object CMakeFiles/nlb_sdl.dir/Source/thirdparty/cparse/containers.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/containers.cpp:3:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[69/71] Building CXX object CMakeFiles/nlb_sdl.dir/Source/thirdparty/cparse/shunting-yard.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:1:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp: In copy constructor ‘cparse::calculator::RAII_TokenQueue_t::RAII_TokenQueue_t(const cparse::calculator::RAII_TokenQueue_t&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:271:46: warning: unused parameter ‘rpn’ [-Wunused-parameter]
+  271 |   RAII_TokenQueue_t(const RAII_TokenQueue_t& rpn) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp: In member function ‘cparse::calculator::RAII_TokenQueue_t& cparse::calculator::RAII_TokenQueue_t::operator=(const cparse::calculator::RAII_TokenQueue_t&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:274:57: warning: unused parameter ‘rpn’ [-Wunused-parameter]
+  274 |   RAII_TokenQueue_t& operator=(const RAII_TokenQueue_t& rpn) {
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp: In function ‘bool match_op_id(cparse::opID_t, cparse::opID_t)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:51:12: warning: ‘result’ is used uninitialized [-Wuninitialized]
+   51 |   if (val[0] && val[1]) return true;
+      |       ~~~~~^
+/workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.cpp:49:12: note: ‘result’ declared here
+   49 |   uint64_t result = id & mask;
+      |            ^~~~~~
+[70/71] Building CXX object CMakeFiles/nlb_sdl.dir/Source/NLBSdl/main_sdl.cpp.o
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/NLBNavigator/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/Session.h:11,
+                 from /workspace/NLBNavigator/Source/NLBPresentation/Public/nlb/presentation/GameScreen.h:11,
+                 from /workspace/NLBNavigator/Source/NLBSdl/SdlPlayer.h:12,
+                 from /workspace/NLBNavigator/Source/NLBSdl/main_sdl.cpp:5:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/NLBNavigator/Source/NLBSdl/main_sdl.cpp:24:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/NLBNavigator/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/builtin-features.inc:29,
+                 from /workspace/NLBNavigator/Source/NLBSdl/main_sdl.cpp:27:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Assign(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:7:35: warning: unused parameter ‘left’ [-Wunused-parameter]
+    7 | packToken Assign(const packToken& left, const packToken& right, evaluationData* data) {
+      |                  ~~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Comma(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:50:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   50 | packToken Comma(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Colon(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:59:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   59 | packToken Colon(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::UnaryNotOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:137:46: warning: unused parameter ‘left’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                             ~~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:137:92: warning: unused parameter ‘data’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                            ~~~~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::FormatOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/operations.inc:196:94: warning: unused parameter ‘data’ [-Wunused-parameter]
+  196 | packToken FormatOperation(const packToken& p_left, const packToken& p_right, evaluationData* data) {
+      |                                                                              ~~~~~~~~~~~~~~~~^~~~
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/builtin-features.inc:31:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::True(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::False(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:24: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |            ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:43: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |                              ~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::None(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::LineComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:21:67: warning: unused parameter ‘data’ [-Wunused-parameter]
+   21 | void LineComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                       ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::SlashStarComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:26:72: warning: unused parameter ‘data’ [-Wunused-parameter]
+   26 | void SlashStarComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                            ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::KeywordOperator(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:34: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                      ~~~~~~~~~~~~^~~~
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:53: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                        ~~~~~~~~~~~~~^~~~
+In file included from /workspace/NLBNavigator/Source/thirdparty/cparse/builtin-features.inc:33:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc: In function ‘cparse::packToken builtin_typeSpecificFunctions::list_pop(cparse::TokenMap)’:
+/workspace/NLBNavigator/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc:72:13: warning: comparison of unsigned expression in ‘< 0’ is always false [-Wtype-limits]
+   72 |     if (pos < 0) pos = list.list().size()-pos;
+      |         ~~~~^~~
+[71/71] Linking CXX executable nlb_sdl

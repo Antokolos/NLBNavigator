@@ -1,0 +1,13 @@
+# Сценарий автоматически сформирован из общего JSON-маршрута.
+settle:2000
+shot:/workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/middle-portion-restart/00-title.png
+key:f9
+menu:1
+settle:2500
+shot:/workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/middle-portion-restart/load-a.png
+click:960,540
+settle:2000
+shot:/workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/middle-portion-restart/page4-3.png
+click:960,540
+settle:3000
+shot:/workspace/scratch/paired-save-load.Lkx4pC/standard/save_portion/middle-portion-restart/page5-first.png

@@ -1,0 +1,12 @@
+-- NLBNavigator: SDL3 audio backend enabled
+-- NLBNavigator: graphical player nlb_sdl enabled
+-- 
+-- Configuration Summary:
+--   Project: NLBReader 1.0.0
+--   Build type: Release
+--   C++ standard: 17
+--   Build shared libs: OFF
+-- 
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: /workspace/scratch/paired-save-load.Lkx4pC/build

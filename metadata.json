@@ -1,0 +1,25 @@
+{
+  "navigator_commit": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+  "main_verified_at_start": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+  "wolfman": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+  "instead_export": "0db8d2c611faa596987baaf041763ef6c9282484",
+  "instead_base_theme": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+  "nlb_sdl_sha256": "bb30ceb739883de550b819dd47392a44cfd7fe5d9c6708da1cabff4b8e7b48bf",
+  "instead_binary_sha256": "2ea32c47664208ba5b718c787a423872c149d51da507b04c5c52ac8cafdf5097",
+  "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+  "instead": "3.5.2",
+  "sdl3": "3.4.18",
+  "python": "3.12.14",
+  "compiler": "c++ (Debian 14.2.0-19) 14.2.0",
+  "cmake": "cmake version 3.31.6",
+  "ninja": "1.12.1",
+  "host": {
+    "platform": "Linux",
+    "architecture": "x86_64",
+    "distribution": "Debian GNU/Linux 13 (trixie)",
+    "graphics": "Xvfb 1920x1080x24",
+    "audio": "dummy / disabled",
+    "profiles": "новый изолированный HOME/XDG на каждый запуск"
+  },
+  "integrating_ci": "https://github.com/Antokolos/NLBNavigator/actions/runs/46043742469"
+}

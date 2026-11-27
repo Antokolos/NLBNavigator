@@ -1,0 +1,1 @@
+timeout --signal=TERM --kill-after=3s 200 xvfb-run -a -n 270 -e /workspace/scratch/paired-save-load.Lkx4pC/instead-retry-xvfb.log -s '-screen 0 1920x1080x24' sh -c 'xdpyinfo >/dev/null && exec "$@"' instead-retry /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 /workspace/scratch/paired-save-load.Lkx4pC/recover-instead.py

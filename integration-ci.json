@@ -1,0 +1,30 @@
+{
+  "url": "https://github.com/Antokolos/NLBNavigator/actions/runs/46043742469",
+  "head": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+  "status": "success",
+  "catalog_routes_listed": [
+    "wolfman-chase-robber",
+    "wolfman-eat-robber",
+    "wolfman-forest-wolfiness-one-hawthorn-ending39",
+    "wolfman-forest-wolfiness-one-kalina-ending34",
+    "wolfman-forest-wolfiness-one-rowan-ending34",
+    "wolfman-forest-wolfiness-three-ending37",
+    "wolfman-forest-wolfiness-two-left",
+    "wolfman-forest-wolfiness-two-page18-bypass",
+    "wolfman-forest-wolfiness-two-page24-bypass",
+    "wolfman-forest-wolfiness-two-right",
+    "wolfman-forest-wolfiness-zero-left",
+    "wolfman-forest-wolfiness-zero-page18-bypass",
+    "wolfman-forest-wolfiness-zero-page25-bypass",
+    "wolfman-forest-wolfiness-zero-right",
+    "wolfman-guard-high-wolves-attack",
+    "wolfman-guard-high-wolves-talk",
+    "wolfman-guard-high-wolves-talk-ending38",
+    "wolfman-guard-low-wolfiness-escape",
+    "wolfman-opening",
+    "wolfman-police-hospital-corpse",
+    "wolfman-police-hospital-corpse-ending41",
+    "wolfman-police-hospital-doctor"
+  ],
+  "differential_gate_listed": true
+}

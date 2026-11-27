@@ -1,0 +1,13 @@
+# Сценарий автоматически сформирован из общего JSON-маршрута.
+settle:2000
+shot:/workspace/scratch/paired-save-load.Lkx4pC/matrix/b2-restart/nlbnavigator/00-title.png
+key:f9
+menu:1
+settle:2500
+shot:/workspace/scratch/paired-save-load.Lkx4pC/matrix/b2-restart/nlbnavigator/load-a.png
+click:960,540
+settle:2000
+shot:/workspace/scratch/paired-save-load.Lkx4pC/matrix/b2-restart/nlbnavigator/replay-doctor-page4-portion-3.png
+click:960,540
+settle:3000
+shot:/workspace/scratch/paired-save-load.Lkx4pC/matrix/b2-restart/nlbnavigator/replay-page5-after-doctor.png

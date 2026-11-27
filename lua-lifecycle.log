@@ -1,0 +1,35 @@
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/unchanged/trace.tsv: 4 записей, заголовков 1, seq 1..4
+unchanged: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/cmd/trace.tsv: 4 записей, заголовков 1, seq 1..4
+cmd: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/fmt/trace.tsv: 4 записей, заголовков 1, seq 1..4
+fmt: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/both/trace.tsv: 4 записей, заголовков 1, seq 1..4
+both: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/nested/trace.tsv: 4 записей, заголовков 1, seq 1..4
+nested: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/scene/trace.tsv: 4 записей, заголовков 1, seq 1..4
+scene: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/repeat/trace.tsv: 4 записей, заголовков 1, seq 1..4
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/repeat/trace.tsv: 132 записей, заголовков 1, seq 1..132
+repeat: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/inflight/trace.tsv: 4 записей, заголовков 1, seq 1..4
+inflight: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/global-reset/trace.tsv: 4 записей, заголовков 1, seq 1..4
+global-reset: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/append/trace.tsv: 4 записей, заголовков 1, seq 40..43
+append: OK, открытых файлов 0
+LuaJIT 2.1.1737090214
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/new-file/trace.tsv: 4 записей, заголовков 1, seq 1..4
+/workspace/scratch/paired-save-load.Lkx4pC/lua-lifecycle/new-file/next.tsv: 2 записей, заголовков 1, seq 1..2
+new-file: OK, открытых файлов 0

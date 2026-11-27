@@ -1,0 +1,1 @@
+xvfb-run -a -n 110 -s -screen\ 0\ 1920x1080x24 python3 tests/differential/check_instead_save_load.py --game /workspace/nlb-environment/test-data/instead-am_i_a_monster_vn --base-theme /workspace/nlb-environment/test-data/instead/themes/default --instead-binary /workspace/nlb-environment/instead/bin/sdl-instead --output /workspace/scratch/paired-save-load.Lkx4pC/instead-standard 

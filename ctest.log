@@ -1,0 +1,26 @@
+Internal ctest changing into directory: /workspace/scratch/paired-save-load.Lkx4pC/build
+Test project /workspace/scratch/paired-save-load.Lkx4pC/build
+      Start  1: save_portion.advance_save
+ 1/10 Test  #1: save_portion.advance_save ........   Passed    0.02 sec
+      Start  2: save_portion.load_save
+ 2/10 Test  #2: save_portion.load_save ...........   Passed    0.02 sec
+      Start  3: save_portion.snapshot
+ 3/10 Test  #3: save_portion.snapshot ............   Passed    0.05 sec
+      Start  4: save_portion.restart
+ 4/10 Test  #4: save_portion.restart .............   Passed    0.02 sec
+      Start  5: save_portion.failed_load
+ 5/10 Test  #5: save_portion.failed_load .........   Passed    0.02 sec
+      Start  6: save_portion.legacy
+ 6/10 Test  #6: save_portion.legacy ..............   Passed    0.02 sec
+      Start  7: save_portion.invalid
+ 7/10 Test  #7: save_portion.invalid .............   Passed    0.06 sec
+      Start  8: save_portion.clamp
+ 8/10 Test  #8: save_portion.clamp ...............   Passed    0.03 sec
+      Start  9: save_portion.standard
+ 9/10 Test  #9: save_portion.standard ............   Passed    0.02 sec
+      Start 10: save_portion.timer
+10/10 Test #10: save_portion.timer ...............   Passed    0.06 sec
+
+100% tests passed, 0 tests failed out of 10
+
+Total Test time (real) =   0.33 sec
