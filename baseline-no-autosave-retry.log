@@ -1,0 +1,7 @@
+matrix/baseline-noautosave-retry/instead command: exit=0
+matrix/baseline-noautosave-retry compare: exit=0
+Traceback (most recent call last):
+  File "/workspace/scratch/paired-save-load.Lkx4pC/check-baseline-no-autosave.py", line 41, in <module>
+    assert same and not commands and not files and not comparison, report
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'instead_exit': 0, 'stock_compare_exit': 0, 'save_or_load_trace_events': [], 'slot_files': ['instead-appdata/saves/instead-game-overlay/config.ini', 'instead-appdata/saves/instead-game-overlay/prefs'], 'identical_to_first_instead_baseline': True, 'checkpoints': 13}

@@ -1,0 +1,1 @@
+timeout --signal=TERM --kill-after=3s 180 /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 /workspace/NLBNavigator/tests/differential/run_route.py --runtime compare --route /workspace/NLBNavigator/tests/differential/routes/wolfman-eat-robber.json --output /workspace/scratch/paired-save-load.Lkx4pC/regression-retry/wolfman-eat-robber

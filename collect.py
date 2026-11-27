@@ -33,6 +33,7 @@ for path in sorted(ROOT.rglob("*")):
     if path.suffix == ".png":
         key_frames = {
             "choices": ("save-a", "load-a"),
+            "choices-restart": ("load-a",),
             "ending": ("continue-ending",),
             "b3-restart": ("replay-page5-after-doctor",),
         }

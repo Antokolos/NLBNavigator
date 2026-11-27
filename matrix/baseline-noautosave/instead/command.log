@@ -1,0 +1,32 @@
+[INSTEAD] starting step 1/13: title
+[INSTEAD] completed 1/13: title (5.74s, page=f7cb8bed-47a9-4ce2-b713-c9b53571c93f, portion=0/0, screen=page, vars=wolfiness=0,hp=0,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 2/13: opening
+[INSTEAD] completed 2/13: opening (6.81s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=0/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 3/13: opening-next-portion
+[INSTEAD] completed 3/13: opening-next-portion (7.23s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=1/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 4/13: opening-choices
+[INSTEAD] completed 4/13: opening-choices (8.57s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=9/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 5/13: try-to-break-through-police
+[INSTEAD] completed 5/13: try-to-break-through-police (7.29s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=9/10, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 6/13: hospital-page3
+[INSTEAD] completed 6/13: hospital-page3 (9.0s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 7/13: hospital-page3-last
+[INSTEAD] completed 7/13: hospital-page3-last (7.11s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 8/13: hospital-choices
+[INSTEAD] completed 8/13: hospital-choices (7.86s, page=, portion=/, screen=, vars=wolfiness=,hp=,barExit=,forestExit=,wolvesTalk=,guardDone=)
+[INSTEAD] starting step 9/13: eat-doctor
+[INSTEAD] completed 9/13: eat-doctor (8.5s, page=b12a01be-cd61-4dba-b427-1ce3afc06fc6, portion=0/10, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 10/13: doctor-page4-portion-1
+[INSTEAD] completed 10/13: doctor-page4-portion-1 (6.97s, page=b12a01be-cd61-4dba-b427-1ce3afc06fc6, portion=1/10, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 11/13: doctor-page4-portion-2
+[INSTEAD] completed 11/13: doctor-page4-portion-2 (7.28s, page=b12a01be-cd61-4dba-b427-1ce3afc06fc6, portion=2/10, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 12/13: doctor-page4-portion-3
+[INSTEAD] completed 12/13: doctor-page4-portion-3 (8.0s, page=b12a01be-cd61-4dba-b427-1ce3afc06fc6, portion=3/10, screen=page, vars=wolfiness=0,hp=2,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 13/13: page5-after-doctor
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 18175
+[INSTEAD] cleanup player: exited after SIGTERM with status 0
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 18172
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Не удалось снять X11-экран /workspace/scratch/paired-save-load.Lkx4pC/matrix/baseline-noautosave/instead/11-page5-after-doctor.png: 

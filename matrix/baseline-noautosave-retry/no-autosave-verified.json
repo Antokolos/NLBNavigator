@@ -1,0 +1,14 @@
+{
+  "instead_exit": 0,
+  "stock_compare_exit": 0,
+  "save_or_load_trace_events": [],
+  "slot_files": [],
+  "identical_to_first_instead_baseline": true,
+  "checkpoints": 13,
+  "preferences": [
+    "saves/instead-game-overlay/config.ini",
+    "saves/instead-game-overlay/prefs"
+  ],
+  "sdl_save_or_load_commands": [],
+  "sdl_slot_files": []
+}

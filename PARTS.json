@@ -6,5 +6,61 @@
       "matrix/ending/nlbnavigator/state-log.jsonl.part-001.txt",
       "matrix/ending/nlbnavigator/state-log.jsonl.part-002.txt"
     ]
+  },
+  {
+    "original": "regression-tail/wolfman-forest-wolfiness-one-hawthorn-ending39/nlbnavigator/state-log.jsonl",
+    "sha256": "a37124d02e8097a5b60f127dc1878d060bfb23c974a963e75eb3c26bbae626d4",
+    "parts": [
+      "regression-tail/wolfman-forest-wolfiness-one-hawthorn-ending39/nlbnavigator/state-log.jsonl.part-001.txt",
+      "regression-tail/wolfman-forest-wolfiness-one-hawthorn-ending39/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
+  },
+  {
+    "original": "regression-tail/wolfman-forest-wolfiness-three-ending37/nlbnavigator/state-log.jsonl",
+    "sha256": "1e662ac1272e55b3c5eb34d4504193c2878788c22b8cbb450f37f44553c3bf00",
+    "parts": [
+      "regression-tail/wolfman-forest-wolfiness-three-ending37/nlbnavigator/state-log.jsonl.part-001.txt",
+      "regression-tail/wolfman-forest-wolfiness-three-ending37/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
+  },
+  {
+    "original": "regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/state-log.jsonl",
+    "sha256": "b152f45ed6c3b022eb37ac4a8da873ac84d36648e034688afc0fd429d6a69316",
+    "parts": [
+      "regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/state-log.jsonl.part-001.txt",
+      "regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
+  },
+  {
+    "original": "regression-tail/wolfman-guard-high-wolves-talk-ending38/nlbnavigator/state-log.jsonl",
+    "sha256": "479347819361a9af30c4d34b307ab4b4de4c9c4389847cae0f841a10c847735e",
+    "parts": [
+      "regression-tail/wolfman-guard-high-wolves-talk-ending38/nlbnavigator/state-log.jsonl.part-001.txt",
+      "regression-tail/wolfman-guard-high-wolves-talk-ending38/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
+  },
+  {
+    "original": "regression-tail/wolfman-guard-low-wolfiness-escape/nlbnavigator/state-log.jsonl",
+    "sha256": "0c1547777bd0ac3fc2c95b75ed82ca063604b7abb1e8727b401089beaaa18a86",
+    "parts": [
+      "regression-tail/wolfman-guard-low-wolfiness-escape/nlbnavigator/state-log.jsonl.part-001.txt",
+      "regression-tail/wolfman-guard-low-wolfiness-escape/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
+  },
+  {
+    "original": "regression-tail/wolfman-police-hospital-corpse-ending41/nlbnavigator/state-log.jsonl",
+    "sha256": "f607b0f5893cac94a22d24b00783318f3452023addaed3ed7fe8ca1812f8bdff",
+    "parts": [
+      "regression-tail/wolfman-police-hospital-corpse-ending41/nlbnavigator/state-log.jsonl.part-001.txt",
+      "regression-tail/wolfman-police-hospital-corpse-ending41/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
+  },
+  {
+    "original": "regression-tail/wolfman-police-hospital-doctor/nlbnavigator/state-log.jsonl",
+    "sha256": "947d3161ea7dad30120e36e993d5cbf561710b5120127f9999c6ee087081019c",
+    "parts": [
+      "regression-tail/wolfman-police-hospital-doctor/nlbnavigator/state-log.jsonl.part-001.txt",
+      "regression-tail/wolfman-police-hospital-doctor/nlbnavigator/state-log.jsonl.part-002.txt"
+    ]
   }
 ]

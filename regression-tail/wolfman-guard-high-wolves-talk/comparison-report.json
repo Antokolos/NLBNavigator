@@ -1,0 +1,719 @@
+{
+  "route": "wolfman-guard-high-wolves-talk",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "nlbnavigator": {
+      "route_id": "wolfman-guard-high-wolves-talk",
+      "route_sha256": "f5058401cea80675416d032733de8aa6c86373b27a593728ab39e4b393810261",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "opening",
+      "instead_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "nlbnavigator_expected_fragment": "Вы очнулись лежащим посреди тротуара",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "opening",
+        "expected_fragment": "Вы очнулись лежащим посреди тротуара",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "normalized_text": "Вы очнулись лежащим посреди тротуара. Полная луна уже показалась из-за крыш и ярко светила вам в лицо. Вокруг не было ни души.",
+        "portion_index": 0,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "opening-next-portion",
+      "instead_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "nlbnavigator_expected_fragment": "Интересно, сколько я тут валяюсь",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "opening-next-portion",
+        "expected_fragment": "Интересно, сколько я тут валяюсь",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "normalized_text": "\"Интересно, сколько я тут валяюсь. И ведь никто даже скорую не вызвал\", -- подумали вы, не спеша двигаясь по улице. Где-то вдалеке слышался вой сирен. Свернув за угол, вы наткнулись на группу прохожих.",
+        "portion_index": 1,
+        "portion_count": 10,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "jump-over-fence",
+      "instead_expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "nlbnavigator_expected_fragment": "Бежать прямо на вооружённых полицейских",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "jump-over-fence",
+        "expected_fragment": "Бежать прямо на вооружённых полицейских",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+        "normalized_text": "Бежать прямо на вооружённых полицейских -- не лучшая идея. Обернувшись, вы с тоской оглядели забор позади себя. Подпрыгнуть так высоко человеку не под силу.",
+        "portion_index": 0,
+        "portion_count": 5,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "eat-robber",
+      "instead_expected_fragment": "Только сейчас, глядя на этого трясущегося человечка",
+      "nlbnavigator_expected_fragment": "Только сейчас, глядя на этого трясущегося человечка",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "eat-robber",
+        "expected_fragment": "Только сейчас, глядя на этого трясущегося человечка",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри.",
+        "normalized_text": "Только сейчас, глядя на этого трясущегося человечка, вы почувствовали дикий голод, словно выжигающий вас изнутри.",
+        "portion_index": 0,
+        "portion_count": 3,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "eat-robber-final-portion",
+      "instead_expected_fragment": "страшный пир",
+      "nlbnavigator_expected_fragment": "страшный пир",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "eat-robber-final-portion",
+        "expected_fragment": "страшный пир",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+        "normalized_text": "Одним молниеносным движением вы подскочили к нему и впились зубами в горло. Крик вашей жертвы тут же затих, и вы начали свой страшный пир...",
+        "portion_index": 2,
+        "portion_count": 3,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "eat-branch-zoo",
+      "instead_expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+      "nlbnavigator_expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "eat-branch-zoo",
+        "expected_fragment": "Вы мчались и мчались дальше по ночным улицам",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+        "normalized_text": "Вы мчались и мчались дальше по ночным улицам, за каждым углом вам мерещились вооружённые люди, а свист ветра в ушах казался свистом пуль.",
+        "portion_index": 0,
+        "portion_count": 5,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "eat-branch-zoo-final-portion",
+      "instead_expected_fragment": "вернулись к своим обычным делам",
+      "nlbnavigator_expected_fragment": "вернулись к своим обычным делам",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "eat-branch-zoo-final-portion",
+        "expected_fragment": "вернулись к своим обычным делам",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+        "normalized_text": "Похоже, они чувствовали, что с вами лучше не связываться, но видя, что вы не собираетесь на них нападать, понемногу успокоились и вернулись к своим обычным делам.",
+        "portion_index": 4,
+        "portion_count": 5,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "eat-branch-positive-condition",
+      "instead_expected_fragment": "Заметив, что волки потеряли к вам интерес",
+      "nlbnavigator_expected_fragment": "Заметив, что волки потеряли к вам интерес",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "eat-branch-positive-condition",
+        "expected_fragment": "Заметив, что волки потеряли к вам интерес",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+        "normalized_text": "Заметив, что волки потеряли к вам интерес и предпочитают не приближаться, вы перестали скалить зубы и поудобнее улеглись в траву.",
+        "portion_index": 0,
+        "portion_count": 11,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "zoo-escape-final-portion",
+      "instead_expected_fragment": "других полицейских на своём пути вы не встретили",
+      "nlbnavigator_expected_fragment": "других полицейских на своём пути вы не встретили",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "zoo-escape-final-portion",
+        "expected_fragment": "других полицейских на своём пути вы не встретили",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+        "normalized_text": "Вы вздрогнули и взвизгнули, когда почувствовали, что одна из пуль попала в цель. Стараясь не обращать внимание на боль, вы поспешили убраться подальше. По счастью, других полицейских на своём пути вы не встретили.",
+        "portion_index": 10,
+        "portion_count": 11,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "road-page",
+      "instead_expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "nlbnavigator_expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "road-page",
+        "expected_fragment": "Вы мчались по пустынным ночным улицам",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+        "normalized_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+        "portion_index": 0,
+        "portion_count": 6,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "road-final-portion",
+      "instead_expected_fragment": "вы решили туда зайти",
+      "nlbnavigator_expected_fragment": "вы решили туда зайти",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "road-final-portion",
+        "expected_fragment": "вы решили туда зайти",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+        "normalized_text": "Как назло, на дороге не появлялось ещё ни одной машины, а вам так хотелось поскорее попасть домой. К тому же, вам снова захотелось есть. Заметив за деревьями бар для дальнобойщиков, вы решили туда зайти.",
+        "portion_index": 5,
+        "portion_count": 6,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "truckers-bar-entry",
+      "instead_expected_fragment": "Усевшись за столик",
+      "nlbnavigator_expected_fragment": "Усевшись за столик",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "truckers-bar-entry",
+        "expected_fragment": "Усевшись за столик",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+        "normalized_text": "Усевшись за столик, вы с досадой вспомнили, что денег-то нету. Автоматически пошарив в карманах брюк, вы обнаружили скомканную, ещё влажную купюру.",
+        "portion_index": 0,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "truckers-bar-final-portion",
+      "instead_expected_fragment": "за столик подсел бородатый мужик",
+      "nlbnavigator_expected_fragment": "за столик подсел бородатый мужик",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "truckers-bar-final-portion",
+        "expected_fragment": "за столик подсел бородатый мужик",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+        "normalized_text": "Этого должно было хватить на чашку чая. Нарушив ваше уединение, за столик подсел бородатый мужик в клетчатой рубахе.",
+        "portion_index": 1,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "truckers-bar-greeting",
+      "instead_expected_fragment": "Доброго вам утречка",
+      "nlbnavigator_expected_fragment": "Доброго вам утречка",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "truckers-bar-greeting",
+        "expected_fragment": "Доброго вам утречка",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "-- Доброго вам утречка! -- сказал мужик.",
+        "normalized_text": "-- Доброго вам утречка! -- сказал мужик.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfiness-positive-dialogue-outcome",
+      "instead_expected_fragment": "Вам не хотелось общаться",
+      "nlbnavigator_expected_fragment": "Вам не хотелось общаться",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "wolfiness-positive-dialogue-outcome",
+        "expected_fragment": "Вам не хотелось общаться",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+        "normalized_text": "Вам не хотелось общаться. С недовольной гримасой на лице, вы нехотя кивнули в ответ.",
+        "portion_index": 0,
+        "portion_count": 17,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfiness-positive-final-portion",
+      "instead_expected_fragment": "где и заснули под мерное гудение пчёл",
+      "nlbnavigator_expected_fragment": "где и заснули под мерное гудение пчёл",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "wolfiness-positive-final-portion",
+        "expected_fragment": "где и заснули под мерное гудение пчёл",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+        "normalized_text": "Решив отдохнуть в ближайшей роще, а вечером отправиться в дом злодея, заколдовавшего вас, вы спрятались в густом кустарнике, где и заснули под мерное гудение пчёл.",
+        "portion_index": 16,
+        "portion_count": 17,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "page13-positive-dialogue",
+      "instead_expected_fragment": "вы заметили как из бара вышел философ",
+      "nlbnavigator_expected_fragment": "вы заметили как из бара вышел философ",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "page13-positive-dialogue",
+        "expected_fragment": "вы заметили как из бара вышел философ",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+        "normalized_text": "Когда вы покинули царство Морфея, уже стемнело. Жутко хотелось есть. Выбравшись из укрытия, вы заметили как из бара вышел философ. Гнев захватил вас, словно водоворот.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "eat-philosopher",
+      "instead_expected_fragment": "загрызли прежде, чем он успел пикнуть",
+      "nlbnavigator_expected_fragment": "загрызли прежде, чем он успел пикнуть",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "eat-philosopher",
+        "expected_fragment": "загрызли прежде, чем он успел пикнуть",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Бородач повернулся лицом к стене и застыл на месте, очевидно, справляя малую нужду.  Бесшумно подкравшись к нему, вы дождались, пока он повернётся, и, бросившись любителю чая на грудь, загрызли прежде, чем он успел пикнуть.",
+        "normalized_text": "Бородач повернулся лицом к стене и застыл на месте, очевидно, справляя малую нужду.  Бесшумно подкравшись к нему, вы дождались, пока он повернётся, и, бросившись любителю чая на грудь, загрызли прежде, чем он успел пикнуть.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "page10-after-philosopher",
+      "instead_expected_fragment": "Основательно подкрепившись",
+      "nlbnavigator_expected_fragment": "Основательно подкрепившись",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "page10-after-philosopher",
+        "expected_fragment": "Основательно подкрепившись",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+        "normalized_text": "Основательно подкрепившись, вы, стараясь держаться поближе к деревьям, рысцой отправились в дом врага.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "forest-entry-wolfiness-two",
+      "instead_expected_fragment": "вы решили свернуть в лес",
+      "nlbnavigator_expected_fragment": "вы решили свернуть в лес",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "forest-entry-wolfiness-two",
+        "expected_fragment": "вы решили свернуть в лес",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+        "normalized_text": "Чтобы сократить путь, вы решили свернуть в лес. Вскоре вы заметили две тропинки. Бежать по дорожке было бы удобнее, но какую выбрать?",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolfiness-greater-than-one-outcome",
+      "instead_expected_fragment": "запах так и манил вас направо",
+      "nlbnavigator_expected_fragment": "запах так и манил вас направо",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "wolfiness-greater-than-one-outcome",
+        "expected_fragment": "запах так и манил вас направо",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+        "normalized_text": "Вы принюхались. Какой-то новый, но очень знакомый запах так и манил вас направо.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "forest-page-16-right-to-page23",
+      "instead_expected_fragment": "Казалось, лес стал гуще",
+      "nlbnavigator_expected_fragment": "Казалось, лес стал гуще",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "forest-page-16-right-to-page23",
+        "expected_fragment": "Казалось, лес стал гуще",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы повернули направо. Казалось, лес стал гуще.",
+        "normalized_text": "Вы повернули направо. Казалось, лес стал гуще.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolves-meeting-page24",
+      "instead_expected_fragment": "Привлекший вас запах усилился",
+      "nlbnavigator_expected_fragment": "Привлекший вас запах усилился",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "wolves-meeting-page24",
+        "expected_fragment": "Привлекший вас запах усилился",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": " Привлекший вас запах усилился. В кустах то и дело раздавались какие-то шорохи. Вы остановились, словно чего-то ожидая. На тропинку, прямо перед вами, не спеша вышел волк. Точнее, волчица.",
+        "normalized_text": " Привлекший вас запах усилился. В кустах то и дело раздавались какие-то шорохи. Вы остановились, словно чего-то ожидая. На тропинку, прямо перед вами, не спеша вышел волк. Точнее, волчица.",
+        "portion_index": 0,
+        "portion_count": 8,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "wolves-meeting-final-portion",
+      "instead_expected_fragment": "С этими словами вы побежали прочь",
+      "nlbnavigator_expected_fragment": "С этими словами вы побежали прочь",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "wolves-meeting-final-portion",
+        "expected_fragment": "С этими словами вы побежали прочь",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "С этими словами вы побежали прочь. Вскоре вы оказались на развилке.",
+        "normalized_text": "С этими словами вы побежали прочь. Вскоре вы оказались на развилке.",
+        "portion_index": 7,
+        "portion_count": 8,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "page24-right-to-page22-bypass",
+      "instead_expected_fragment": "дом врага уже совсем близко",
+      "nlbnavigator_expected_fragment": "дом врага уже совсем близко",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "page24-right-to-page22-bypass",
+        "expected_fragment": "дом врага уже совсем близко",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Ваше животное чутьё подсказывало, что дом врага уже совсем близко. Вы ускорили бег.",
+        "normalized_text": "Ваше животное чутьё подсказывало, что дом врага уже совсем близко. Вы ускорили бег.",
+        "portion_index": 0,
+        "portion_count": 1,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "page22-to-guard-house",
+      "instead_expected_fragment": "Наконец вы приблизились к дому своего врага",
+      "nlbnavigator_expected_fragment": "Наконец вы приблизились к дому своего врага",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "page22-to-guard-house",
+        "expected_fragment": "Наконец вы приблизились к дому своего врага",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Наконец вы приблизились к дому своего врага. Вы узнали приземистый, но большой особняк с заброшенным садом, плавно переходящим в лес, из которого вы пришли.",
+        "normalized_text": "Наконец вы приблизились к дому своего врага. Вы узнали приземистый, но большой особняк с заброшенным садом, плавно переходящим в лес, из которого вы пришли.",
+        "portion_index": 0,
+        "portion_count": 3,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "guard-page17-high-wolfiness-branch",
+      "instead_expected_fragment": "Внезапно раздалось рычание",
+      "nlbnavigator_expected_fragment": "Внезапно раздалось рычание",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "guard-page17-high-wolfiness-branch",
+        "expected_fragment": "Внезапно раздалось рычание",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Внезапно раздалось рычание, и перед вами возник волк с оскаленной мордой. Это был огромный зверь, крупнее вас.",
+        "normalized_text": "Внезапно раздалось рычание, и перед вами возник волк с оскаленной мордой. Это был огромный зверь, крупнее вас.",
+        "portion_index": 0,
+        "portion_count": 8,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "guard-share-pack-info-page27",
+      "instead_expected_fragment": "Вспомнив недавнюю встречу, вы воскликнули",
+      "nlbnavigator_expected_fragment": "Вспомнив недавнюю встречу, вы воскликнули",
+      "instead_check": null,
+      "nlbnavigator_check": {
+        "step_id": "guard-share-pack-info-page27",
+        "expected_fragment": "Вспомнив недавнюю встречу, вы воскликнули",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вспомнив недавнюю встречу, вы воскликнули:",
+        "normalized_text": "Вспомнив недавнюю встречу, вы воскликнули:",
+        "portion_index": 0,
+        "portion_count": 7,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": false,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/00-title.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/00-title.png",
+      "changed_pixels": 1900484,
+      "changed_fraction": 0.916514274691358,
+      "mean_absolute_channel_error": 3.3554927019032923,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/diff/title-diff.png"
+    },
+    {
+      "id": "opening",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/01-opening.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/01-opening.png",
+      "changed_pixels": 1612474,
+      "changed_fraction": 0.7776205632716049,
+      "mean_absolute_channel_error": 2.8531942836934157,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/diff/opening-diff.png"
+    },
+    {
+      "id": "opening-next-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/02-opening-next-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/02-opening-next-portion.png",
+      "changed_pixels": 1615090,
+      "changed_fraction": 0.778882137345679,
+      "mean_absolute_channel_error": 4.071366062242798,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/diff/opening-next-portion-diff.png"
+    },
+    {
+      "id": "opening-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/03-opening-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/03-opening-choices.png"
+    },
+    {
+      "id": "jump-over-fence",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/04-jump-over-fence.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/04-jump-over-fence.png"
+    },
+    {
+      "id": "robbery-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/05-robbery-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/05-robbery-final-portion.png"
+    },
+    {
+      "id": "robbery-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/06-robbery-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/06-robbery-choices.png"
+    },
+    {
+      "id": "eat-robber",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/07-eat-robber.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/07-eat-robber.png"
+    },
+    {
+      "id": "eat-robber-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/08-eat-robber-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/08-eat-robber-final-portion.png"
+    },
+    {
+      "id": "eat-branch-zoo",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/09-eat-branch-zoo.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/09-eat-branch-zoo.png"
+    },
+    {
+      "id": "eat-branch-zoo-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/10-eat-branch-zoo-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/10-eat-branch-zoo-final-portion.png"
+    },
+    {
+      "id": "eat-branch-positive-condition",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/11-wolfiness-positive-outcome.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/11-wolfiness-positive-outcome.png"
+    },
+    {
+      "id": "zoo-escape-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/12-zoo-escape-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/12-zoo-escape-final-portion.png"
+    },
+    {
+      "id": "road-page",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/13-road-page.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/13-road-page.png"
+    },
+    {
+      "id": "road-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/14-road-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/14-road-final-portion.png"
+    },
+    {
+      "id": "truckers-bar-entry",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/15-truckers-bar-entry.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/15-truckers-bar-entry.png"
+    },
+    {
+      "id": "truckers-bar-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/16-truckers-bar-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/16-truckers-bar-final-portion.png"
+    },
+    {
+      "id": "truckers-bar-greeting",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/17-truckers-bar-greeting.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/17-truckers-bar-greeting.png"
+    },
+    {
+      "id": "wolfiness-positive-dialogue-outcome",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/18-wolfiness-positive-dialogue-outcome.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/18-wolfiness-positive-dialogue-outcome.png"
+    },
+    {
+      "id": "wolfiness-positive-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/19-wolfiness-positive-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/19-wolfiness-positive-final-portion.png"
+    },
+    {
+      "id": "page13-positive-dialogue",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/20-page13-positive-dialogue.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/20-page13-positive-dialogue.png"
+    },
+    {
+      "id": "page13-positive-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/21-page13-positive-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/21-page13-positive-choices.png"
+    },
+    {
+      "id": "eat-philosopher",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/22-eat-philosopher.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/22-eat-philosopher.png"
+    },
+    {
+      "id": "page10-after-philosopher",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/23-page10-after-philosopher.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/23-page10-after-philosopher.png"
+    },
+    {
+      "id": "forest-entry-wolfiness-two",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/24-forest-entry-wolfiness-two.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/24-forest-entry-wolfiness-two.png"
+    },
+    {
+      "id": "wolfiness-greater-than-one-outcome",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/25-wolfiness-greater-than-one-outcome.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/25-wolfiness-greater-than-one-outcome.png"
+    },
+    {
+      "id": "forest-page-16-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/26-forest-page-16-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/26-forest-page-16-choices.png"
+    },
+    {
+      "id": "forest-page-16-right-to-page23",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/27-forest-page-16-right-to-page23.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/27-forest-page-16-right-to-page23.png"
+    },
+    {
+      "id": "wolves-meeting-page24",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/28-forest-page-24.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/28-forest-page-24.png"
+    },
+    {
+      "id": "wolves-meeting-final-portion",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/29-page24-final-portion.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/29-page24-final-portion.png"
+    },
+    {
+      "id": "page24-traveler-branch-choices",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/30-page24-choices.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/30-page24-choices.png"
+    },
+    {
+      "id": "page24-right-to-page22-bypass",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/page22-right-bypass.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/page22-right-bypass.png"
+    },
+    {
+      "id": "page22-to-guard-house",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/guard-high-wolves-talk-page17.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/guard-high-wolves-talk-page17.png"
+    },
+    {
+      "id": "guard-page17-high-wolfiness-branch",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/guard-high-wolves-talk-page26.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/guard-high-wolves-talk-page26.png"
+    },
+    {
+      "id": "guard-share-pack-info-page27",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/guard-high-wolves-talk-page27.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/nlbnavigator/guard-high-wolves-talk-page27.png"
+    }
+  ],
+  "errors": [
+    "opening-choices: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/03-opening-choices.png'",
+    "jump-over-fence: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/04-jump-over-fence.png'",
+    "robbery-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/05-robbery-final-portion.png'",
+    "robbery-choices: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/06-robbery-choices.png'",
+    "eat-robber: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/07-eat-robber.png'",
+    "eat-robber-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/08-eat-robber-final-portion.png'",
+    "eat-branch-zoo: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/09-eat-branch-zoo.png'",
+    "eat-branch-zoo-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/10-eat-branch-zoo-final-portion.png'",
+    "eat-branch-positive-condition: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/11-wolfiness-positive-outcome.png'",
+    "zoo-escape-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/12-zoo-escape-final-portion.png'",
+    "road-page: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/13-road-page.png'",
+    "road-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/14-road-final-portion.png'",
+    "truckers-bar-entry: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/15-truckers-bar-entry.png'",
+    "truckers-bar-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/16-truckers-bar-final-portion.png'",
+    "truckers-bar-greeting: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/17-truckers-bar-greeting.png'",
+    "wolfiness-positive-dialogue-outcome: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/18-wolfiness-positive-dialogue-outcome.png'",
+    "wolfiness-positive-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/19-wolfiness-positive-final-portion.png'",
+    "page13-positive-dialogue: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/20-page13-positive-dialogue.png'",
+    "page13-positive-choices: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/21-page13-positive-choices.png'",
+    "eat-philosopher: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/22-eat-philosopher.png'",
+    "page10-after-philosopher: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/23-page10-after-philosopher.png'",
+    "forest-entry-wolfiness-two: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/24-forest-entry-wolfiness-two.png'",
+    "wolfiness-greater-than-one-outcome: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/25-wolfiness-greater-than-one-outcome.png'",
+    "forest-page-16-choices: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/26-forest-page-16-choices.png'",
+    "forest-page-16-right-to-page23: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/27-forest-page-16-right-to-page23.png'",
+    "wolves-meeting-page24: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/28-forest-page-24.png'",
+    "wolves-meeting-final-portion: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/29-page24-final-portion.png'",
+    "page24-traveler-branch-choices: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/30-page24-choices.png'",
+    "page24-right-to-page22-bypass: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/page22-right-bypass.png'",
+    "page22-to-guard-house: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/guard-high-wolves-talk-page17.png'",
+    "guard-page17-high-wolfiness-branch: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/guard-high-wolves-talk-page26.png'",
+    "guard-share-pack-info-page27: отсутствует кадр одного из движков: [Errno 2] No such file or directory: '/workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk/instead/guard-high-wolves-talk-page27.png'"
+  ],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

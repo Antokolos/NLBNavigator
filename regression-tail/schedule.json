@@ -1,0 +1,29 @@
+{
+  "initial_routes": [
+    "wolfman-opening",
+    "wolfman-chase-robber",
+    "wolfman-forest-wolfiness-zero-left",
+    "wolfman-forest-wolfiness-two-left",
+    "wolfman-eat-robber",
+    "wolfman-forest-wolfiness-zero-right",
+    "wolfman-forest-wolfiness-two-right"
+  ],
+  "new_routes": [
+    "wolfman-forest-wolfiness-two-page24-bypass",
+    "wolfman-forest-wolfiness-zero-page25-bypass",
+    "wolfman-guard-high-wolves-attack",
+    "wolfman-police-hospital-doctor",
+    "wolfman-guard-high-wolves-talk-ending38",
+    "wolfman-forest-wolfiness-one-rowan-ending34",
+    "wolfman-forest-wolfiness-one-hawthorn-ending39",
+    "wolfman-forest-wolfiness-two-page18-bypass",
+    "wolfman-forest-wolfiness-zero-page18-bypass",
+    "wolfman-guard-high-wolves-talk",
+    "wolfman-guard-low-wolfiness-escape",
+    "wolfman-police-hospital-corpse",
+    "wolfman-forest-wolfiness-three-ending37",
+    "wolfman-forest-wolfiness-one-kalina-ending34",
+    "wolfman-police-hospital-corpse-ending41"
+  ],
+  "note": "Координатор первых двух очередей остановится на зарезервированном каталоге после завершения начатых маршрутов."
+}

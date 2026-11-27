@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/paired-save-load.Lkx4pC/regression-final.py", line 15, in <module>
+    raise RuntimeError("Нет результатов всех рабочих очередей")
+RuntimeError: Нет результатов всех рабочих очередей

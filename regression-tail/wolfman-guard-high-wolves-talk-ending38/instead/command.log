@@ -1,0 +1,26 @@
+[INSTEAD] starting step 1/39: wolfman-guard-high-talk-to-page27.title
+[INSTEAD] completed 1/39: wolfman-guard-high-talk-to-page27.title (4.73s, page=f7cb8bed-47a9-4ce2-b713-c9b53571c93f, portion=0/0, screen=page, vars=wolfiness=0,hp=0,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 2/39: wolfman-guard-high-talk-to-page27.opening
+[INSTEAD] completed 2/39: wolfman-guard-high-talk-to-page27.opening (5.3s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=0/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 3/39: wolfman-guard-high-talk-to-page27.opening-next-portion
+[INSTEAD] completed 3/39: wolfman-guard-high-talk-to-page27.opening-next-portion (4.3s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=1/10, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 4/39: wolfman-guard-high-talk-to-page27.opening-choices
+[INSTEAD] completed 4/39: wolfman-guard-high-talk-to-page27.opening-choices (6.47s, page=f12432d9-dd8f-40fc-97bd-f9a15cc21ff6, portion=9/10, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 5/39: wolfman-guard-high-talk-to-page27.jump-over-fence
+[INSTEAD] completed 5/39: wolfman-guard-high-talk-to-page27.jump-over-fence (4.92s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=0/5, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 6/39: wolfman-guard-high-talk-to-page27.robbery-final-portion
+[INSTEAD] completed 6/39: wolfman-guard-high-talk-to-page27.robbery-final-portion (4.55s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=4/5, screen=page, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 7/39: wolfman-guard-high-talk-to-page27.robbery-choices
+[INSTEAD] completed 7/39: wolfman-guard-high-talk-to-page27.robbery-choices (4.38s, page=5b5d038f-ce4d-4cc8-8bee-81de8528b1a5, portion=4/5, screen=choices, vars=wolfiness=0,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 8/39: wolfman-guard-high-talk-to-page27.eat-robber
+[INSTEAD] completed 8/39: wolfman-guard-high-talk-to-page27.eat-robber (5.33s, page=85d2e46d-074a-4925-b54d-4a52299d9d93, portion=0/3, screen=page, vars=wolfiness=1,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 9/39: wolfman-guard-high-talk-to-page27.eat-robber-final-portion
+[INSTEAD] completed 9/39: wolfman-guard-high-talk-to-page27.eat-robber-final-portion (5.17s, page=85d2e46d-074a-4925-b54d-4a52299d9d93, portion=2/3, screen=page, vars=wolfiness=1,hp=3,barExit=false,forestExit=false,wolvesTalk=false,guardDone=false)
+[INSTEAD] starting step 10/39: wolfman-guard-high-talk-to-page27.eat-branch-zoo
+[INSTEAD] cleanup: begin
+[INSTEAD] cleanup player: sending SIGTERM to process group 11653
+[INSTEAD] cleanup player: exited after SIGTERM with status 0
+[INSTEAD] cleanup openbox: sending SIGTERM to process group 11650
+[INSTEAD] cleanup openbox: exited after SIGTERM with status 0
+[INSTEAD] cleanup: process logs closed
+[ERROR] Не удалось снять X11-экран /workspace/scratch/paired-save-load.Lkx4pC/regression-tail/wolfman-guard-high-wolves-talk-ending38/instead/wolfman-guard-high-talk-to-page27.09-eat-branch-zoo.png: 

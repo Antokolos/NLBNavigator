@@ -1,0 +1,3 @@
+matrix/choices-restart/nlbnavigator command: exit=1
+matrix/choices-restart/instead command: exit=0
+matrix/choices-restart compare: exit=0

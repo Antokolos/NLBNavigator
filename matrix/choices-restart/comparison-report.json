@@ -1,0 +1,50 @@
+{
+  "route": "wolfman-save-choices-restart",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-save-choices-restart",
+      "route_sha256": "b15cc008f1f9cda377affcca9bf2a8746b3157948f2f2dbf7dc7fb55696194a7",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-environment/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/choices-restart/instead/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-save-choices-restart",
+      "route_sha256": "b15cc008f1f9cda377affcca9bf2a8746b3157948f2f2dbf7dc7fb55696194a7",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "64cba5794919db3a423316a3b0ba0e7546aefb09",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/choices-restart/instead/00-title.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/choices-restart/nlbnavigator/00-title.png",
+      "changed_pixels": 1900484,
+      "changed_fraction": 0.916514274691358,
+      "mean_absolute_channel_error": 3.3554927019032923,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/choices-restart/diff/title-diff.png"
+    },
+    {
+      "id": "load-a",
+      "instead": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/choices-restart/instead/load-a.png",
+      "nlbnavigator": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/choices-restart/nlbnavigator/load-a.png",
+      "changed_pixels": 1569011,
+      "changed_fraction": 0.7566603973765432,
+      "mean_absolute_channel_error": 42.6021768904321,
+      "diff_image": "/workspace/scratch/paired-save-load.Lkx4pC/matrix/choices-restart/diff/load-a-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}
