@@ -144,7 +144,12 @@ GameScreen::GameScreen(Session& session, Options options) : m_session(session), 
         const float v = std::strtof(saved.c_str(), nullptr);
         if (v >= 0.5f && v <= 3.0f) m_textScale = v;
     }
-    pull();
+    if (m_session.hasRestoredViewState()) {
+        afterCommand();
+    } else {
+        pull();
+        publishViewState();
+    }
 }
 
 void GameScreen::pull() {
@@ -156,6 +161,7 @@ void GameScreen::pull() {
     if (!choicesMode()) m_showChoices = false;  // страница STANDARD — экрана вариантов нет
     if (before.pageId != m_screen.pageId || !m_screen.finished) m_endScreen = false;
     if (before.pageId != m_screen.pageId) {
+        m_showChoices = false;
         dropNavFocus();  // новая страница — выбор с геймпада заново
         // вход на страницу — vn:auto_geom('dissolve') экспорта; его нет у страниц с таймером (или
         // анимацией) без графических объектов: там enter возвращает vn:get_win_coords() без эффекта
@@ -352,12 +358,22 @@ void GameScreen::update(int milliseconds) {
 }
 
 void GameScreen::publishViewState() {
-    if (!choicesMode()) return;
-    m_session.setViewState("vn.portion", std::to_string(portionState().index));
+    if (!choicesMode()) {
+        m_session.updateViewState({{"vn.portion", std::nullopt}, {"vn.screen", std::nullopt}});
+        return;
+    }
+    m_session.updateViewState({{"vn.portion", std::to_string(portionState().index)},
+                               {"vn.screen", m_showChoices ? "choices" : "page"}});
 }
 
-void GameScreen::applyRestoredViewState(const Session::ViewState& state) {
+void GameScreen::setChoicesShown(bool shown) {
+    m_showChoices = shown;
+    publishViewState();
+}
+
+bool GameScreen::applyRestoredViewState(const Session::ViewState& state) {
     unsigned long long index = 0;
+    bool validIndex = false;
     const auto it = state.find("vn.portion");
     if (it != state.end() && !it->second.empty()) {
         // Только полностью числовое значение: "12abc", "-1", "+1" и мусор дают первую порцию,
@@ -372,6 +388,7 @@ void GameScreen::applyRestoredViewState(const Session::ViewState& state) {
         if (digits) {
             try {
                 index = std::stoull(it->second);
+                validIndex = true;
             } catch (...) {
                 // переполнение/повреждённое значение — первая порция
             }
@@ -382,6 +399,19 @@ void GameScreen::applyRestoredViewState(const Session::ViewState& state) {
     m_portion = index > last ? last : static_cast<size_t>(index);
     m_voicedPortion = SIZE_MAX;  // озвучка восстановленной порции — заново
     m_scroll = 0;
+    m_morePortions = m_portion < last;
+    m_moreText = false;
+    m_endScreen = false;
+    dropNavFocus();
+
+    const auto screen = state.find("vn.screen");
+    if (!choicesMode() || screen == state.end() || m_screen.externalGame) return false;
+    if (screen->second == "page") return true;
+    if (screen->second != "choices" || !validIndex || index != last || m_screen.finished
+        || singleTrivialChoice() >= 0) return false;
+    m_showChoices = std::any_of(m_screen.choices.begin(), m_screen.choices.end(),
+                               [](const Choice& choice) { return choice.enabled; });
+    return m_showChoices;
 }
 
 void GameScreen::processEvents(const std::vector<PlayerEngine::Event>& events) {
@@ -405,11 +435,12 @@ void GameScreen::afterCommand() {
     Session::ViewState restored;
     const bool restoredPending = m_session.takeRestoredViewState(restored);
     pull();
-    if (restoredPending) applyRestoredViewState(restored);
     m_showChoices = false;
+    const bool restoredScreen = restoredPending && applyRestoredViewState(restored);
     // Страница без текста: показывать нечего — сразу экран вариантов (если вариант один тривиальный —
     // ждём «дальше», чтобы игрок увидел сцену)
-    if (choicesMode() && m_screen.pageText.empty() && m_screen.reactionText.empty() && singleTrivialChoice() < 0) {
+    if (!restoredScreen && choicesMode() && m_screen.pageText.empty() && m_screen.reactionText.empty()
+        && singleTrivialChoice() < 0) {
         advanceToChoices();
     }
     if (m_screen.externalGame) {
@@ -609,6 +640,10 @@ void GameScreen::click(float x, float y, bool rightButton) {
             y = by;
         }
     }
+    if (m_menu == Menu::SlotError) {
+        m_menu = Menu::None;
+        return;
+    }
     if (m_menu == Menu::Message) {
         m_menu = Menu::None;
         if (m_screen.externalGame) m_session.finishExternalGame();
@@ -639,7 +674,7 @@ void GameScreen::click(float x, float y, bool rightButton) {
         // экран вариантов: щелчок мимо вариантов — назад к тексту
         bool onChoice = false;
         for (const auto& h : m_hits) onChoice = onChoice || (h.kind == Hit::Kind::Choice && contains(h.rect, x, y));
-        if (!onChoice) { m_showChoices = false; return; }
+        if (!onChoice) { setChoicesShown(false); return; }
     } else if (m_endScreen && !hitSomething) {
         return;  // экран конца: начать заново — только ссылкой, как в INSTEAD
     } else if (choicesMode() && !hitSomething && m_menu == Menu::None) {
@@ -813,7 +848,7 @@ void GameScreen::key(Key k, int digit) {
         default: break;
     }
     if (k == Key::Escape) {
-        if (m_showChoices && m_menu == Menu::None) { m_showChoices = false; return; }
+        if (m_showChoices && m_menu == Menu::None) { setChoicesShown(false); return; }
         if (m_menu == Menu::None) m_menu = Menu::Main;
         else if (m_menu == Menu::ConfirmQuit || m_menu == Menu::Language) m_menu = Menu::Main;
         else if (m_menu != Menu::Message) m_menu = Menu::None;
@@ -831,7 +866,7 @@ void GameScreen::key(Key k, int digit) {
         // пробел: следующая часть текста, а когда он дочитан — экран вариантов
         if (choicesMode() && !m_showChoices) advanceText();
         else if (m_moreText) { m_scroll += m_pageHeight; m_scrollByPages = true; }
-        else if (m_showChoices) m_showChoices = false;
+        else if (m_showChoices) setChoicesShown(false);
         else advanceToChoices();
     } else if (k == Key::PageDown) {
         m_scroll += m_pageHeight; m_scrollByPages = true;
@@ -950,7 +985,7 @@ bool GameScreen::advanceToChoices() {
     if (std::none_of(m_screen.choices.begin(), m_screen.choices.end(), [](const Choice& c) { return c.enabled; })) {
         return false;
     }
-    m_showChoices = true;
+    setChoicesShown(true);
     startTransition();  // экран вариантов — vn:auto_geom_choices('dissolve')
     return true;
 }
@@ -969,7 +1004,7 @@ void GameScreen::menuAction(int index) {
                 break;
             case MainItem::Choices:
                 m_choicesScreen = !m_choicesScreen;
-                m_showChoices = false;
+                setChoicesShown(false);
                 break;
             case MainItem::Fullscreen:
                 if (m_setFullscreen) m_setFullscreen(!(m_isFullscreen && m_isFullscreen()));
@@ -1005,10 +1040,16 @@ void GameScreen::menuAction(int index) {
         else m_menu = Menu::Main;                                 // «Нет» — обратно в меню
     } else if (m_menu == Menu::Save || m_menu == Menu::Load) {
         if (index < 1 || index > 9) { m_menu = Menu::Main; return; }
-        const bool ok = m_menu == Menu::Save ? m_session.save(index, error) : m_session.load(index, error);
+        const bool saving = m_menu == Menu::Save;
+        if (saving && m_seenRevision == m_session.revision()) publishViewState();
+        const bool ok = saving ? m_session.save(index, error) : m_session.load(index, error);
         m_menu = Menu::None;
-        if (!ok) { m_message = tr(static_cast<int>(Ui::Failed)) + error; m_menu = Menu::Message; return; }
-        afterCommand();
+        if (!ok) {
+            m_message = tr(static_cast<int>(Ui::Failed)) + error;
+            m_menu = Menu::SlotError;
+            return;
+        }
+        if (!saving) afterCommand();
     }
 }
 

@@ -335,8 +335,7 @@ std::string Session::slotPath(int slot) const {
 
 bool Session::save(int slot, std::string& error) {
     if (m_options.savesDir.empty()) { error = "сохранения недоступны"; return false; }
-    // Сохраняем последнее опубликованное или только что восстановленное состояние экрана.
-    m_engine->setUiState(m_viewState);
+    // Состояние уже передано движку. После перехода движок может очистить его до первого кадра.
     const bool ok = m_engine->saveGame(slotPath(slot), error);
     if (ok) logAction("Сохранить в слот " + std::to_string(slot));
     return ok;
@@ -345,29 +344,32 @@ bool Session::save(int slot, std::string& error) {
 bool Session::load(int slot, std::string& error) {
     if (m_options.savesDir.empty()) { error = "сохранения недоступны"; return false; }
     logAction("Загрузить слот " + std::to_string(slot));
-    m_logPage.clear();
-    m_logRevision = static_cast<uint64_t>(-1);
     m_viewStateRestored = false;
     m_restoredViewState.clear();
-    const bool ok = m_engine->loadGame(slotPath(slot), error);
+    if (!m_engine->loadGame(slotPath(slot), error)) return false;
+    m_logPage.clear();
+    m_logRevision = static_cast<uint64_t>(-1);
     m_selected.clear();
     afterCommand();
-    if (ok) {
-        m_restoredViewState = m_engine->uiState();
-        // Сразу синхронизируем «текущее» состояние экрана: save() без промежуточного update()
-        // не должен записать старую порцию. Старое сохранение без ui даёт пустое состояние.
-        m_viewState = m_restoredViewState;
-        m_engine->setUiState(m_viewState);
-        m_viewStateRestored = true;
-        ++m_localRevision;  // экран должен перерисоваться с восстановленной порцией
-    }
-    return ok;
+    // Движок уже хранит прочитанные UI-записи, в том числе для save() до первого кадра.
+    m_restoredViewState = m_engine->uiState();
+    m_viewState = m_restoredViewState;
+    m_viewStateRestored = true;
+    ++m_localRevision;
+    return true;
 }
 
 void Session::setViewState(const std::string& key, const std::string& value) {
-    m_viewState[key] = value;
+    updateViewState({{key, value}});
+}
+
+void Session::updateViewState(std::initializer_list<std::pair<std::string, std::optional<std::string>>> fields) {
+    for (const auto& [key, value] : fields) {
+        if (value) m_viewState[key] = *value;
+        else m_viewState.erase(key);
+    }
     // Держим состояние экрана в движке актуальным: иначе SNAPSHOT (writeSave внутри движка)
-    // и повторное сохранение сразу после загрузки записали бы устаревшую порцию.
+    // мог бы записать предыдущую порцию или видимый экран.
     if (m_engine) m_engine->setUiState(m_viewState);
 }
 

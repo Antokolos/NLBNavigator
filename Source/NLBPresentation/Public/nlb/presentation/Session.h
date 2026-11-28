@@ -2,10 +2,12 @@
 
 #include <deque>
 #include <fstream>
+#include <initializer_list>
 #include <map>
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "nlb/domain/PlayerEngine.h"
@@ -111,7 +113,10 @@ public:
     /// takeRestoredViewState — один раз, чтобы фронтенд применил его к своему экрану.
     using ViewState = std::map<std::string, std::string>;
     void setViewState(const std::string& key, const std::string& value);
+    /// Обновить несколько ключей согласованно. nullopt удаляет только указанный ключ.
+    void updateViewState(std::initializer_list<std::pair<std::string, std::optional<std::string>>> fields);
     std::string viewState(const std::string& key) const;
+    bool hasRestoredViewState() const { return m_viewStateRestored; }
     /// Забрать состояние экрана, восстановленное load()/tryAgain(); true — ровно один раз
     bool takeRestoredViewState(ViewState& state);
     /// Режим экспорта, в котором открыта книга (VN или Standard)
