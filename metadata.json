@@ -1,0 +1,15 @@
+{
+  "tested_head": "aa5f15e7517b38295879eeb473e3bf04df7d1230",
+  "product_patch": false,
+  "issue": 76,
+  "fixture_patch": "logs/red-tests.patch",
+  "ctest_exit": 8,
+  "sdl_runner_exit": 1,
+  "sdl_binary_sha256": "3aa7a2ad09da2d7fe50dbb138bff975f4608a29b28e2a2df1cc09ac0d71d1b2f",
+  "pins": {
+    "wolfman": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead-am_i_a_monster_vn": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "instead": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "environment": "NLB-Developer, Debian 13, INSTEAD 3.5.2, Xvfb 1920×1080×24"
+}

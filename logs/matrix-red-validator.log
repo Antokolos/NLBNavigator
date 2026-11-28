@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/workspace/nlb-issue76.nHxaHSiy/matrix76.py", line 256, in <module>
+    route = write_route(OUT, "choices-red", source, steps[:panel+1] +
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/nlb-issue76.nHxaHSiy/repo/tests/differential/check_wolfman_save_portion.py", line 65, in write_route
+    load_route(path)
+  File "/workspace/nlb-issue76.nHxaHSiy/repo/tests/differential/run_route.py", line 80, in load_route
+    raise ValueError("; ".join(validation_errors))
+ValueError: /workspace/nlb-issue76.nHxaHSiy/matrix/choices-red.json: load-a: portion_index=1 после 1; индекс должен строго увеличиваться; /workspace/nlb-issue76.nHxaHSiy/matrix/choices-red.json: load-a: instead_portion_index=1 после 1; индекс должен строго увеличиваться
