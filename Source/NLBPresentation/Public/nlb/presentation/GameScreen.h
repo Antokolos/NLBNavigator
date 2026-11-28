@@ -153,7 +153,7 @@ public:
     };
     PortionState portionState() const;
     /// Показано сообщение (конец игры, внешняя игра, ошибка) — для тестов
-    bool messageShown() const { return m_menu == Menu::Message; }
+    bool messageShown() const { return m_menu == Menu::Message || m_menu == Menu::SlotError; }
     /// Показан экран конца VN («Конец» и «Попробовать ещё раз», showGameOver) — после того, как
     /// текст концовки дочитан. Признак «ходов больше нет» — ScreenModel::finished: он есть уже на
     /// первой порции концовки (state-log: screen "finished" — только этот экран, docs/state-log.md)
@@ -183,7 +183,7 @@ private:
         std::string id;
         int index = -1;
     };
-    enum class Menu { None, Main, Save, Load, Message, ConfirmQuit, Language };
+    enum class Menu { None, Main, Save, Load, Message, SlotError, ConfirmQuit, Language };
     struct Effect {
         uint64_t start = 0;
         int steps = 25;
@@ -218,8 +218,9 @@ private:
     bool advanceText();
     /// Записать состояние экрана в Session (порция VN) — перед сохранением и после команд
     void publishViewState();
+    void setChoicesShown(bool shown);
     /// Применить состояние экрана, восстановленное загрузкой (порция; 0 — старые сохранения)
-    void applyRestoredViewState(const Session::ViewState& state);
+    bool applyRestoredViewState(const Session::ViewState& state);
     /// Порции текста (режим экрана вариантов), как экспорт в VN-INSTEAD: строка текста — порция,
     /// длинная строка — по предложениям (больше 100 символов в порции, хвост до 330 — к последней)
     std::vector<std::vector<Paragraph>> portions() const;

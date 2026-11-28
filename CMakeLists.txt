@@ -428,7 +428,9 @@ if(NLB_BUILD_TESTS)
     enable_testing()
     add_executable(nlb_save_portion_test tests/presentation/save_portion.cpp ${CPARSE_SOURCES})
     target_link_libraries(nlb_save_portion_test PRIVATE NLBReader)
-    foreach(scenario advance_save load_save snapshot restart failed_load legacy invalid clamp standard timer)
+    foreach(scenario advance_save load_save snapshot restart failed_load legacy invalid clamp standard timer
+                     choices_menu choices_restore choices_errors choices_lifecycle choices_invalid
+                     choices_eligibility ending_restore)
         add_test(NAME save_portion.${scenario}
                  COMMAND nlb_save_portion_test "${scenario}" "${CMAKE_CURRENT_BINARY_DIR}")
     endforeach()
