@@ -1,0 +1,14 @@
+{
+  "nlbnavigator": {
+    "source": "matrix/cycles/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+    "copy": "matrix/restart/nlbnavigator/nlbnavigator-home/.nlbnavigator/wolfman.saves/slot1.sav",
+    "bytes": 13949,
+    "sha256": "adc8b778e19b39487799274dd875ec2b030a1eca9eaa08e8c3ed3baf60782fb1"
+  },
+  "instead": {
+    "source": "matrix/cycles/instead/instead-appdata/saves/instead-game-overlay/save9",
+    "copy": "matrix/restart/instead/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62593,
+    "sha256": "72642cb587f9f25bf5ee91f2c6cd597f9d41face5d074de1e3b26f36c67058bd"
+  }
+}

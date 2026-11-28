@@ -1,0 +1,116 @@
+{
+  "route": "wolfman-save-portion-resave",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-save-portion-resave",
+      "route_sha256": "cf3d1cacfc53b6b40edf9ad7c1d13941d9b27f3b84389f2b5119f26eb50c541c",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-developer-env-v1/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/instead/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-save-portion-resave",
+      "route_sha256": "cf3d1cacfc53b6b40edf9ad7c1d13941d9b27f3b84389f2b5119f26eb50c541c",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "3d312618b77f3ec62f97e9bdc7b56ed585ce2254",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "load-a",
+      "instead_expected_fragment": "Вы очнулись от яркого света",
+      "nlbnavigator_expected_fragment": "Вы очнулись от яркого света",
+      "instead_check": {
+        "step_id": "load-a",
+        "expected_fragment": "Вы очнулись от яркого света",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n",
+        "normalized_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n",
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "load-a",
+        "expected_fragment": "Вы очнулись от яркого света",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+        "normalized_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+        "portion_index": 0,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "resave-a",
+      "instead_expected_fragment": "Вы очнулись от яркого света",
+      "nlbnavigator_expected_fragment": "Вы очнулись от яркого света",
+      "instead_check": {
+        "step_id": "resave-a",
+        "expected_fragment": "Вы очнулись от яркого света",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n",
+        "normalized_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.\n\n",
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "resave-a",
+        "expected_fragment": "Вы очнулись от яркого света",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+        "normalized_text": "Вы очнулись от яркого света, который проникал даже сквозь опущенные веки. Вы лежали на чём-то твёрдом и холодном.",
+        "portion_index": 0,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/instead/00-title.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/nlbnavigator/00-title.png",
+      "changed_pixels": 1942698,
+      "changed_fraction": 0.9368721064814814,
+      "mean_absolute_channel_error": 3.935291441615226,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/diff/title-diff.png"
+    },
+    {
+      "id": "load-a",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/instead/load-a.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/nlbnavigator/load-a.png",
+      "changed_pixels": 1221364,
+      "changed_fraction": 0.5890065586419753,
+      "mean_absolute_channel_error": 2.1531672775205757,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/diff/load-a-diff.png"
+    },
+    {
+      "id": "resave-a",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/instead/resave-a.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/nlbnavigator/resave-a.png",
+      "changed_pixels": 1221364,
+      "changed_fraction": 0.5890065586419753,
+      "mean_absolute_channel_error": 2.1531672775205757,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/resave/diff/resave-a-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

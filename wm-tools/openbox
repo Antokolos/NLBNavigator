@@ -1,0 +1,2 @@
+#!/bin/sh
+exec "/workspace/nlb-developer-env-v1/debian/usr/bin/openbox" --config-file "/workspace/nlb-issue76.nHxaHSiy/openbox.xml" "$@"

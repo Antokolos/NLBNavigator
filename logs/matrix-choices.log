@@ -1,0 +1,7 @@
+matrix/choices/nlbnavigator command: exit=0
+matrix/choices/instead command: exit=0
+matrix/choices compare: exit=0
+matrix/choices-restart/nlbnavigator command: exit=0
+matrix/choices-restart/instead command: exit=0
+matrix/choices-restart compare: exit=0
+Проверок: 27, успешных: 27

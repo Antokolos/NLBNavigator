@@ -1,0 +1,181 @@
+test_page_sequence_merges_consecutive_portions (test_advance_until.ExpectPagesTest.test_page_sequence_merges_consecutive_portions) ... ok
+test_wrong_pages_and_counts (test_advance_until.ExpectPagesTest.test_wrong_pages_and_counts) ... ok
+test_failed_command_is_named_by_step (test_advance_until.FailedStepsTest.test_failed_command_is_named_by_step) ... ok
+test_conditions (test_advance_until.InsteadReachedTest.test_conditions) ... ok
+test_example_route_is_valid_and_short (test_advance_until.ScriptAndValidationTest.test_example_route_is_valid_and_short) ... ok
+test_timeouts_count_max_clicks (test_advance_until.ScriptAndValidationTest.test_timeouts_count_max_clicks) ... ok
+test_validation_errors (test_advance_until.ScriptAndValidationTest.test_validation_errors) ... ok
+test_click_count_and_variables (test_advance_until.SequenceCompareTest.test_click_count_and_variables) ... ok
+test_first_difference_is_reported (test_advance_until.SequenceCompareTest.test_first_difference_is_reported) ... ok
+test_overlay_is_page (test_advance_until.SequenceCompareTest.test_overlay_is_page) ... ok
+test_raw_dashes_would_mismatch (test_advance_until.SequenceCompareTest.test_raw_dashes_would_mismatch) ... ok
+test_same_sequences (test_advance_until.SequenceCompareTest.test_same_sequences) ... ok
+test_min_commands (test_advance_until.StateLogCheckTest.test_min_commands) ... ok
+test_comparable_text_collapses_whitespace (test_advance_until.TypographyTest.test_comparable_text_collapses_whitespace) ... ok
+test_dashes_and_quotes_as_game_screen (test_advance_until.TypographyTest.test_dashes_and_quotes_as_game_screen) ... ok
+test_instead_choice_index_by_text (test_choose_prefix.ChooseTest.test_instead_choice_index_by_text) ... ok
+test_script_uses_choice_text (test_choose_prefix.ChooseTest.test_script_uses_choice_text) ... ok
+test_validation (test_choose_prefix.ChooseTest.test_validation) ... ok
+test_changed_fragment_selects_routes_with_it (test_choose_prefix.PrefixTest.test_changed_fragment_selects_routes_with_it) ... ok
+test_errors (test_choose_prefix.PrefixTest.test_errors) ... ok
+test_example_route_with_prefix (test_choose_prefix.PrefixTest.test_example_route_with_prefix) ... ok
+test_nested_prefixes_are_expanded_in_order (test_choose_prefix.PrefixTest.test_nested_prefixes_are_expanded_in_order) ... ok
+test_timeouts_count_prefix_steps (test_choose_prefix.PrefixTest.test_timeouts_count_prefix_steps) ... ok
+test_advance_until_without_nonempty_expect_pages_is_reported (test_coverage_report.CoverageReportTests.test_advance_until_without_nonempty_expect_pages_is_reported) ... ok
+test_book_commit_mismatch_fails_clearly (test_coverage_report.CoverageReportTests.test_book_commit_mismatch_fails_clearly) ... ok
+test_book_id_must_match_one_catalog_entry (test_coverage_report.CoverageReportTests.test_book_id_must_match_one_catalog_entry) ... ok
+test_ending_question_mark_is_not_called_an_ending (test_coverage_report.CoverageReportTests.test_ending_question_mark_is_not_called_an_ending) ... ok
+test_every_covering_route_is_listed (test_coverage_report.CoverageReportTests.test_every_covering_route_is_listed) ... ok
+test_expect_pages_count_for_coverage (test_coverage_report.CoverageReportTests.test_expect_pages_count_for_coverage) ... ok
+test_matching_book_commit_is_returned (test_coverage_report.CoverageReportTests.test_matching_book_commit_is_returned) ... ok
+test_missing_external_modules_fail_closed (test_coverage_report.CoverageReportTests.test_missing_external_modules_fail_closed) ... ok
+test_only_nonempty_expected_page_ids_count (test_coverage_report.CoverageReportTests.test_only_nonempty_expected_page_ids_count) ... ok
+test_pages_tool_json_interface_is_used (test_coverage_report.CoverageReportTests.test_pages_tool_json_interface_is_used) ... ok
+test_prefix_fragment_pages_are_credited_to_each_route (test_coverage_report.CoverageReportTests.test_prefix_fragment_pages_are_credited_to_each_route) ... ok
+test_route_path_cannot_escape_repository (test_coverage_report.CoverageReportTests.test_route_path_cannot_escape_repository) ... ok
+test_unknown_ids_include_routes_and_steps (test_coverage_report.CoverageReportTests.test_unknown_ids_include_routes_and_steps) ... ok
+test_end_screen_against_ordinary_choices_fails (test_end_screen.EndScreenUntilTest.test_end_screen_against_ordinary_choices_fails) ... ok
+test_instead_stops_only_on_try_again (test_end_screen.EndScreenUntilTest.test_instead_stops_only_on_try_again) ... ok
+test_nlbnavigator_script (test_end_screen.EndScreenUntilTest.test_nlbnavigator_script) ... ok
+test_trace_end_screen_column (test_end_screen.EndScreenUntilTest.test_trace_end_screen_column) ... ok
+test_validation_accepts_end_screen (test_end_screen.EndScreenUntilTest.test_validation_accepts_end_screen) ... ok
+test_whole_step_ending_then_end_screen (test_end_screen.EndScreenUntilTest.test_whole_step_ending_then_end_screen) ... ok
+test_early_end_screen_against_page_fails (test_end_screen.EndingCompareTest.test_early_end_screen_against_page_fails) ... ok
+test_end_screen_matches_try_again_choices (test_end_screen.EndingCompareTest.test_end_screen_matches_try_again_choices) ... ok
+test_end_screen_on_other_page_fails (test_end_screen.EndingCompareTest.test_end_screen_on_other_page_fails) ... ok
+test_end_screen_without_finished_fails (test_end_screen.EndingCompareTest.test_end_screen_without_finished_fails) ... ok
+test_end_screen_without_trace_flag_fails (test_end_screen.EndingCompareTest.test_end_screen_without_trace_flag_fails) ... ok
+test_ending_text_is_page_and_compared (test_end_screen.EndingCompareTest.test_ending_text_is_page_and_compared) ... ok
+test_other_pairs_stay_strict (test_end_screen.EndingCompareTest.test_other_pairs_stay_strict) ... ok
+test_wrong_ending_text_is_caught (test_end_screen.EndingCompareTest.test_wrong_ending_text_is_caught) ... ok
+test_bool_is_accepted (test_end_screen.ExpectFinishedValidationTest.test_bool_is_accepted) ... ok
+test_non_bool_is_rejected (test_end_screen.ExpectFinishedValidationTest.test_non_bool_is_rejected) ... ok
+test_finished_is_carried (test_end_screen.SequenceItemTest.test_finished_is_carried) ... ok
+test_old_log_without_field_takes_model (test_end_screen.SequenceItemTest.test_old_log_without_field_takes_model) ... ok
+test_end_screen_requires_finished (test_end_screen.StateLogCheckTest.test_end_screen_requires_finished) ... ok
+test_ending_read_then_end_screen (test_end_screen.StateLogCheckTest.test_ending_read_then_end_screen) ... ok
+test_finished_field_is_required (test_end_screen.StateLogCheckTest.test_finished_field_is_required) ... ok
+test_finished_matches_model (test_end_screen.StateLogCheckTest.test_finished_matches_model) ... ok
+test_achievement_not_planned_is_fine (test_gate.GateTest.test_achievement_not_planned_is_fine) ... ok
+test_achievements_only_run_passes (test_gate.GateTest.test_achievements_only_run_passes) ... ok
+test_docs_commit_cannot_hide_functional_change (test_gate.GateTest.test_docs_commit_cannot_hide_functional_change) ... ok
+test_docs_only_passes (test_gate.GateTest.test_docs_only_passes) ... ok
+test_empty_count_is_plan_error_not_zero (test_gate.GateTest.test_empty_count_is_plan_error_not_zero) ... ok
+test_failed_achievement_is_failure (test_gate.GateTest.test_failed_achievement_is_failure) ... ok
+test_full_route_run_passes (test_gate.GateTest.test_full_route_run_passes) ... ok
+test_plan_failure_fails (test_gate.GateTest.test_plan_failure_fails) ... ok
+test_report_skipped_when_something_ran_fails (test_gate.GateTest.test_report_skipped_when_something_ran_fails) ... ok
+test_route_failure_fails (test_gate.GateTest.test_route_failure_fails) ... ok
+test_skipped_achievement_is_failure (test_gate.GateTest.test_skipped_achievement_is_failure) ... ok
+test_skipped_build_when_achievements_selected_fails (test_gate.GateTest.test_skipped_build_when_achievements_selected_fails) ... ok
+test_skipped_build_when_routes_selected_fails (test_gate.GateTest.test_skipped_build_when_routes_selected_fails) ... ok
+test_summary_reports_failure (test_gate.GateTest.test_summary_reports_failure) ... ok
+test_unknown_achievements_flag_fails (test_gate.GateTest.test_unknown_achievements_flag_fails) ... ok
+test_validate_failure_fails (test_gate.GateTest.test_validate_failure_fails) ... ok
+test_invalid_states (test_infra_hardening.CaptureStateTest.test_invalid_states) ... skipped 'проверка кадра — Windows'
+test_valid_state (test_infra_hardening.CaptureStateTest.test_valid_state) ... skipped 'проверка кадра — Windows'
+test_existing_overlay_with_symlink_remains_untouched (test_infra_hardening.InsteadOverlayTest.test_existing_overlay_with_symlink_remains_untouched) ... ok
+test_existing_non_empty_directory_rejected (test_infra_hardening.OutputDirectoryTest.test_existing_non_empty_directory_rejected) ... ok
+test_new_directory_is_created (test_infra_hardening.OutputDirectoryTest.test_new_directory_is_created) ... ok
+test_reuse_is_not_allowed (test_infra_hardening.OutputDirectoryTest.test_reuse_is_not_allowed) ... ok
+test_absolute_path_rejected (test_infra_hardening.SeedHomeTest.test_absolute_path_rejected) ... ok
+test_drive_relative_and_unc_rejected (test_infra_hardening.SeedHomeTest.test_drive_relative_and_unc_rejected) ... ok
+test_empty_and_dot_paths_rejected (test_infra_hardening.SeedHomeTest.test_empty_and_dot_paths_rejected) ... ok
+test_parent_traversal_rejected (test_infra_hardening.SeedHomeTest.test_parent_traversal_rejected) ... ok
+test_relative_path_inside_home (test_infra_hardening.SeedHomeTest.test_relative_path_inside_home) ... ok
+test_close_failure_terminates (test_infra_hardening.StopProcessTest.test_close_failure_terminates) ... skipped 'завершение INSTEAD — Windows'
+test_graceful_close_waits_before_any_terminate (test_infra_hardening.StopProcessTest.test_graceful_close_waits_before_any_terminate) ... skipped 'завершение INSTEAD — Windows'
+test_kill_timeout_raises_cleanup_error (test_infra_hardening.StopProcessTest.test_kill_timeout_raises_cleanup_error) ... skipped 'завершение INSTEAD — Windows'
+test_missing_window_terminates (test_infra_hardening.StopProcessTest.test_missing_window_terminates) ... skipped 'завершение INSTEAD — Windows'
+test_timeout_terminates_after_close (test_infra_hardening.StopProcessTest.test_timeout_terminates_after_close) ... skipped 'завершение INSTEAD — Windows'
+test_autosave_and_other_slots_do_not_confirm_quick_commands (test_instead_trace.ExpectedCommandTest.test_autosave_and_other_slots_do_not_confirm_quick_commands) ... ok
+test_fmt_does_not_confirm_save_even_with_an_unrelated_scene (test_instead_trace.ExpectedCommandTest.test_fmt_does_not_confirm_save_even_with_an_unrelated_scene) ... ok
+test_load_confirmed_only_by_save_rejected (test_instead_trace.ExpectedCommandTest.test_load_confirmed_only_by_save_rejected) ... ok
+test_save_confirmed_only_by_load_rejected (test_instead_trace.ExpectedCommandTest.test_save_confirmed_only_by_load_rejected) ... ok
+test_save_needs_a_scene_at_or_after_the_command (test_instead_trace.ExpectedCommandTest.test_save_needs_a_scene_at_or_after_the_command) ... ok
+test_save_rejects_incomplete_and_changed_scene (test_instead_trace.ExpectedCommandTest.test_save_rejects_incomplete_and_changed_scene) ... ok
+test_save_with_empty_rendered_and_load_with_text_on_both_platforms (test_instead_trace.ExpectedCommandTest.test_save_with_empty_rendered_and_load_with_text_on_both_platforms) ... ok
+test_wait_ignores_wrong_slot_and_fmt_until_real_load (test_instead_trace.ExpectedCommandTest.test_wait_ignores_wrong_slot_and_fmt_until_real_load) ... ok
+test_changed_screen_kind_is_detected (test_instead_trace.FullIdentityTest.test_changed_screen_kind_is_detected) ... ok
+test_changed_variable_in_old_record_is_detected (test_instead_trace.FullIdentityTest.test_changed_variable_in_old_record_is_detected) ... ok
+test_duplicate_and_non_monotonic_seq_rejected (test_instead_trace.FullIdentityTest.test_duplicate_and_non_monotonic_seq_rejected) ... ok
+test_rewrite_during_wait_detected (test_instead_trace.FullIdentityTest.test_rewrite_during_wait_detected) ... ok
+test_wait_for_load_not_satisfied_by_earlier_scene (test_instead_trace.FullIdentityTest.test_wait_for_load_not_satisfied_by_earlier_scene) ... ok
+test_wait_ignores_load_from_previous_step (test_instead_trace.FullIdentityTest.test_wait_ignores_load_from_previous_step) ... ok
+test_wait_rejects_duplicate_even_with_fresh_load (test_instead_trace.FullIdentityTest.test_wait_rejects_duplicate_even_with_fresh_load) ... ok
+test_wait_rejects_rewrite_of_record_first_seen_during_wait (test_instead_trace.FullIdentityTest.test_wait_rejects_rewrite_of_record_first_seen_during_wait) ... ok
+test_only_f8_is_save (test_instead_trace.InsteadMenuKindTest.test_only_f8_is_save) ... ok
+test_only_f9_is_load (test_instead_trace.InsteadMenuKindTest.test_only_f9_is_load) ... ok
+test_other_menu_and_actions (test_instead_trace.InsteadMenuKindTest.test_other_menu_and_actions) ... ok
+test_load_record_that_is_scene_with_text_accepted (test_instead_trace.PickLoadTest.test_load_record_that_is_scene_with_text_accepted) ... ok
+test_load_rejects_scene_before_command (test_instead_trace.PickLoadTest.test_load_rejects_scene_before_command) ... ok
+test_load_with_correct_expected_state (test_instead_trace.PickLoadTest.test_load_with_correct_expected_state) ... ok
+test_load_with_fresh_empty_rendered_rejected (test_instead_trace.PickLoadTest.test_load_with_fresh_empty_rendered_rejected) ... ok
+test_load_with_fresh_scene_succeeds (test_instead_trace.PickLoadTest.test_load_with_fresh_scene_succeeds) ... ok
+test_load_with_wrong_expected_state_rejected (test_instead_trace.PickLoadTest.test_load_with_wrong_expected_state_rejected) ... ok
+test_load_without_evidence_rejected (test_instead_trace.PickLoadTest.test_load_without_evidence_rejected) ... ok
+test_load_without_fresh_scene_rejected (test_instead_trace.PickLoadTest.test_load_without_fresh_scene_rejected) ... ok
+test_wrong_or_incomplete_expected_scene_is_rejected (test_instead_trace.PickLoadTest.test_wrong_or_incomplete_expected_scene_is_rejected) ... ok
+test_save_of_arbitrary_old_scene_without_fresh_evidence_rejected (test_instead_trace.PickSaveTest.test_save_of_arbitrary_old_scene_without_fresh_evidence_rejected) ... ok
+test_save_uses_confirmed_scene_when_only_empty_scene_appeared (test_instead_trace.PickSaveTest.test_save_uses_confirmed_scene_when_only_empty_scene_appeared) ... ok
+test_save_with_empty_rendered_but_changed_page_rejected (test_instead_trace.PickSaveTest.test_save_with_empty_rendered_but_changed_page_rejected) ... ok
+test_save_with_empty_rendered_but_changed_portion_rejected (test_instead_trace.PickSaveTest.test_save_with_empty_rendered_but_changed_portion_rejected) ... ok
+test_save_with_empty_rendered_but_changed_variables_rejected (test_instead_trace.PickSaveTest.test_save_with_empty_rendered_but_changed_variables_rejected) ... ok
+test_save_without_command_evidence_rejected (test_instead_trace.PickSaveTest.test_save_without_command_evidence_rejected) ... ok
+test_appended_records_are_not_reset (test_instead_trace.TraceLifecycleTest.test_appended_records_are_not_reset) ... ok
+test_capture_falls_back_to_last_scene (test_instead_trace.TraceLifecycleTest.test_capture_falls_back_to_last_scene) ... ok
+test_reset_rejected_for_save_and_load (test_instead_trace.TraceLifecycleTest.test_reset_rejected_for_save_and_load) ... ok
+test_rewritten_trace_longer_than_cursor_is_reset (test_instead_trace.TraceLifecycleTest.test_rewritten_trace_longer_than_cursor_is_reset) ... ok
+test_rewritten_trace_with_same_length_and_new_prefix_is_reset (test_instead_trace.TraceLifecycleTest.test_rewritten_trace_with_same_length_and_new_prefix_is_reset) ... ok
+test_action_must_be_object (test_route_validation.RouteValidationTests.test_action_must_be_object) ... ok
+test_duplicate_step_ids (test_route_validation.RouteValidationTests.test_duplicate_step_ids) ... ok
+test_expect_must_be_object (test_route_validation.RouteValidationTests.test_expect_must_be_object) ... ok
+test_legacy_police_route_without_opening_choices_is_rejected (test_route_validation.RouteValidationTests.test_legacy_police_route_without_opening_choices_is_rejected) ... ok
+test_portion_count_must_be_stable_on_page (test_route_validation.RouteValidationTests.test_portion_count_must_be_stable_on_page) ... ok
+test_portion_indices_may_skip_unobserved_intermediate_checkpoints (test_route_validation.RouteValidationTests.test_portion_indices_may_skip_unobserved_intermediate_checkpoints) ... ok
+test_portion_indices_must_increase_without_repeating (test_route_validation.RouteValidationTests.test_portion_indices_must_increase_without_repeating) ... ok
+test_root_must_be_object (test_route_validation.RouteValidationTests.test_root_must_be_object) ... ok
+test_select_choice_requires_choices_checkpoint (test_route_validation.RouteValidationTests.test_select_choice_requires_choices_checkpoint) ... ok
+test_valid_route_and_partial_portion_metadata (test_route_validation.RouteValidationTests.test_valid_route_and_partial_portion_metadata) ... ok
+test_visual_change_cannot_reference_missing_step (test_route_validation.RouteValidationTests.test_visual_change_cannot_reference_missing_step) ... ok
+test_visual_change_must_reference_previous_step (test_route_validation.RouteValidationTests.test_visual_change_must_reference_previous_step) ... ok
+test_achievement_test_only_change_is_count_zero_with_achievements (test_select_routes.PullRequestDocsOnlyRegressionTest.test_achievement_test_only_change_is_count_zero_with_achievements) ... ok
+test_docs_only_pull_request_runs_nothing (test_select_routes.PullRequestDocsOnlyRegressionTest.test_docs_only_pull_request_runs_nothing) ... ok
+test_docs_only_shortcut_flag_is_rejected (test_select_routes.PullRequestDocsOnlyRegressionTest.test_docs_only_shortcut_flag_is_rejected) ... ok
+test_functional_change_plus_docs_commit_still_runs (test_select_routes.PullRequestDocsOnlyRegressionTest.test_functional_change_plus_docs_commit_still_runs) ... ok
+test_previous_ci_result_cannot_be_covered_by_docs_commit (test_select_routes.PullRequestDocsOnlyRegressionTest.test_previous_ci_result_cannot_be_covered_by_docs_commit) ... ok
+test_unknown_base_after_docs_commit_runs_everything (test_select_routes.PullRequestDocsOnlyRegressionTest.test_unknown_base_after_docs_commit_runs_everything) ... ok
+test_workflow_does_not_reintroduce_docs_only_shortcut (test_select_routes.PullRequestDocsOnlyRegressionTest.test_workflow_does_not_reintroduce_docs_only_shortcut) ... ok
+test_achievement_route_change_selects_it_and_achievements (test_select_routes.SelectAchievementsTest.test_achievement_route_change_selects_it_and_achievements) ... ok
+test_achievement_test_change_needs_only_achievements (test_select_routes.SelectAchievementsTest.test_achievement_test_change_needs_only_achievements) ... ok
+test_docs_only_needs_neither (test_select_routes.SelectAchievementsTest.test_docs_only_needs_neither) ... ok
+test_outputs_build_flag_for_achievements_only (test_select_routes.SelectAchievementsTest.test_outputs_build_flag_for_achievements_only) ... ok
+test_platform_layer_and_validator_need_only_achievements (test_select_routes.SelectAchievementsTest.test_platform_layer_and_validator_need_only_achievements) ... ok
+test_player_runner_ci_change_needs_achievements (test_select_routes.SelectAchievementsTest.test_player_runner_ci_change_needs_achievements) ... ok
+test_unknown_base_needs_routes_and_achievements (test_select_routes.SelectAchievementsTest.test_unknown_base_needs_routes_and_achievements) ... ok
+test_unrelated_changes_need_nothing (test_select_routes.SelectAchievementsTest.test_unrelated_changes_need_nothing) ... ok
+test_catalog_routes_have_timeouts (test_select_routes.SelectRoutesTest.test_catalog_routes_have_timeouts) ... ok
+test_changed_route_only (test_select_routes.SelectRoutesTest.test_changed_route_only) ... ok
+test_docs_never_select_routes (test_select_routes.SelectRoutesTest.test_docs_never_select_routes) ... ok
+test_docs_only (test_select_routes.SelectRoutesTest.test_docs_only) ... ok
+test_docs_only_changes_select_nothing (test_select_routes.SelectRoutesTest.test_docs_only_changes_select_nothing) ... ok
+test_files_outside_player_select_nothing (test_select_routes.SelectRoutesTest.test_files_outside_player_select_nothing) ... ok
+test_other_source_does_not_run (test_select_routes.SelectRoutesTest.test_other_source_does_not_run) ... ok
+test_runner_or_player_changes_run_all (test_select_routes.SelectRoutesTest.test_runner_or_player_changes_run_all) ... ok
+test_unknown_base_runs_all (test_select_routes.SelectRoutesTest.test_unknown_base_runs_all) ... ok
+test_case_insensitive (test_win_gui.KeyCodeTest.test_case_insensitive) ... skipped 'Windows-драйвер проверяется только на win32'
+test_click_lparam_keeps_client_coordinates (test_win_gui.KeyCodeTest.test_click_lparam_keeps_client_coordinates) ... skipped 'Windows-драйвер проверяется только на win32'
+test_function_keys_used_by_routes (test_win_gui.KeyCodeTest.test_function_keys_used_by_routes) ... skipped 'Windows-драйвер проверяется только на win32'
+test_key_lparams_down_up (test_win_gui.KeyCodeTest.test_key_lparams_down_up) ... skipped 'Windows-драйвер проверяется только на win32'
+test_unknown_key_rejected (test_win_gui.KeyCodeTest.test_unknown_key_rejected) ... skipped 'Windows-драйвер проверяется только на win32'
+test_find_window_timeout_returns_none (test_win_gui.WindowSelectionTest.test_find_window_timeout_returns_none) ... skipped 'Windows-драйвер проверяется только на win32'
+test_window_of_other_process_is_not_selected (test_win_gui.WindowSelectionTest.test_window_of_other_process_is_not_selected) ... skipped 'Windows-драйвер проверяется только на win32'
+test_covered_window (test_win_gui_real.RealWindowStateTest.test_covered_window) ... skipped 'нужен Windows'
+test_invalid_hwnd (test_win_gui_real.RealWindowStateTest.test_invalid_hwnd) ... skipped 'нужен Windows'
+test_minimized_window (test_win_gui_real.RealWindowStateTest.test_minimized_window) ... skipped 'нужен Windows'
+test_small_overlap_between_control_points (test_win_gui_real.RealWindowStateTest.test_small_overlap_between_control_points) ... skipped 'нужен Windows'
+
+----------------------------------------------------------------------
+Ran 176 tests in 1.404s
+
+OK (skipped=18)

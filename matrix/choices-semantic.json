@@ -1,0 +1,689 @@
+[
+  {
+    "check": "choices/exits",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": 0,
+      "instead": 0,
+      "compare": 0
+    }
+  },
+  {
+    "check": "choices/reports",
+    "ok": true,
+    "detail": null
+  },
+  {
+    "check": "choices/process",
+    "ok": true,
+    "detail": {
+      "pid": 4097,
+      "exit_code": 0
+    }
+  },
+  {
+    "check": "choices/INSTEAD-slot",
+    "ok": true,
+    "detail": [
+      [
+        "save",
+        122
+      ],
+      [
+        "load",
+        131
+      ],
+      [
+        "save",
+        139
+      ]
+    ]
+  },
+  {
+    "check": "choices/SDL-slot",
+    "ok": true,
+    "detail": [
+      [
+        "save",
+        42
+      ],
+      [
+        "load",
+        49
+      ],
+      [
+        "save",
+        53
+      ]
+    ]
+  },
+  {
+    "check": "choices/hospital-choices/cross",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices/save-a/cross",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices/save-a/baseline",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices/save-a/visible-order",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "screen": "choices",
+      "background": "3",
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "choices/load-a/cross",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices/load-a/baseline",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices/load-a/visible-order",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "screen": "choices",
+      "background": "3",
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "choices/resave-choices/cross",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices/resave-choices/baseline",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices/resave-choices/visible-order",
+    "ok": true,
+    "detail": {
+      "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+      "index": 1,
+      "count": 2,
+      "more": false,
+      "screen": "choices",
+      "background": "3",
+      "variables": {
+        "wolfiness": "0",
+        "hp": "2",
+        "barExit": "false",
+        "forestExit": "false",
+        "wolvesTalk": "false",
+        "guardDone": "false"
+      },
+      "visible": [
+        "Съесть врача",
+        "Съесть труп"
+      ]
+    }
+  },
+  {
+    "check": "choices/choose-doctor-after-load/cross",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "index": 0,
+        "count": 4,
+        "more": true,
+        "screen": "page",
+        "background": "4",
+        "variables": {
+          "wolfiness": "1",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+      },
+      "instead": {
+        "page": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "index": 0,
+        "count": 4,
+        "more": true,
+        "screen": "page",
+        "background": "4",
+        "variables": {
+          "wolfiness": "1",
+          "hp": "3",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке."
+      }
+    }
+  },
+  {
+    "check": "choices-restart/exits",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": 0,
+      "instead": 0,
+      "compare": 0
+    }
+  },
+  {
+    "check": "choices-restart/reports",
+    "ok": true,
+    "detail": null
+  },
+  {
+    "check": "choices-restart/process",
+    "ok": true,
+    "detail": {
+      "pid": 4728,
+      "exit_code": 0
+    }
+  },
+  {
+    "check": "choices-restart/INSTEAD-slot",
+    "ok": true,
+    "detail": [
+      [
+        "load",
+        5
+      ]
+    ]
+  },
+  {
+    "check": "choices-restart/SDL-slot",
+    "ok": true,
+    "detail": [
+      [
+        "load",
+        4
+      ]
+    ]
+  },
+  {
+    "check": "choices-restart/nlbnavigator/transfer",
+    "ok": true,
+    "detail": [
+      "9def30d3e6f3affea59f9de831cd4309ef0308d71d23afbc3dbd882f6fcebfb9",
+      "9def30d3e6f3affea59f9de831cd4309ef0308d71d23afbc3dbd882f6fcebfb9"
+    ]
+  },
+  {
+    "check": "choices-restart/instead/transfer",
+    "ok": true,
+    "detail": [
+      "3fa4f3d9739656ebf19a6dca375c30aec076f8cda1f822378053144836af9ab4",
+      "3fa4f3d9739656ebf19a6dca375c30aec076f8cda1f822378053144836af9ab4"
+    ]
+  },
+  {
+    "check": "choices-restart/load-a/cross",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices-restart/load-a/baseline",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      },
+      "instead": {
+        "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "index": 1,
+        "count": 2,
+        "more": false,
+        "screen": "choices",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": [
+          "Съесть врача",
+          "Съесть труп"
+        ]
+      }
+    }
+  },
+  {
+    "check": "choices-restart/choose-corpse-after-load/cross",
+    "ok": true,
+    "detail": {
+      "nlbnavigator": {
+        "page": "a2b6a777-a95c-4518-8623-ec797a483c46",
+        "index": 0,
+        "count": 2,
+        "more": true,
+        "screen": "page",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения."
+      },
+      "instead": {
+        "page": "a2b6a777-a95c-4518-8623-ec797a483c46",
+        "index": 0,
+        "count": 2,
+        "more": true,
+        "screen": "page",
+        "background": "3",
+        "variables": {
+          "wolfiness": "0",
+          "hp": "2",
+          "barExit": "false",
+          "forestExit": "false",
+          "wolvesTalk": "false",
+          "guardDone": "false"
+        },
+        "visible": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения."
+      }
+    }
+  },
+  {
+    "check": "choices-restart/new-INSTEAD-process",
+    "ok": true,
+    "detail": null
+  }
+]

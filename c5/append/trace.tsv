@@ -1,0 +1,5 @@
+# seq
+40	fmt	old		text	room-one
+41	scene	old		text	room-one
+42	fmt	продолжение		текст формата	room-one	v_room_one	v_room_one	page	Первая комната		0	0	false											false
+43	scene	продолжение		текст команды	room-one	v_room_one	v_room_one	page	Первая комната		0	0	false											false

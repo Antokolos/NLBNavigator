@@ -1,0 +1,20 @@
+matrix/baseline/nlbnavigator command: exit=0
+matrix/baseline/instead command: exit=0
+matrix/baseline compare: exit=0
+matrix/cycles/nlbnavigator command: exit=0
+matrix/cycles/instead command: exit=0
+matrix/cycles compare: exit=0
+matrix/restart/nlbnavigator command: exit=0
+matrix/restart/instead command: exit=0
+matrix/restart compare: exit=0
+Traceback (most recent call last):
+  File "/workspace/nlb-issue76.nHxaHSiy/matrix76.py", line 262, in <module>
+    {"choices": targets, "full": full_matrix}[phase]()
+  File "/workspace/nlb-issue76.nHxaHSiy/matrix76.py", line 219, in full_matrix
+    roundtrip = check_case(name, write_route(OUT, name, source, steps[:index+1]
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/nlb-issue76.nHxaHSiy/repo/tests/differential/check_wolfman_save_portion.py", line 65, in write_route
+    load_route(path)
+  File "/workspace/nlb-issue76.nHxaHSiy/repo/tests/differential/run_route.py", line 80, in load_route
+    raise ValueError("; ".join(validation_errors))
+ValueError: /workspace/nlb-issue76.nHxaHSiy/matrix/a1-roundtrip.json: hospital-choices: visual_change_from должен ссылаться на предыдущий шаг 'save-a', получено 'hospital-page3-last'

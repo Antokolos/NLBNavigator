@@ -1,0 +1,28 @@
+baseline: использованы первичные результаты успешного прогона
+cycles: использованы первичные результаты успешного прогона
+restart: использованы первичные результаты успешного прогона
+matrix/a1-roundtrip/nlbnavigator command: exit=0
+matrix/a1-roundtrip/instead command: exit=0
+matrix/a1-roundtrip compare: exit=0
+matrix/a1-restart/nlbnavigator command: exit=0
+matrix/a1-restart/instead command: exit=0
+matrix/a1-restart compare: exit=0
+matrix/b2-roundtrip/nlbnavigator command: exit=0
+matrix/b2-roundtrip/instead command: exit=0
+matrix/b2-roundtrip compare: exit=0
+matrix/b2-restart/nlbnavigator command: exit=0
+matrix/b2-restart/instead command: exit=0
+matrix/b2-restart compare: exit=0
+matrix/b3-roundtrip/nlbnavigator command: exit=0
+matrix/b3-roundtrip/instead command: exit=0
+matrix/b3-roundtrip compare: exit=0
+matrix/b3-restart/nlbnavigator command: exit=0
+matrix/b3-restart/instead command: exit=0
+matrix/b3-restart compare: exit=0
+matrix/resave/nlbnavigator command: exit=0
+matrix/resave/instead command: exit=0
+matrix/resave compare: exit=0
+matrix/ending/nlbnavigator command: exit=0
+matrix/ending/instead command: exit=0
+matrix/ending compare: exit=0
+Проверок: 154, успешных: 154

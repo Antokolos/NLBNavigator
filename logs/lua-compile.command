@@ -1,0 +1,1 @@
+cc -I /workspace/nlb-developer-env-v1/debian/usr/include/luajit-2.1 /workspace/nlb-issue76.nHxaHSiy/lua-run.c -L /workspace/nlb-developer-env-v1/debian/usr/lib/x86_64-linux-gnu -lluajit-5.1 -o /workspace/nlb-issue76.nHxaHSiy/lua-run 

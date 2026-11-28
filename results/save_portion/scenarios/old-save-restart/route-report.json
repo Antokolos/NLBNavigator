@@ -1,0 +1,239 @@
+{
+  "runtime": "nlbnavigator",
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "screenshot": "/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/old-save-restart/00-title.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 67911
+    },
+    {
+      "id": "load-a",
+      "screenshot": "/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/old-save-restart/load-a.png",
+      "width": 1920,
+      "height": 1080,
+      "colors": 39658
+    }
+  ],
+  "text_checks": [],
+  "errors": [],
+  "command": [
+    "/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/nlb-sdl-with-save",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/wolfman",
+    "explore",
+    "vn",
+    "--no-sound",
+    "--theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead-am_i_a_monster_vn/themes/default",
+    "--base-theme",
+    "/workspace/nlb-acceptance.01Jw9LE0/nav-data/test-data/instead/themes/default",
+    "--lang",
+    "ru",
+    "--log",
+    "/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/old-save-restart/playthrough.log",
+    "--window",
+    "1920x1080",
+    "--script",
+    "/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/old-save-restart/route.script",
+    "--state-log",
+    "/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/old-save-restart/state-log.jsonl",
+    "--state-vars",
+    "wolfiness,hp,barExit,forestExit,wolvesTalk,guardDone"
+  ],
+  "screen_records": [],
+  "state_records": [
+    {
+      "schema": 1,
+      "index": 2,
+      "command": "shot:/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/old-save-restart/00-title.png",
+      "ok": true,
+      "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 0,
+        "more": false,
+        "visible": []
+      },
+      "variables": {
+        "wolfiness": 0,
+        "hp": 0,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "title.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [],
+        "reactionText": [],
+        "roomText": [],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "title"
+    },
+    {
+      "schema": 1,
+      "index": 6,
+      "command": "shot:/workspace/nlb-issue76.nHxaHSiy/results/save_portion/scenarios/old-save-restart/load-a.png",
+      "ok": true,
+      "pageId": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+      "screen": "page",
+      "finished": false,
+      "portion": {
+        "index": 0,
+        "count": 4,
+        "more": true,
+        "visible": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ]
+      },
+      "variables": {
+        "wolfiness": 1,
+        "hp": 3,
+        "barExit": false,
+        "forestExit": false,
+        "wolvesTalk": false,
+        "guardDone": false
+      },
+      "model": {
+        "layout": "VisualNovel",
+        "pageId": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "caption": "",
+        "roomTitle": "",
+        "pageImage": {
+          "file": "4.png",
+          "framePattern": "",
+          "frameCount": 0,
+          "currentFrame": 0,
+          "looped": false
+        },
+        "imageIsBackground": false,
+        "forceDsc": false,
+        "pageText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке. Вновь обретя звериный облик, вы настигли медработника уже в коридоре. Набросившись сзади, вы повалили его на пол и в мгновение ока перегрызли горло. Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются. Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "reactionText": [],
+        "roomText": [
+          {
+            "runs": [
+              {
+                "kind": "Plain",
+                "text": "Ощутив запах панического ужаса, исходящий от патологоанатома, вы почувствовали, как кровь забурлила в жилах и заурчало в желудке. Вновь обретя звериный облик, вы настигли медработника уже в коридоре. Набросившись сзади, вы повалили его на пол и в мгновение ока перегрызли горло. Но надо было поторапливаться. На его истошные вопли скоро сбежится пол города. Жадно проглотив несколько кусков мяса, вы почувствовали как силы быстро возвращаются. Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась.",
+                "target": ""
+              }
+            ],
+            "joinPrevious": false
+          }
+        ],
+        "objectsText": [],
+        "modText": [],
+        "choices": [
+          {
+            "index": 0,
+            "text": "Далее",
+            "enabled": true,
+            "trivial": true,
+            "inlineLink": true,
+            "altText": ""
+          }
+        ],
+        "sceneObjects": [],
+        "inventory": [
+          {
+            "id": "766dc293-6fcf-421e-8b99-ef09b92a98b2",
+            "parentId": "",
+            "label": "Волчность: 1    Жизнь: 3",
+            "icon": {
+              "file": "",
+              "framePattern": "",
+              "frameCount": 0,
+              "currentFrame": 0,
+              "looped": false
+            },
+            "active": false
+          }
+        ],
+        "style": {
+          "textGeometry": null,
+          "inventoryGeometry": null,
+          "textColor": null,
+          "inventoryColor": null
+        },
+        "timerActive": false,
+        "timerIntervalMs": 0,
+        "finished": false,
+        "canSave": true,
+        "externalGame": null
+      },
+      "step_id": "load-a"
+    }
+  ],
+  "state_log_validation": "ok: 7 записей",
+  "metadata": {
+    "route_id": "wolfman-save-portion-old-save-restart",
+    "route_sha256": "1a1551e5ba5562e8edac5e82e506ab4502bc2a503f67d4b8db16315085b8de2a",
+    "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+    "navigator_commit": "3d312618b77f3ec62f97e9bdc7b56ed585ce2254",
+    "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  }
+}

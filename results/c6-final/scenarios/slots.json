@@ -1,0 +1,17 @@
+{
+  "cycles": {
+    "path": "/workspace/nlb-issue76.nHxaHSiy/results/c6-final/scenarios/cycles/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62810,
+    "sha256": "7a0469948997cbecb32afb73d764138d4f7c09601c31c9fa96eca9cadb109284"
+  },
+  "original": {
+    "path": "/workspace/nlb-issue76.nHxaHSiy/results/c6-final/scenarios/restart-save/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62852,
+    "sha256": "fd95a38369416cacf3874c5ef151962f728ef30c7d1aa1b3beec8e8a70502b31"
+  },
+  "copied": {
+    "path": "/workspace/nlb-issue76.nHxaHSiy/results/c6-final/scenarios/restart-load/instead-appdata/saves/instead-game-overlay/save9",
+    "bytes": 62852,
+    "sha256": "fd95a38369416cacf3874c5ef151962f728ef30c7d1aa1b3beec8e8a70502b31"
+  }
+}

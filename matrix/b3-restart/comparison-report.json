@@ -1,0 +1,116 @@
+{
+  "route": "wolfman-save-portion-b3-restart",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-save-portion-b3-restart",
+      "route_sha256": "0cb573a40a9c7d3c4e49c28fab7960e1691b0e0738c0b51f7f9fd8876c56fcaa",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-developer-env-v1/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/instead/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-save-portion-b3-restart",
+      "route_sha256": "0cb573a40a9c7d3c4e49c28fab7960e1691b0e0738c0b51f7f9fd8876c56fcaa",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "3d312618b77f3ec62f97e9bdc7b56ed585ce2254",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "load-a",
+      "instead_expected_fragment": "Напугав по пути уборщицу",
+      "nlbnavigator_expected_fragment": "Напугав по пути уборщицу",
+      "instead_check": {
+        "step_id": "load-a",
+        "expected_fragment": "Напугав по пути уборщицу",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась.\n",
+        "normalized_text": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась.\n",
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "screen_kind": "page",
+        "portion_index": 3,
+        "portion_count": 4
+      },
+      "nlbnavigator_check": {
+        "step_id": "load-a",
+        "expected_fragment": "Напугав по пути уборщицу",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась.",
+        "normalized_text": "Напугав по пути уборщицу до полуобморочного состояния, вы, наконец, выбрались из здания. Вскоре боль перестала вас мучить. С удивлением, вы обнаружили, что рана от пули затянулась.",
+        "portion_index": 3,
+        "portion_count": 4,
+        "screen": "page"
+      }
+    },
+    {
+      "step_id": "replay-page5-after-doctor",
+      "instead_expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "nlbnavigator_expected_fragment": "Вы мчались по пустынным ночным улицам",
+      "instead_check": {
+        "step_id": "replay-page5-after-doctor",
+        "expected_fragment": "Вы мчались по пустынным ночным улицам",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.\n",
+        "normalized_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.\n",
+        "page_id": "c28ae684-785a-4442-8756-8f5a7e9fb0c1",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 6
+      },
+      "nlbnavigator_check": {
+        "step_id": "replay-page5-after-doctor",
+        "expected_fragment": "Вы мчались по пустынным ночным улицам",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+        "normalized_text": "Вы мчались по пустынным ночным улицам так быстро, как только могли, и вскоре многоэтажные кирпичные дома начали сменяться небольшими частными домиками.",
+        "portion_index": 0,
+        "portion_count": 6,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/instead/00-title.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/nlbnavigator/00-title.png",
+      "changed_pixels": 1942698,
+      "changed_fraction": 0.9368721064814814,
+      "mean_absolute_channel_error": 3.935291441615226,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/diff/title-diff.png"
+    },
+    {
+      "id": "load-a",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/instead/load-a.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/nlbnavigator/load-a.png",
+      "changed_pixels": 1809622,
+      "changed_fraction": 0.8726957947530865,
+      "mean_absolute_channel_error": 4.469865933641976,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/diff/load-a-diff.png"
+    },
+    {
+      "id": "replay-page5-after-doctor",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/instead/replay-page5-after-doctor.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/nlbnavigator/replay-page5-after-doctor.png",
+      "changed_pixels": 1495911,
+      "changed_fraction": 0.7214076967592593,
+      "mean_absolute_channel_error": 3.019636541923868,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/b3-restart/diff/replay-page5-after-doctor-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

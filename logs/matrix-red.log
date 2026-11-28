@@ -1,0 +1,2 @@
+matrix/choices-red/nlbnavigator command: exit=1
+{"code": 1, "errors": ["save-a: ожидался экран choices, получен page", "load-a: ожидался экран choices, получен page"]}

@@ -1,0 +1,6 @@
+CMakeLists.txt
+Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp
+Source/NLBPresentation/Private/nlb/presentation/Session.cpp
+Source/NLBPresentation/Public/nlb/presentation/GameScreen.h
+Source/NLBPresentation/Public/nlb/presentation/Session.h
+tests/presentation/save_portion.cpp

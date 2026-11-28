@@ -1,0 +1,50 @@
+{
+  "repository": "Antokolos/NLBNavigator",
+  "issue": 76,
+  "tested_head": "3d312618b77f3ec62f97e9bdc7b56ed585ce2254",
+  "base": "aa5f15e7517b38295879eeb473e3bf04df7d1230",
+  "red_evidence": "a0afc7d5973793d88ed2371ac03b4b3871133ccb",
+  "pins": {
+    "wolfman": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+    "instead-am_i_a_monster_vn": "0db8d2c611faa596987baaf041763ef6c9282484",
+    "instead": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+  },
+  "platform": {
+    "os": "Debian 13.7 trixie amd64",
+    "xvfb": "1920×1080×24 -noreset",
+    "sdl_videodriver": "x11",
+    "sdl_audiodriver": "dummy",
+    "magick_thread_limit": 2,
+    "omp_num_threads": 2,
+    "lp_num_threads": 2,
+    "openbox": "3.6.1"
+  },
+  "versions": {
+    "instead": "3.5.2",
+    "sdl": "3.4.18",
+    "sdl_image": "3.2.4",
+    "sdl_ttf": "3.2.2",
+    "sdl_mixer": "3.2.4",
+    "lua": "LuaJIT 2.1.0+openresty20250117-2",
+    "cmake": "3.31.6",
+    "gcc": "14.2.0",
+    "python": "3.12.14"
+  },
+  "sha256": {
+    "nlb_sdl": "1802bde86d022e30669b16c78d9318c84be9175f4632c09ffac94366de022044",
+    "runner": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996"
+  },
+  "counts": {
+    "ctest": 17,
+    "python_passed": 158,
+    "python_skipped": 18,
+    "lua": 11,
+    "matrix": {
+      "choices": 27,
+      "full": 154
+    },
+    "routes": 22,
+    "checkpoints": 762
+  },
+  "pull_request": 78
+}

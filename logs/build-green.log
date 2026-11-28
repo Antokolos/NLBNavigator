@@ -1,0 +1,250 @@
+[1/9] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/Session.cpp.o
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Public/nlb/presentation/Session.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/Session.cpp:1:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/api/PartialProgressData.h:4,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/domain/PageImpl.h:4,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/Session.cpp:5:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setProgressValue(int)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/api/DummyProgressData.h:11:31: warning: unused parameter ‘progress’ [-Wunused-parameter]
+   11 |     void setProgressValue(int progress) override {};
+      |                           ~~~~^~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/api/DummyProgressData.h: In member function ‘virtual void DummyProgressData::setNoteText(const std::string&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/api/DummyProgressData.h:12:41: warning: unused parameter ‘text’ [-Wunused-parameter]
+   12 |     void setNoteText(const std::string& text) override {};
+      |                      ~~~~~~~~~~~~~~~~~~~^~~~
+[2/9] Building CXX object CMakeFiles/nlb_sdl.dir/Source/NLBSdl/main_sdl.cpp.o
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Public/nlb/presentation/Session.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Public/nlb/presentation/GameScreen.h:11,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBSdl/SdlPlayer.h:12,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBSdl/main_sdl.cpp:5:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/util/FileManipulator.h:7,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBSdl/main_sdl.cpp:24:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBConsistencyException::NLBConsistencyException(const std::string&, const std::string&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:10:86: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   10 |     explicit NLBConsistencyException(const std::string& message1, const std::string& message2)
+      |                                                                   ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBExportException::NLBExportException(const std::string&, const std::string&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:18:81: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   18 |     explicit NLBExportException(const std::string& message1, const std::string& message2)
+      |                                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBIOException::NLBIOException(const std::string&, const std::string&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:26:77: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   26 |     explicit NLBIOException(const std::string& message1, const std::string& message2)
+      |                                                          ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBVCSException::NLBVCSException(const std::string&, const std::string&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:34:78: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   34 |     explicit NLBVCSException(const std::string& message1, const std::string& message2)
+      |                                                           ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘NLBFileManipulationException::NLBFileManipulationException(const std::string&, const std::string&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:42:91: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   42 |     explicit NLBFileManipulationException(const std::string& message1, const std::string& message2)
+      |                                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h: In constructor ‘DecisionException::DecisionException(const std::string&, const std::string&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBCore/Public/nlb/exception/NLBExceptions.h:50:80: warning: unused parameter ‘message2’ [-Wunused-parameter]
+   50 |     explicit DecisionException(const std::string& message1, const std::string& message2)
+      |                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/builtin-features.inc:29,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBSdl/main_sdl.cpp:27:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Assign(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:7:35: warning: unused parameter ‘left’ [-Wunused-parameter]
+    7 | packToken Assign(const packToken& left, const packToken& right, evaluationData* data) {
+      |                  ~~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Comma(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:50:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   50 | packToken Comma(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Colon(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:59:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   59 | packToken Colon(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::UnaryNotOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:137:46: warning: unused parameter ‘left’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                             ~~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:137:92: warning: unused parameter ‘data’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                            ~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::FormatOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:196:94: warning: unused parameter ‘data’ [-Wunused-parameter]
+  196 | packToken FormatOperation(const packToken& p_left, const packToken& p_right, evaluationData* data) {
+      |                                                                              ~~~~~~~~~~~~~~~~^~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/builtin-features.inc:31:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::True(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::False(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:24: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |            ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:43: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |                              ~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::None(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::LineComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:21:67: warning: unused parameter ‘data’ [-Wunused-parameter]
+   21 | void LineComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                       ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::SlashStarComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:26:72: warning: unused parameter ‘data’ [-Wunused-parameter]
+   26 | void SlashStarComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                            ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::KeywordOperator(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:34: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                      ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:53: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                        ~~~~~~~~~~~~~^~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/builtin-features.inc:33:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc: In function ‘cparse::packToken builtin_typeSpecificFunctions::list_pop(cparse::TokenMap)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc:72:13: warning: comparison of unsigned expression in ‘< 0’ is always false [-Wtype-limits]
+   72 |     if (pos < 0) pos = list.list().size()-pos;
+      |         ~~~~^~~
+[3/9] Building CXX object CMakeFiles/NLBReader.dir/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp.o
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Public/nlb/presentation/Session.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Public/nlb/presentation/GameScreen.h:11,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp: In member function ‘float nlb::presentation::GameScreen::renderParagraphs(const std::vector<nlb::presentation::Paragraph>&, float, float, float, const nlb::presentation::FontRef&, const nlb::presentation::ScreenTheme::Window&, bool, float)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1257:31: warning: missing initializer for member ‘nlb::presentation::GameScreen::renderParagraphs(const std::vector<nlb::presentation::Paragraph>&, float, float, float, const nlb::presentation::FontRef&, const nlb::presentation::ScreenTheme::Window&, bool, float)::Word::image’ [-Wmissing-field-initializers]
+ 1257 |                 line.push_back({w, ww, run.kind, run.target, glued});
+      |                 ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp: In member function ‘void nlb::presentation::GameScreen::renderTextWindow(const nlb::presentation::ScreenTheme::Window&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1383:37: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1383 |                 title.runs.push_back({TextRun::Kind::ChoiceLink, m_screen.roomTitle, "-1"});
+      |                 ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1396:56: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1396 |             if (!ways.runs.empty()) ways.runs.push_back({TextRun::Kind::Plain, " | ", ""});
+      |                                     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1397:32: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1397 |             ways.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
+      |             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1439:86: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1439 |                     if (!composed.back().runs.empty()) composed.back().runs.push_back({TextRun::Kind::Plain, " ", ""});
+      |                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1475:31: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1475 |             alt.runs.push_back({TextRun::Kind::Plain, c.altText, ""});
+      |             ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Private/nlb/presentation/GameScreen.cpp:1481:32: warning: missing initializer for member ‘nlb::presentation::TextRun::image’ [-Wmissing-field-initializers]
+ 1481 |             link.runs.push_back({TextRun::Kind::ChoiceLink, c.text, std::to_string(c.index)});
+      |             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[4/9] Linking CXX static library libNLBReader.a
+[5/9] Linking CXX executable nlb_main
+[6/9] Building CXX object CMakeFiles/nlb_sdl.dir/Source/NLBSdl/SdlPlayer.cpp.o
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/shunting-yard.h:180,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerContext.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBReader/Public/nlb/domain/PlayerEngine.h:16,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Public/nlb/presentation/Session.h:13,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBPresentation/Public/nlb/presentation/GameScreen.h:11,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBSdl/SdlPlayer.h:12,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/NLBSdl/SdlPlayer.cpp:1:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+[7/9] Linking CXX executable nlb_sdl
+[8/9] Building CXX object CMakeFiles/nlb_save_portion_test.dir/tests/presentation/save_portion.cpp.o
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./shunting-yard.h:180,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/builtin-features.inc:10,
+                 from /workspace/nlb-issue76.nHxaHSiy/repo/tests/presentation/save_portion.cpp:1:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/././containers.h: In copy constructor ‘cparse::TokenMap::TokenMap(const cparse::TokenMap&)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/././containers.h:105:3: warning: base class ‘struct cparse::Iterable’ should be explicitly initialized in the copy constructor [-Wextra]
+  105 |   TokenMap(const TokenMap& other) : Container(other) {
+      |   ^~~~~~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/builtin-features.inc:29:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Assign(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:7:35: warning: unused parameter ‘left’ [-Wunused-parameter]
+    7 | packToken Assign(const packToken& left, const packToken& right, evaluationData* data) {
+      |                  ~~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Comma(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:50:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   50 | packToken Comma(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::Colon(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:59:80: warning: unused parameter ‘data’ [-Wunused-parameter]
+   59 | packToken Colon(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                ~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::UnaryNotOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:137:46: warning: unused parameter ‘left’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                             ~~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:137:92: warning: unused parameter ‘data’ [-Wunused-parameter]
+  137 | packToken UnaryNotOperation(const packToken& left, const packToken& right, evaluationData* data) {
+      |                                                                            ~~~~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc: In function ‘cparse::packToken builtin_operations::FormatOperation(const cparse::packToken&, const cparse::packToken&, cparse::evaluationData*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/operations.inc:196:94: warning: unused parameter ‘data’ [-Wunused-parameter]
+  196 | packToken FormatOperation(const packToken& p_left, const packToken& p_right, evaluationData* data) {
+      |                                                                              ~~~~~~~~~~~~~~~~^~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/builtin-features.inc:31:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::True(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:9:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+    9 | void True(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::False(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:24: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |            ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:13:43: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   13 | void False(const char* expr, const char** rest, rpnBuilder* data) {
+      |                              ~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::None(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:23: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |           ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:17:42: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   17 | void None(const char* expr, const char** rest, rpnBuilder* data) {
+      |                             ~~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::LineComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:21:67: warning: unused parameter ‘data’ [-Wunused-parameter]
+   21 | void LineComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                       ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::SlashStarComment(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:26:72: warning: unused parameter ‘data’ [-Wunused-parameter]
+   26 | void SlashStarComment(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                                            ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc: In function ‘void builtin_reservedWords::KeywordOperator(const char*, const char**, cparse::rpnBuilder*)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:34: warning: unused parameter ‘expr’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                      ~~~~~~~~~~~~^~~~
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/reservedWords.inc:36:53: warning: unused parameter ‘rest’ [-Wunused-parameter]
+   36 | void KeywordOperator(const char* expr, const char** rest, rpnBuilder* data) {
+      |                                        ~~~~~~~~~~~~~^~~~
+In file included from /workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/builtin-features.inc:33:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc: In function ‘cparse::packToken builtin_typeSpecificFunctions::list_pop(cparse::TokenMap)’:
+/workspace/nlb-issue76.nHxaHSiy/repo/Source/thirdparty/cparse/./builtin-features/typeSpecificFunctions.inc:72:13: warning: comparison of unsigned expression in ‘< 0’ is always false [-Wtype-limits]
+   72 |     if (pos < 0) pos = list.list().size()-pos;
+      |         ~~~~^~~
+[9/9] Linking CXX executable nlb_save_portion_test

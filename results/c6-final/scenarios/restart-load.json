@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "id": "wolfman-instead-save-load-restart-load",
+  "story_id": "am-i-a-monster",
+  "title": "Am I a Monster? — полиция и больница: съесть врача",
+  "mode": "vn",
+  "language": "ru",
+  "window": {
+    "width": 1920,
+    "height": 1080
+  },
+  "steps": [
+    {
+      "id": "title",
+      "action": {
+        "type": "capture"
+      },
+      "settle_ms": 2000,
+      "screenshot": "00-title.png",
+      "expect": {
+        "page_id": "f7cb8bed-47a9-4ce2-b713-c9b53571c93f",
+        "image_suffix": "title.png",
+        "instead_background_suffix": "title.jpg"
+      }
+    },
+    {
+      "id": "load-a",
+      "screenshot": "load-a.png",
+      "settle_ms": 2000,
+      "action": {
+        "type": "menu",
+        "nlbnavigator": [
+          "f9",
+          1
+        ],
+        "instead": [
+          {
+            "key": "F9"
+          }
+        ]
+      },
+      "expect": {
+        "instead_page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717"
+      }
+    },
+    {
+      "id": "restart-hospital-page3-last",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2000,
+      "screenshot": "restart-hospital-page3-last.png",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "3.jpg",
+        "portion_index": 1,
+        "portion_count": 2,
+        "instead_portion_index": 1,
+        "instead_portion_count": 2
+      }
+    },
+    {
+      "id": "restart-hospital-choices",
+      "action": {
+        "type": "advance",
+        "x_ratio": 0.5,
+        "y_ratio": 0.5,
+        "clicks": {
+          "instead": 1,
+          "nlbnavigator": 1
+        }
+      },
+      "settle_ms": 2500,
+      "screenshot": "restart-hospital-choices.png",
+      "expect": {
+        "page_id": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+        "image_suffix": "3.png",
+        "instead_background_suffix": "images/3.jpg",
+        "screen": "choices",
+        "instead_screen_kind": "choices",
+        "choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "instead_choices_contains": [
+          "Съесть врача",
+          "Съесть труп"
+        ],
+        "variables": {
+          "wolfiness": 0,
+          "hp": 2
+        }
+      }
+    },
+    {
+      "id": "restart-eat-doctor",
+      "action": {
+        "type": "select_choice",
+        "index": 0,
+        "instead": {
+          "x_ratio": 0.28,
+          "y_ratio": 0.28
+        }
+      },
+      "settle_ms": 3000,
+      "screenshot": "restart-eat-doctor.png",
+      "expect": {
+        "page_id": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+        "image_suffix": "4.png",
+        "instead_background_suffix": "images/4.jpg",
+        "screen": "page",
+        "instead_screen_kind": "page",
+        "text_contains": "Ощутив запах панического ужаса",
+        "instead_text_contains": "Ощутив запах панического ужаса",
+        "variables": {
+          "wolfiness": 1,
+          "hp": 3
+        },
+        "portion_index": 0,
+        "portion_count": 4,
+        "instead_portion_index": 0,
+        "instead_portion_count": 4
+      }
+    }
+  ],
+  "notes": [
+    "Independent clean-state route through police -> hospital -> doctor branch.",
+    "Page 3 calls THE_HOSPITAL on non-autowired entry; persistent achievement read-back is not asserted.",
+    "The hospital scene automatically transitions to its vn_choices scene after the last page3 text portion. The choices checkpoint asserts both menu options before selection.",
+    "Selecting index 0 is observed by INSTEAD as act 01 and by NLBNavigator as clickchoice:0.",
+    "Page4 state wolfiness=1,hp=3 and 4 portions are confirmed by runtime in both engines (CI #162).",
+    "The route ends at the automatic convergence on page5.",
+    "Continuation from page5 through the first kitchen choice screen. Runtime pagination and state were locally confirmed in both engines by the Reviewer; the route stops before selecting either kitchen option."
+  ],
+  "prefix_chain": []
+}

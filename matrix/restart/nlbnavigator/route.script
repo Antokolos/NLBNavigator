@@ -1,0 +1,16 @@
+# Сценарий автоматически сформирован из общего JSON-маршрута.
+settle:2000
+shot:/workspace/nlb-issue76.nHxaHSiy/matrix/restart/nlbnavigator/00-title.png
+key:f9
+menu:1
+settle:2500
+shot:/workspace/nlb-issue76.nHxaHSiy/matrix/restart/nlbnavigator/load-a.png
+click:960,540
+settle:2000
+shot:/workspace/nlb-issue76.nHxaHSiy/matrix/restart/nlbnavigator/replay-hospital-page3-last.png
+click:960,540
+settle:2500
+shot:/workspace/nlb-issue76.nHxaHSiy/matrix/restart/nlbnavigator/replay-hospital-choices.png
+clickchoice:0
+settle:3000
+shot:/workspace/nlb-issue76.nHxaHSiy/matrix/restart/nlbnavigator/replay-eat-doctor.png

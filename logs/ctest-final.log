@@ -1,0 +1,156 @@
+Internal ctest changing into directory: /workspace/nlb-issue76.nHxaHSiy/build
+UpdateCTestConfiguration  from :/workspace/nlb-issue76.nHxaHSiy/build/DartConfiguration.tcl
+UpdateCTestConfiguration  from :/workspace/nlb-issue76.nHxaHSiy/build/DartConfiguration.tcl
+Test project /workspace/nlb-issue76.nHxaHSiy/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+      Start  1: save_portion.advance_save
+
+1: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "advance_save" "/workspace/nlb-issue76.nHxaHSiy/build"
+1: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+1: Test timeout computed to be: 10000000
+1: advance_save: OK, "/workspace/nlb-issue76.nHxaHSiy/build/advance_save-127698267"
+ 1/17 Test  #1: save_portion.advance_save ..........   Passed    0.00 sec
+test 2
+      Start  2: save_portion.load_save
+
+2: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "load_save" "/workspace/nlb-issue76.nHxaHSiy/build"
+2: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+2: Test timeout computed to be: 10000000
+2: load_save: OK, "/workspace/nlb-issue76.nHxaHSiy/build/load_save-17458731"
+ 2/17 Test  #2: save_portion.load_save .............   Passed    0.00 sec
+test 3
+      Start  3: save_portion.snapshot
+
+3: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "snapshot" "/workspace/nlb-issue76.nHxaHSiy/build"
+3: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+3: Test timeout computed to be: 10000000
+3: snapshot: OK, "/workspace/nlb-issue76.nHxaHSiy/build/snapshot-2849411480"
+ 3/17 Test  #3: save_portion.snapshot ..............   Passed    0.01 sec
+test 4
+      Start  4: save_portion.restart
+
+4: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "restart" "/workspace/nlb-issue76.nHxaHSiy/build"
+4: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+4: Test timeout computed to be: 10000000
+4: restart: OK, "/workspace/nlb-issue76.nHxaHSiy/build/restart-3144870108"
+ 4/17 Test  #4: save_portion.restart ...............   Passed    0.00 sec
+test 5
+      Start  5: save_portion.failed_load
+
+5: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "failed_load" "/workspace/nlb-issue76.nHxaHSiy/build"
+5: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+5: Test timeout computed to be: 10000000
+5: failed_load: OK, "/workspace/nlb-issue76.nHxaHSiy/build/failed_load-2330919133"
+ 5/17 Test  #5: save_portion.failed_load ...........   Passed    0.00 sec
+test 6
+      Start  6: save_portion.legacy
+
+6: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "legacy" "/workspace/nlb-issue76.nHxaHSiy/build"
+6: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+6: Test timeout computed to be: 10000000
+6: legacy: OK, "/workspace/nlb-issue76.nHxaHSiy/build/legacy-954284711"
+ 6/17 Test  #6: save_portion.legacy ................   Passed    0.01 sec
+test 7
+      Start  7: save_portion.invalid
+
+7: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "invalid" "/workspace/nlb-issue76.nHxaHSiy/build"
+7: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+7: Test timeout computed to be: 10000000
+7: Обработано некорректное значение: []
+7: Обработано некорректное значение: [12abc]
+7: Обработано некорректное значение: [-1]
+7: Обработано некорректное значение: [+1]
+7: Обработано некорректное значение: [18446744073709551616]
+7: Обработано некорректное значение: [текст]
+7: invalid: OK, "/workspace/nlb-issue76.nHxaHSiy/build/invalid-3417019516"
+ 7/17 Test  #7: save_portion.invalid ...............   Passed    0.01 sec
+test 8
+      Start  8: save_portion.clamp
+
+8: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "clamp" "/workspace/nlb-issue76.nHxaHSiy/build"
+8: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+8: Test timeout computed to be: 10000000
+8: clamp: OK, "/workspace/nlb-issue76.nHxaHSiy/build/clamp-1831677098"
+ 8/17 Test  #8: save_portion.clamp .................   Passed    0.00 sec
+test 9
+      Start  9: save_portion.standard
+
+9: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "standard" "/workspace/nlb-issue76.nHxaHSiy/build"
+9: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+9: Test timeout computed to be: 10000000
+9: standard: OK, "/workspace/nlb-issue76.nHxaHSiy/build/standard-1171196593"
+ 9/17 Test  #9: save_portion.standard ..............   Passed    0.00 sec
+test 10
+      Start 10: save_portion.timer
+
+10: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "timer" "/workspace/nlb-issue76.nHxaHSiy/build"
+10: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+10: Test timeout computed to be: 10000000
+10: timer: OK, "/workspace/nlb-issue76.nHxaHSiy/build/timer-3518838909"
+10/17 Test #10: save_portion.timer .................   Passed    0.00 sec
+test 11
+      Start 11: save_portion.choices_menu
+
+11: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "choices_menu" "/workspace/nlb-issue76.nHxaHSiy/build"
+11: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+11: Test timeout computed to be: 10000000
+11: choices_menu: OK, "/workspace/nlb-issue76.nHxaHSiy/build/choices_menu-163625620"
+11/17 Test #11: save_portion.choices_menu ..........   Passed    0.01 sec
+test 12
+      Start 12: save_portion.choices_restore
+
+12: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "choices_restore" "/workspace/nlb-issue76.nHxaHSiy/build"
+12: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+12: Test timeout computed to be: 10000000
+12: choices_restore: OK, "/workspace/nlb-issue76.nHxaHSiy/build/choices_restore-1431508416"
+12/17 Test #12: save_portion.choices_restore .......   Passed    0.01 sec
+test 13
+      Start 13: save_portion.choices_errors
+
+13: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "choices_errors" "/workspace/nlb-issue76.nHxaHSiy/build"
+13: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+13: Test timeout computed to be: 10000000
+13: choices_errors: OK, "/workspace/nlb-issue76.nHxaHSiy/build/choices_errors-899029224"
+13/17 Test #13: save_portion.choices_errors ........   Passed    0.01 sec
+test 14
+      Start 14: save_portion.choices_lifecycle
+
+14: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "choices_lifecycle" "/workspace/nlb-issue76.nHxaHSiy/build"
+14: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+14: Test timeout computed to be: 10000000
+14: choices_lifecycle: OK, "/workspace/nlb-issue76.nHxaHSiy/build/choices_lifecycle-1774731764"
+14/17 Test #14: save_portion.choices_lifecycle .....   Passed    0.01 sec
+test 15
+      Start 15: save_portion.choices_invalid
+
+15: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "choices_invalid" "/workspace/nlb-issue76.nHxaHSiy/build"
+15: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+15: Test timeout computed to be: 10000000
+15: choices_invalid: OK, "/workspace/nlb-issue76.nHxaHSiy/build/choices_invalid-1081410405"
+15/17 Test #15: save_portion.choices_invalid .......   Passed    0.01 sec
+test 16
+      Start 16: save_portion.choices_eligibility
+
+16: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "choices_eligibility" "/workspace/nlb-issue76.nHxaHSiy/build"
+16: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+16: Test timeout computed to be: 10000000
+16: choices_eligibility: OK, "/workspace/nlb-issue76.nHxaHSiy/build/choices_eligibility-2053303707"
+16/17 Test #16: save_portion.choices_eligibility ...   Passed    0.01 sec
+test 17
+      Start 17: save_portion.ending_restore
+
+17: Test command: /workspace/nlb-issue76.nHxaHSiy/build/nlb_save_portion_test "ending_restore" "/workspace/nlb-issue76.nHxaHSiy/build"
+17: Working Directory: /workspace/nlb-issue76.nHxaHSiy/build
+17: Test timeout computed to be: 10000000
+17: ending_restore: OK, "/workspace/nlb-issue76.nHxaHSiy/build/ending_restore-1382535208"
+17/17 Test #17: save_portion.ending_restore ........   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 17
+
+Total Test time (real) =   0.10 sec

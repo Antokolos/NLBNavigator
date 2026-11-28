@@ -1,0 +1,6 @@
+baseline: runner exit=0, журнал /workspace/nlb-issue76.nHxaHSiy/results/save_load/scenarios/baseline.log
+roundtrip: runner exit=0, журнал /workspace/nlb-issue76.nHxaHSiy/results/save_load/scenarios/roundtrip.log
+save-only: runner exit=0, журнал /workspace/nlb-issue76.nHxaHSiy/results/save_load/scenarios/save-only.log
+restart: runner exit=0, журнал /workspace/nlb-issue76.nHxaHSiy/results/save_load/scenarios/restart.log
+empty: runner exit=1, журнал /workspace/nlb-issue76.nHxaHSiy/results/save_load/scenarios/empty.log
+OK: A и продолжение восстановлены в том же и в новом процессе; пустой слот недоступен

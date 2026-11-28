@@ -1,0 +1,88 @@
+{
+  "route": "wolfman-save-portion-choices-restart",
+  "comparison_is_advisory": true,
+  "advance_comparison": [],
+  "runtime_metadata": {
+    "instead": {
+      "route_id": "wolfman-save-portion-choices-restart",
+      "route_sha256": "c5d7f07194b8d9c86ae999b4943d0c711d119fe9b03c00601dc5159e1d15ea67",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "instead_export_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e",
+      "instead_binary": "/workspace/nlb-developer-env-v1/instead/bin/sdl-instead",
+      "instead_package_version": null,
+      "appdata": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/instead/instead-appdata"
+    },
+    "nlbnavigator": {
+      "route_id": "wolfman-save-portion-choices-restart",
+      "route_sha256": "c5d7f07194b8d9c86ae999b4943d0c711d119fe9b03c00601dc5159e1d15ea67",
+      "runner_sha256": "66f261d2d160ba8b4aa10de5d8713297b3fd075e71eceaae6d95b0753b003996",
+      "navigator_commit": "3d312618b77f3ec62f97e9bdc7b56ed585ce2254",
+      "book_commit": "888b4b7a7a564693274f53341728ee9f3b4c2879",
+      "theme_commit": "0db8d2c611faa596987baaf041763ef6c9282484",
+      "base_theme_commit": "1a07e0ffc0a1e8402b9d47a104d88d3f33204a7e"
+    }
+  },
+  "text_comparison": [
+    {
+      "step_id": "choose-corpse-after-load",
+      "instead_expected_fragment": "Оскалив зубы, вы начали медленно подниматься",
+      "nlbnavigator_expected_fragment": "Оскалив зубы, вы начали медленно подниматься",
+      "instead_check": {
+        "step_id": "choose-corpse-after-load",
+        "expected_fragment": "Оскалив зубы, вы начали медленно подниматься",
+        "passed": true,
+        "source": "iface.cmd",
+        "raw_text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения.\n",
+        "normalized_text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения.\n",
+        "page_id": "a2b6a777-a95c-4518-8623-ec797a483c46",
+        "screen_kind": "page",
+        "portion_index": 0,
+        "portion_count": 2
+      },
+      "nlbnavigator_check": {
+        "step_id": "choose-corpse-after-load",
+        "expected_fragment": "Оскалив зубы, вы начали медленно подниматься",
+        "passed": true,
+        "source": "state-log",
+        "raw_text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения.",
+        "normalized_text": "Оскалив зубы, вы начали медленно подниматься со стола. Этого оказалось достаточно, чтобы патологоанатом с воплями выскочил из помещения.",
+        "portion_index": 0,
+        "portion_count": 2,
+        "screen": "page"
+      }
+    }
+  ],
+  "ok": true,
+  "steps": [
+    {
+      "id": "title",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/instead/00-title.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/nlbnavigator/00-title.png",
+      "changed_pixels": 1942698,
+      "changed_fraction": 0.9368721064814814,
+      "mean_absolute_channel_error": 3.935291441615226,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/diff/title-diff.png"
+    },
+    {
+      "id": "load-a",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/instead/load-a.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/nlbnavigator/load-a.png",
+      "changed_pixels": 1486384,
+      "changed_fraction": 0.7168132716049382,
+      "mean_absolute_channel_error": 13.502854456018518,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/diff/load-a-diff.png"
+    },
+    {
+      "id": "choose-corpse-after-load",
+      "instead": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/instead/choose-corpse-after-load.png",
+      "nlbnavigator": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/nlbnavigator/choose-corpse-after-load.png",
+      "changed_pixels": 1224051,
+      "changed_fraction": 0.5903023726851852,
+      "mean_absolute_channel_error": 2.5125570666152264,
+      "diff_image": "/workspace/nlb-issue76.nHxaHSiy/matrix/choices-restart/diff/choose-corpse-after-load-diff.png"
+    }
+  ],
+  "errors": [],
+  "note": "Разные рендереры могут отличаться сглаживанием и композитингом; метрики не являются pixel-perfect критерием."
+}

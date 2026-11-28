@@ -1,0 +1,220 @@
+{
+  "choices": {
+    "nlbnavigator": [
+      {
+        "verb": "save",
+        "index": 42,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        },
+        "ok": true
+      },
+      {
+        "verb": "load",
+        "index": 49,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        },
+        "ok": true
+      },
+      {
+        "verb": "save",
+        "index": 53,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        },
+        "ok": true
+      }
+    ],
+    "instead": [
+      {
+        "verb": "save",
+        "seq": 122,
+        "empty_rendered": true,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        }
+      },
+      {
+        "verb": "load",
+        "seq": 131,
+        "empty_rendered": false,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        }
+      },
+      {
+        "verb": "save",
+        "seq": 139,
+        "empty_rendered": true,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        }
+      }
+    ],
+    "destination": "d937c5c1-766c-4581-a03e-736560b0cc8f",
+    "choice_index": 56,
+    "choice_seq": 141
+  },
+  "choices-restart": {
+    "nlbnavigator": [
+      {
+        "verb": "load",
+        "index": 4,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        },
+        "ok": true
+      }
+    ],
+    "instead": [
+      {
+        "verb": "load",
+        "seq": 5,
+        "empty_rendered": false,
+        "state": {
+          "page": "8c1fa8c6-8027-43c8-8d8b-0bf454d5e717",
+          "index": 1,
+          "count": 2,
+          "more": false,
+          "screen": "choices",
+          "background": "3",
+          "variables": {
+            "wolfiness": "0",
+            "hp": "2",
+            "barExit": "false",
+            "forestExit": "false",
+            "wolvesTalk": "false",
+            "guardDone": "false"
+          },
+          "visible": [
+            "Съесть врача",
+            "Съесть труп"
+          ]
+        }
+      }
+    ],
+    "destination": "a2b6a777-a95c-4518-8623-ec797a483c46",
+    "choice_index": 7,
+    "choice_seq": 13
+  }
+}
